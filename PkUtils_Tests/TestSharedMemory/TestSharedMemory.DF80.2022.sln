@@ -1,0 +1,47 @@
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.4.33205.214
+MinimumVisualStudioVersion = 16.0.0
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TestSharedMemXferObj.DF80.2022", "TestSharedMemXferObj\TestSharedMemXferObj.DF80.2022.csproj", "{EDFF1807-E59C-47FC-B4F3-C6964E73888C}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TestSharedMemClient.DF80.2022", "TestSharedMemClient\TestSharedMemClient.DF80.2022.csproj", "{0F878016-C36D-436B-8226-1897C8D63C52}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TestSharedMemServer.DF80.2022", "TestSharedMemServer\TestSharedMemServer.DF80.2022.csproj", "{689350FA-DC0E-45D4-BCAA-034C2C64E158}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{6AEAE540-E4F0-42D8-9FB2-1C5E66A01EC3}"
+	ProjectSection(SolutionItems) = preProject
+		ReadMe.txt = ReadMe.txt
+	EndProjectSection
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PkUtils.DF80.2022", "..\..\PkUtils\PkUtils.DF80.2022.csproj", "{15BD54BC-8DB4-4D79-A6FD-BD792864ECAA}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{EDFF1807-E59C-47FC-B4F3-C6964E73888C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EDFF1807-E59C-47FC-B4F3-C6964E73888C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EDFF1807-E59C-47FC-B4F3-C6964E73888C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{EDFF1807-E59C-47FC-B4F3-C6964E73888C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0F878016-C36D-436B-8226-1897C8D63C52}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0F878016-C36D-436B-8226-1897C8D63C52}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0F878016-C36D-436B-8226-1897C8D63C52}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0F878016-C36D-436B-8226-1897C8D63C52}.Release|Any CPU.Build.0 = Release|Any CPU
+		{689350FA-DC0E-45D4-BCAA-034C2C64E158}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{689350FA-DC0E-45D4-BCAA-034C2C64E158}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{689350FA-DC0E-45D4-BCAA-034C2C64E158}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{689350FA-DC0E-45D4-BCAA-034C2C64E158}.Release|Any CPU.Build.0 = Release|Any CPU
+		{15BD54BC-8DB4-4D79-A6FD-BD792864ECAA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{15BD54BC-8DB4-4D79-A6FD-BD792864ECAA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{15BD54BC-8DB4-4D79-A6FD-BD792864ECAA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{15BD54BC-8DB4-4D79-A6FD-BD792864ECAA}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {5DEF9437-7126-4215-A473-FC1235BEB283}
+	EndGlobalSection
+EndGlobal

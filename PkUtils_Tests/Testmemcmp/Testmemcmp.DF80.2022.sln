@@ -1,0 +1,27 @@
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.4.33205.214
+MinimumVisualStudioVersion = 16.0.0
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Testmemcmp.DF80.2022", "Testmemcmp.DF80.2022.csproj", "{ECDE6DA7-AE92-491E-A403-AB0E6F89C2BA}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PkUtils.DF80.2022", "..\..\PkUtils\PkUtils.DF80.2022.csproj", "{D3D44B19-30F4-45E7-930B-03759AECF6BB}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{ECDE6DA7-AE92-491E-A403-AB0E6F89C2BA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{ECDE6DA7-AE92-491E-A403-AB0E6F89C2BA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{ECDE6DA7-AE92-491E-A403-AB0E6F89C2BA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{ECDE6DA7-AE92-491E-A403-AB0E6F89C2BA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D3D44B19-30F4-45E7-930B-03759AECF6BB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D3D44B19-30F4-45E7-930B-03759AECF6BB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D3D44B19-30F4-45E7-930B-03759AECF6BB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D3D44B19-30F4-45E7-930B-03759AECF6BB}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal

@@ -1,0 +1,27 @@
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.4.33205.214
+MinimumVisualStudioVersion = 16.0.0
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TestDumperTextWriter.DF80.2022", "TestDumperTextWriter.DF80.2022.csproj", "{44DD85FB-2F51-4C28-8D11-9B44E9D1895F}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PkUtils.DF80.2022", "..\..\PkUtils\PkUtils.DF80.2022.csproj", "{B000FB0A-7292-4149-9B71-021D2125CFFA}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{44DD85FB-2F51-4C28-8D11-9B44E9D1895F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{44DD85FB-2F51-4C28-8D11-9B44E9D1895F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{44DD85FB-2F51-4C28-8D11-9B44E9D1895F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{44DD85FB-2F51-4C28-8D11-9B44E9D1895F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B000FB0A-7292-4149-9B71-021D2125CFFA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B000FB0A-7292-4149-9B71-021D2125CFFA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B000FB0A-7292-4149-9B71-021D2125CFFA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B000FB0A-7292-4149-9B71-021D2125CFFA}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal

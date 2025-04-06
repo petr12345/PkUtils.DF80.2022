@@ -1,0 +1,809 @@
+
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN" >
+<HTML>
+	<HEAD>
+		<title>Introduction to the .Net XmlSerializer</title>
+		<meta name="description" content="Discussion of the basics of using the XmlSerializer and the attributes in the System.Xml.Serialization namespace">
+		<link rel="stylesheet" href="../Resources/yellow.css" type="text/css">
+		<link rel="icon" href="../favicon.ico" type="image/x-icon">
+		<link rel="shortcut icon" href="http://www.bonesoft.com/favicon.ico" type="image/x-icon">
+		<style>
+			CODE.x { COLOR: maroon }
+			H1 { FONT-SIZE: 14pt; COLOR: #bc6505 }
+			H2 { FONT-SIZE: 12pt; COLOR: #bc6505 }
+			H3 { FONT-SIZE: 10pt; COLOR: #bc6505 }
+			H4 { FONT-SIZE: 9pt; COLOR: #bc6505 }
+			H5 { FONT-SIZE: 8pt; COLOR: #bc6505 }
+			H6 { FONT-SIZE: 7pt; COLOR: #bc6505 }
+		</style>
+	</HEAD>
+	<body>
+		
+<table width="100%" cellspacing="0" cellpadding="0" class="TitleBar">
+	<tr>
+		<td>
+			<img id="PageBody1_logo" src="../Resources/Logo.gif" style="border-width:0px;" />
+		</td>
+		<td align="right" valign="bottom"><div id="PageBody1_headRight">
+	<span><table align="right" cellspacing="4">
+	<tr>
+		<td class="menutop" width="80" nowrap><a href="/Login.aspx"><img src="/Resources/login.gif" border="0"> Login</a></td>
+		<td class="menutop" width="80" nowrap><a href="/Register.aspx"><img src="/Resources/register.gif" border="0"> Register</a></td>
+	</tr>
+</table></span>
+</div></td>
+	</tr>
+	<tr>
+		<!-- Seperator line -->
+		<td class="dark" height="2" colspan="2"></td>
+	</tr>
+</table>
+<table width="100%" border="0">
+	<!-- Spacer - heading and body seperator -->
+	<tr>
+		<td><span class="spacer">&nbsp;</span></td>
+	</tr>
+	<tr>
+		<!-- Menu panel -->
+		<td width="127" valign="top">
+			<table width="120" align="center" style="border: Black 1px solid; background-color: white;">
+	<tr>
+		<th class="menuhead"><img src="../Resources/bonesml.gif" border="0"> Information</th>
+	</tr>
+	<tr>
+		<td>
+			<table width="100%">
+				<tr><td><a href="../default.aspx">Home</a></td></tr>
+				<tr><td class="dark" width="100%"></td></tr>
+				<tr><td><a href="../about.aspx">About Us</a></td></tr>
+				<tr><td class="dark" width="100%"></td></tr>
+				<tr><td><a href="../products.aspx">Our Products</a></td></tr>
+				<tr><td class="dark" width="100%"></td></tr>
+				<tr><td><a href="../services.aspx">Our Services</a></td></tr>
+				<tr><td class="dark" width="100%"></td></tr>
+				<tr><td><a href="../projects.aspx">Projects</a></td></tr>
+				<tr><td class="dark" width="100%"></td></tr>
+				<tr><td><a href="../contact.aspx">Contact Us</a></td></tr>
+				<tr><td class="dark" width="100%"></td></tr>
+				<tr><td class="menutop"><a href="../Articles/">Articles</a></td></tr>
+			</table>
+		</td>
+	</tr>
+</table>
+
+		</td>
+		<td width="5"></td>
+		<!-- Body panel -->
+		<td valign="top">
+			<div id="PageBody1_Body">
+	<div id="PageBody1_content">
+		
+			<P><SPAN class="h1">Using the System.Xml.Serialization.XmlSerializer</SPAN></P>
+			<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;The main purpose of this article is to discuss 
+				some of the uses for Xml Serialization and explore some of the basics of using 
+				the <CODE class="x">XmlSerializer</CODE> and the attributes in the <CODE class="x">System.Xml.Serialization</CODE>
+				namespace. To keep this discussion basic, I will not talk about XML namespaces, 
+				or the attributes' more specific constructors. This article only aims to give a 
+				basic introduction to the serializer and attributes, and some links to further 
+				reading and helpful tools. However, one of the great things about this approach 
+				to working with XML, is that it takes very little work and you can benefit 
+				greatly from the basics alone. While a full exploration of the API is 
+				recommended, you can accomplish much with only a basic understanding. And with 
+				the use of tools such as Skeleton Crew, you need only the most basic 
+				understanding to put these techniques to use.</P>
+			<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Depending on your needs, there are several options 
+				available when working with XML. If you only need to read certain portions of 
+				your XML, using XPath queries with <CODE class="x">XmlNode.SelectNodes()</CODE> 
+				and <CODE class="x">XmlNode.SelectSingleNode()</CODE> is a reasonable option. 
+				But if you need to make your XML and code interchangeable, this is not a viable 
+				approach. To move from one to the other, both the code model and the XML 
+				structure must have the ability to represent the same information no matter how 
+				it's formatted. For this you have three options... If you do not have a 
+				specific XML structure that you need to adhere to, you can use the <CODE class="x">DataSet</CODE>'s
+				<CODE class="x">ReadXml()</CODE> and <CODE class="x">WriteXml()</CODE> methods. 
+				If you have a specific XML structure or an XML Schema that you need to 
+				represent in code, you can use the XSD.exe tool, though it has some unpleasant 
+				side effects. However, if you have a class hierarchy that you need to represent 
+				in XML you're only two options are to use the the serialization attributes 
+				and/or the <CODE class="x">XmlAttributeOverrides</CODE> class with the <CODE class="x">
+					XmlSerializer</CODE>. But keep in mind, that this last option can handle 
+				all of the previously mentioned scenarios. Actually, the XSD.exe tool uses this 
+				approach as well, it just generates the code from XML or XSD. The main problems 
+				with the XSD tool are the lack of customizability and the ugly code it 
+				produces.</P> <!--H2>About the Example Project</H2>
+<P>This article is a basic explaination of XML Serialization. The example is a small application, for cataloging game information, that uses the XML Serialization techniques described in this article to store it's information. XML Serialization is a great alternative to databases for many projects such as this that are small local applications. This example also shows some other interesting things such as using the <code class="x">AxWebBrowser</CODE> control, XSLT rendering, and pre-VS2005 menu painting. Plus it's a nice thing to have if you own a lot of games. :)</P-->
+			<H2>Using the XmlSerializer &amp; Serialization Attributes</H2>
+			<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;In discussing the <CODE class="x">XmlSerializer</CODE>
+				and the serializer attributes, we're talking about either modifying existing 
+				code to specify how it's data will be serialized, or creating new code to 
+				produce a specific XML structure. For the most part, this only entails 
+				attaching attributes to the public fields or properties of classes, and in some 
+				situations to the class itself. But before we dive into the attributes, let's 
+				talk a little about the <CODE class="x">XmlSerializer</CODE>...</P>
+			<H3>The XmlSerializer</H3>
+			<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Given XML, the <CODE class="x">XmlSerializer</CODE>
+				can produce a graph of objects that hold the same instance data. This is known 
+				as XML de-serialization. For this to work, the classes of the objects must be 
+				structured to fit the XML supplied, or the attributes in the <CODE class="x">System.Xml.Serialization</CODE>
+				namespace must be used to specify how the object's properties map to XML 
+				entities.</P>
+			<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;The <CODE class="x">XmlSerializer</CODE> can also 
+				produce XML when supplied with an instance of an Xml Serializable object. This 
+				is known as XML Serialization. The criteria that determine if an object or 
+				graph of objects are "Xml Serializable" are fairly simple...</P>
+			<P>
+				<UL>
+					<LI>
+						In theory, it would be possible to serialize an interface, but impossible to 
+						determine what concrete type to de-serialize to. Because of this, the <CODE class="x">
+							XmlSerializer</CODE>
+					cannot work directly with an interface reference.
+					<LI>
+						The <CODE class="x">XmlSerializer</CODE> can only work with the public fields 
+						on your types, and or the public properties that supply both <CODE class="x">get</CODE>
+						and <CODE class="x">set</CODE>
+					accessors.
+					<LI>
+					The types of the properties of the type to be serialized must follow the 
+					previous rules.
+					<LI>
+						Xml Serialization exceptions are notoriously hard to read at first glance, 
+						because they are almost always nested. Once you have a model built that you 
+						intend to use with Xml serialization, it pays to use a pre-compiler to verify 
+						the serializability of your classes. One such tool is listed at the end of this 
+						article in the <B>Links and Tools</B> section.
+					</LI>
+				</UL>
+			<P></P>
+			<H3>The Attributes</H3>
+			<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;With the use of the attributes in the <CODE class="x">System.Xml.Serialization</CODE>
+				namespace, you can in effect make your classes completely interchangeable with 
+				XML. The attributes basically allow you to specify if members of your class 
+				should be an attribute or an element or an array, and what those XML entities 
+				should be named in the XML.</P>
+			<H4>XmlRootAttribute</H4>
+			<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;The <CODE class="x">XmlRootAttribute</CODE> attribute 
+				tells the serializer that the class that this attribute is attached to is the 
+				document root node. It also allows you to specify what the root node is named 
+				despite the class name. For example, the <CODE class="x">RootClass</CODE> class 
+				is serialized to an <CODE class="x">XmlDocRoot</CODE> root node:</P>
+			<TABLE style="BORDER-RIGHT: #cccccc 1px solid; BORDER-TOP: #cccccc 1px solid; FONT-SIZE: 8pt; BORDER-LEFT: #cccccc 1px solid; BORDER-BOTTOM: #cccccc 1px solid; FONT-FAMILY: Courier New; BACKGROUND-COLOR: #eeeeee"> <!-- width="100%" -->
+				<TR>
+					<TD align="right"><PRE style="FONT-FAMILY: Courier New"><CODE class=x><SPAN style="COLOR: #aaaaaa">1
+2
+3
+4
+5
+6
+7
+8</SPAN></CODE></PRE>
+					</TD>
+					<TD style="FONT-SIZE: 2pt; BORDER-LEFT: #5f9ea0 1px dotted">&nbsp;</TD>
+					<TD><PRE><CODE><SPAN style="COLOR: #0000ff">using</SPAN> <SPAN style="COLOR: #000080">System</SPAN>;
+<SPAN style="COLOR: #0000ff">using</SPAN> <SPAN style="COLOR: #000080">System</SPAN><SPAN style="COLOR: #000080">.</SPAN>Xml<SPAN style="COLOR: #000080">.</SPAN>Serialization;
+
+<SPAN style="COLOR: #0000ff">namespace</SPAN> XmlEntities <SPAN style="COLOR: #000080">{</SPAN>
+    <SPAN style="COLOR: #000080">[</SPAN>XmlRoot<SPAN style="COLOR: #000080">(</SPAN><SPAN style="COLOR: #000080">"</SPAN>XmlDocRoot<SPAN style="COLOR: #000080">"</SPAN><SPAN style="COLOR: #000080">)</SPAN><SPAN style="COLOR: #000080">]</SPAN>
+    <SPAN style="COLOR: #0000ff">public</SPAN> <SPAN style="COLOR: #0000ff">class</SPAN> RootClass <SPAN style="COLOR: #000080">{</SPAN>
+    <SPAN style="COLOR: #000080">}</SPAN>
+<SPAN style="COLOR: #000080">}</SPAN></CODE></PRE>
+					</TD>
+				</TR>
+			</TABLE>
+			<P>Will serialize to something similar to this...</P>
+			<TABLE style="BORDER-RIGHT: #cccccc 1px solid; BORDER-TOP: #cccccc 1px solid; FONT-SIZE: 8pt; BORDER-LEFT: #cccccc 1px solid; BORDER-BOTTOM: #cccccc 1px solid; FONT-FAMILY: Courier New; BACKGROUND-COLOR: #eeeeee"> <!-- width="100%" -->
+				<TR>
+					<TD align="right"><PRE style="FONT-FAMILY: Courier New"><CODE><SPAN style="COLOR: #aaaaaa">1</SPAN></CODE></PRE>
+					</TD>
+					<TD style="FONT-SIZE: 2pt; BORDER-LEFT: #5f9ea0 1px dotted">&nbsp;</TD>
+					<TD><PRE><CODE><SPAN style="COLOR: #000080">&lt;</SPAN>XmlDocRoot <SPAN style="COLOR: #000080">/&gt;</SPAN></CODE></PRE>
+					</TD>
+				</TR>
+			</TABLE>
+			<H4>XmlElementAttribute</H4>
+			<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;The <CODE class="x">XmlElementAttribute</CODE> attributes 
+				allows you to specify that a member should be serialized as an element and what 
+				the element should be named. Simple data (<CODE class="x">int</CODE>, <CODE class="x">
+					string</CODE>, etc...) and complex data (objects with fields or properties) 
+				can be serialized to elements.</P>
+			<TABLE style="BORDER-RIGHT: #cccccc 1px solid; BORDER-TOP: #cccccc 1px solid; FONT-SIZE: 8pt; BORDER-LEFT: #cccccc 1px solid; BORDER-BOTTOM: #cccccc 1px solid; FONT-FAMILY: Courier New; BACKGROUND-COLOR: #eeeeee"> <!-- width="100%" -->
+				<TR>
+					<TD align="right"><PRE style="FONT-FAMILY: Courier New"><CODE><SPAN style="COLOR: #aaaaaa">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15</SPAN></CODE></PRE>
+					</TD>
+					<TD style="FONT-SIZE: 2pt; BORDER-LEFT: #5f9ea0 1px dotted">&nbsp;</TD>
+					<TD><PRE><CODE><SPAN style="COLOR: #0000ff">using</SPAN> <SPAN style="COLOR: #000080">System</SPAN>;
+<SPAN style="COLOR: #0000ff">using</SPAN> <SPAN style="COLOR: #000080">System</SPAN><SPAN style="COLOR: #000080">.</SPAN>Xml<SPAN style="COLOR: #000080">.</SPAN>Serialization;
+
+<SPAN style="COLOR: #0000ff">namespace</SPAN> XmlEntities <SPAN style="COLOR: #000080">{</SPAN>
+    <SPAN style="COLOR: #000080">[</SPAN>XmlRoot<SPAN style="COLOR: #000080">(</SPAN><SPAN style="COLOR: #000080">"</SPAN>XmlDocRoot<SPAN style="COLOR: #000080">"</SPAN><SPAN style="COLOR: #000080">)</SPAN><SPAN style="COLOR: #000080">]</SPAN>
+    <SPAN style="COLOR: #0000ff">public</SPAN> <SPAN style="COLOR: #0000ff">class</SPAN> RootClass <SPAN style="COLOR: #000080">{</SPAN>
+        <SPAN style="COLOR: #0000ff">private</SPAN> <SPAN style="COLOR: #0000ff">string</SPAN> element_description;
+
+        <SPAN style="COLOR: #000080">[</SPAN>XmlElement<SPAN style="COLOR: #000080">(</SPAN><SPAN style="COLOR: #000080">"</SPAN>Description<SPAN style="COLOR: #000080">"</SPAN><SPAN style="COLOR: #000080">)</SPAN><SPAN style="COLOR: #000080">]</SPAN>
+        <SPAN style="COLOR: #0000ff">public</SPAN> <SPAN style="COLOR: #0000ff">string</SPAN> Description <SPAN style="COLOR: #000080">{</SPAN>
+            <SPAN style="COLOR: #0000ff">get</SPAN> <SPAN style="COLOR: #000080">{</SPAN> <SPAN style="COLOR: #0000ff">return</SPAN> element_description; <SPAN style="COLOR: #000080">}</SPAN>
+            <SPAN style="COLOR: #0000ff">set</SPAN> <SPAN style="COLOR: #000080">{</SPAN> element_description <SPAN style="COLOR: #000080">=</SPAN> <SPAN style="COLOR: #0000ff">value</SPAN>; <SPAN style="COLOR: #000080">}</SPAN>
+        <SPAN style="COLOR: #000080">}</SPAN>
+    <SPAN style="COLOR: #000080">}</SPAN>
+<SPAN style="COLOR: #000080">}</SPAN></CODE></PRE>
+					</TD>
+				</TR>
+			</TABLE>
+			<P>Will serialize to something similar to this...</P>
+			<TABLE style="BORDER-RIGHT: #cccccc 1px solid; BORDER-TOP: #cccccc 1px solid; FONT-SIZE: 8pt; BORDER-LEFT: #cccccc 1px solid; BORDER-BOTTOM: #cccccc 1px solid; FONT-FAMILY: Courier New; BACKGROUND-COLOR: #eeeeee"> <!-- width="100%" -->
+				<TR>
+					<TD align="right"><PRE style="FONT-FAMILY: Courier New"><CODE><SPAN style="COLOR: #aaaaaa">1
+2
+3</SPAN></CODE></PRE>
+					</TD>
+					<TD style="FONT-SIZE: 2pt; BORDER-LEFT: #5f9ea0 1px dotted">&nbsp;</TD>
+					<TD><PRE><CODE><SPAN style="COLOR: #000080">&lt;</SPAN>XmlDocRoot<SPAN style="COLOR: #000080">&gt;</SPAN>
+    <SPAN style="COLOR: #000080">&lt;</SPAN>Description<SPAN style="COLOR: #000080">&gt;</SPAN>text<SPAN style="COLOR: #000080">&lt;/</SPAN>Description<SPAN style="COLOR: #000080">&gt;</SPAN>
+<SPAN style="COLOR: #000080">&lt;/</SPAN>XmlDocRoot<SPAN style="COLOR: #000080">&gt;</SPAN></CODE></PRE>
+					</TD>
+				</TR>
+			</TABLE>
+			<H4>XmlAttributeAttribute</H4>
+			<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;The <CODE class="x">XmlAttributeAttribute</CODE> attribute 
+				allows you to specify that a member should be serialized as an attribute and 
+				what that attribute should be named. Only simple data can be used as an 
+				attribute because an attribute can only represent a single value.</P>
+			<TABLE style="BORDER-RIGHT: #cccccc 1px solid; BORDER-TOP: #cccccc 1px solid; FONT-SIZE: 8pt; BORDER-LEFT: #cccccc 1px solid; BORDER-BOTTOM: #cccccc 1px solid; FONT-FAMILY: Courier New; BACKGROUND-COLOR: #eeeeee"> <!-- width="100%" -->
+				<TR>
+					<TD align="right"><PRE style="FONT-FAMILY: Courier New"><CODE><SPAN style="COLOR: #aaaaaa">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15</SPAN></CODE></PRE>
+					</TD>
+					<TD style="FONT-SIZE: 2pt; BORDER-LEFT: #5f9ea0 1px dotted">&nbsp;</TD>
+					<TD><PRE><CODE><SPAN style="COLOR: #0000ff">using</SPAN> <SPAN style="COLOR: #000080">System</SPAN>;
+<SPAN style="COLOR: #0000ff">using</SPAN> <SPAN style="COLOR: #000080">System</SPAN><SPAN style="COLOR: #000080">.</SPAN>Xml<SPAN style="COLOR: #000080">.</SPAN>Serialization;
+
+<SPAN style="COLOR: #0000ff">namespace</SPAN> XmlEntities <SPAN style="COLOR: #000080">{</SPAN>
+    <SPAN style="COLOR: #000080">[</SPAN>XmlRoot<SPAN style="COLOR: #000080">(</SPAN><SPAN style="COLOR: #000080">"</SPAN>XmlDocRoot<SPAN style="COLOR: #000080">"</SPAN><SPAN style="COLOR: #000080">)</SPAN><SPAN style="COLOR: #000080">]</SPAN>
+    <SPAN style="COLOR: #0000ff">public</SPAN> <SPAN style="COLOR: #0000ff">class</SPAN> RootClass <SPAN style="COLOR: #000080">{</SPAN>
+        <SPAN style="COLOR: #0000ff">private</SPAN> <SPAN style="COLOR: #0000ff">int</SPAN> attribute_id;
+
+        <SPAN style="COLOR: #000080">[</SPAN>XmlAttribute<SPAN style="COLOR: #000080">(</SPAN><SPAN style="COLOR: #000080">"</SPAN>id<SPAN style="COLOR: #000080">"</SPAN><SPAN style="COLOR: #000080">)</SPAN><SPAN style="COLOR: #000080">]</SPAN>
+        <SPAN style="COLOR: #0000ff">public</SPAN> <SPAN style="COLOR: #0000ff">int</SPAN> Id <SPAN style="COLOR: #000080">{</SPAN>
+            <SPAN style="COLOR: #0000ff">get</SPAN> <SPAN style="COLOR: #000080">{</SPAN> <SPAN style="COLOR: #0000ff">return</SPAN> attribute_id; <SPAN style="COLOR: #000080">}</SPAN>
+            <SPAN style="COLOR: #0000ff">set</SPAN> <SPAN style="COLOR: #000080">{</SPAN> attribute_id <SPAN style="COLOR: #000080">=</SPAN> <SPAN style="COLOR: #0000ff">value</SPAN>; <SPAN style="COLOR: #000080">}</SPAN>
+        <SPAN style="COLOR: #000080">}</SPAN>
+    <SPAN style="COLOR: #000080">}</SPAN>
+<SPAN style="COLOR: #000080">}</SPAN></CODE></PRE>
+					</TD>
+				</TR>
+			</TABLE>
+			<P>Will serialize to something similar to this...</P>
+			<TABLE style="BORDER-RIGHT: #cccccc 1px solid; BORDER-TOP: #cccccc 1px solid; FONT-SIZE: 8pt; BORDER-LEFT: #cccccc 1px solid; BORDER-BOTTOM: #cccccc 1px solid; FONT-FAMILY: Courier New; BACKGROUND-COLOR: #eeeeee"> <!-- width="100%" -->
+				<TR>
+					<TD align="right"><PRE style="FONT-FAMILY: Courier New"><CODE><SPAN style="COLOR: #aaaaaa">1</SPAN></CODE></PRE>
+					</TD>
+					<TD style="FONT-SIZE: 2pt; BORDER-LEFT: #5f9ea0 1px dotted">&nbsp;</TD>
+					<TD><PRE><CODE><SPAN style="COLOR: #000080">&lt;</SPAN>XmlDocRoot id<SPAN style="COLOR: #000080">=</SPAN><SPAN style="COLOR: #000080">"</SPAN>1<SPAN style="COLOR: #000080">"</SPAN> <SPAN style="COLOR: #000080">/&gt;</SPAN></CODE></PRE>
+					</TD>
+				</TR>
+			</TABLE>
+			<H4>XmlTextAttribute</H4>
+			<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Using the <CODE class="x">XmlTextAttribute</CODE> attribute 
+				specifies that the property it's attached to will be the text content of the 
+				parent node. This attribute can only be attached to one property of the class 
+				for obvious reasons.</P>
+			<TABLE style="BORDER-RIGHT: #cccccc 1px solid; BORDER-TOP: #cccccc 1px solid; FONT-SIZE: 8pt; BORDER-LEFT: #cccccc 1px solid; BORDER-BOTTOM: #cccccc 1px solid; FONT-FAMILY: Courier New; BACKGROUND-COLOR: #eeeeee"> <!-- width="100%" -->
+				<TR>
+					<TD align="right"><PRE style="FONT-FAMILY: Courier New"><CODE><SPAN style="COLOR: #aaaaaa">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32</SPAN></CODE></PRE>
+					</TD>
+					<TD style="FONT-SIZE: 2pt; BORDER-LEFT: #5f9ea0 1px dotted">&nbsp;</TD>
+					<TD><PRE><CODE><SPAN style="COLOR: #0000ff">using</SPAN> <SPAN style="COLOR: #000080">System</SPAN>;
+<SPAN style="COLOR: #0000ff">using</SPAN> <SPAN style="COLOR: #000080">System</SPAN><SPAN style="COLOR: #000080">.</SPAN>Xml<SPAN style="COLOR: #000080">.</SPAN>Serialization;
+
+<SPAN style="COLOR: #0000ff">namespace</SPAN> XmlEntities <SPAN style="COLOR: #000080">{</SPAN>
+    <SPAN style="COLOR: #000080">[</SPAN>XmlRoot<SPAN style="COLOR: #000080">(</SPAN><SPAN style="COLOR: #000080">"</SPAN>XmlDocRoot<SPAN style="COLOR: #000080">"</SPAN><SPAN style="COLOR: #000080">)</SPAN><SPAN style="COLOR: #000080">]</SPAN>
+    <SPAN style="COLOR: #0000ff">public</SPAN> <SPAN style="COLOR: #0000ff">class</SPAN> RootClass <SPAN style="COLOR: #000080">{</SPAN>
+        <SPAN style="COLOR: #0000ff">private</SPAN> Description element_description;
+
+        <SPAN style="COLOR: #000080">[</SPAN>XmlElement<SPAN style="COLOR: #000080">(</SPAN><SPAN style="COLOR: #000080">"</SPAN>Description<SPAN style="COLOR: #000080">"</SPAN><SPAN style="COLOR: #000080">)</SPAN><SPAN style="COLOR: #000080">]</SPAN>
+        <SPAN style="COLOR: #0000ff">public</SPAN> Description Description <SPAN style="COLOR: #000080">{</SPAN>
+            <SPAN style="COLOR: #0000ff">get</SPAN> <SPAN style="COLOR: #000080">{</SPAN> <SPAN style="COLOR: #0000ff">return</SPAN> element_description; <SPAN style="COLOR: #000080">}</SPAN>
+            <SPAN style="COLOR: #0000ff">set</SPAN> <SPAN style="COLOR: #000080">{</SPAN> element_description <SPAN style="COLOR: #000080">=</SPAN> <SPAN style="COLOR: #0000ff">value</SPAN>; <SPAN style="COLOR: #000080">}</SPAN>
+        <SPAN style="COLOR: #000080">}</SPAN>
+    <SPAN style="COLOR: #000080">}</SPAN>
+    
+    <SPAN style="COLOR: #0000ff">public</SPAN> <SPAN style="COLOR: #0000ff">class</SPAN> Description <SPAN style="COLOR: #000080">{</SPAN>
+        <SPAN style="COLOR: #0000ff">private</SPAN> <SPAN style="COLOR: #0000ff">int</SPAN> attribute_id;
+        <SPAN style="COLOR: #0000ff">private</SPAN> <SPAN style="COLOR: #0000ff">string</SPAN> element_text;
+
+        <SPAN style="COLOR: #000080">[</SPAN>XmlAttribute<SPAN style="COLOR: #000080">(</SPAN><SPAN style="COLOR: #000080">"</SPAN>id<SPAN style="COLOR: #000080">"</SPAN><SPAN style="COLOR: #000080">)</SPAN><SPAN style="COLOR: #000080">]</SPAN>
+        <SPAN style="COLOR: #0000ff">public</SPAN> <SPAN style="COLOR: #0000ff">int</SPAN> Id <SPAN style="COLOR: #000080">{</SPAN>
+            <SPAN style="COLOR: #0000ff">get</SPAN> <SPAN style="COLOR: #000080">{</SPAN> <SPAN style="COLOR: #0000ff">return</SPAN> attribute_id; <SPAN style="COLOR: #000080">}</SPAN>
+            <SPAN style="COLOR: #0000ff">set</SPAN> <SPAN style="COLOR: #000080">{</SPAN> attribute_id <SPAN style="COLOR: #000080">=</SPAN> <SPAN style="COLOR: #0000ff">value</SPAN>; <SPAN style="COLOR: #000080">}</SPAN>
+        <SPAN style="COLOR: #000080">}</SPAN>
+
+        <SPAN style="COLOR: #000080">[</SPAN>XmlText<SPAN style="COLOR: #000080">(</SPAN><SPAN style="COLOR: #000080">)</SPAN><SPAN style="COLOR: #000080">]</SPAN>
+        <SPAN style="COLOR: #0000ff">public</SPAN> <SPAN style="COLOR: #0000ff">string</SPAN> Text <SPAN style="COLOR: #000080">{</SPAN>
+            <SPAN style="COLOR: #0000ff">get</SPAN> <SPAN style="COLOR: #000080">{</SPAN> <SPAN style="COLOR: #0000ff">return</SPAN> element_text; <SPAN style="COLOR: #000080">}</SPAN>
+            <SPAN style="COLOR: #0000ff">set</SPAN> <SPAN style="COLOR: #000080">{</SPAN> element_text <SPAN style="COLOR: #000080">=</SPAN> <SPAN style="COLOR: #0000ff">value</SPAN>; <SPAN style="COLOR: #000080">}</SPAN>
+        <SPAN style="COLOR: #000080">}</SPAN>
+    <SPAN style="COLOR: #000080">}</SPAN>
+<SPAN style="COLOR: #000080">}</SPAN></CODE></PRE>
+					</TD>
+				</TR>
+			</TABLE>
+			<P>Will serialize to something similar to this...</P>
+			<TABLE style="BORDER-RIGHT: #cccccc 1px solid; BORDER-TOP: #cccccc 1px solid; FONT-SIZE: 8pt; BORDER-LEFT: #cccccc 1px solid; BORDER-BOTTOM: #cccccc 1px solid; FONT-FAMILY: Courier New; BACKGROUND-COLOR: #eeeeee"> <!-- width="100%" -->
+				<TR>
+					<TD align="right"><PRE style="FONT-FAMILY: Courier New"><CODE><SPAN style="COLOR: #aaaaaa">1
+2
+3</SPAN></CODE></PRE>
+					</TD>
+					<TD style="FONT-SIZE: 2pt; BORDER-LEFT: #5f9ea0 1px dotted">&nbsp;</TD>
+					<TD><PRE><CODE><SPAN style="COLOR: #000080">&lt;</SPAN>XmlDocRoot<SPAN style="COLOR: #000080">&gt;</SPAN>
+    <SPAN style="COLOR: #000080">&lt;</SPAN>Description id<SPAN style="COLOR: #000080">=</SPAN><SPAN style="COLOR: #000080">"</SPAN>1<SPAN style="COLOR: #000080">"</SPAN><SPAN style="COLOR: #000080">&gt;</SPAN>text<SPAN style="COLOR: #000080">&lt;/</SPAN>Description<SPAN style="COLOR: #000080">&gt;</SPAN>
+<SPAN style="COLOR: #000080">&lt;/</SPAN>XmlDocRoot<SPAN style="COLOR: #000080">&gt;</SPAN></CODE></PRE>
+					</TD>
+				</TR>
+			</TABLE>
+			<H4>XmlIgnoreAttribute</H4>
+			<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Any public member that you do not wish to 
+				serialize, or that cannot be serialized can be excluded from serialization by 
+				using the <CODE class="x">XmlIgnoreAttribute</CODE> on the member. By using 
+				this, you insure that the member will not be included in serialization or 
+				de-serialization.</P>
+			<TABLE style="BORDER-RIGHT: #cccccc 1px solid; BORDER-TOP: #cccccc 1px solid; FONT-SIZE: 8pt; BORDER-LEFT: #cccccc 1px solid; BORDER-BOTTOM: #cccccc 1px solid; FONT-FAMILY: Courier New; BACKGROUND-COLOR: #eeeeee"> <!-- width="100%" -->
+				<TR>
+					<TD align="right"><PRE style="FONT-FAMILY: Courier New"><CODE><SPAN style="COLOR: #aaaaaa">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15</SPAN></CODE></PRE>
+					</TD>
+					<TD style="FONT-SIZE: 2pt; BORDER-LEFT: #5f9ea0 1px dotted">&nbsp;</TD>
+					<TD><PRE><CODE><SPAN style="COLOR: #0000ff">using</SPAN> <SPAN style="COLOR: #000080">System</SPAN>;
+<SPAN style="COLOR: #0000ff">using</SPAN> <SPAN style="COLOR: #000080">System</SPAN><SPAN style="COLOR: #000080">.</SPAN>Xml<SPAN style="COLOR: #000080">.</SPAN>Serialization;
+
+<SPAN style="COLOR: #0000ff">namespace</SPAN> XmlEntities <SPAN style="COLOR: #000080">{</SPAN>
+    <SPAN style="COLOR: #000080">[</SPAN>XmlRoot<SPAN style="COLOR: #000080">(</SPAN><SPAN style="COLOR: #000080">"</SPAN>XmlDocRoot<SPAN style="COLOR: #000080">"</SPAN><SPAN style="COLOR: #000080">)</SPAN><SPAN style="COLOR: #000080">]</SPAN>
+    <SPAN style="COLOR: #0000ff">public</SPAN> <SPAN style="COLOR: #0000ff">class</SPAN> RootClass <SPAN style="COLOR: #000080">{</SPAN>
+        <SPAN style="COLOR: #0000ff">private</SPAN> <SPAN style="COLOR: #000080">System</SPAN><SPAN style="COLOR: #000080">.</SPAN>IO<SPAN style="COLOR: #000080">.</SPAN>Stream stream;
+
+        <SPAN style="COLOR: #000080">[</SPAN>XmlIgnore<SPAN style="COLOR: #000080">(</SPAN><SPAN style="COLOR: #000080">)</SPAN><SPAN style="COLOR: #000080">]</SPAN>
+        <SPAN style="COLOR: #0000ff">public</SPAN> <SPAN style="COLOR: #000080">System</SPAN><SPAN style="COLOR: #000080">.</SPAN>IO<SPAN style="COLOR: #000080">.</SPAN>Stream Stream <SPAN style="COLOR: #000080">{</SPAN>
+            <SPAN style="COLOR: #0000ff">get</SPAN> <SPAN style="COLOR: #000080">{</SPAN> <SPAN style="COLOR: #0000ff">return</SPAN> stream; <SPAN style="COLOR: #000080">}</SPAN>
+            <SPAN style="COLOR: #0000ff">set</SPAN> <SPAN style="COLOR: #000080">{</SPAN> stream <SPAN style="COLOR: #000080">=</SPAN> <SPAN style="COLOR: #0000ff">value</SPAN>; <SPAN style="COLOR: #000080">}</SPAN>
+        <SPAN style="COLOR: #000080">}</SPAN>
+    <SPAN style="COLOR: #000080">}</SPAN>
+<SPAN style="COLOR: #000080">}</SPAN></CODE></PRE>
+					</TD>
+				</TR>
+			</TABLE>
+			<H4>XmlArrayAttribute &amp; XmlArrayItemAttribute</H4>
+			<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;When serializing an array or collection, without 
+				the use of attributes, the default behaviour of the serializer is to append an 
+				element per member of the collection. The <CODE class="x">XmlArrayAttribute</CODE>
+				and <CODE class="x">XmlArrayItemAttribute</CODE> attributes allow you to alter 
+				this behaviour. The <CODE class="x">XmlArrayItemAttribute</CODE> attribute 
+				tells the serializer what the name and type of the elements of the collection 
+				should be. The <CODE class="x">XmlArrayAttribute</CODE> specifies a parent 
+				element for the collection elements.</P>
+			<TABLE style="BORDER-RIGHT: #cccccc 1px solid; BORDER-TOP: #cccccc 1px solid; FONT-SIZE: 8pt; BORDER-LEFT: #cccccc 1px solid; BORDER-BOTTOM: #cccccc 1px solid; FONT-FAMILY: Courier New; BACKGROUND-COLOR: #eeeeee"> <!-- width="100%" -->
+				<TR>
+					<TD align="right"><PRE style="FONT-FAMILY: Courier New"><CODE><SPAN style="COLOR: #aaaaaa">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16</SPAN></CODE></PRE>
+					</TD>
+					<TD style="FONT-SIZE: 2pt; BORDER-LEFT: #5f9ea0 1px dotted">&nbsp;</TD>
+					<TD><PRE><CODE><SPAN style="COLOR: #0000ff">using</SPAN> <SPAN style="COLOR: #000080">System</SPAN>;
+<SPAN style="COLOR: #0000ff">using</SPAN> <SPAN style="COLOR: #000080">System</SPAN><SPAN style="COLOR: #000080">.</SPAN>Xml<SPAN style="COLOR: #000080">.</SPAN>Serialization;
+
+<SPAN style="COLOR: #0000ff">namespace</SPAN> XmlEntities <SPAN style="COLOR: #000080">{</SPAN>
+    <SPAN style="COLOR: #000080">[</SPAN>XmlRoot<SPAN style="COLOR: #000080">(</SPAN><SPAN style="COLOR: #000080">"</SPAN>XmlDocRoot<SPAN style="COLOR: #000080">"</SPAN><SPAN style="COLOR: #000080">)</SPAN><SPAN style="COLOR: #000080">]</SPAN>
+    <SPAN style="COLOR: #0000ff">public</SPAN> <SPAN style="COLOR: #0000ff">class</SPAN> RootClass <SPAN style="COLOR: #000080">{</SPAN>
+        <SPAN style="COLOR: #0000ff">private</SPAN> <SPAN style="COLOR: #0000ff">string</SPAN><SPAN style="COLOR: #000080">[</SPAN><SPAN style="COLOR: #000080">]</SPAN> element_list;
+
+        <SPAN style="COLOR: #000080">[</SPAN>XmlArrayItem<SPAN style="COLOR: #000080">(</SPAN><SPAN style="COLOR: #000080">"</SPAN>ListItem<SPAN style="COLOR: #000080">"</SPAN><SPAN style="COLOR: #000080">,</SPAN> <SPAN style="COLOR: #0000ff">typeof</SPAN><SPAN style="COLOR: #000080">(</SPAN><SPAN style="COLOR: #0000ff">string</SPAN><SPAN style="COLOR: #000080">)</SPAN><SPAN style="COLOR: #000080">)</SPAN><SPAN style="COLOR: #000080">]</SPAN>
+        <SPAN style="COLOR: #000080">[</SPAN>XmlArray<SPAN style="COLOR: #000080">(</SPAN><SPAN style="COLOR: #000080">"</SPAN>List<SPAN style="COLOR: #000080">"</SPAN><SPAN style="COLOR: #000080">)</SPAN><SPAN style="COLOR: #000080">]</SPAN>
+        <SPAN style="COLOR: #0000ff">public</SPAN> <SPAN style="COLOR: #0000ff">string</SPAN><SPAN style="COLOR: #000080">[</SPAN><SPAN style="COLOR: #000080">]</SPAN> List <SPAN style="COLOR: #000080">{</SPAN>
+            <SPAN style="COLOR: #0000ff">get</SPAN> <SPAN style="COLOR: #000080">{</SPAN> <SPAN style="COLOR: #0000ff">return</SPAN> element_list; <SPAN style="COLOR: #000080">}</SPAN>
+            <SPAN style="COLOR: #0000ff">set</SPAN> <SPAN style="COLOR: #000080">{</SPAN> element_list <SPAN style="COLOR: #000080">=</SPAN> <SPAN style="COLOR: #0000ff">value</SPAN>; <SPAN style="COLOR: #000080">}</SPAN>
+        <SPAN style="COLOR: #000080">}</SPAN>
+    <SPAN style="COLOR: #000080">}</SPAN>
+<SPAN style="COLOR: #000080">}</SPAN></CODE></PRE>
+					</TD>
+				</TR>
+			</TABLE>
+			<P>Will serialize to something similar to this...</P>
+			<TABLE style="BORDER-RIGHT: #cccccc 1px solid; BORDER-TOP: #cccccc 1px solid; FONT-SIZE: 8pt; BORDER-LEFT: #cccccc 1px solid; BORDER-BOTTOM: #cccccc 1px solid; FONT-FAMILY: Courier New; BACKGROUND-COLOR: #eeeeee"> <!-- width="100%" -->
+				<TR>
+					<TD align="right"><PRE style="FONT-FAMILY: Courier New"><CODE><SPAN style="COLOR: #aaaaaa">1
+2
+3
+4
+5
+6</SPAN></CODE></PRE>
+					</TD>
+					<TD style="FONT-SIZE: 2pt; BORDER-LEFT: #5f9ea0 1px dotted">&nbsp;</TD>
+					<TD><PRE><CODE><SPAN style="COLOR: #000080">&lt;</SPAN>XmlDocRoot<SPAN style="COLOR: #000080">&gt;</SPAN>
+    <SPAN style="COLOR: #000080">&lt;</SPAN>List<SPAN style="COLOR: #000080">&gt;</SPAN>
+        <SPAN style="COLOR: #000080">&lt;</SPAN>ListItem<SPAN style="COLOR: #000080">&gt;</SPAN><SPAN style="COLOR: #0000ff">string</SPAN><SPAN style="COLOR: #000080">&lt;/</SPAN>ListItem<SPAN style="COLOR: #000080">&gt;</SPAN>
+        <SPAN style="COLOR: #000080">&lt;</SPAN>ListItem<SPAN style="COLOR: #000080">&gt;</SPAN><SPAN style="COLOR: #0000ff">string</SPAN><SPAN style="COLOR: #000080">&lt;/</SPAN>ListItem<SPAN style="COLOR: #000080">&gt;</SPAN>
+    <SPAN style="COLOR: #000080">&lt;/</SPAN>List<SPAN style="COLOR: #000080">&gt;</SPAN>
+<SPAN style="COLOR: #000080">&lt;/</SPAN>XmlDocRoot<SPAN style="COLOR: #000080">&gt;</SPAN></CODE></PRE>
+					</TD>
+				</TR>
+			</TABLE>
+			<H4>XmlIncludeAttribute</H4>
+			<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;The <CODE class="x">XmlIncludeAttribute</CODE> attribute 
+				tells the serializer what types can be expected to extend a base type. When 
+				serializing to XML, members of the type that this attribute is attached to will 
+				be serialized based on the concrete type of the instance the property 
+				references. When de-serializing from XML, the attributes give the serializer a 
+				finite list of types that the instance data could fit. In the following 
+				example, the <CODE class="x">XmlIncludeAttribute</CODE> lets the serializer 
+				know that wherever an AbstractLogger is referenced that it could be an instance 
+				of FileLogger, XmlLogger or DataLogger. Say we have a class that has a property 
+				of type AbstractLogger... During de-serialization the serializer will attempt 
+				to determine the type to de-serialize to based on the structure of the XML so 
+				that it can instantiate a concrete instance for the property. While 
+				serializing, if this property had an instance of FileLogger, the serializer 
+				will use the FileLogger class to determine how to serialize that property. The 
+				attributes just allow you to specify a finite list of the available types.</P>
+			<TABLE style="BORDER-RIGHT: #cccccc 1px solid; BORDER-TOP: #cccccc 1px solid; FONT-SIZE: 8pt; BORDER-LEFT: #cccccc 1px solid; BORDER-BOTTOM: #cccccc 1px solid; FONT-FAMILY: Courier New; BACKGROUND-COLOR: #eeeeee"> <!-- width="100%" -->
+				<TR>
+					<TD align="right"><PRE style="FONT-FAMILY: Courier New"><CODE><SPAN style="COLOR: #aaaaaa">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11</SPAN></CODE></PRE>
+					</TD>
+					<TD style="FONT-SIZE: 2pt; BORDER-LEFT: #5f9ea0 1px dotted">&nbsp;</TD>
+					<TD><PRE><CODE><SPAN style="COLOR: #0000ff">using</SPAN> <SPAN style="COLOR: #000080">System</SPAN>;
+<SPAN style="COLOR: #0000ff">using</SPAN> <SPAN style="COLOR: #000080">System</SPAN><SPAN style="COLOR: #000080">.</SPAN>Xml<SPAN style="COLOR: #000080">.</SPAN>Serialization;
+
+<SPAN style="COLOR: #0000ff">namespace</SPAN> XmlEntities <SPAN style="COLOR: #000080">{</SPAN>
+    <SPAN style="COLOR: #000080">[</SPAN>XmlInclude<SPAN style="COLOR: #000080">(</SPAN><SPAN style="COLOR: #0000ff">typeof</SPAN><SPAN style="COLOR: #000080">(</SPAN>FileLogger<SPAN style="COLOR: #000080">)</SPAN><SPAN style="COLOR: #000080">)</SPAN><SPAN style="COLOR: #000080">]</SPAN>
+    <SPAN style="COLOR: #000080">[</SPAN>XmlInclude<SPAN style="COLOR: #000080">(</SPAN><SPAN style="COLOR: #0000ff">typeof</SPAN><SPAN style="COLOR: #000080">(</SPAN>XmlLogger<SPAN style="COLOR: #000080">)</SPAN><SPAN style="COLOR: #000080">)</SPAN><SPAN style="COLOR: #000080">]</SPAN>
+    <SPAN style="COLOR: #000080">[</SPAN>XmlInclude<SPAN style="COLOR: #000080">(</SPAN><SPAN style="COLOR: #0000ff">typeof</SPAN><SPAN style="COLOR: #000080">(</SPAN>DataLogger<SPAN style="COLOR: #000080">)</SPAN><SPAN style="COLOR: #000080">)</SPAN><SPAN style="COLOR: #000080">]</SPAN>
+    <SPAN style="COLOR: #0000ff">public</SPAN> <SPAN style="COLOR: #0000ff">abstract</SPAN> <SPAN style="COLOR: #0000ff">class</SPAN> AbstractLogger <SPAN style="COLOR: #000080">:</SPAN> ILogger <SPAN style="COLOR: #000080">{</SPAN>
+        <SPAN style="COLOR: #0000ff">public</SPAN> <SPAN style="COLOR: #0000ff">abstract</SPAN> <SPAN style="COLOR: #0000ff">void</SPAN> Log<SPAN style="COLOR: #000080">(</SPAN>ILog log<SPAN style="COLOR: #000080">)</SPAN>;
+    <SPAN style="COLOR: #000080">}</SPAN>
+<SPAN style="COLOR: #000080">}</SPAN></CODE></PRE>
+					</TD>
+				</TR>
+			</TABLE>
+			<H3>Using the XmlSerializer</H3>
+			<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Now we can talk about using the <CODE class="x">XmlSerializer</CODE>
+				to convert from XML to objects and visa versa... The following example class <CODE class="x">
+					RootClassSerializer</CODE> is an example of how to use the <CODE class="x">XmlSerializer</CODE>
+				class to read XML to objects and write objects to XML. This example was 
+				generated using <A href="../SkeletonCrew/">Skeleton Crew</A>. A generic 
+				implementation is easy enough to produce, but if you need to support XML 
+				namespaces, the <CODE class="x">XmlSerializer</CODE> will need them explicitly 
+				declared. In any event, the following is just an example of how to use the <CODE class="x">
+					XmlSerializer</CODE>.</P>
+			<TABLE style="BORDER-RIGHT: #cccccc 1px solid; BORDER-TOP: #cccccc 1px solid; FONT-SIZE: 8pt; BORDER-LEFT: #cccccc 1px solid; BORDER-BOTTOM: #cccccc 1px solid; FONT-FAMILY: Courier New; BACKGROUND-COLOR: #eeeeee"> <!-- width="100%" -->
+				<TR>
+					<TD align="right"><PRE style="FONT-FAMILY: Courier New"><CODE><SPAN style="COLOR: #aaaaaa">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40
+41
+42
+43
+44
+45
+46
+47
+48
+49
+50
+51
+52
+53
+54
+55
+56
+57
+58
+59
+60
+61
+62
+63
+64
+65
+66
+67
+68
+69
+70
+71
+72
+73
+74
+75
+76
+77
+78
+79
+80
+81
+82
+83</SPAN></CODE></PRE>
+					</TD>
+					<TD style="FONT-SIZE: 2pt; BORDER-LEFT: #5f9ea0 1px dotted">&nbsp;</TD>
+					<TD><PRE><CODE><SPAN style="COLOR: #0000ff">using</SPAN> <SPAN style="COLOR: #000080">System</SPAN>;
+<SPAN style="COLOR: #0000ff">using</SPAN> <SPAN style="COLOR: #000080">System</SPAN><SPAN style="COLOR: #000080">.</SPAN>IO;
+<SPAN style="COLOR: #0000ff">using</SPAN> <SPAN style="COLOR: #000080">System</SPAN><SPAN style="COLOR: #000080">.</SPAN>Xml;
+<SPAN style="COLOR: #0000ff">using</SPAN> <SPAN style="COLOR: #000080">System</SPAN><SPAN style="COLOR: #000080">.</SPAN>Xml<SPAN style="COLOR: #000080">.</SPAN>Serialization;
+
+<SPAN style="COLOR: #0000ff">namespace</SPAN> XmlEntities <SPAN style="COLOR: #000080">{</SPAN>
+    <SPAN style="COLOR: #0000ff">public</SPAN> <SPAN style="COLOR: #0000ff">class</SPAN> RootClassSerializer <SPAN style="COLOR: #000080">{</SPAN>
+        <SPAN style="COLOR: #0000ff">private</SPAN> XmlSerializer s <SPAN style="COLOR: #000080">=</SPAN> <SPAN style="COLOR: #0000ff">null</SPAN>;
+        <SPAN style="COLOR: #0000ff">private</SPAN> Type type <SPAN style="COLOR: #000080">=</SPAN> <SPAN style="COLOR: #0000ff">null</SPAN>;
+
+        <SPAN style="COLOR: #0000ff">public</SPAN> RootClassSerializer<SPAN style="COLOR: #000080">(</SPAN><SPAN style="COLOR: #000080">)</SPAN> <SPAN style="COLOR: #000080">{</SPAN>
+            <SPAN style="COLOR: #0000ff">this</SPAN><SPAN style="COLOR: #000080">.</SPAN>type <SPAN style="COLOR: #000080">=</SPAN> <SPAN style="COLOR: #0000ff">typeof</SPAN><SPAN style="COLOR: #000080">(</SPAN>RootClass<SPAN style="COLOR: #000080">)</SPAN>;
+            <SPAN style="COLOR: #0000ff">this</SPAN><SPAN style="COLOR: #000080">.</SPAN>s <SPAN style="COLOR: #000080">=</SPAN> <SPAN style="COLOR: #0000ff">new</SPAN> XmlSerializer<SPAN style="COLOR: #000080">(</SPAN><SPAN style="COLOR: #0000ff">this</SPAN><SPAN style="COLOR: #000080">.</SPAN>type<SPAN style="COLOR: #000080">)</SPAN>;
+        <SPAN style="COLOR: #000080">}</SPAN>
+
+        <SPAN style="COLOR: #0000ff">public</SPAN> RootClass Deserialize<SPAN style="COLOR: #000080">(</SPAN><SPAN style="COLOR: #0000ff">string</SPAN> xml<SPAN style="COLOR: #000080">)</SPAN> <SPAN style="COLOR: #000080">{</SPAN>
+            TextReader reader <SPAN style="COLOR: #000080">=</SPAN> <SPAN style="COLOR: #0000ff">new</SPAN> StringReader<SPAN style="COLOR: #000080">(</SPAN>xml<SPAN style="COLOR: #000080">)</SPAN>;
+            <SPAN style="COLOR: #0000ff">return</SPAN> Deserialize<SPAN style="COLOR: #000080">(</SPAN>reader<SPAN style="COLOR: #000080">)</SPAN>;
+        <SPAN style="COLOR: #000080">}</SPAN>
+
+        <SPAN style="COLOR: #0000ff">public</SPAN> RootClass Deserialize<SPAN style="COLOR: #000080">(</SPAN>XmlDocument doc<SPAN style="COLOR: #000080">)</SPAN> <SPAN style="COLOR: #000080">{</SPAN>
+            TextReader reader <SPAN style="COLOR: #000080">=</SPAN> <SPAN style="COLOR: #0000ff">new</SPAN> StringReader<SPAN style="COLOR: #000080">(</SPAN>doc<SPAN style="COLOR: #000080">.</SPAN>OuterXml<SPAN style="COLOR: #000080">)</SPAN>;
+            <SPAN style="COLOR: #0000ff">return</SPAN> Deserialize<SPAN style="COLOR: #000080">(</SPAN>reader<SPAN style="COLOR: #000080">)</SPAN>;
+        <SPAN style="COLOR: #000080">}</SPAN>
+
+        <SPAN style="COLOR: #0000ff">public</SPAN> RootClass Deserialize<SPAN style="COLOR: #000080">(</SPAN>TextReader reader<SPAN style="COLOR: #000080">)</SPAN> <SPAN style="COLOR: #000080">{</SPAN>
+            RootClass o <SPAN style="COLOR: #000080">=</SPAN> <SPAN style="COLOR: #000080">(</SPAN>RootClass<SPAN style="COLOR: #000080">)</SPAN>s<SPAN style="COLOR: #000080">.</SPAN>Deserialize<SPAN style="COLOR: #000080">(</SPAN>reader<SPAN style="COLOR: #000080">)</SPAN>;
+            reader<SPAN style="COLOR: #000080">.</SPAN>Close<SPAN style="COLOR: #000080">(</SPAN><SPAN style="COLOR: #000080">)</SPAN>;
+            <SPAN style="COLOR: #0000ff">return</SPAN> o;
+        <SPAN style="COLOR: #000080">}</SPAN>
+
+        <SPAN style="COLOR: #0000ff">public</SPAN> XmlDocument Serialize<SPAN style="COLOR: #000080">(</SPAN>RootClass rootclass<SPAN style="COLOR: #000080">)</SPAN> <SPAN style="COLOR: #000080">{</SPAN>
+            <SPAN style="COLOR: #0000ff">string</SPAN> xml <SPAN style="COLOR: #000080">=</SPAN> StringSerialize<SPAN style="COLOR: #000080">(</SPAN>rootclass<SPAN style="COLOR: #000080">)</SPAN>;
+            XmlDocument doc <SPAN style="COLOR: #000080">=</SPAN> <SPAN style="COLOR: #0000ff">new</SPAN> XmlDocument<SPAN style="COLOR: #000080">(</SPAN><SPAN style="COLOR: #000080">)</SPAN>;
+            doc<SPAN style="COLOR: #000080">.</SPAN>PreserveWhitespace <SPAN style="COLOR: #000080">=</SPAN> <SPAN style="COLOR: #0000ff">true</SPAN>;
+            doc<SPAN style="COLOR: #000080">.</SPAN>LoadXml<SPAN style="COLOR: #000080">(</SPAN>xml<SPAN style="COLOR: #000080">)</SPAN>;
+            <SPAN style="COLOR: #0000ff">return</SPAN> doc;
+        <SPAN style="COLOR: #000080">}</SPAN>
+
+        <SPAN style="COLOR: #0000ff">private</SPAN> <SPAN style="COLOR: #0000ff">string</SPAN> StringSerialize<SPAN style="COLOR: #000080">(</SPAN>RootClass rootclass<SPAN style="COLOR: #000080">)</SPAN> <SPAN style="COLOR: #000080">{</SPAN>
+            TextWriter w <SPAN style="COLOR: #000080">=</SPAN> WriterSerialize<SPAN style="COLOR: #000080">(</SPAN>rootclass<SPAN style="COLOR: #000080">)</SPAN>;
+            <SPAN style="COLOR: #0000ff">string</SPAN> xml <SPAN style="COLOR: #000080">=</SPAN> w<SPAN style="COLOR: #000080">.</SPAN>ToString<SPAN style="COLOR: #000080">(</SPAN><SPAN style="COLOR: #000080">)</SPAN>;
+            w<SPAN style="COLOR: #000080">.</SPAN>Close<SPAN style="COLOR: #000080">(</SPAN><SPAN style="COLOR: #000080">)</SPAN>;
+            <SPAN style="COLOR: #0000ff">return</SPAN> xml<SPAN style="COLOR: #000080">.</SPAN>Trim<SPAN style="COLOR: #000080">(</SPAN><SPAN style="COLOR: #000080">)</SPAN>;
+        <SPAN style="COLOR: #000080">}</SPAN>
+
+        <SPAN style="COLOR: #0000ff">private</SPAN> TextWriter WriterSerialize<SPAN style="COLOR: #000080">(</SPAN>RootClass rootclass<SPAN style="COLOR: #000080">)</SPAN> <SPAN style="COLOR: #000080">{</SPAN>
+            TextWriter w <SPAN style="COLOR: #000080">=</SPAN> <SPAN style="COLOR: #0000ff">new</SPAN> StringWriter<SPAN style="COLOR: #000080">(</SPAN><SPAN style="COLOR: #000080">)</SPAN>;
+            <SPAN style="COLOR: #0000ff">this</SPAN><SPAN style="COLOR: #000080">.</SPAN>s <SPAN style="COLOR: #000080">=</SPAN> <SPAN style="COLOR: #0000ff">new</SPAN> XmlSerializer<SPAN style="COLOR: #000080">(</SPAN><SPAN style="COLOR: #0000ff">this</SPAN><SPAN style="COLOR: #000080">.</SPAN>type<SPAN style="COLOR: #000080">)</SPAN>;
+            s<SPAN style="COLOR: #000080">.</SPAN>Serialize<SPAN style="COLOR: #000080">(</SPAN>w<SPAN style="COLOR: #000080">,</SPAN> rootclass<SPAN style="COLOR: #000080">)</SPAN>;
+            w<SPAN style="COLOR: #000080">.</SPAN>Flush<SPAN style="COLOR: #000080">(</SPAN><SPAN style="COLOR: #000080">)</SPAN>;
+            <SPAN style="COLOR: #0000ff">return</SPAN> w;
+        <SPAN style="COLOR: #000080">}</SPAN>
+
+        <SPAN style="COLOR: #0000ff">public</SPAN> <SPAN style="COLOR: #0000ff">static</SPAN> RootClass ReadFile<SPAN style="COLOR: #000080">(</SPAN><SPAN style="COLOR: #0000ff">string</SPAN> file<SPAN style="COLOR: #000080">)</SPAN> <SPAN style="COLOR: #000080">{</SPAN>
+            RootClassSerializer serializer <SPAN style="COLOR: #000080">=</SPAN> <SPAN style="COLOR: #0000ff">new</SPAN> RootClassSerializer<SPAN style="COLOR: #000080">(</SPAN><SPAN style="COLOR: #000080">)</SPAN>;
+            <SPAN style="COLOR: #0000ff">try</SPAN> <SPAN style="COLOR: #000080">{</SPAN>
+                <SPAN style="COLOR: #0000ff">string</SPAN> xml <SPAN style="COLOR: #000080">=</SPAN> <SPAN style="COLOR: #0000ff">string</SPAN><SPAN style="COLOR: #000080">.</SPAN>Empty;
+                <SPAN style="COLOR: #0000ff">using</SPAN> <SPAN style="COLOR: #000080">(</SPAN>StreamReader reader <SPAN style="COLOR: #000080">=</SPAN> <SPAN style="COLOR: #0000ff">new</SPAN> StreamReader<SPAN style="COLOR: #000080">(</SPAN>file<SPAN style="COLOR: #000080">)</SPAN><SPAN style="COLOR: #000080">)</SPAN> <SPAN style="COLOR: #000080">{</SPAN>
+                    xml <SPAN style="COLOR: #000080">=</SPAN> reader<SPAN style="COLOR: #000080">.</SPAN>ReadToEnd<SPAN style="COLOR: #000080">(</SPAN><SPAN style="COLOR: #000080">)</SPAN>;
+                    reader<SPAN style="COLOR: #000080">.</SPAN>Close<SPAN style="COLOR: #000080">(</SPAN><SPAN style="COLOR: #000080">)</SPAN>;
+                <SPAN style="COLOR: #000080">}</SPAN>
+                <SPAN style="COLOR: #0000ff">return</SPAN> serializer<SPAN style="COLOR: #000080">.</SPAN>Deserialize<SPAN style="COLOR: #000080">(</SPAN>xml<SPAN style="COLOR: #000080">)</SPAN>;
+            <SPAN style="COLOR: #000080">}</SPAN> <SPAN style="COLOR: #0000ff">catch</SPAN> <SPAN style="COLOR: #000080">{</SPAN><SPAN style="COLOR: #000080">}</SPAN>
+            <SPAN style="COLOR: #0000ff">return</SPAN> <SPAN style="COLOR: #0000ff">new</SPAN> RootClass<SPAN style="COLOR: #000080">(</SPAN><SPAN style="COLOR: #000080">)</SPAN>;
+        <SPAN style="COLOR: #000080">}</SPAN>
+
+        <SPAN style="COLOR: #0000ff">public</SPAN> <SPAN style="COLOR: #0000ff">static</SPAN> <SPAN style="COLOR: #0000ff">bool</SPAN> WriteFile<SPAN style="COLOR: #000080">(</SPAN><SPAN style="COLOR: #0000ff">string</SPAN> file<SPAN style="COLOR: #000080">,</SPAN> RootClass config<SPAN style="COLOR: #000080">)</SPAN> <SPAN style="COLOR: #000080">{</SPAN>
+            <SPAN style="COLOR: #0000ff">bool</SPAN> ok <SPAN style="COLOR: #000080">=</SPAN> <SPAN style="COLOR: #0000ff">false</SPAN>;
+            RootClassSerializer serializer <SPAN style="COLOR: #000080">=</SPAN> <SPAN style="COLOR: #0000ff">new</SPAN> RootClassSerializer<SPAN style="COLOR: #000080">(</SPAN><SPAN style="COLOR: #000080">)</SPAN>;
+            <SPAN style="COLOR: #0000ff">try</SPAN> <SPAN style="COLOR: #000080">{</SPAN>
+                <SPAN style="COLOR: #0000ff">string</SPAN> xml <SPAN style="COLOR: #000080">=</SPAN> serializer<SPAN style="COLOR: #000080">.</SPAN>Serialize<SPAN style="COLOR: #000080">(</SPAN>config<SPAN style="COLOR: #000080">)</SPAN><SPAN style="COLOR: #000080">.</SPAN>OuterXml;
+                <SPAN style="COLOR: #0000ff">using</SPAN> <SPAN style="COLOR: #000080">(</SPAN>StreamWriter writer <SPAN style="COLOR: #000080">=</SPAN> <SPAN style="COLOR: #0000ff">new</SPAN> StreamWriter<SPAN style="COLOR: #000080">(</SPAN>file<SPAN style="COLOR: #000080">,</SPAN> <SPAN style="COLOR: #0000ff">false</SPAN><SPAN style="COLOR: #000080">)</SPAN><SPAN style="COLOR: #000080">)</SPAN> <SPAN style="COLOR: #000080">{</SPAN>
+                    writer<SPAN style="COLOR: #000080">.</SPAN>Write<SPAN style="COLOR: #000080">(</SPAN>xml<SPAN style="COLOR: #000080">.</SPAN>Trim<SPAN style="COLOR: #000080">(</SPAN><SPAN style="COLOR: #000080">)</SPAN><SPAN style="COLOR: #000080">)</SPAN>;
+                    writer<SPAN style="COLOR: #000080">.</SPAN>Flush<SPAN style="COLOR: #000080">(</SPAN><SPAN style="COLOR: #000080">)</SPAN>;
+                    writer<SPAN style="COLOR: #000080">.</SPAN>Close<SPAN style="COLOR: #000080">(</SPAN><SPAN style="COLOR: #000080">)</SPAN>;
+                <SPAN style="COLOR: #000080">}</SPAN>
+                ok <SPAN style="COLOR: #000080">=</SPAN> <SPAN style="COLOR: #0000ff">true</SPAN>;
+            <SPAN style="COLOR: #000080">}</SPAN> <SPAN style="COLOR: #0000ff">catch</SPAN> <SPAN style="COLOR: #000080">{</SPAN><SPAN style="COLOR: #000080">}</SPAN>
+            <SPAN style="COLOR: #0000ff">return</SPAN> ok;
+        <SPAN style="COLOR: #000080">}</SPAN>
+    <SPAN style="COLOR: #000080">}</SPAN>
+<SPAN style="COLOR: #000080">}</SPAN></CODE></PRE>
+					</TD>
+				</TR>
+			</TABLE>
+			<H2>Conclusion</H2>
+			<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;The thing to take away from this discussion, is 
+				that using this approach to working with XML is extremely quick, easy and 
+				effective. It takes very little work to setup existing models for 
+				serialization, there are great tools for building models that are serializable, 
+				and you don't have to write copious amounts of code to see if a node exists and 
+				if it has data and if it has the right kind of data and if you can cast that 
+				data to a usable type and blah... I'm getting a headache just thinking about 
+				it. And if you're not working with XML, maybe you should start, it has a lot to 
+				offer.</P>
+			<H2>Links and Tools</H2>
+			<UL>
+				<LI>
+					<A href="http://www.topxml.com/xmlserializer/default.asp">Top XML</A>
+				has an excellent article on the XmlSerializer.
+				<LI>
+					<A href="http://www.sellsbrothers.com/tools/#XmlSerializerPreCompiler">Sells 
+						Brothers XML Pre-Compiler</A> is a good tool for testing the 
+					serializability of a class or model that can tell you why a class isn't 
+					serializable.
+				</LI>
+			</UL>
+			<P>Tools that can help you write XML Attributes
+				<TABLE>
+					<TR>
+						<TD vAlign="top"><A href="../SkeletonCrew/"><IMG src="../Resources/SkeletonCrew.gif" border="0"><BR>Professional<BR>Edition</A></TD>
+						<TD vAlign="top"><A href="../XmlModeler/"><IMG src="../Resources/XML.Net.gif" border="0"></A></TD>
+					</TR>
+				</TABLE>
+			</P>
+		
+	</div>
+</div>
+
+			<br><br><br><br>
+			<table align="center" valign="bottom"><tr>
+				<td align="center"><a id="PageBody1_SC_Link" class="map" href="../SkeletonCrew/">Skeleton Crew</a><!--a href="SkeletonCrew/" class="map">Skeleton Crew</a--></td>
+				<td align="center">-</td>
+				<td align="center"><a id="PageBody1_SCPE_Link" class="map" href="../PseudoNet/">Skeleton Crew PE</a><!--a href="PseudoNet/" class="map">Skeleton Crew PE</a--></td>
+				<td align="center">-</td>
+				<td align="center"><a id="PageBody1_SCXE_Link" class="map" href="../XmlModeler/">Skeleton Crew XE</a><!--a href="XmlModeler/" class="map">Skeleton Crew XE</a--></td>
+				<td align="center">-</td>
+				<td align="center"><a id="PageBody1_RXP_Link" class="map" href="../RegeXPath/">RegeXPath</a><!--a href="RegeXPath/" class="map">RegeXPath</a--></td>
+			</tr></table>
+			<table align="center" valign="bottom"><tr>
+				<td align="center"><a id="PageBody1_Home_Link" class="map" href="../Default.aspx">Home</a><!--a href="Default.aspx" class="map">Home</a--></td>
+				<td align="center">-</td>
+				<td align="center"><a id="PageBody1_Company_Link" class="map" href="../About.aspx">Company</a><!--a href="About.aspx" class="map">Company</a--></td>
+				<td align="center">-</td>
+				<td align="center"><a id="PageBody1_Products_Link" class="map" href="../Products.aspx">Products</a><!--a href="Products.aspx" class="map">Products</a--></td>
+				<td align="center">-</td>
+				<td align="center"><a id="PageBody1_Services_Link" class="map" href="../Services.aspx">Services</a><!--a href="Services.aspx" class="map">Services</a--></td>
+				<td align="center">-</td>
+				<td align="center"><a id="PageBody1_Projects_Link" class="map" href="../Projects.aspx">Projects</a><!--a href="Projects.aspx" class="map">Projects</a--></td>
+				<td align="center">-</td>
+				<td align="center"><a id="PageBody1_Contact_Link" class="map" href="../Contact.aspx">Contact</a><!--a href="Contact.aspx" class="map">Contact</a--></td>
+				<td align="center">-</td>
+				<td align="center"><a id="PageBody1_Download_Link" class="map" href="../Download.aspx">Downloads</a><!--a href="Download.aspx" class="map">Downloads</a--></td>
+				<td align="center">-</td>
+				<td align="center"><a id="PageBody1_SiteMap_Link" class="map" href="../SiteMap.aspx">Site Map</a><!--a href="SiteMap.aspx" class="map">Site Map</a--></td>
+			</tr></table>
+
+		</td>
+	</tr>
+</table>
+
+		
+	</body>
+</HTML>

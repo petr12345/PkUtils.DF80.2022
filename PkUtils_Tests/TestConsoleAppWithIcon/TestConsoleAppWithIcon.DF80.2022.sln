@@ -1,0 +1,27 @@
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.4.33205.214
+MinimumVisualStudioVersion = 16.0.0
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TestConsoleAppWithIcon.DF80.2022", "TestConsoleAppWithIcon.DF80.2022.csproj", "{63F3241D-8F84-4B86-B7CC-88DA8E277453}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PkUtils.DF80.2022", "..\..\PkUtils\PkUtils.DF80.2022.csproj", "{CCE84AB7-E1DC-4BCB-A419-6F9C5463229B}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{63F3241D-8F84-4B86-B7CC-88DA8E277453}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{63F3241D-8F84-4B86-B7CC-88DA8E277453}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{63F3241D-8F84-4B86-B7CC-88DA8E277453}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{63F3241D-8F84-4B86-B7CC-88DA8E277453}.Release|Any CPU.Build.0 = Release|Any CPU
+		{CCE84AB7-E1DC-4BCB-A419-6F9C5463229B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CCE84AB7-E1DC-4BCB-A419-6F9C5463229B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CCE84AB7-E1DC-4BCB-A419-6F9C5463229B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CCE84AB7-E1DC-4BCB-A419-6F9C5463229B}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal

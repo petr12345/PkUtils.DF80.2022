@@ -1,0 +1,673 @@
+<html>
+
+<head>
+<meta http-equiv=Content-Type content="text/html; charset=windows-1252">
+<meta name=Generator content="Microsoft Word 12 (filtered)">
+<style>
+<!--
+ /* Font Definitions */
+ @font-face
+	{font-family:"Cambria Math";
+	panose-1:2 4 5 3 5 4 6 3 2 4;}
+ /* Style Definitions */
+ p.MsoNormal, li.MsoNormal, div.MsoNormal
+	{margin:0in;
+	margin-bottom:.0001pt;
+	font-size:12.0pt;
+	font-family:"Times New Roman","serif";}
+p
+	{margin-right:0in;
+	margin-left:0in;
+	font-size:12.0pt;
+	font-family:"Times New Roman","serif";}
+code
+	{font-family:"Courier New";}
+span.z-TopofFormChar
+	{mso-style-name:"z-Top of Form Char";
+	mso-style-link:"z-Top of Form";
+	font-family:"Arial","sans-serif";
+	display:none;}
+.MsoChpDefault
+	{font-size:10.0pt;}
+@page Section1
+	{size:8.5in 11.0in;
+	margin:1.0in 1.25in 1.0in 1.25in;}
+div.Section1
+	{page:Section1;}
+ /* List Definitions */
+ ol
+	{margin-bottom:0in;}
+ul
+	{margin-bottom:0in;}
+-->
+</style>
+
+</head>
+
+<body lang=EN-US>
+
+<div class=Section1>
+
+<div style='border:solid #E3E3E3 1.0pt;padding:0in 0in 0in 0in'>
+
+<p style='margin-top:0in;margin-right:0in;margin-bottom:15.0pt;margin-left:
+0in;border:none;padding:0in'><strong>TestPropertyGridCustomCollectionEditor
+Overview:</strong></p>
+
+<p style='margin-top:15.0pt;margin-right:0in;margin-bottom:15.0pt;margin-left:
+0in;border:none;padding:0in;box-sizing: border-box;--tw-border-spacing-x: 0;
+--tw-border-spacing-y: 0;--tw-translate-x: 0;--tw-translate-y: 0;--tw-rotate: 0;
+--tw-skew-x: 0;--tw-skew-y: 0;--tw-scale-x: 1;--tw-scale-y: 1;--tw-pan-x: ;
+--tw-pan-y: ;--tw-pinch-zoom: ;--tw-scroll-snap-strictness: proximity;
+--tw-gradient-from-position: ;--tw-gradient-via-position: ;--tw-gradient-to-position: ;
+--tw-ordinal: ;--tw-slashed-zero: ;--tw-numeric-figure: ;--tw-numeric-spacing: ;
+--tw-numeric-fraction: ;--tw-ring-inset: ;--tw-ring-offset-width: 0px;
+--tw-ring-offset-color: #fff;--tw-ring-color: rgba(69,89,164,.5);--tw-ring-offset-shadow: 0 0 transparent;
+--tw-ring-shadow: 0 0 transparent;--tw-shadow: 0 0 transparent;--tw-shadow-colored: 0 0 transparent;
+--tw-blur: ;--tw-brightness: ;--tw-contrast: ;--tw-grayscale: ;--tw-hue-rotate: ;
+--tw-invert: ;--tw-saturate: ;--tw-sepia: ;--tw-drop-shadow: ;--tw-backdrop-blur: ;
+--tw-backdrop-brightness: ;--tw-backdrop-contrast: ;--tw-backdrop-grayscale: ;
+--tw-backdrop-hue-rotate: ;--tw-backdrop-invert: ;--tw-backdrop-opacity: ;
+--tw-backdrop-saturate: ;--tw-backdrop-sepia: ;--tw-contain-size: ;--tw-contain-layout: ;
+--tw-contain-paint: ;--tw-contain-style: '>The
+TestPropertyGridCustomCollectionEditor project demonstrates the implementation
+of custom validation and behavior for collections edited within a <code
+style='box-sizing: border-box;--tw-border-spacing-x: 0;--tw-border-spacing-y: 0;
+--tw-translate-x: 0;--tw-translate-y: 0;--tw-rotate: 0;--tw-skew-x: 0;
+--tw-skew-y: 0;--tw-scale-x: 1;--tw-scale-y: 1;--tw-pan-x: ;--tw-pan-y: ;
+--tw-pinch-zoom: ;--tw-scroll-snap-strictness: proximity;--tw-gradient-from-position: ;
+--tw-gradient-via-position: ;--tw-gradient-to-position: ;--tw-ordinal: ;
+--tw-slashed-zero: ;--tw-numeric-figure: ;--tw-numeric-spacing: ;--tw-numeric-fraction: ;
+--tw-ring-inset: ;--tw-ring-offset-width: 0px;--tw-ring-offset-color: #fff;
+--tw-ring-color: rgba(69,89,164,.5);--tw-ring-offset-shadow: 0 0 transparent;
+--tw-ring-shadow: 0 0 transparent;--tw-shadow: 0 0 transparent;--tw-shadow-colored: 0 0 transparent;
+--tw-blur: ;--tw-brightness: ;--tw-contrast: ;--tw-grayscale: ;--tw-hue-rotate: ;
+--tw-invert: ;--tw-saturate: ;--tw-sepia: ;--tw-drop-shadow: ;--tw-backdrop-blur: ;
+--tw-backdrop-brightness: ;--tw-backdrop-contrast: ;--tw-backdrop-grayscale: ;
+--tw-backdrop-hue-rotate: ;--tw-backdrop-invert: ;--tw-backdrop-opacity: ;
+--tw-backdrop-saturate: ;--tw-backdrop-sepia: ;--tw-contain-size: ;--tw-contain-layout: ;
+--tw-contain-paint: ;--tw-contain-style: ;font-feature-settings: normal;
+font-variation-settings: normal;color:var(--tw-prose-code)'><b><span
+style='font-size:10.5pt'>PropertyGrid</span></b></code> in a C# WinForms
+application. This project includes two distinct components:</p>
+
+</div>
+
+<div style='border:solid #E3E3E3 1.0pt;padding:0in 0in 0in 5.0pt'>
+
+<p style='margin-top:0in;margin-right:0in;margin-bottom:0in;margin-left:.25in;
+margin-bottom:.0001pt;text-indent:-.25in;border:none;padding:0in;box-sizing: border-box;
+--tw-border-spacing-x: 0;--tw-border-spacing-y: 0;--tw-translate-x: 0;
+--tw-translate-y: 0;--tw-rotate: 0;--tw-skew-x: 0;--tw-skew-y: 0;--tw-scale-x: 1;
+--tw-scale-y: 1;--tw-pan-x: ;--tw-pan-y: ;--tw-pinch-zoom: ;--tw-scroll-snap-strictness: proximity;
+--tw-gradient-from-position: ;--tw-gradient-via-position: ;--tw-gradient-to-position: ;
+--tw-ordinal: ;--tw-slashed-zero: ;--tw-numeric-figure: ;--tw-numeric-spacing: ;
+--tw-numeric-fraction: ;--tw-ring-inset: ;--tw-ring-offset-width: 0px;
+--tw-ring-offset-color: #fff;--tw-ring-color: rgba(69,89,164,.5);--tw-ring-offset-shadow: 0 0 transparent;
+--tw-ring-shadow: 0 0 transparent;--tw-shadow: 0 0 transparent;--tw-shadow-colored: 0 0 transparent;
+--tw-blur: ;--tw-brightness: ;--tw-contrast: ;--tw-grayscale: ;--tw-hue-rotate: ;
+--tw-invert: ;--tw-saturate: ;--tw-sepia: ;--tw-drop-shadow: ;--tw-backdrop-blur: ;
+--tw-backdrop-brightness: ;--tw-backdrop-contrast: ;--tw-backdrop-grayscale: ;
+--tw-backdrop-hue-rotate: ;--tw-backdrop-invert: ;--tw-backdrop-opacity: ;
+--tw-backdrop-saturate: ;--tw-backdrop-sepia: ;--tw-contain-size: ;--tw-contain-layout: ;
+--tw-contain-paint: ;--tw-contain-style: '>1.<span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span><strong style='box-sizing: border-box;--tw-border-spacing-x: 0;
+--tw-border-spacing-y: 0;--tw-translate-x: 0;--tw-translate-y: 0;--tw-rotate: 0;
+--tw-skew-x: 0;--tw-skew-y: 0;--tw-scale-x: 1;--tw-scale-y: 1;--tw-pan-x: ;
+--tw-pan-y: ;--tw-pinch-zoom: ;--tw-scroll-snap-strictness: proximity;
+--tw-gradient-from-position: ;--tw-gradient-via-position: ;--tw-gradient-to-position: ;
+--tw-ordinal: ;--tw-slashed-zero: ;--tw-numeric-figure: ;--tw-numeric-spacing: ;
+--tw-numeric-fraction: ;--tw-ring-inset: ;--tw-ring-offset-width: 0px;
+--tw-ring-offset-color: #fff;--tw-ring-color: rgba(69,89,164,.5);--tw-ring-offset-shadow: 0 0 transparent;
+--tw-ring-shadow: 0 0 transparent;--tw-shadow: 0 0 transparent;--tw-shadow-colored: 0 0 transparent;
+--tw-blur: ;--tw-brightness: ;--tw-contrast: ;--tw-grayscale: ;--tw-hue-rotate: ;
+--tw-invert: ;--tw-saturate: ;--tw-sepia: ;--tw-drop-shadow: ;--tw-backdrop-blur: ;
+--tw-backdrop-brightness: ;--tw-backdrop-contrast: ;--tw-backdrop-grayscale: ;
+--tw-backdrop-hue-rotate: ;--tw-backdrop-invert: ;--tw-backdrop-opacity: ;
+--tw-backdrop-saturate: ;--tw-backdrop-sepia: ;--tw-contain-size: ;--tw-contain-layout: ;
+--tw-contain-paint: ;--tw-contain-style: ;color:var(--tw-prose-bold)'>CustomCollectionEditor</strong>:</p>
+
+</div>
+
+<div style='border:solid #E3E3E3 1.0pt;padding:0in 0in 0in 0in;margin-left:
+.25in;margin-right:0in'>
+
+<p class=MsoNormal style='margin-left:.25in;text-indent:-.25in;border:none;
+padding:0in'><span style='font-size:10.0pt;font-family:Symbol'>·<span
+style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span><code style='box-sizing: border-box;--tw-border-spacing-x: 0;
+--tw-border-spacing-y: 0;--tw-translate-x: 0;--tw-translate-y: 0;--tw-rotate: 0;
+--tw-skew-x: 0;--tw-skew-y: 0;--tw-scale-x: 1;--tw-scale-y: 1;--tw-pan-x: ;
+--tw-pan-y: ;--tw-pinch-zoom: ;--tw-scroll-snap-strictness: proximity;
+--tw-gradient-from-position: ;--tw-gradient-via-position: ;--tw-gradient-to-position: ;
+--tw-ordinal: ;--tw-slashed-zero: ;--tw-numeric-figure: ;--tw-numeric-spacing: ;
+--tw-numeric-fraction: ;--tw-ring-inset: ;--tw-ring-offset-width: 0px;
+--tw-ring-offset-color: #fff;--tw-ring-color: rgba(69,89,164,.5);--tw-ring-offset-shadow: 0 0 transparent;
+--tw-ring-shadow: 0 0 transparent;--tw-shadow: 0 0 transparent;--tw-shadow-colored: 0 0 transparent;
+--tw-blur: ;--tw-brightness: ;--tw-contrast: ;--tw-grayscale: ;--tw-hue-rotate: ;
+--tw-invert: ;--tw-saturate: ;--tw-sepia: ;--tw-drop-shadow: ;--tw-backdrop-blur: ;
+--tw-backdrop-brightness: ;--tw-backdrop-contrast: ;--tw-backdrop-grayscale: ;
+--tw-backdrop-hue-rotate: ;--tw-backdrop-invert: ;--tw-backdrop-opacity: ;
+--tw-backdrop-saturate: ;--tw-backdrop-sepia: ;--tw-contain-size: ;--tw-contain-layout: ;
+--tw-contain-paint: ;--tw-contain-style: ;font-feature-settings: normal;
+font-variation-settings: normal;color:var(--tw-prose-code)'><b><span
+style='font-size:10.5pt'>CustomCollectionEditor</span></b></code> is a
+specialized class derived from <code style='box-sizing: border-box;--tw-border-spacing-x: 0;
+--tw-border-spacing-y: 0;--tw-translate-x: 0;--tw-translate-y: 0;--tw-rotate: 0;
+--tw-skew-x: 0;--tw-skew-y: 0;--tw-scale-x: 1;--tw-scale-y: 1;--tw-pan-x: ;
+--tw-pan-y: ;--tw-pinch-zoom: ;--tw-scroll-snap-strictness: proximity;
+--tw-gradient-from-position: ;--tw-gradient-via-position: ;--tw-gradient-to-position: ;
+--tw-ordinal: ;--tw-slashed-zero: ;--tw-numeric-figure: ;--tw-numeric-spacing: ;
+--tw-numeric-fraction: ;--tw-ring-inset: ;--tw-ring-offset-width: 0px;
+--tw-ring-offset-color: #fff;--tw-ring-color: rgba(69,89,164,.5);--tw-ring-offset-shadow: 0 0 transparent;
+--tw-ring-shadow: 0 0 transparent;--tw-shadow: 0 0 transparent;--tw-shadow-colored: 0 0 transparent;
+--tw-blur: ;--tw-brightness: ;--tw-contrast: ;--tw-grayscale: ;--tw-hue-rotate: ;
+--tw-invert: ;--tw-saturate: ;--tw-sepia: ;--tw-drop-shadow: ;--tw-backdrop-blur: ;
+--tw-backdrop-brightness: ;--tw-backdrop-contrast: ;--tw-backdrop-grayscale: ;
+--tw-backdrop-hue-rotate: ;--tw-backdrop-invert: ;--tw-backdrop-opacity: ;
+--tw-backdrop-saturate: ;--tw-backdrop-sepia: ;--tw-contain-size: ;--tw-contain-layout: ;
+--tw-contain-paint: ;--tw-contain-style: ;font-feature-settings: normal;
+font-variation-settings: normal;color:var(--tw-prose-code)'><b><span
+style='font-size:10.5pt'>CollectionEditor</span></b></code>, designed to
+provide custom editing capabilities and validation logic for collections
+displayed in a <code style='box-sizing: border-box;--tw-border-spacing-x: 0;
+--tw-border-spacing-y: 0;--tw-translate-x: 0;--tw-translate-y: 0;--tw-rotate: 0;
+--tw-skew-x: 0;--tw-skew-y: 0;--tw-scale-x: 1;--tw-scale-y: 1;--tw-pan-x: ;
+--tw-pan-y: ;--tw-pinch-zoom: ;--tw-scroll-snap-strictness: proximity;
+--tw-gradient-from-position: ;--tw-gradient-via-position: ;--tw-gradient-to-position: ;
+--tw-ordinal: ;--tw-slashed-zero: ;--tw-numeric-figure: ;--tw-numeric-spacing: ;
+--tw-numeric-fraction: ;--tw-ring-inset: ;--tw-ring-offset-width: 0px;
+--tw-ring-offset-color: #fff;--tw-ring-color: rgba(69,89,164,.5);--tw-ring-offset-shadow: 0 0 transparent;
+--tw-ring-shadow: 0 0 transparent;--tw-shadow: 0 0 transparent;--tw-shadow-colored: 0 0 transparent;
+--tw-blur: ;--tw-brightness: ;--tw-contrast: ;--tw-grayscale: ;--tw-hue-rotate: ;
+--tw-invert: ;--tw-saturate: ;--tw-sepia: ;--tw-drop-shadow: ;--tw-backdrop-blur: ;
+--tw-backdrop-brightness: ;--tw-backdrop-contrast: ;--tw-backdrop-grayscale: ;
+--tw-backdrop-hue-rotate: ;--tw-backdrop-invert: ;--tw-backdrop-opacity: ;
+--tw-backdrop-saturate: ;--tw-backdrop-sepia: ;--tw-contain-size: ;--tw-contain-layout: ;
+--tw-contain-paint: ;--tw-contain-style: ;font-feature-settings: normal;
+font-variation-settings: normal;color:var(--tw-prose-code)'><b><span
+style='font-size:10.5pt'>PropertyGrid</span></b></code>.</p>
+
+<p class=MsoNormal style='margin-left:.25in;text-indent:-.25in;border:none;
+padding:0in'><span style='font-size:10.0pt;font-family:Symbol'>·<span
+style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span>You can inherit from <code style='box-sizing: border-box;
+--tw-border-spacing-x: 0;--tw-border-spacing-y: 0;--tw-translate-x: 0;
+--tw-translate-y: 0;--tw-rotate: 0;--tw-skew-x: 0;--tw-skew-y: 0;--tw-scale-x: 1;
+--tw-scale-y: 1;--tw-pan-x: ;--tw-pan-y: ;--tw-pinch-zoom: ;--tw-scroll-snap-strictness: proximity;
+--tw-gradient-from-position: ;--tw-gradient-via-position: ;--tw-gradient-to-position: ;
+--tw-ordinal: ;--tw-slashed-zero: ;--tw-numeric-figure: ;--tw-numeric-spacing: ;
+--tw-numeric-fraction: ;--tw-ring-inset: ;--tw-ring-offset-width: 0px;
+--tw-ring-offset-color: #fff;--tw-ring-color: rgba(69,89,164,.5);--tw-ring-offset-shadow: 0 0 transparent;
+--tw-ring-shadow: 0 0 transparent;--tw-shadow: 0 0 transparent;--tw-shadow-colored: 0 0 transparent;
+--tw-blur: ;--tw-brightness: ;--tw-contrast: ;--tw-grayscale: ;--tw-hue-rotate: ;
+--tw-invert: ;--tw-saturate: ;--tw-sepia: ;--tw-drop-shadow: ;--tw-backdrop-blur: ;
+--tw-backdrop-brightness: ;--tw-backdrop-contrast: ;--tw-backdrop-grayscale: ;
+--tw-backdrop-hue-rotate: ;--tw-backdrop-invert: ;--tw-backdrop-opacity: ;
+--tw-backdrop-saturate: ;--tw-backdrop-sepia: ;--tw-contain-size: ;--tw-contain-layout: ;
+--tw-contain-paint: ;--tw-contain-style: ;font-feature-settings: normal;
+font-variation-settings: normal;color:var(--tw-prose-code)'><b><span
+style='font-size:10.5pt'>CustomCollectionEditor&lt;T&gt;</span></b></code> to
+create tailored editors for specific collection types, enabling validation of
+collection items upon closing the editor.</p>
+
+</div>
+
+<div style='border:solid #E3E3E3 1.0pt;padding:0in 0in 0in 5.0pt'>
+
+<p style='margin-top:0in;margin-right:0in;margin-bottom:0in;margin-left:.25in;
+margin-bottom:.0001pt;text-indent:-.25in;border:none;padding:0in;box-sizing: border-box;
+--tw-border-spacing-x: 0;--tw-border-spacing-y: 0;--tw-translate-x: 0;
+--tw-translate-y: 0;--tw-rotate: 0;--tw-skew-x: 0;--tw-skew-y: 0;--tw-scale-x: 1;
+--tw-scale-y: 1;--tw-pan-x: ;--tw-pan-y: ;--tw-pinch-zoom: ;--tw-scroll-snap-strictness: proximity;
+--tw-gradient-from-position: ;--tw-gradient-via-position: ;--tw-gradient-to-position: ;
+--tw-ordinal: ;--tw-slashed-zero: ;--tw-numeric-figure: ;--tw-numeric-spacing: ;
+--tw-numeric-fraction: ;--tw-ring-inset: ;--tw-ring-offset-width: 0px;
+--tw-ring-offset-color: #fff;--tw-ring-color: rgba(69,89,164,.5);--tw-ring-offset-shadow: 0 0 transparent;
+--tw-ring-shadow: 0 0 transparent;--tw-shadow: 0 0 transparent;--tw-shadow-colored: 0 0 transparent;
+--tw-blur: ;--tw-brightness: ;--tw-contrast: ;--tw-grayscale: ;--tw-hue-rotate: ;
+--tw-invert: ;--tw-saturate: ;--tw-sepia: ;--tw-drop-shadow: ;--tw-backdrop-blur: ;
+--tw-backdrop-brightness: ;--tw-backdrop-contrast: ;--tw-backdrop-grayscale: ;
+--tw-backdrop-hue-rotate: ;--tw-backdrop-invert: ;--tw-backdrop-opacity: ;
+--tw-backdrop-saturate: ;--tw-backdrop-sepia: ;--tw-contain-size: ;--tw-contain-layout: ;
+--tw-contain-paint: ;--tw-contain-style: '>2.<span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span><strong style='box-sizing: border-box;--tw-border-spacing-x: 0;
+--tw-border-spacing-y: 0;--tw-translate-x: 0;--tw-translate-y: 0;--tw-rotate: 0;
+--tw-skew-x: 0;--tw-skew-y: 0;--tw-scale-x: 1;--tw-scale-y: 1;--tw-pan-x: ;
+--tw-pan-y: ;--tw-pinch-zoom: ;--tw-scroll-snap-strictness: proximity;
+--tw-gradient-from-position: ;--tw-gradient-via-position: ;--tw-gradient-to-position: ;
+--tw-ordinal: ;--tw-slashed-zero: ;--tw-numeric-figure: ;--tw-numeric-spacing: ;
+--tw-numeric-fraction: ;--tw-ring-inset: ;--tw-ring-offset-width: 0px;
+--tw-ring-offset-color: #fff;--tw-ring-color: rgba(69,89,164,.5);--tw-ring-offset-shadow: 0 0 transparent;
+--tw-ring-shadow: 0 0 transparent;--tw-shadow: 0 0 transparent;--tw-shadow-colored: 0 0 transparent;
+--tw-blur: ;--tw-brightness: ;--tw-contrast: ;--tw-grayscale: ;--tw-hue-rotate: ;
+--tw-invert: ;--tw-saturate: ;--tw-sepia: ;--tw-drop-shadow: ;--tw-backdrop-blur: ;
+--tw-backdrop-brightness: ;--tw-backdrop-contrast: ;--tw-backdrop-grayscale: ;
+--tw-backdrop-hue-rotate: ;--tw-backdrop-invert: ;--tw-backdrop-opacity: ;
+--tw-backdrop-saturate: ;--tw-backdrop-sepia: ;--tw-contain-size: ;--tw-contain-layout: ;
+--tw-contain-paint: ;--tw-contain-style: ;color:var(--tw-prose-bold)'>CollectionEditorObserver</strong>:</p>
+
+</div>
+
+<div style='border:solid #E3E3E3 1.0pt;padding:0in 0in 0in 0in;margin-left:
+.25in;margin-right:0in'>
+
+<p class=MsoNormal style='margin-left:.25in;text-indent:-.25in;border:none;
+padding:0in'><span style='font-size:10.0pt;font-family:Symbol'>·<span
+style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span><code style='box-sizing: border-box;--tw-border-spacing-x: 0;
+--tw-border-spacing-y: 0;--tw-translate-x: 0;--tw-translate-y: 0;--tw-rotate: 0;
+--tw-skew-x: 0;--tw-skew-y: 0;--tw-scale-x: 1;--tw-scale-y: 1;--tw-pan-x: ;
+--tw-pan-y: ;--tw-pinch-zoom: ;--tw-scroll-snap-strictness: proximity;
+--tw-gradient-from-position: ;--tw-gradient-via-position: ;--tw-gradient-to-position: ;
+--tw-ordinal: ;--tw-slashed-zero: ;--tw-numeric-figure: ;--tw-numeric-spacing: ;
+--tw-numeric-fraction: ;--tw-ring-inset: ;--tw-ring-offset-width: 0px;
+--tw-ring-offset-color: #fff;--tw-ring-color: rgba(69,89,164,.5);--tw-ring-offset-shadow: 0 0 transparent;
+--tw-ring-shadow: 0 0 transparent;--tw-shadow: 0 0 transparent;--tw-shadow-colored: 0 0 transparent;
+--tw-blur: ;--tw-brightness: ;--tw-contrast: ;--tw-grayscale: ;--tw-hue-rotate: ;
+--tw-invert: ;--tw-saturate: ;--tw-sepia: ;--tw-drop-shadow: ;--tw-backdrop-blur: ;
+--tw-backdrop-brightness: ;--tw-backdrop-contrast: ;--tw-backdrop-grayscale: ;
+--tw-backdrop-hue-rotate: ;--tw-backdrop-invert: ;--tw-backdrop-opacity: ;
+--tw-backdrop-saturate: ;--tw-backdrop-sepia: ;--tw-contain-size: ;--tw-contain-layout: ;
+--tw-contain-paint: ;--tw-contain-style: ;font-feature-settings: normal;
+font-variation-settings: normal;color:var(--tw-prose-code)'><b><span
+style='font-size:10.5pt'>CollectionEditorObserver</span></b></code> is a
+system-level hook implemented using Win32 APIs (<code style='box-sizing: border-box;
+--tw-border-spacing-x: 0;--tw-border-spacing-y: 0;--tw-translate-x: 0;
+--tw-translate-y: 0;--tw-rotate: 0;--tw-skew-x: 0;--tw-skew-y: 0;--tw-scale-x: 1;
+--tw-scale-y: 1;--tw-pan-x: ;--tw-pan-y: ;--tw-pinch-zoom: ;--tw-scroll-snap-strictness: proximity;
+--tw-gradient-from-position: ;--tw-gradient-via-position: ;--tw-gradient-to-position: ;
+--tw-ordinal: ;--tw-slashed-zero: ;--tw-numeric-figure: ;--tw-numeric-spacing: ;
+--tw-numeric-fraction: ;--tw-ring-inset: ;--tw-ring-offset-width: 0px;
+--tw-ring-offset-color: #fff;--tw-ring-color: rgba(69,89,164,.5);--tw-ring-offset-shadow: 0 0 transparent;
+--tw-ring-shadow: 0 0 transparent;--tw-shadow: 0 0 transparent;--tw-shadow-colored: 0 0 transparent;
+--tw-blur: ;--tw-brightness: ;--tw-contrast: ;--tw-grayscale: ;--tw-hue-rotate: ;
+--tw-invert: ;--tw-saturate: ;--tw-sepia: ;--tw-drop-shadow: ;--tw-backdrop-blur: ;
+--tw-backdrop-brightness: ;--tw-backdrop-contrast: ;--tw-backdrop-grayscale: ;
+--tw-backdrop-hue-rotate: ;--tw-backdrop-invert: ;--tw-backdrop-opacity: ;
+--tw-backdrop-saturate: ;--tw-backdrop-sepia: ;--tw-contain-size: ;--tw-contain-layout: ;
+--tw-contain-paint: ;--tw-contain-style: ;font-feature-settings: normal;
+font-variation-settings: normal;color:var(--tw-prose-code)'><b><span
+style='font-size:10.5pt'>WH_CALLWNDPROCRET</span></b></code>). <br>
+It does not function as a traditional collection editor but serves the same
+purpose by intercepting events related to the creation and activation of <code
+style='box-sizing: border-box;--tw-border-spacing-x: 0;--tw-border-spacing-y: 0;
+--tw-translate-x: 0;--tw-translate-y: 0;--tw-rotate: 0;--tw-skew-x: 0;
+--tw-skew-y: 0;--tw-scale-x: 1;--tw-scale-y: 1;--tw-pan-x: ;--tw-pan-y: ;
+--tw-pinch-zoom: ;--tw-scroll-snap-strictness: proximity;--tw-gradient-from-position: ;
+--tw-gradient-via-position: ;--tw-gradient-to-position: ;--tw-ordinal: ;
+--tw-slashed-zero: ;--tw-numeric-figure: ;--tw-numeric-spacing: ;--tw-numeric-fraction: ;
+--tw-ring-inset: ;--tw-ring-offset-width: 0px;--tw-ring-offset-color: #fff;
+--tw-ring-color: rgba(69,89,164,.5);--tw-ring-offset-shadow: 0 0 transparent;
+--tw-ring-shadow: 0 0 transparent;--tw-shadow: 0 0 transparent;--tw-shadow-colored: 0 0 transparent;
+--tw-blur: ;--tw-brightness: ;--tw-contrast: ;--tw-grayscale: ;--tw-hue-rotate: ;
+--tw-invert: ;--tw-saturate: ;--tw-sepia: ;--tw-drop-shadow: ;--tw-backdrop-blur: ;
+--tw-backdrop-brightness: ;--tw-backdrop-contrast: ;--tw-backdrop-grayscale: ;
+--tw-backdrop-hue-rotate: ;--tw-backdrop-invert: ;--tw-backdrop-opacity: ;
+--tw-backdrop-saturate: ;--tw-backdrop-sepia: ;--tw-contain-size: ;--tw-contain-layout: ;
+--tw-contain-paint: ;--tw-contain-style: ;font-feature-settings: normal;
+font-variation-settings: normal;color:var(--tw-prose-code)'><b><span
+style='font-size:10.5pt'>CollectionForm</span></b></code> instances.</p>
+
+<p class=MsoNormal style='margin-left:.25in;text-indent:-.25in;border:none;
+padding:0in'><span style='font-size:10.0pt;font-family:Symbol'>·<span
+style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span>The primary goal of <code style='box-sizing: border-box;
+--tw-border-spacing-x: 0;--tw-border-spacing-y: 0;--tw-translate-x: 0;
+--tw-translate-y: 0;--tw-rotate: 0;--tw-skew-x: 0;--tw-skew-y: 0;--tw-scale-x: 1;
+--tw-scale-y: 1;--tw-pan-x: ;--tw-pan-y: ;--tw-pinch-zoom: ;--tw-scroll-snap-strictness: proximity;
+--tw-gradient-from-position: ;--tw-gradient-via-position: ;--tw-gradient-to-position: ;
+--tw-ordinal: ;--tw-slashed-zero: ;--tw-numeric-figure: ;--tw-numeric-spacing: ;
+--tw-numeric-fraction: ;--tw-ring-inset: ;--tw-ring-offset-width: 0px;
+--tw-ring-offset-color: #fff;--tw-ring-color: rgba(69,89,164,.5);--tw-ring-offset-shadow: 0 0 transparent;
+--tw-ring-shadow: 0 0 transparent;--tw-shadow: 0 0 transparent;--tw-shadow-colored: 0 0 transparent;
+--tw-blur: ;--tw-brightness: ;--tw-contrast: ;--tw-grayscale: ;--tw-hue-rotate: ;
+--tw-invert: ;--tw-saturate: ;--tw-sepia: ;--tw-drop-shadow: ;--tw-backdrop-blur: ;
+--tw-backdrop-brightness: ;--tw-backdrop-contrast: ;--tw-backdrop-grayscale: ;
+--tw-backdrop-hue-rotate: ;--tw-backdrop-invert: ;--tw-backdrop-opacity: ;
+--tw-backdrop-saturate: ;--tw-backdrop-sepia: ;--tw-contain-size: ;--tw-contain-layout: ;
+--tw-contain-paint: ;--tw-contain-style: ;font-feature-settings: normal;
+font-variation-settings: normal;color:var(--tw-prose-code)'><b><span
+style='font-size:10.5pt'>CollectionEditorObserver</span></b></code> is to
+facilitate validation and customization of collections edited within <code
+style='box-sizing: border-box;--tw-border-spacing-x: 0;--tw-border-spacing-y: 0;
+--tw-translate-x: 0;--tw-translate-y: 0;--tw-rotate: 0;--tw-skew-x: 0;
+--tw-skew-y: 0;--tw-scale-x: 1;--tw-scale-y: 1;--tw-pan-x: ;--tw-pan-y: ;
+--tw-pinch-zoom: ;--tw-scroll-snap-strictness: proximity;--tw-gradient-from-position: ;
+--tw-gradient-via-position: ;--tw-gradient-to-position: ;--tw-ordinal: ;
+--tw-slashed-zero: ;--tw-numeric-figure: ;--tw-numeric-spacing: ;--tw-numeric-fraction: ;
+--tw-ring-inset: ;--tw-ring-offset-width: 0px;--tw-ring-offset-color: #fff;
+--tw-ring-color: rgba(69,89,164,.5);--tw-ring-offset-shadow: 0 0 transparent;
+--tw-ring-shadow: 0 0 transparent;--tw-shadow: 0 0 transparent;--tw-shadow-colored: 0 0 transparent;
+--tw-blur: ;--tw-brightness: ;--tw-contrast: ;--tw-grayscale: ;--tw-hue-rotate: ;
+--tw-invert: ;--tw-saturate: ;--tw-sepia: ;--tw-drop-shadow: ;--tw-backdrop-blur: ;
+--tw-backdrop-brightness: ;--tw-backdrop-contrast: ;--tw-backdrop-grayscale: ;
+--tw-backdrop-hue-rotate: ;--tw-backdrop-invert: ;--tw-backdrop-opacity: ;
+--tw-backdrop-saturate: ;--tw-backdrop-sepia: ;--tw-contain-size: ;--tw-contain-layout: ;
+--tw-contain-paint: ;--tw-contain-style: ;font-feature-settings: normal;
+font-variation-settings: normal;color:var(--tw-prose-code)'><b><span
+style='font-size:10.5pt'>CollectionForm</span></b></code> instances, offering
+an alternative approach to achieving validation in the <code style='box-sizing: border-box;
+--tw-border-spacing-x: 0;--tw-border-spacing-y: 0;--tw-translate-x: 0;
+--tw-translate-y: 0;--tw-rotate: 0;--tw-skew-x: 0;--tw-skew-y: 0;--tw-scale-x: 1;
+--tw-scale-y: 1;--tw-pan-x: ;--tw-pan-y: ;--tw-pinch-zoom: ;--tw-scroll-snap-strictness: proximity;
+--tw-gradient-from-position: ;--tw-gradient-via-position: ;--tw-gradient-to-position: ;
+--tw-ordinal: ;--tw-slashed-zero: ;--tw-numeric-figure: ;--tw-numeric-spacing: ;
+--tw-numeric-fraction: ;--tw-ring-inset: ;--tw-ring-offset-width: 0px;
+--tw-ring-offset-color: #fff;--tw-ring-color: rgba(69,89,164,.5);--tw-ring-offset-shadow: 0 0 transparent;
+--tw-ring-shadow: 0 0 transparent;--tw-shadow: 0 0 transparent;--tw-shadow-colored: 0 0 transparent;
+--tw-blur: ;--tw-brightness: ;--tw-contrast: ;--tw-grayscale: ;--tw-hue-rotate: ;
+--tw-invert: ;--tw-saturate: ;--tw-sepia: ;--tw-drop-shadow: ;--tw-backdrop-blur: ;
+--tw-backdrop-brightness: ;--tw-backdrop-contrast: ;--tw-backdrop-grayscale: ;
+--tw-backdrop-hue-rotate: ;--tw-backdrop-invert: ;--tw-backdrop-opacity: ;
+--tw-backdrop-saturate: ;--tw-backdrop-sepia: ;--tw-contain-size: ;--tw-contain-layout: ;
+--tw-contain-paint: ;--tw-contain-style: ;font-feature-settings: normal;
+font-variation-settings: normal;color:var(--tw-prose-code)'><b><span
+style='font-size:10.5pt'>PropertyGrid</span></b></code> context.</p>
+
+</div>
+
+<div class=MsoNormal align=center style='margin-top:.5in;margin-right:0in;
+margin-bottom:.5in;margin-left:0in;text-align:center'>
+
+<hr size=0 width="100%" align=center>
+
+</div>
+
+<div style='border:solid #E3E3E3 1.0pt;padding:0in 0in 0in 0in'>
+
+<p style='margin-top:0in;margin-right:0in;margin-bottom:15.0pt;margin-left:
+0in;border:none;padding:0in;box-sizing: border-box;--tw-border-spacing-x: 0;
+--tw-border-spacing-y: 0;--tw-translate-x: 0;--tw-translate-y: 0;--tw-rotate: 0;
+--tw-skew-x: 0;--tw-skew-y: 0;--tw-scale-x: 1;--tw-scale-y: 1;--tw-pan-x: ;
+--tw-pan-y: ;--tw-pinch-zoom: ;--tw-scroll-snap-strictness: proximity;
+--tw-gradient-from-position: ;--tw-gradient-via-position: ;--tw-gradient-to-position: ;
+--tw-ordinal: ;--tw-slashed-zero: ;--tw-numeric-figure: ;--tw-numeric-spacing: ;
+--tw-numeric-fraction: ;--tw-ring-inset: ;--tw-ring-offset-width: 0px;
+--tw-ring-offset-color: #fff;--tw-ring-color: rgba(69,89,164,.5);--tw-ring-offset-shadow: 0 0 transparent;
+--tw-ring-shadow: 0 0 transparent;--tw-shadow: 0 0 transparent;--tw-shadow-colored: 0 0 transparent;
+--tw-blur: ;--tw-brightness: ;--tw-contrast: ;--tw-grayscale: ;--tw-hue-rotate: ;
+--tw-invert: ;--tw-saturate: ;--tw-sepia: ;--tw-drop-shadow: ;--tw-backdrop-blur: ;
+--tw-backdrop-brightness: ;--tw-backdrop-contrast: ;--tw-backdrop-grayscale: ;
+--tw-backdrop-hue-rotate: ;--tw-backdrop-invert: ;--tw-backdrop-opacity: ;
+--tw-backdrop-saturate: ;--tw-backdrop-sepia: ;--tw-contain-size: ;--tw-contain-layout: ;
+--tw-contain-paint: ;--tw-contain-style: '><strong style='box-sizing: border-box;
+--tw-border-spacing-x: 0;--tw-border-spacing-y: 0;--tw-translate-x: 0;
+--tw-translate-y: 0;--tw-rotate: 0;--tw-skew-x: 0;--tw-skew-y: 0;--tw-scale-x: 1;
+--tw-scale-y: 1;--tw-pan-x: ;--tw-pan-y: ;--tw-pinch-zoom: ;--tw-scroll-snap-strictness: proximity;
+--tw-gradient-from-position: ;--tw-gradient-via-position: ;--tw-gradient-to-position: ;
+--tw-ordinal: ;--tw-slashed-zero: ;--tw-numeric-figure: ;--tw-numeric-spacing: ;
+--tw-numeric-fraction: ;--tw-ring-inset: ;--tw-ring-offset-width: 0px;
+--tw-ring-offset-color: #fff;--tw-ring-color: rgba(69,89,164,.5);--tw-ring-offset-shadow: 0 0 transparent;
+--tw-ring-shadow: 0 0 transparent;--tw-shadow: 0 0 transparent;--tw-shadow-colored: 0 0 transparent;
+--tw-blur: ;--tw-brightness: ;--tw-contrast: ;--tw-grayscale: ;--tw-hue-rotate: ;
+--tw-invert: ;--tw-saturate: ;--tw-sepia: ;--tw-drop-shadow: ;--tw-backdrop-blur: ;
+--tw-backdrop-brightness: ;--tw-backdrop-contrast: ;--tw-backdrop-grayscale: ;
+--tw-backdrop-hue-rotate: ;--tw-backdrop-invert: ;--tw-backdrop-opacity: ;
+--tw-backdrop-saturate: ;--tw-backdrop-sepia: ;--tw-contain-size: ;--tw-contain-layout: ;
+--tw-contain-paint: ;--tw-contain-style: ;color:var(--tw-prose-bold)'>Usage:</strong></p>
+
+<p style='margin-top:15.0pt;margin-right:0in;margin-bottom:15.0pt;margin-left:
+0in;border:none;padding:0in;box-sizing: border-box;--tw-border-spacing-x: 0;
+--tw-border-spacing-y: 0;--tw-translate-x: 0;--tw-translate-y: 0;--tw-rotate: 0;
+--tw-skew-x: 0;--tw-skew-y: 0;--tw-scale-x: 1;--tw-scale-y: 1;--tw-pan-x: ;
+--tw-pan-y: ;--tw-pinch-zoom: ;--tw-scroll-snap-strictness: proximity;
+--tw-gradient-from-position: ;--tw-gradient-via-position: ;--tw-gradient-to-position: ;
+--tw-ordinal: ;--tw-slashed-zero: ;--tw-numeric-figure: ;--tw-numeric-spacing: ;
+--tw-numeric-fraction: ;--tw-ring-inset: ;--tw-ring-offset-width: 0px;
+--tw-ring-offset-color: #fff;--tw-ring-color: rgba(69,89,164,.5);--tw-ring-offset-shadow: 0 0 transparent;
+--tw-ring-shadow: 0 0 transparent;--tw-shadow: 0 0 transparent;--tw-shadow-colored: 0 0 transparent;
+--tw-blur: ;--tw-brightness: ;--tw-contrast: ;--tw-grayscale: ;--tw-hue-rotate: ;
+--tw-invert: ;--tw-saturate: ;--tw-sepia: ;--tw-drop-shadow: ;--tw-backdrop-blur: ;
+--tw-backdrop-brightness: ;--tw-backdrop-contrast: ;--tw-backdrop-grayscale: ;
+--tw-backdrop-hue-rotate: ;--tw-backdrop-invert: ;--tw-backdrop-opacity: ;
+--tw-backdrop-saturate: ;--tw-backdrop-sepia: ;--tw-contain-size: ;--tw-contain-layout: ;
+--tw-contain-paint: ;--tw-contain-style: '>To utilize the custom validation and
+system hook components in your project:</p>
+
+</div>
+
+<div style='border:solid #E3E3E3 1.0pt;padding:0in 0in 0in 5.0pt'>
+
+<p style='margin-top:0in;margin-right:0in;margin-bottom:0in;margin-left:.25in;
+margin-bottom:.0001pt;text-indent:-.25in;border:none;padding:0in;box-sizing: border-box;
+--tw-border-spacing-x: 0;--tw-border-spacing-y: 0;--tw-translate-x: 0;
+--tw-translate-y: 0;--tw-rotate: 0;--tw-skew-x: 0;--tw-skew-y: 0;--tw-scale-x: 1;
+--tw-scale-y: 1;--tw-pan-x: ;--tw-pan-y: ;--tw-pinch-zoom: ;--tw-scroll-snap-strictness: proximity;
+--tw-gradient-from-position: ;--tw-gradient-via-position: ;--tw-gradient-to-position: ;
+--tw-ordinal: ;--tw-slashed-zero: ;--tw-numeric-figure: ;--tw-numeric-spacing: ;
+--tw-numeric-fraction: ;--tw-ring-inset: ;--tw-ring-offset-width: 0px;
+--tw-ring-offset-color: #fff;--tw-ring-color: rgba(69,89,164,.5);--tw-ring-offset-shadow: 0 0 transparent;
+--tw-ring-shadow: 0 0 transparent;--tw-shadow: 0 0 transparent;--tw-shadow-colored: 0 0 transparent;
+--tw-blur: ;--tw-brightness: ;--tw-contrast: ;--tw-grayscale: ;--tw-hue-rotate: ;
+--tw-invert: ;--tw-saturate: ;--tw-sepia: ;--tw-drop-shadow: ;--tw-backdrop-blur: ;
+--tw-backdrop-brightness: ;--tw-backdrop-contrast: ;--tw-backdrop-grayscale: ;
+--tw-backdrop-hue-rotate: ;--tw-backdrop-invert: ;--tw-backdrop-opacity: ;
+--tw-backdrop-saturate: ;--tw-backdrop-sepia: ;--tw-contain-size: ;--tw-contain-layout: ;
+--tw-contain-paint: ;--tw-contain-style: '>1.<span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span><strong style='box-sizing: border-box;--tw-border-spacing-x: 0;
+--tw-border-spacing-y: 0;--tw-translate-x: 0;--tw-translate-y: 0;--tw-rotate: 0;
+--tw-skew-x: 0;--tw-skew-y: 0;--tw-scale-x: 1;--tw-scale-y: 1;--tw-pan-x: ;
+--tw-pan-y: ;--tw-pinch-zoom: ;--tw-scroll-snap-strictness: proximity;
+--tw-gradient-from-position: ;--tw-gradient-via-position: ;--tw-gradient-to-position: ;
+--tw-ordinal: ;--tw-slashed-zero: ;--tw-numeric-figure: ;--tw-numeric-spacing: ;
+--tw-numeric-fraction: ;--tw-ring-inset: ;--tw-ring-offset-width: 0px;
+--tw-ring-offset-color: #fff;--tw-ring-color: rgba(69,89,164,.5);--tw-ring-offset-shadow: 0 0 transparent;
+--tw-ring-shadow: 0 0 transparent;--tw-shadow: 0 0 transparent;--tw-shadow-colored: 0 0 transparent;
+--tw-blur: ;--tw-brightness: ;--tw-contrast: ;--tw-grayscale: ;--tw-hue-rotate: ;
+--tw-invert: ;--tw-saturate: ;--tw-sepia: ;--tw-drop-shadow: ;--tw-backdrop-blur: ;
+--tw-backdrop-brightness: ;--tw-backdrop-contrast: ;--tw-backdrop-grayscale: ;
+--tw-backdrop-hue-rotate: ;--tw-backdrop-invert: ;--tw-backdrop-opacity: ;
+--tw-backdrop-saturate: ;--tw-backdrop-sepia: ;--tw-contain-size: ;--tw-contain-layout: ;
+--tw-contain-paint: ;--tw-contain-style: ;color:var(--tw-prose-bold)'>CustomCollectionEditor</strong>:</p>
+
+</div>
+
+<div style='border:solid #E3E3E3 1.0pt;padding:0in 0in 0in 0in;margin-left:
+.25in;margin-right:0in'>
+
+<p class=MsoNormal style='margin-left:.25in;text-indent:-.25in;border:none;
+padding:0in'><span style='font-size:10.0pt;font-family:Symbol'>·<span
+style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span>Implement custom collection editors by inheriting from <code
+style='box-sizing: border-box;--tw-border-spacing-x: 0;--tw-border-spacing-y: 0;
+--tw-translate-x: 0;--tw-translate-y: 0;--tw-rotate: 0;--tw-skew-x: 0;
+--tw-skew-y: 0;--tw-scale-x: 1;--tw-scale-y: 1;--tw-pan-x: ;--tw-pan-y: ;
+--tw-pinch-zoom: ;--tw-scroll-snap-strictness: proximity;--tw-gradient-from-position: ;
+--tw-gradient-via-position: ;--tw-gradient-to-position: ;--tw-ordinal: ;
+--tw-slashed-zero: ;--tw-numeric-figure: ;--tw-numeric-spacing: ;--tw-numeric-fraction: ;
+--tw-ring-inset: ;--tw-ring-offset-width: 0px;--tw-ring-offset-color: #fff;
+--tw-ring-color: rgba(69,89,164,.5);--tw-ring-offset-shadow: 0 0 transparent;
+--tw-ring-shadow: 0 0 transparent;--tw-shadow: 0 0 transparent;--tw-shadow-colored: 0 0 transparent;
+--tw-blur: ;--tw-brightness: ;--tw-contrast: ;--tw-grayscale: ;--tw-hue-rotate: ;
+--tw-invert: ;--tw-saturate: ;--tw-sepia: ;--tw-drop-shadow: ;--tw-backdrop-blur: ;
+--tw-backdrop-brightness: ;--tw-backdrop-contrast: ;--tw-backdrop-grayscale: ;
+--tw-backdrop-hue-rotate: ;--tw-backdrop-invert: ;--tw-backdrop-opacity: ;
+--tw-backdrop-saturate: ;--tw-backdrop-sepia: ;--tw-contain-size: ;--tw-contain-layout: ;
+--tw-contain-paint: ;--tw-contain-style: ;font-feature-settings: normal;
+font-variation-settings: normal;color:var(--tw-prose-code)'><b><span
+style='font-size:10.5pt'>CustomCollectionEditor&lt;T&gt;</span></b></code> and
+overriding relevant methods to define validation behavior.</p>
+
+<p class=MsoNormal style='margin-left:.25in;text-indent:-.25in;border:none;
+padding:0in'><span style='font-size:10.0pt;font-family:Symbol'>·<span
+style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span>Use <code style='box-sizing: border-box;--tw-border-spacing-x: 0;
+--tw-border-spacing-y: 0;--tw-translate-x: 0;--tw-translate-y: 0;--tw-rotate: 0;
+--tw-skew-x: 0;--tw-skew-y: 0;--tw-scale-x: 1;--tw-scale-y: 1;--tw-pan-x: ;
+--tw-pan-y: ;--tw-pinch-zoom: ;--tw-scroll-snap-strictness: proximity;
+--tw-gradient-from-position: ;--tw-gradient-via-position: ;--tw-gradient-to-position: ;
+--tw-ordinal: ;--tw-slashed-zero: ;--tw-numeric-figure: ;--tw-numeric-spacing: ;
+--tw-numeric-fraction: ;--tw-ring-inset: ;--tw-ring-offset-width: 0px;
+--tw-ring-offset-color: #fff;--tw-ring-color: rgba(69,89,164,.5);--tw-ring-offset-shadow: 0 0 transparent;
+--tw-ring-shadow: 0 0 transparent;--tw-shadow: 0 0 transparent;--tw-shadow-colored: 0 0 transparent;
+--tw-blur: ;--tw-brightness: ;--tw-contrast: ;--tw-grayscale: ;--tw-hue-rotate: ;
+--tw-invert: ;--tw-saturate: ;--tw-sepia: ;--tw-drop-shadow: ;--tw-backdrop-blur: ;
+--tw-backdrop-brightness: ;--tw-backdrop-contrast: ;--tw-backdrop-grayscale: ;
+--tw-backdrop-hue-rotate: ;--tw-backdrop-invert: ;--tw-backdrop-opacity: ;
+--tw-backdrop-saturate: ;--tw-backdrop-sepia: ;--tw-contain-size: ;--tw-contain-layout: ;
+--tw-contain-paint: ;--tw-contain-style: ;font-feature-settings: normal;
+font-variation-settings: normal;color:var(--tw-prose-code)'><b><span
+style='font-size:10.5pt'>CustomCollectionEditor</span></b></code> as the
+designated editor for specific collection properties in a <code
+style='box-sizing: border-box;--tw-border-spacing-x: 0;--tw-border-spacing-y: 0;
+--tw-translate-x: 0;--tw-translate-y: 0;--tw-rotate: 0;--tw-skew-x: 0;
+--tw-skew-y: 0;--tw-scale-x: 1;--tw-scale-y: 1;--tw-pan-x: ;--tw-pan-y: ;
+--tw-pinch-zoom: ;--tw-scroll-snap-strictness: proximity;--tw-gradient-from-position: ;
+--tw-gradient-via-position: ;--tw-gradient-to-position: ;--tw-ordinal: ;
+--tw-slashed-zero: ;--tw-numeric-figure: ;--tw-numeric-spacing: ;--tw-numeric-fraction: ;
+--tw-ring-inset: ;--tw-ring-offset-width: 0px;--tw-ring-offset-color: #fff;
+--tw-ring-color: rgba(69,89,164,.5);--tw-ring-offset-shadow: 0 0 transparent;
+--tw-ring-shadow: 0 0 transparent;--tw-shadow: 0 0 transparent;--tw-shadow-colored: 0 0 transparent;
+--tw-blur: ;--tw-brightness: ;--tw-contrast: ;--tw-grayscale: ;--tw-hue-rotate: ;
+--tw-invert: ;--tw-saturate: ;--tw-sepia: ;--tw-drop-shadow: ;--tw-backdrop-blur: ;
+--tw-backdrop-brightness: ;--tw-backdrop-contrast: ;--tw-backdrop-grayscale: ;
+--tw-backdrop-hue-rotate: ;--tw-backdrop-invert: ;--tw-backdrop-opacity: ;
+--tw-backdrop-saturate: ;--tw-backdrop-sepia: ;--tw-contain-size: ;--tw-contain-layout: ;
+--tw-contain-paint: ;--tw-contain-style: ;font-feature-settings: normal;
+font-variation-settings: normal;color:var(--tw-prose-code)'><b><span
+style='font-size:10.5pt'>PropertyGrid</span></b></code>, enabling tailored
+validation and editing features.</p>
+
+</div>
+
+<div style='border:solid #E3E3E3 1.0pt;padding:0in 0in 0in 5.0pt'>
+
+<p style='margin-top:0in;margin-right:0in;margin-bottom:0in;margin-left:.25in;
+margin-bottom:.0001pt;text-indent:-.25in;border:none;padding:0in;box-sizing: border-box;
+--tw-border-spacing-x: 0;--tw-border-spacing-y: 0;--tw-translate-x: 0;
+--tw-translate-y: 0;--tw-rotate: 0;--tw-skew-x: 0;--tw-skew-y: 0;--tw-scale-x: 1;
+--tw-scale-y: 1;--tw-pan-x: ;--tw-pan-y: ;--tw-pinch-zoom: ;--tw-scroll-snap-strictness: proximity;
+--tw-gradient-from-position: ;--tw-gradient-via-position: ;--tw-gradient-to-position: ;
+--tw-ordinal: ;--tw-slashed-zero: ;--tw-numeric-figure: ;--tw-numeric-spacing: ;
+--tw-numeric-fraction: ;--tw-ring-inset: ;--tw-ring-offset-width: 0px;
+--tw-ring-offset-color: #fff;--tw-ring-color: rgba(69,89,164,.5);--tw-ring-offset-shadow: 0 0 transparent;
+--tw-ring-shadow: 0 0 transparent;--tw-shadow: 0 0 transparent;--tw-shadow-colored: 0 0 transparent;
+--tw-blur: ;--tw-brightness: ;--tw-contrast: ;--tw-grayscale: ;--tw-hue-rotate: ;
+--tw-invert: ;--tw-saturate: ;--tw-sepia: ;--tw-drop-shadow: ;--tw-backdrop-blur: ;
+--tw-backdrop-brightness: ;--tw-backdrop-contrast: ;--tw-backdrop-grayscale: ;
+--tw-backdrop-hue-rotate: ;--tw-backdrop-invert: ;--tw-backdrop-opacity: ;
+--tw-backdrop-saturate: ;--tw-backdrop-sepia: ;--tw-contain-size: ;--tw-contain-layout: ;
+--tw-contain-paint: ;--tw-contain-style: '>2.<span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span><strong style='box-sizing: border-box;--tw-border-spacing-x: 0;
+--tw-border-spacing-y: 0;--tw-translate-x: 0;--tw-translate-y: 0;--tw-rotate: 0;
+--tw-skew-x: 0;--tw-skew-y: 0;--tw-scale-x: 1;--tw-scale-y: 1;--tw-pan-x: ;
+--tw-pan-y: ;--tw-pinch-zoom: ;--tw-scroll-snap-strictness: proximity;
+--tw-gradient-from-position: ;--tw-gradient-via-position: ;--tw-gradient-to-position: ;
+--tw-ordinal: ;--tw-slashed-zero: ;--tw-numeric-figure: ;--tw-numeric-spacing: ;
+--tw-numeric-fraction: ;--tw-ring-inset: ;--tw-ring-offset-width: 0px;
+--tw-ring-offset-color: #fff;--tw-ring-color: rgba(69,89,164,.5);--tw-ring-offset-shadow: 0 0 transparent;
+--tw-ring-shadow: 0 0 transparent;--tw-shadow: 0 0 transparent;--tw-shadow-colored: 0 0 transparent;
+--tw-blur: ;--tw-brightness: ;--tw-contrast: ;--tw-grayscale: ;--tw-hue-rotate: ;
+--tw-invert: ;--tw-saturate: ;--tw-sepia: ;--tw-drop-shadow: ;--tw-backdrop-blur: ;
+--tw-backdrop-brightness: ;--tw-backdrop-contrast: ;--tw-backdrop-grayscale: ;
+--tw-backdrop-hue-rotate: ;--tw-backdrop-invert: ;--tw-backdrop-opacity: ;
+--tw-backdrop-saturate: ;--tw-backdrop-sepia: ;--tw-contain-size: ;--tw-contain-layout: ;
+--tw-contain-paint: ;--tw-contain-style: ;color:var(--tw-prose-bold)'>CollectionEditorObserver</strong>:</p>
+
+</div>
+
+<div style='border:solid #E3E3E3 1.0pt;padding:0in 0in 0in 0in;margin-left:
+.25in;margin-right:0in'>
+
+<p class=MsoNormal style='margin-left:.25in;text-indent:-.25in;border:none;
+padding:0in'><span style='font-size:10.0pt;font-family:Symbol'>·<span
+style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span>Utilize <code style='box-sizing: border-box;--tw-border-spacing-x: 0;
+--tw-border-spacing-y: 0;--tw-translate-x: 0;--tw-translate-y: 0;--tw-rotate: 0;
+--tw-skew-x: 0;--tw-skew-y: 0;--tw-scale-x: 1;--tw-scale-y: 1;--tw-pan-x: ;
+--tw-pan-y: ;--tw-pinch-zoom: ;--tw-scroll-snap-strictness: proximity;
+--tw-gradient-from-position: ;--tw-gradient-via-position: ;--tw-gradient-to-position: ;
+--tw-ordinal: ;--tw-slashed-zero: ;--tw-numeric-figure: ;--tw-numeric-spacing: ;
+--tw-numeric-fraction: ;--tw-ring-inset: ;--tw-ring-offset-width: 0px;
+--tw-ring-offset-color: #fff;--tw-ring-color: rgba(69,89,164,.5);--tw-ring-offset-shadow: 0 0 transparent;
+--tw-ring-shadow: 0 0 transparent;--tw-shadow: 0 0 transparent;--tw-shadow-colored: 0 0 transparent;
+--tw-blur: ;--tw-brightness: ;--tw-contrast: ;--tw-grayscale: ;--tw-hue-rotate: ;
+--tw-invert: ;--tw-saturate: ;--tw-sepia: ;--tw-drop-shadow: ;--tw-backdrop-blur: ;
+--tw-backdrop-brightness: ;--tw-backdrop-contrast: ;--tw-backdrop-grayscale: ;
+--tw-backdrop-hue-rotate: ;--tw-backdrop-invert: ;--tw-backdrop-opacity: ;
+--tw-backdrop-saturate: ;--tw-backdrop-sepia: ;--tw-contain-size: ;--tw-contain-layout: ;
+--tw-contain-paint: ;--tw-contain-style: ;font-feature-settings: normal;
+font-variation-settings: normal;color:var(--tw-prose-code)'><b><span
+style='font-size:10.5pt'>CollectionEditorObserver&lt;T&gt;</span></b></code> to
+intercept and manage events related to <code style='box-sizing: border-box;
+--tw-border-spacing-x: 0;--tw-border-spacing-y: 0;--tw-translate-x: 0;
+--tw-translate-y: 0;--tw-rotate: 0;--tw-skew-x: 0;--tw-skew-y: 0;--tw-scale-x: 1;
+--tw-scale-y: 1;--tw-pan-x: ;--tw-pan-y: ;--tw-pinch-zoom: ;--tw-scroll-snap-strictness: proximity;
+--tw-gradient-from-position: ;--tw-gradient-via-position: ;--tw-gradient-to-position: ;
+--tw-ordinal: ;--tw-slashed-zero: ;--tw-numeric-figure: ;--tw-numeric-spacing: ;
+--tw-numeric-fraction: ;--tw-ring-inset: ;--tw-ring-offset-width: 0px;
+--tw-ring-offset-color: #fff;--tw-ring-color: rgba(69,89,164,.5);--tw-ring-offset-shadow: 0 0 transparent;
+--tw-ring-shadow: 0 0 transparent;--tw-shadow: 0 0 transparent;--tw-shadow-colored: 0 0 transparent;
+--tw-blur: ;--tw-brightness: ;--tw-contrast: ;--tw-grayscale: ;--tw-hue-rotate: ;
+--tw-invert: ;--tw-saturate: ;--tw-sepia: ;--tw-drop-shadow: ;--tw-backdrop-blur: ;
+--tw-backdrop-brightness: ;--tw-backdrop-contrast: ;--tw-backdrop-grayscale: ;
+--tw-backdrop-hue-rotate: ;--tw-backdrop-invert: ;--tw-backdrop-opacity: ;
+--tw-backdrop-saturate: ;--tw-backdrop-sepia: ;--tw-contain-size: ;--tw-contain-layout: ;
+--tw-contain-paint: ;--tw-contain-style: ;font-feature-settings: normal;
+font-variation-settings: normal;color:var(--tw-prose-code)'><b><span
+style='font-size:10.5pt'>CollectionForm</span></b></code> instances using Win32
+system hooks (<code style='box-sizing: border-box;--tw-border-spacing-x: 0;
+--tw-border-spacing-y: 0;--tw-translate-x: 0;--tw-translate-y: 0;--tw-rotate: 0;
+--tw-skew-x: 0;--tw-skew-y: 0;--tw-scale-x: 1;--tw-scale-y: 1;--tw-pan-x: ;
+--tw-pan-y: ;--tw-pinch-zoom: ;--tw-scroll-snap-strictness: proximity;
+--tw-gradient-from-position: ;--tw-gradient-via-position: ;--tw-gradient-to-position: ;
+--tw-ordinal: ;--tw-slashed-zero: ;--tw-numeric-figure: ;--tw-numeric-spacing: ;
+--tw-numeric-fraction: ;--tw-ring-inset: ;--tw-ring-offset-width: 0px;
+--tw-ring-offset-color: #fff;--tw-ring-color: rgba(69,89,164,.5);--tw-ring-offset-shadow: 0 0 transparent;
+--tw-ring-shadow: 0 0 transparent;--tw-shadow: 0 0 transparent;--tw-shadow-colored: 0 0 transparent;
+--tw-blur: ;--tw-brightness: ;--tw-contrast: ;--tw-grayscale: ;--tw-hue-rotate: ;
+--tw-invert: ;--tw-saturate: ;--tw-sepia: ;--tw-drop-shadow: ;--tw-backdrop-blur: ;
+--tw-backdrop-brightness: ;--tw-backdrop-contrast: ;--tw-backdrop-grayscale: ;
+--tw-backdrop-hue-rotate: ;--tw-backdrop-invert: ;--tw-backdrop-opacity: ;
+--tw-backdrop-saturate: ;--tw-backdrop-sepia: ;--tw-contain-size: ;--tw-contain-layout: ;
+--tw-contain-paint: ;--tw-contain-style: ;font-feature-settings: normal;
+font-variation-settings: normal;color:var(--tw-prose-code)'><b><span
+style='font-size:10.5pt'>WH_CALLWNDPROCRET</span></b></code>).</p>
+
+<p class=MsoNormal style='margin-left:.25in;text-indent:-.25in;border:none;
+padding:0in'><span style='font-size:10.0pt;font-family:Symbol'>·<span
+style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span>Leverage <code style='box-sizing: border-box;--tw-border-spacing-x: 0;
+--tw-border-spacing-y: 0;--tw-translate-x: 0;--tw-translate-y: 0;--tw-rotate: 0;
+--tw-skew-x: 0;--tw-skew-y: 0;--tw-scale-x: 1;--tw-scale-y: 1;--tw-pan-x: ;
+--tw-pan-y: ;--tw-pinch-zoom: ;--tw-scroll-snap-strictness: proximity;
+--tw-gradient-from-position: ;--tw-gradient-via-position: ;--tw-gradient-to-position: ;
+--tw-ordinal: ;--tw-slashed-zero: ;--tw-numeric-figure: ;--tw-numeric-spacing: ;
+--tw-numeric-fraction: ;--tw-ring-inset: ;--tw-ring-offset-width: 0px;
+--tw-ring-offset-color: #fff;--tw-ring-color: rgba(69,89,164,.5);--tw-ring-offset-shadow: 0 0 transparent;
+--tw-ring-shadow: 0 0 transparent;--tw-shadow: 0 0 transparent;--tw-shadow-colored: 0 0 transparent;
+--tw-blur: ;--tw-brightness: ;--tw-contrast: ;--tw-grayscale: ;--tw-hue-rotate: ;
+--tw-invert: ;--tw-saturate: ;--tw-sepia: ;--tw-drop-shadow: ;--tw-backdrop-blur: ;
+--tw-backdrop-brightness: ;--tw-backdrop-contrast: ;--tw-backdrop-grayscale: ;
+--tw-backdrop-hue-rotate: ;--tw-backdrop-invert: ;--tw-backdrop-opacity: ;
+--tw-backdrop-saturate: ;--tw-backdrop-sepia: ;--tw-contain-size: ;--tw-contain-layout: ;
+--tw-contain-paint: ;--tw-contain-style: ;font-feature-settings: normal;
+font-variation-settings: normal;color:var(--tw-prose-code)'><b><span
+style='font-size:10.5pt'>CollectionEditorObserver</span></b></code> to enforce
+validation or implement custom behaviors for collections edited within <code
+style='box-sizing: border-box;--tw-border-spacing-x: 0;--tw-border-spacing-y: 0;
+--tw-translate-x: 0;--tw-translate-y: 0;--tw-rotate: 0;--tw-skew-x: 0;
+--tw-skew-y: 0;--tw-scale-x: 1;--tw-scale-y: 1;--tw-pan-x: ;--tw-pan-y: ;
+--tw-pinch-zoom: ;--tw-scroll-snap-strictness: proximity;--tw-gradient-from-position: ;
+--tw-gradient-via-position: ;--tw-gradient-to-position: ;--tw-ordinal: ;
+--tw-slashed-zero: ;--tw-numeric-figure: ;--tw-numeric-spacing: ;--tw-numeric-fraction: ;
+--tw-ring-inset: ;--tw-ring-offset-width: 0px;--tw-ring-offset-color: #fff;
+--tw-ring-color: rgba(69,89,164,.5);--tw-ring-offset-shadow: 0 0 transparent;
+--tw-ring-shadow: 0 0 transparent;--tw-shadow: 0 0 transparent;--tw-shadow-colored: 0 0 transparent;
+--tw-blur: ;--tw-brightness: ;--tw-contrast: ;--tw-grayscale: ;--tw-hue-rotate: ;
+--tw-invert: ;--tw-saturate: ;--tw-sepia: ;--tw-drop-shadow: ;--tw-backdrop-blur: ;
+--tw-backdrop-brightness: ;--tw-backdrop-contrast: ;--tw-backdrop-grayscale: ;
+--tw-backdrop-hue-rotate: ;--tw-backdrop-invert: ;--tw-backdrop-opacity: ;
+--tw-backdrop-saturate: ;--tw-backdrop-sepia: ;--tw-contain-size: ;--tw-contain-layout: ;
+--tw-contain-paint: ;--tw-contain-style: ;font-feature-settings: normal;
+font-variation-settings: normal;color:var(--tw-prose-code)'><b><span
+style='font-size:10.5pt'>CollectionForm</span></b></code> instances.</p>
+
+</div>
+
+</div>
+
+</body>
+
+</html>

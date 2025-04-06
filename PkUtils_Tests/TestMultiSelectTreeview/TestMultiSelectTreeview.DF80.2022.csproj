@@ -1,0 +1,42 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>net8.0-windows</TargetFramework>
+    <OutputType>WinExe</OutputType>
+    <RootNamespace>TestMultiSelectTreeview</RootNamespace>
+    <AssemblyName>TestMultiSelectTreeview</AssemblyName>
+    <StartupObject>
+    </StartupObject>
+    <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+    <NeutralLanguage>en</NeutralLanguage>
+    <UseWindowsForms>true</UseWindowsForms>
+    <ImportWindowsDesktopTargets>true</ImportWindowsDesktopTargets>
+    <ApplicationIcon>ResourceBinaries\tree.ico</ApplicationIcon>
+    <ImportWindowsDesktopTargets>true</ImportWindowsDesktopTargets>	
+  </PropertyGroup>
+  <ItemGroup>
+    <Content Include="ResourceBinaries\tree.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="System.Drawing.Common" Version="6.0.0" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\PkUtils\PkUtils.DF80.2022.csproj" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Update="MultiSelectTreeview.ColorsCache.cs" />
+    <Compile Update="MultiSelectTreeview.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Update="Resources.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Update="Resources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+  </ItemGroup>
+</Project>

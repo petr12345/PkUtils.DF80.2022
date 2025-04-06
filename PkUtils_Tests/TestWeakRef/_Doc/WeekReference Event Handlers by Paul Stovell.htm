@@ -1,0 +1,523 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <title>A simple implementation of a WeakReference-powered event handler - Paul Stovell</title>
+  <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+  <meta name="language" content="english" />
+  <meta name="author" content="Paul Stovell" />
+  <link href="http://www.paulstovell.com/feed" type="application/atom+xml" rel="alternate" title="Blog Feed" />
+  <link href="http://www.paulstovell.com/commentfeed" type="application/atom+xml" rel="alternate" title="Comments Feed" />
+  <link rel="icon" type="image/png" href="http://www.paulstovell.com/favicon.png" />
+  <link rel="stylesheet" type="text/css" href="/Content/Styles/Layout/Base.css?cdv=1" /><link rel="stylesheet" type="text/css" href="/Content/Styles/Themes/RainbowAfro/Theme.css?cdv=1" />
+  
+  <meta name="description" content="How to wrap an event handler in a weak reference, the simple way." />
+  <meta name="keywords" content="wpf, windows-forms, weak-references, memory-leaks" />
+  <link rel="canonical" href="http://www.paulstovell.com/weakevents" />
+  <link rel="pingback" href="http://www.paulstovell.com/pingback" />
+
+  <link rel="image_src" href="http://www.paulstovell.com/get/me.jpg" />
+</head>
+<body>
+  <div class="top">
+    <div class="top-in">
+      <div class="header">
+        <a class="logo" href="/" title="Paul Stovell">Paul Stovell</a>
+      </div>
+      <div class="nav">
+        <ul>
+          <li><a href="http://www.paulstovell.com/">Home</a></li>
+          <li><a href="http://www.paulstovell.com/wpf">WPF</a></li>
+      <li><a href="http://www.paulstovell.com/csharp">C#</a></li>
+      <li><a href="http://www.paulstovell.com/magellan">Magellan</a></li>
+      <li><a href="http://www.paulstovell.com/projects">Projects</a></li>
+      <li><a href="https://bitbucket.org/paulstovell/presentations/src">Presentations</a></li>
+      <li><a href="http://www.paulstovell.com/contact">Contact</a></li>
+        </ul>
+        <div class="search">
+<form action="/search" method="get">          <p>
+            <input alt="Search" class="medium" id="q" name="q" type="text" value="" />
+            <input type="submit" id="search" class="submit" value="Search" />
+          </p>
+</form>        </div>
+      </div>
+    </div>
+  </div>
+  <div class="body">
+    <div class="intro" id="_summary">
+      <div class="intro-in">
+        
+  
+
+
+
+      </div>
+    </div>
+    <div class="content">
+      
+
+
+
+
+<h1>
+  <a href="/weakevents">WeakReference Event Handlers</a>
+</h1>
+<div class="entry-date">
+  <span class='month'>Jul 1</span>
+  <span class='year'>2010</span>
+</div>
+
+<div class="entry-container">
+  <div class='entry keyword-wpf keyword-windows-forms keyword-weak-references keyword-memory-leaks'>
+  
+<p>A good rule of thumb to live by is that <strong>long-lived</strong> objects should avoid referencing <strong>short-lived</strong> objects. </p>
+
+<p>The reason for this is that the .NET garbage collector uses a <a href="http://en.wikipedia.org/wiki/Garbage_collection_(computer_science)#Tracing_garbage_collectors">mark and sweep algorithm</a> to detemine if it can delete and reclaim an object. If it determines that a long-lived object should be kept alive (because you are using it, or because it's in a static field somewhere), it also assumes anything it references is being kept alive. </p>
+
+<p>Conversely, going the other way is fine - a short-lived object can reference a long-lived object because the garbage collector will happily delete it if nothing else uses it. </p>
+
+<p>For example:</p>
+
+<ol>
+<li>You shouldn't add items to a static collection, if those items won't be around for a while</li>
+<li>You shouldn't subscribe to static events from a short-lived object</li>
+</ol>
+
+<p>The second example often throws people not familiar with how events work in .NET. When you subscribe to an event, the event handler keeps a list of subscribers. When the event is raised, it loops through the subscribers and notifies each one - it's a simple form of the <a href="http://www.dofactory.com/Patterns/PatternObserver.aspx">observer</a> pattern. </p>
+
+<p>If you do find yourself needing to write this kind of code, and there isn't a good alternative design, then you generally need to have an unhook option. You might have a way to "remove" the short-lived object from the collection managed by the long-lived object, or you might unsubscribe from an event. </p>
+
+<p>When unsubscribing isn't an option (because you don't trust people to call your Dispose/Unsubscribe method), you can make use of <strong>weak event handlers</strong>. WPF has its own implementation, but it's too complex for my feeble mind. Here's a simple snippet that I use:</p>
+
+<pre><code>[DebuggerNonUserCode]
+public sealed class WeakEventHandler&lt;TEventArgs&gt; where TEventArgs : EventArgs
+{
+    private readonly WeakReference _targetReference;
+    private readonly MethodInfo _method;
+
+    public WeakEventHandler(EventHandler&lt;TEventArgs&gt; callback)
+    {
+        _method = callback.Method;
+        _targetReference = new WeakReference(callback.Target, true);
+    }
+
+    [DebuggerNonUserCode]
+    public void Handler(object sender, TEventArgs e)
+    {
+        var target = _targetReference.Target;
+        if (target != null)
+        {
+            var callback = (Action&lt;object, TEventArgs&gt;)Delegate.CreateDelegate(typeof(Action&lt;object, TEventArgs&gt;), target, _method, true);
+            if (callback != null)
+            {
+                callback(sender, e);
+            }
+        }
+    }
+}
+</code></pre>
+
+<p>When subscribing to events, instead of writing:</p>
+
+<pre><code>alarm.Beep += Alarm_Beeped;
+</code></pre>
+
+<p>Just write:</p>
+
+<pre><code>alarm.Beeped += new WeakEventHandler&lt;AlarmEventArgs&gt;(Alarm_Beeped).Handler;
+</code></pre>
+
+<p>Your subscriber can now be garbage collected without needing to manually unsubscribe (and without having to remember to). Here are some tests:</p>
+
+<pre><code>[TestFixture]
+public class WeakEventsTests
+{
+    #region Example
+
+    public class Alarm
+    {
+        public event PropertyChangedEventHandler Beeped;
+
+        public void Beep()
+        {
+            var handler = Beeped;
+            if (handler != null) handler(this, new PropertyChangedEventArgs("Beep!"));
+        }
+    }
+
+    public class Sleepy
+    {
+        private readonly Alarm _alarm;
+        private int _snoozeCount;
+
+        public Sleepy(Alarm alarm)
+        {
+            _alarm = alarm;
+            _alarm.Beeped += new WeakEventHandler&lt;PropertyChangedEventArgs&gt;(Alarm_Beeped).Handler;
+        }
+
+        private void Alarm_Beeped(object sender, PropertyChangedEventArgs e)
+        {
+            _snoozeCount++;
+        }
+
+        public int SnoozeCount
+        {
+            get { return _snoozeCount; }
+        }
+    }
+
+    #endregion
+
+    [Test]
+    public void ShouldHandleEventWhenBothReferencesAreAlive()
+    {
+        var alarm = new Alarm();
+        var sleepy = new Sleepy(alarm);
+        alarm.Beep();
+        alarm.Beep();
+
+        Assert.AreEqual(2, sleepy.SnoozeCount);
+    }
+
+    [Test]
+    public void ShouldAllowSubscriberReferenceToBeCollected()
+    {
+        var alarm = new Alarm();
+        var sleepyReference = null as WeakReference;
+        new Action(() =&gt;
+        {
+            // Run this in a delegate to that the local variable gets garbage collected
+            var sleepy = new Sleepy(alarm);
+            alarm.Beep();
+            alarm.Beep();
+            Assert.AreEqual(2, sleepy.SnoozeCount);
+            sleepyReference = new WeakReference(sleepy);
+        })();
+
+        GC.Collect();
+        GC.WaitForPendingFinalizers();
+        GC.Collect();
+
+        Assert.IsNull(sleepyReference.Target);
+    }
+
+    [Test]
+    public void SubscriberShouldNotBeUnsubscribedUntilCollection()
+    {
+        var alarm = new Alarm();
+        var sleepy = new Sleepy(alarm);
+
+        GC.Collect();
+        GC.WaitForPendingFinalizers();
+        GC.Collect();
+
+        alarm.Beep();
+        alarm.Beep();
+        Assert.AreEqual(2, sleepy.SnoozeCount);
+    }
+}
+</code></pre>
+
+<p><img src="http://www.paulstovell.com/get/general-tips/weak-events.png" alt="Got to love passing tests" /></p>
+
+<p><em>Observant readers will note that this example does keep a small "sacrifice" object alive in the form of the weak event handler wrapper, but it allows the subscriber to be collected. A more complicated API would allow you to unsubscribe the weak handler when the target is null. In my case, I'll keep the simple API and sacrifice the small object.</em> </p>
+
+  </div>  
+
+  <div class="facebook">
+    <iframe src="http://www.facebook.com/plugins/like.php?href=http%3a%2f%2fwww.paulstovell.com%2fweakevents&amp;layout=standard&amp;show_faces=true&amp;width=450&amp;action=like&amp;colorscheme=light&amp;height=80" scrolling="no" frameborder="0" style="border:none; overflow:hidden; width:450px; height:80px;" allowTransparency="true"></iframe>
+  </div>
+  <span class='tags'>
+      <a class='tag' href='#' title='Posts tagged wpf'>wpf</a>
+      <a class='tag' href='#' title='Posts tagged windows-forms'>windows-forms</a>
+      <a class='tag' href='#' title='Posts tagged weak-references'>weak-references</a>
+      <a class='tag' href='#' title='Posts tagged memory-leaks'>memory-leaks</a>
+  </span>
+  <div class='entry-tools'>
+    <span>Last revised: <a href="/weakevents?revision=2"><span class="date" title="01 Jul, 2010 12:15">01 Jul, 2010 12:15 PM</span></a></span>
+    <span><a href="/history-of/weakevents">History</a></span>
+  </div>
+</div>
+
+<div class="clear"></div>
+<div class="comments">
+  <div class="comments-in">
+    <a name="comments"></a><h2>Discussion</h2>
+    <div class="comment">
+      <a name="comment-2772"></a>
+      <div class="comment-author vcard">
+        <img class="gravatar photo" src="http://www.gravatar.com/avatar.php?gravatar_id=d2a71671c69e5bbc715d7979d69214ec&amp;rating=PG&amp;size=50&amp;default=identicon" alt="Charles Strahan" />
+        <br />
+        <a href="http://charlesstrahan.com" class="fn url">Charles Strahan</a>
+      </div>
+      <div class="comment-body"> 
+        <div class="comment-date"><span class="date" title="01 Jul, 2010 15:23">01 Jul, 2010 03:23 PM</span></div>
+        
+<p>Nice post, Paul.</p>
+
+<p>I see you're using reflection there.  You may want to look into using delegates instead; for the performance gain you get, I think it's worth the trivial amount of added complexity.  Check out Jon Skeet's blog post:</p>
+
+<p><a href="http://msmvps.com/blogs/jon_skeet/archive/2008/08/09/making-reflection-fly-and-exploring-delegates.aspx">http://msmvps.com/blogs/jon_skeet/archive/2008/08/09/making-reflection-fly-and-exploring-delegates.aspx</a></p>
+
+<p>If you're targeting .NET 3.5 or greater, you could use expressions to clean up the code a little:</p>
+
+<pre><code>static Func&lt;T, object, object&gt; MagicMethod&lt;T&gt;(MethodInfo method)
+{
+   var parameter = method.GetParameters().Single();
+   var instance = Expression.Parameter(typeof (T), "instance");
+   var argument = Expression.Parameter(typeof (object), "argument");
+
+   var methodCall = Expression.Call(
+       instance,
+       method,
+       Expression.Convert(argument, parameter.ParameterType)
+       );
+
+   return Expression.Lambda&lt;Func&lt;T, object, object&gt;&gt;(
+       Expression.Convert(methodCall, typeof (object)),
+       instance, argument
+       ).Compile();
+}
+</code></pre>
+
+<p>Using an "open delegate", as discussed in Skeet's post, will give you the same functionality as the MethodInfo, only faster.</p>
+
+<p>With that said, I <em>am</em> a bit of a perf addict, so perhaps most sane people would consider that a premature optimization.</p>
+
+<p>Cheers,</p>
+
+<p>-Charles</p>
+
+      </div>
+      <div class="clear">
+      </div>
+    </div>
+    <div class="comment">
+      <a name="comment-2778"></a>
+      <div class="comment-author vcard">
+        <img class="gravatar photo" src="http://www.gravatar.com/avatar.php?gravatar_id=6d7266ccba60891b8e94000b6d0004e1&amp;rating=PG&amp;size=50&amp;default=identicon" alt="Mike Strobel" />
+        <br />
+        <a href="http://codedreams.blogspot.com/" class="fn url">Mike Strobel</a>
+      </div>
+      <div class="comment-body"> 
+        <div class="comment-date"><span class="date" title="02 Jul, 2010 03:44">02 Jul, 2010 03:44 AM</span></div>
+        
+<p>Charles,</p>
+
+<p>Depending on how frequently the subscribed event is actually raised, I suspect you might incur a much greater performance penalty for the lambda compilation than you would for using reflection to invoke the handler.</p>
+
+<p>My approach to weak event handling was to create a 'generic' weak event manager based on those used by WPF, which would work with any event type.  Subscribing to an event looks like this:</p>
+
+<pre><code>GenericWeakEventManager.AddHandler(
+    sourceObject,
+    "SomeEvent", // could also be an EventDescriptor instance
+    new DelegatingWeakEventListener((EventHandler&lt;EventArgs&gt;)this.OnSomeEvent)));
+</code></pre>
+
+<p>My original implementation of GenericWeakEventManager used runtime-compiled lambda expressions much like yours, but having spent a lot of time in the LINQ/DLR sources (and its lambda compiler), I began to realize just how complex the lambda compilation process is.  Since I'm a "perf addict" too, I went back and replaced the lambda expression compilation with a simple call to Delegate.Create, like the one Paul uses.  The only significant difference is that my implementation only creates the delegate once per subscription, where his recreates the delegate for each invocation.</p>
+
+<p>Just some food for thought, from one obsessive-compulsive perf nut to another :).</p>
+
+<p>Cheers,
+Mike</p>
+
+      </div>
+      <div class="clear">
+      </div>
+    </div>
+    <div class="comment">
+      <a name="comment-2779"></a>
+      <div class="comment-author vcard">
+        <img class="gravatar photo" src="http://www.gravatar.com/avatar.php?gravatar_id=6d7266ccba60891b8e94000b6d0004e1&amp;rating=PG&amp;size=50&amp;default=identicon" alt="Mike Strobel" />
+        <br />
+        <a href="http://codedreams.blogspot.com/" class="fn url">Mike Strobel</a>
+      </div>
+      <div class="comment-body"> 
+        <div class="comment-date"><span class="date" title="02 Jul, 2010 03:52">02 Jul, 2010 03:52 AM</span></div>
+        
+<p>Whoops, my code snippet above is actually wrong--as written, the DelegatingWeakEventHandler would likely get garbage collected prematurely.  The subscriber would need to retain a reference to it like so:</p>
+
+<pre><code>// Here, _someEventListener is an instance field:
+_someEventListener = new DelegatingWeakEventListener((EventHandler&lt;EventArgs&gt;)this.OnSomeEvent));
+
+GenericWeakEventManager.AddHandler(
+    sourceObject,
+    "SomeEvent", // could also be an EventDescriptor instance
+    _someEventListener);
+</code></pre>
+
+<p>The field required to hold the weak event listener reference is the price I pay not to use a 'sacrifice' object as Paul does.  It's a trade-off either way.</p>
+
+      </div>
+      <div class="clear">
+      </div>
+    </div>
+    <div class="comment">
+      <a name="comment-2782"></a>
+      <div class="comment-author vcard">
+        <img class="gravatar photo" src="http://www.gravatar.com/avatar.php?gravatar_id=d41d8cd98f00b204e9800998ecf8427e&amp;rating=PG&amp;size=50&amp;default=identicon" alt="tobi" />
+        <br />
+        <span class"fn url">tobi</span>
+      </div>
+      <div class="comment-body"> 
+        <div class="comment-date"><span class="date" title="02 Jul, 2010 13:20">02 Jul, 2010 01:20 PM</span></div>
+        
+<p>You can let the weakreference track the delegate. Then you don't need to recreate it when the event fires.</p>
+
+      </div>
+      <div class="clear">
+      </div>
+    </div>
+    <div class="comment">
+      <a name="comment-2783"></a>
+      <div class="comment-author vcard">
+        <img class="gravatar photo" src="http://www.gravatar.com/avatar.php?gravatar_id=d41d8cd98f00b204e9800998ecf8427e&amp;rating=PG&amp;size=50&amp;default=identicon" alt="tobi" />
+        <br />
+        <span class"fn url">tobi</span>
+      </div>
+      <div class="comment-body"> 
+        <div class="comment-date"><span class="date" title="02 Jul, 2010 13:59">02 Jul, 2010 01:59 PM</span></div>
+        
+<p>Which would not work because the target does not reference the delegate^^</p>
+
+      </div>
+      <div class="clear">
+      </div>
+    </div>
+    <div class="comment">
+      <a name="comment-2784"></a>
+      <div class="comment-author vcard">
+        <img class="gravatar photo" src="http://www.gravatar.com/avatar.php?gravatar_id=d2a71671c69e5bbc715d7979d69214ec&amp;rating=PG&amp;size=50&amp;default=identicon" alt="Charles Strahan" />
+        <br />
+        <a href="http://charlesstrahan.com" class="fn url">Charles Strahan</a>
+      </div>
+      <div class="comment-body"> 
+        <div class="comment-date"><span class="date" title="02 Jul, 2010 14:44">02 Jul, 2010 02:44 PM</span></div>
+        
+<p>@Mike Strobel</p>
+
+<p>Very neat.  What does your implementation look like?</p>
+
+<p>For those who are interested, <a href="http://www.danielgrunwald.de/">Daniel Grunwald</a> wrote an awesome article about Weak Events on CodeProject here:</p>
+
+<p><a href="http://www.codeproject.com/KB/cs/WeakEvents.aspx">http://www.codeproject.com/KB/cs/WeakEvents.aspx</a></p>
+
+<p>Cheers,</p>
+
+<p>-Charles</p>
+
+      </div>
+      <div class="clear">
+      </div>
+    </div>
+    <div class="comment">
+      <a name="comment-2787"></a>
+      <div class="comment-author vcard">
+        <img class="gravatar photo" src="http://www.gravatar.com/avatar.php?gravatar_id=6d7266ccba60891b8e94000b6d0004e1&amp;rating=PG&amp;size=50&amp;default=identicon" alt="Mike Strobel" />
+        <br />
+        <a href="http://codedreams.blogspot.com/" class="fn url">Mike Strobel</a>
+      </div>
+      <div class="comment-body"> 
+        <div class="comment-date"><span class="date" title="02 Jul, 2010 18:18">02 Jul, 2010 06:18 PM</span></div>
+        
+<p>Hi Charles,</p>
+
+<p>You can find my implementation <a href="http://supremacy.codeplex.com/SourceControl/changeset/view/51713#398249">here</a>.  The accompanying implementation of <code>DelegatingWeakEventListener</code> is written in C++/CLI, but here's a C# version for you:</p>
+
+<pre><code>public class DelegatingWeakEventListener : IWeakEventListener
+{
+    private readonly Delegate _handler;
+
+    public DelegatingWeakEventListener(Delegate handler)
+    {
+        if (handler == null)
+            throw new ArgumentNullException("handler");
+        _handler = handler;
+    }
+
+    public DelegatingWeakEventListener(EventHandler handler)
+    {
+        if (handler == null)
+            throw new ArgumentNullException("handler");
+        _handler = handler;
+    }
+
+    #region Implementation of IWeakEventListener
+    bool IWeakEventListener.ReceiveWeakEvent(Type managerType, object sender, EventArgs e)
+    {
+        _handler.DynamicInvoke(sender, e);
+        return true;
+    }
+    #endregion
+}
+</code></pre>
+
+<p>Here's a simple rundown:</p>
+
+<ul>
+<li>The <code>DelegatingWeakEventListener</code> holds a reference to the subscriber's handler, but the <code>GenericWeakEventManager</code> holds a weak reference to the <code>DelegatingWeakEventListener</code>.  This prevents the listener from keeping the subscriber alive.</li>
+<li>All records related to the subscriber are purged from the <code>GenericWeakEventManager</code> when the listener has been garbage collected.  This purging process is automatically kicked off after garbage collection.</li>
+<li>You can use the same <code>GenericWeakEventManager</code> to subscribe to any type of event, as long as the signature has exactly two arguments: a 'sender' argument and an <code>EventArgs</code>-derived argument.</li>
+<li>There are some annotation attributes used in <code>GenericWeakEventManager</code> that you can remove; they simply provide some hints to ReSharper's code analysis engine.</li>
+</ul>
+
+<p>Cheers,<br />
+Mike</p>
+
+      </div>
+      <div class="clear">
+      </div>
+    </div>
+    <div class="comment">
+      <a name="comment-3899"></a>
+      <div class="comment-author vcard">
+        <img class="gravatar photo" src="http://www.gravatar.com/avatar.php?gravatar_id=d41d8cd98f00b204e9800998ecf8427e&amp;rating=PG&amp;size=50&amp;default=identicon" alt="Dmitry" />
+        <br />
+        <span class"fn url">Dmitry</span>
+      </div>
+      <div class="comment-body"> 
+        <div class="comment-date"><span class="date" title="28 Sep, 2010 01:19">28 Sep, 2010 01:19 AM</span></div>
+        
+<p>I'd suggest a small correction to allow static methods to be used within handlers:</p>
+
+<p>public void Handler(object sender, TEventArgs e)
+    {
+        var target = _targetReference.Target;
+        if ((target != null) || _method.IsStatic)
+        {
+           ...
+        }
+    }</p>
+
+      </div>
+      <div class="clear">
+      </div>
+    </div>
+  </div>
+</div>
+    <p>No new comments are allowed on this post.</p>  
+
+    </div>
+  </div>
+  <div class="footer">
+    <p>Powered by <a href="http://www.funnelweblog.com">FunnelWeb</a>, the blog engine of real developers.</p>
+    <p>
+      Is this your blog? <a href="/login">Log in and update it</a>.
+    </p>
+  </div>
+  <script type="text/javascript" src="/Content/Scripts/JQuery/jquery-1.3.2.min.js?cdv=1"></script><script type="text/javascript" src="/Content/Scripts/Showdown/wmd.js?cdv=1"></script><script type="text/javascript" src="/Content/Scripts/Site/Site.js?cdv=1"></script><script type="text/javascript" src="/Content/Scripts/Showdown/Showdown.js?cdv=1"></script><script type="text/javascript" src="/Content/Scripts/JQuery/jsdate.js?cdv=1"></script><script type="text/javascript" src="/Content/Scripts/Prettify/Prettify.js?cdv=1"></script>
+  <script type="text/javascript">
+
+  var _gaq = _gaq || [];
+  _gaq.push(['_setAccount', 'UA-12143764-1']);
+  _gaq.push(['_trackPageview']);
+
+  (function() {
+    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+  })();
+
+</script>
+</body>
+</html>

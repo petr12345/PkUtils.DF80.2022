@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<xs:schema id="Types" targetNamespace="http://example.org/xmlserializer" xmlns="http://example.org/xmlserializer" xmlns:mstns="http://example.org/xmlserializer" xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified">
+	<xs:complexType name="PaymentMethod">
+		<xs:choice>
+			<xs:element name="commision" type="xs:double" />
+			<xs:element name="hourly" type="xs:double" />
+			<xs:element name="salary" type="xs:double" />
+			<xs:element name="other" type="xs:string" />
+		</xs:choice>
+	</xs:complexType>
+	<xs:element name="paymentMethod" type="PaymentMethod"></xs:element>
+	<xs:complexType name="Employee" mixed="true">
+		<xs:sequence>
+			<xs:element name="id" type="xs:string" />
+			<xs:element name="name" type="xs:string" />
+		</xs:sequence>
+	</xs:complexType>
+	<xs:element name="employee" type="Employee"></xs:element>
+</xs:schema>

@@ -1,0 +1,9 @@
+The script UnblockFiles.ps1 recursively unblocks all files in Windows, 
+which produce the security warning
+ "This file came from another computer and might be blocked".
+
+Save script UnblockFiles.ps1 to your computer and run it from a PowerShell session. 
+Provide the folder path as an argument when running the script, like this:
+
+.\UnblockFiles.ps1 -FolderPath "e:\PK.Projects\PkNetUtils"
+.\UnblockFiles.ps1 -FolderPath "e:\PK.Projects\PkNetUtils.DF80"

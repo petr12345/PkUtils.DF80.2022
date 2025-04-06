@@ -1,0 +1,2054 @@
+From: "Saved by Windows Internet Explorer 8"
+Subject: Introduction to the .Net XmlSerializer
+Date: Fri, 25 Mar 2011 14:34:15 +0100
+MIME-Version: 1.0
+Content-Type: multipart/related;
+	type="text/html";
+	boundary="----=_NextPart_000_0000_01CBEAF9.B7842C40"
+X-MimeOLE: Produced By Microsoft MimeOLE V6.1.7601.17514
+
+This is a multi-part message in MIME format.
+
+------=_NextPart_000_0000_01CBEAF9.B7842C40
+Content-Type: text/html;
+	charset="utf-8"
+Content-Transfer-Encoding: quoted-printable
+Content-Location: http://www.bonesoft.com/Articles/XmlSerializer.aspx
+
+=EF=BB=BF<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<HTML><HEAD><TITLE>Introduction to the .Net XmlSerializer</TITLE>
+<META content=3D"text/html; charset=3Dutf-8" http-equiv=3DContent-Type>
+<META name=3Ddescription=20
+content=3D"Discussion of the basics of using the XmlSerializer and the =
+attributes in the System.Xml.Serialization namespace"><LINK=20
+rel=3Dstylesheet type=3Dtext/css=20
+href=3D"http://www.bonesoft.com/Resources/yellow.css"><LINK rel=3Dicon=20
+type=3Dimage/x-icon href=3D"../favicon.ico"><LINK rel=3D"shortcut icon"=20
+type=3Dimage/x-icon href=3D"http://www.bonesoft.com/favicon.ico">
+<STYLE>CODE.x {
+	COLOR: maroon
+}
+H1 {
+	COLOR: #bc6505; FONT-SIZE: 14pt
+}
+H2 {
+	COLOR: #bc6505; FONT-SIZE: 12pt
+}
+H3 {
+	COLOR: #bc6505; FONT-SIZE: 10pt
+}
+H4 {
+	COLOR: #bc6505; FONT-SIZE: 9pt
+}
+H5 {
+	COLOR: #bc6505; FONT-SIZE: 8pt
+}
+H6 {
+	COLOR: #bc6505; FONT-SIZE: 7pt
+}
+</STYLE>
+
+<META name=3DGENERATOR content=3D"MSHTML 8.00.7601.17537"></HEAD>
+<BODY>
+<TABLE class=3DTitleBar cellSpacing=3D0 cellPadding=3D0 width=3D"100%">
+  <TBODY>
+  <TR>
+    <TD><IMG=20
+      style=3D"BORDER-RIGHT-WIDTH: 0px; BORDER-TOP-WIDTH: 0px; =
+BORDER-BOTTOM-WIDTH: 0px; BORDER-LEFT-WIDTH: 0px"=20
+      id=3DPageBody1_logo =
+src=3D"http://www.bonesoft.com/Resources/Logo.gif"> </TD>
+    <TD vAlign=3Dbottom align=3Dright>
+      <DIV id=3DPageBody1_headRight><SPAN>
+      <TABLE cellSpacing=3D4 align=3Dright>
+        <TBODY>
+        <TR>
+          <TD class=3Dmenutop width=3D80 noWrap><A=20
+            href=3D"http://www.bonesoft.com/Login.aspx"><IMG border=3D0=20
+            src=3D"http://www.bonesoft.com/Resources/login.gif"> =
+Login</A></TD>
+          <TD class=3Dmenutop width=3D80 noWrap><A=20
+            href=3D"http://www.bonesoft.com/Register.aspx"><IMG =
+border=3D0=20
+            src=3D"http://www.bonesoft.com/Resources/register.gif">=20
+        Register</A></TD></TR></TBODY></TABLE></SPAN></DIV></TD></TR>
+  <TR><!-- Seperator line -->
+    <TD class=3Ddark height=3D2 colSpan=3D2></TD></TR></TBODY></TABLE>
+<TABLE border=3D0 width=3D"100%"><!-- Spacer - heading and body =
+seperator -->
+  <TBODY>
+  <TR>
+    <TD><SPAN class=3Dspacer>&nbsp;</SPAN></TD></TR>
+  <TR><!-- Menu panel -->
+    <TD vAlign=3Dtop width=3D127>
+      <TABLE=20
+      style=3D"BORDER-BOTTOM: black 1px solid; BORDER-LEFT: black 1px =
+solid; BACKGROUND-COLOR: white; BORDER-TOP: black 1px solid; =
+BORDER-RIGHT: black 1px solid"=20
+      width=3D120 align=3Dcenter>
+        <TBODY>
+        <TR>
+          <TH class=3Dmenuhead><IMG border=3D0=20
+            src=3D"http://www.bonesoft.com/Resources/bonesml.gif">=20
+        Information</TH></TR>
+        <TR>
+          <TD>
+            <TABLE width=3D"100%">
+              <TBODY>
+              <TR>
+                <TD><A=20
+              =
+href=3D"http://www.bonesoft.com/default.aspx">Home</A></TD></TR>
+              <TR>
+                <TD class=3Ddark width=3D"100%"></TD></TR>
+              <TR>
+                <TD><A href=3D"http://www.bonesoft.com/about.aspx">About =
+
+                Us</A></TD></TR>
+              <TR>
+                <TD class=3Ddark width=3D"100%"></TD></TR>
+              <TR>
+                <TD><A =
+href=3D"http://www.bonesoft.com/products.aspx">Our=20
+                  Products</A></TD></TR>
+              <TR>
+                <TD class=3Ddark width=3D"100%"></TD></TR>
+              <TR>
+                <TD><A =
+href=3D"http://www.bonesoft.com/services.aspx">Our=20
+                  Services</A></TD></TR>
+              <TR>
+                <TD class=3Ddark width=3D"100%"></TD></TR>
+              <TR>
+                <TD><A=20
+                  =
+href=3D"http://www.bonesoft.com/projects.aspx">Projects</A></TD></TR>
+              <TR>
+                <TD class=3Ddark width=3D"100%"></TD></TR>
+              <TR>
+                <TD><A =
+href=3D"http://www.bonesoft.com/contact.aspx">Contact=20
+                  Us</A></TD></TR>
+              <TR>
+                <TD class=3Ddark width=3D"100%"></TD></TR>
+              <TR>
+                <TD class=3Dmenutop><A=20
+                  =
+href=3D"http://www.bonesoft.com/Articles/">Articles</A></TD></TR></TBODY>=
+</TABLE></TD></TR></TBODY></TABLE></TD>
+    <TD width=3D5></TD><!-- Body panel -->
+    <TD vAlign=3Dtop>
+      <DIV id=3DPageBody1_Body>
+      <DIV id=3DPageBody1_content>
+      <P><SPAN class=3Dh1>Using the=20
+      System.Xml.Serialization.XmlSerializer</SPAN></P>
+      <P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;The main purpose of this article =
+is to=20
+      discuss some of the uses for Xml Serialization and explore some of =
+the=20
+      basics of using the <CODE class=3Dx>XmlSerializer</CODE> and the =
+attributes=20
+      in the <CODE class=3Dx>System.Xml.Serialization</CODE> namespace. =
+To keep=20
+      this discussion basic, I will not talk about XML namespaces, or =
+the=20
+      attributes' more specific constructors. This article only aims to =
+give a=20
+      basic introduction to the serializer and attributes, and some =
+links to=20
+      further reading and helpful tools. However, one of the great =
+things about=20
+      this approach to working with XML, is that it takes very little =
+work and=20
+      you can benefit greatly from the basics alone. While a full =
+exploration of=20
+      the API is recommended, you can accomplish much with only a basic=20
+      understanding. And with the use of tools such as Skeleton Crew, =
+you need=20
+      only the most basic understanding to put these techniques to =
+use.</P>
+      <P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Depending on your needs, there =
+are=20
+      several options available when working with XML. If you only need =
+to read=20
+      certain portions of your XML, using XPath queries with <CODE=20
+      class=3Dx>XmlNode.SelectNodes()</CODE> and <CODE=20
+      class=3Dx>XmlNode.SelectSingleNode()</CODE> is a reasonable =
+option. But if=20
+      you need to make your XML and code interchangeable, this is not a =
+viable=20
+      approach. To move from one to the other, both the code model and =
+the XML=20
+      structure must have the ability to represent the same information =
+no=20
+      matter how it's formatted. For this you have three options... If =
+you do=20
+      not have a specific XML structure that you need to adhere to, you =
+can use=20
+      the <CODE class=3Dx>DataSet</CODE>'s <CODE =
+class=3Dx>ReadXml()</CODE> and=20
+      <CODE class=3Dx>WriteXml()</CODE> methods. If you have a specific =
+XML=20
+      structure or an XML Schema that you need to represent in code, you =
+can use=20
+      the XSD.exe tool, though it has some unpleasant side effects. =
+However, if=20
+      you have a class hierarchy that you need to represent in XML =
+you're only=20
+      two options are to use the the serialization attributes and/or the =
+<CODE=20
+      class=3Dx>XmlAttributeOverrides</CODE> class with the <CODE=20
+      class=3Dx>XmlSerializer</CODE>. But keep in mind, that this last =
+option can=20
+      handle all of the previously mentioned scenarios. Actually, the =
+XSD.exe=20
+      tool uses this approach as well, it just generates the code from =
+XML or=20
+      XSD. The main problems with the XSD tool are the lack of =
+customizability=20
+      and the ugly code it produces.</P><!--H2>About the Example =
+Project</H2>
+<P>This article is a basic explaination of XML Serialization. The =
+example is a small application, for cataloging game information, that =
+uses the XML Serialization techniques described in this article to store =
+it's information. XML Serialization is a great alternative to databases =
+for many projects such as this that are small local applications. This =
+example also shows some other interesting things such as using the <code =
+class=3D"x">AxWebBrowser</CODE> control, XSLT rendering, and pre-VS2005 =
+menu painting. Plus it's a nice thing to have if you own a lot of games. =
+:)</P-->
+      <H2>Using the XmlSerializer &amp; Serialization Attributes</H2>
+      <P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;In discussing the <CODE=20
+      class=3Dx>XmlSerializer</CODE> and the serializer attributes, =
+we're talking=20
+      about either modifying existing code to specify how it's data will =
+be=20
+      serialized, or creating new code to produce a specific XML =
+structure. For=20
+      the most part, this only entails attaching attributes to the =
+public fields=20
+      or properties of classes, and in some situations to the class =
+itself. But=20
+      before we dive into the attributes, let's talk a little about the =
+<CODE=20
+      class=3Dx>XmlSerializer</CODE>...</P>
+      <H3>The XmlSerializer</H3>
+      <P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Given XML, the <CODE=20
+      class=3Dx>XmlSerializer</CODE> can produce a graph of objects that =
+hold the=20
+      same instance data. This is known as XML de-serialization. For =
+this to=20
+      work, the classes of the objects must be structured to fit the XML =
+
+      supplied, or the attributes in the <CODE=20
+      class=3Dx>System.Xml.Serialization</CODE> namespace must be used =
+to specify=20
+      how the object's properties map to XML entities.</P>
+      <P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;The <CODE =
+class=3Dx>XmlSerializer</CODE>=20
+      can also produce XML when supplied with an instance of an Xml =
+Serializable=20
+      object. This is known as XML Serialization. The criteria that =
+determine if=20
+      an object or graph of objects are "Xml Serializable" are fairly=20
+      simple...</P>
+      <P>
+      <UL>
+        <LI>In theory, it would be possible to serialize an interface, =
+but=20
+        impossible to determine what concrete type to de-serialize to. =
+Because=20
+        of this, the <CODE class=3Dx>XmlSerializer</CODE> cannot work =
+directly=20
+        with an interface reference.=20
+        <LI>The <CODE class=3Dx>XmlSerializer</CODE> can only work with =
+the public=20
+        fields on your types, and or the public properties that supply =
+both=20
+        <CODE class=3Dx>get</CODE> and <CODE class=3Dx>set</CODE> =
+accessors.=20
+        <LI>The types of the properties of the type to be serialized =
+must follow=20
+        the previous rules.=20
+        <LI>Xml Serialization exceptions are notoriously hard to read at =
+first=20
+        glance, because they are almost always nested. Once you have a =
+model=20
+        built that you intend to use with Xml serialization, it pays to =
+use a=20
+        pre-compiler to verify the serializability of your classes. One =
+such=20
+        tool is listed at the end of this article in the <B>Links and =
+Tools</B>=20
+        section. </LI></UL>
+      <P></P>
+      <H3>The Attributes</H3>
+      <P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;With the use of the attributes in =
+the=20
+      <CODE class=3Dx>System.Xml.Serialization</CODE> namespace, you can =
+in effect=20
+      make your classes completely interchangeable with XML. The =
+attributes=20
+      basically allow you to specify if members of your class should be =
+an=20
+      attribute or an element or an array, and what those XML entities =
+should be=20
+      named in the XML.</P>
+      <H4>XmlRootAttribute</H4>
+      <P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;The <CODE =
+class=3Dx>XmlRootAttribute</CODE>=20
+      attribute tells the serializer that the class that this attribute =
+is=20
+      attached to is the document root node. It also allows you to =
+specify what=20
+      the root node is named despite the class name. For example, the =
+<CODE=20
+      class=3Dx>RootClass</CODE> class is serialized to an <CODE=20
+      class=3Dx>XmlDocRoot</CODE> root node:</P>
+      <TABLE=20
+      style=3D"BORDER-BOTTOM: #cccccc 1px solid; BORDER-LEFT: #cccccc =
+1px solid; BACKGROUND-COLOR: #eeeeee; FONT-FAMILY: Courier New; =
+FONT-SIZE: 8pt; BORDER-TOP: #cccccc 1px solid; BORDER-RIGHT: #cccccc 1px =
+solid"><!-- width=3D"100%" -->
+        <TBODY>
+        <TR>
+          <TD align=3Dright><PRE style=3D"FONT-FAMILY: Courier =
+New"><CODE class=3Dx><SPAN style=3D"COLOR: #aaaaaa">1
+2
+3
+4
+5
+6
+7
+8</SPAN></CODE></PRE></TD>
+          <TD=20
+style=3D"BORDER-LEFT: #5f9ea0 1px dotted; FONT-SIZE: 2pt">&nbsp;</TD>
+          <TD><PRE><CODE><SPAN style=3D"COLOR: #0000ff">using</SPAN> =
+<SPAN style=3D"COLOR: #000080">System</SPAN>;
+<SPAN style=3D"COLOR: #0000ff">using</SPAN> <SPAN style=3D"COLOR: =
+#000080">System</SPAN><SPAN style=3D"COLOR: #000080">.</SPAN>Xml<SPAN =
+style=3D"COLOR: #000080">.</SPAN>Serialization;
+
+<SPAN style=3D"COLOR: #0000ff">namespace</SPAN> XmlEntities <SPAN =
+style=3D"COLOR: #000080">{</SPAN>
+    <SPAN style=3D"COLOR: #000080">[</SPAN>XmlRoot<SPAN style=3D"COLOR: =
+#000080">(</SPAN><SPAN style=3D"COLOR: #000080">"</SPAN>XmlDocRoot<SPAN =
+style=3D"COLOR: #000080">"</SPAN><SPAN style=3D"COLOR: =
+#000080">)</SPAN><SPAN style=3D"COLOR: #000080">]</SPAN>
+    <SPAN style=3D"COLOR: #0000ff">public</SPAN> <SPAN style=3D"COLOR: =
+#0000ff">class</SPAN> RootClass <SPAN style=3D"COLOR: #000080">{</SPAN>
+    <SPAN style=3D"COLOR: #000080">}</SPAN>
+<SPAN style=3D"COLOR: =
+#000080">}</SPAN></CODE></PRE></TD></TR></TBODY></TABLE>
+      <P>Will serialize to something similar to this...</P>
+      <TABLE=20
+      style=3D"BORDER-BOTTOM: #cccccc 1px solid; BORDER-LEFT: #cccccc =
+1px solid; BACKGROUND-COLOR: #eeeeee; FONT-FAMILY: Courier New; =
+FONT-SIZE: 8pt; BORDER-TOP: #cccccc 1px solid; BORDER-RIGHT: #cccccc 1px =
+solid"><!-- width=3D"100%" -->
+        <TBODY>
+        <TR>
+          <TD align=3Dright><PRE style=3D"FONT-FAMILY: Courier =
+New"><CODE><SPAN style=3D"COLOR: #aaaaaa">1</SPAN></CODE></PRE></TD>
+          <TD=20
+style=3D"BORDER-LEFT: #5f9ea0 1px dotted; FONT-SIZE: 2pt">&nbsp;</TD>
+          <TD><PRE><CODE><SPAN style=3D"COLOR: =
+#000080">&lt;</SPAN>XmlDocRoot <SPAN style=3D"COLOR: =
+#000080">/&gt;</SPAN></CODE></PRE></TD></TR></TBODY></TABLE>
+      <H4>XmlElementAttribute</H4>
+      <P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;The <CODE=20
+      class=3Dx>XmlElementAttribute</CODE> attributes allows you to =
+specify that a=20
+      member should be serialized as an element and what the element =
+should be=20
+      named. Simple data (<CODE class=3Dx>int</CODE>, <CODE =
+class=3Dx>string</CODE>,=20
+      etc...) and complex data (objects with fields or properties) can =
+be=20
+      serialized to elements.</P>
+      <TABLE=20
+      style=3D"BORDER-BOTTOM: #cccccc 1px solid; BORDER-LEFT: #cccccc =
+1px solid; BACKGROUND-COLOR: #eeeeee; FONT-FAMILY: Courier New; =
+FONT-SIZE: 8pt; BORDER-TOP: #cccccc 1px solid; BORDER-RIGHT: #cccccc 1px =
+solid"><!-- width=3D"100%" -->
+        <TBODY>
+        <TR>
+          <TD align=3Dright><PRE style=3D"FONT-FAMILY: Courier =
+New"><CODE><SPAN style=3D"COLOR: #aaaaaa">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15</SPAN></CODE></PRE></TD>
+          <TD=20
+style=3D"BORDER-LEFT: #5f9ea0 1px dotted; FONT-SIZE: 2pt">&nbsp;</TD>
+          <TD><PRE><CODE><SPAN style=3D"COLOR: #0000ff">using</SPAN> =
+<SPAN style=3D"COLOR: #000080">System</SPAN>;
+<SPAN style=3D"COLOR: #0000ff">using</SPAN> <SPAN style=3D"COLOR: =
+#000080">System</SPAN><SPAN style=3D"COLOR: #000080">.</SPAN>Xml<SPAN =
+style=3D"COLOR: #000080">.</SPAN>Serialization;
+
+<SPAN style=3D"COLOR: #0000ff">namespace</SPAN> XmlEntities <SPAN =
+style=3D"COLOR: #000080">{</SPAN>
+    <SPAN style=3D"COLOR: #000080">[</SPAN>XmlRoot<SPAN style=3D"COLOR: =
+#000080">(</SPAN><SPAN style=3D"COLOR: #000080">"</SPAN>XmlDocRoot<SPAN =
+style=3D"COLOR: #000080">"</SPAN><SPAN style=3D"COLOR: =
+#000080">)</SPAN><SPAN style=3D"COLOR: #000080">]</SPAN>
+    <SPAN style=3D"COLOR: #0000ff">public</SPAN> <SPAN style=3D"COLOR: =
+#0000ff">class</SPAN> RootClass <SPAN style=3D"COLOR: #000080">{</SPAN>
+        <SPAN style=3D"COLOR: #0000ff">private</SPAN> <SPAN =
+style=3D"COLOR: #0000ff">string</SPAN> element_description;
+
+        <SPAN style=3D"COLOR: #000080">[</SPAN>XmlElement<SPAN =
+style=3D"COLOR: #000080">(</SPAN><SPAN style=3D"COLOR: =
+#000080">"</SPAN>Description<SPAN style=3D"COLOR: #000080">"</SPAN><SPAN =
+style=3D"COLOR: #000080">)</SPAN><SPAN style=3D"COLOR: #000080">]</SPAN>
+        <SPAN style=3D"COLOR: #0000ff">public</SPAN> <SPAN =
+style=3D"COLOR: #0000ff">string</SPAN> Description <SPAN style=3D"COLOR: =
+#000080">{</SPAN>
+            <SPAN style=3D"COLOR: #0000ff">get</SPAN> <SPAN =
+style=3D"COLOR: #000080">{</SPAN> <SPAN style=3D"COLOR: =
+#0000ff">return</SPAN> element_description; <SPAN style=3D"COLOR: =
+#000080">}</SPAN>
+            <SPAN style=3D"COLOR: #0000ff">set</SPAN> <SPAN =
+style=3D"COLOR: #000080">{</SPAN> element_description <SPAN =
+style=3D"COLOR: #000080">=3D</SPAN> <SPAN style=3D"COLOR: =
+#0000ff">value</SPAN>; <SPAN style=3D"COLOR: #000080">}</SPAN>
+        <SPAN style=3D"COLOR: #000080">}</SPAN>
+    <SPAN style=3D"COLOR: #000080">}</SPAN>
+<SPAN style=3D"COLOR: =
+#000080">}</SPAN></CODE></PRE></TD></TR></TBODY></TABLE>
+      <P>Will serialize to something similar to this...</P>
+      <TABLE=20
+      style=3D"BORDER-BOTTOM: #cccccc 1px solid; BORDER-LEFT: #cccccc =
+1px solid; BACKGROUND-COLOR: #eeeeee; FONT-FAMILY: Courier New; =
+FONT-SIZE: 8pt; BORDER-TOP: #cccccc 1px solid; BORDER-RIGHT: #cccccc 1px =
+solid"><!-- width=3D"100%" -->
+        <TBODY>
+        <TR>
+          <TD align=3Dright><PRE style=3D"FONT-FAMILY: Courier =
+New"><CODE><SPAN style=3D"COLOR: #aaaaaa">1
+2
+3</SPAN></CODE></PRE></TD>
+          <TD=20
+style=3D"BORDER-LEFT: #5f9ea0 1px dotted; FONT-SIZE: 2pt">&nbsp;</TD>
+          <TD><PRE><CODE><SPAN style=3D"COLOR: =
+#000080">&lt;</SPAN>XmlDocRoot<SPAN style=3D"COLOR: #000080">&gt;</SPAN>
+    <SPAN style=3D"COLOR: #000080">&lt;</SPAN>Description<SPAN =
+style=3D"COLOR: #000080">&gt;</SPAN>text<SPAN style=3D"COLOR: =
+#000080">&lt;/</SPAN>Description<SPAN style=3D"COLOR: =
+#000080">&gt;</SPAN>
+<SPAN style=3D"COLOR: #000080">&lt;/</SPAN>XmlDocRoot<SPAN =
+style=3D"COLOR: =
+#000080">&gt;</SPAN></CODE></PRE></TD></TR></TBODY></TABLE>
+      <H4>XmlAttributeAttribute</H4>
+      <P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;The <CODE=20
+      class=3Dx>XmlAttributeAttribute</CODE> attribute allows you to =
+specify that=20
+      a member should be serialized as an attribute and what that =
+attribute=20
+      should be named. Only simple data can be used as an attribute =
+because an=20
+      attribute can only represent a single value.</P>
+      <TABLE=20
+      style=3D"BORDER-BOTTOM: #cccccc 1px solid; BORDER-LEFT: #cccccc =
+1px solid; BACKGROUND-COLOR: #eeeeee; FONT-FAMILY: Courier New; =
+FONT-SIZE: 8pt; BORDER-TOP: #cccccc 1px solid; BORDER-RIGHT: #cccccc 1px =
+solid"><!-- width=3D"100%" -->
+        <TBODY>
+        <TR>
+          <TD align=3Dright><PRE style=3D"FONT-FAMILY: Courier =
+New"><CODE><SPAN style=3D"COLOR: #aaaaaa">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15</SPAN></CODE></PRE></TD>
+          <TD=20
+style=3D"BORDER-LEFT: #5f9ea0 1px dotted; FONT-SIZE: 2pt">&nbsp;</TD>
+          <TD><PRE><CODE><SPAN style=3D"COLOR: #0000ff">using</SPAN> =
+<SPAN style=3D"COLOR: #000080">System</SPAN>;
+<SPAN style=3D"COLOR: #0000ff">using</SPAN> <SPAN style=3D"COLOR: =
+#000080">System</SPAN><SPAN style=3D"COLOR: #000080">.</SPAN>Xml<SPAN =
+style=3D"COLOR: #000080">.</SPAN>Serialization;
+
+<SPAN style=3D"COLOR: #0000ff">namespace</SPAN> XmlEntities <SPAN =
+style=3D"COLOR: #000080">{</SPAN>
+    <SPAN style=3D"COLOR: #000080">[</SPAN>XmlRoot<SPAN style=3D"COLOR: =
+#000080">(</SPAN><SPAN style=3D"COLOR: #000080">"</SPAN>XmlDocRoot<SPAN =
+style=3D"COLOR: #000080">"</SPAN><SPAN style=3D"COLOR: =
+#000080">)</SPAN><SPAN style=3D"COLOR: #000080">]</SPAN>
+    <SPAN style=3D"COLOR: #0000ff">public</SPAN> <SPAN style=3D"COLOR: =
+#0000ff">class</SPAN> RootClass <SPAN style=3D"COLOR: #000080">{</SPAN>
+        <SPAN style=3D"COLOR: #0000ff">private</SPAN> <SPAN =
+style=3D"COLOR: #0000ff">int</SPAN> attribute_id;
+
+        <SPAN style=3D"COLOR: #000080">[</SPAN>XmlAttribute<SPAN =
+style=3D"COLOR: #000080">(</SPAN><SPAN style=3D"COLOR: =
+#000080">"</SPAN>id<SPAN style=3D"COLOR: #000080">"</SPAN><SPAN =
+style=3D"COLOR: #000080">)</SPAN><SPAN style=3D"COLOR: #000080">]</SPAN>
+        <SPAN style=3D"COLOR: #0000ff">public</SPAN> <SPAN =
+style=3D"COLOR: #0000ff">int</SPAN> Id <SPAN style=3D"COLOR: =
+#000080">{</SPAN>
+            <SPAN style=3D"COLOR: #0000ff">get</SPAN> <SPAN =
+style=3D"COLOR: #000080">{</SPAN> <SPAN style=3D"COLOR: =
+#0000ff">return</SPAN> attribute_id; <SPAN style=3D"COLOR: =
+#000080">}</SPAN>
+            <SPAN style=3D"COLOR: #0000ff">set</SPAN> <SPAN =
+style=3D"COLOR: #000080">{</SPAN> attribute_id <SPAN style=3D"COLOR: =
+#000080">=3D</SPAN> <SPAN style=3D"COLOR: #0000ff">value</SPAN>; <SPAN =
+style=3D"COLOR: #000080">}</SPAN>
+        <SPAN style=3D"COLOR: #000080">}</SPAN>
+    <SPAN style=3D"COLOR: #000080">}</SPAN>
+<SPAN style=3D"COLOR: =
+#000080">}</SPAN></CODE></PRE></TD></TR></TBODY></TABLE>
+      <P>Will serialize to something similar to this...</P>
+      <TABLE=20
+      style=3D"BORDER-BOTTOM: #cccccc 1px solid; BORDER-LEFT: #cccccc =
+1px solid; BACKGROUND-COLOR: #eeeeee; FONT-FAMILY: Courier New; =
+FONT-SIZE: 8pt; BORDER-TOP: #cccccc 1px solid; BORDER-RIGHT: #cccccc 1px =
+solid"><!-- width=3D"100%" -->
+        <TBODY>
+        <TR>
+          <TD align=3Dright><PRE style=3D"FONT-FAMILY: Courier =
+New"><CODE><SPAN style=3D"COLOR: #aaaaaa">1</SPAN></CODE></PRE></TD>
+          <TD=20
+style=3D"BORDER-LEFT: #5f9ea0 1px dotted; FONT-SIZE: 2pt">&nbsp;</TD>
+          <TD><PRE><CODE><SPAN style=3D"COLOR: =
+#000080">&lt;</SPAN>XmlDocRoot id<SPAN style=3D"COLOR: =
+#000080">=3D</SPAN><SPAN style=3D"COLOR: #000080">"</SPAN>1<SPAN =
+style=3D"COLOR: #000080">"</SPAN> <SPAN style=3D"COLOR: =
+#000080">/&gt;</SPAN></CODE></PRE></TD></TR></TBODY></TABLE>
+      <H4>XmlTextAttribute</H4>
+      <P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Using the <CODE=20
+      class=3Dx>XmlTextAttribute</CODE> attribute specifies that the =
+property it's=20
+      attached to will be the text content of the parent node. This =
+attribute=20
+      can only be attached to one property of the class for obvious =
+reasons.</P>
+      <TABLE=20
+      style=3D"BORDER-BOTTOM: #cccccc 1px solid; BORDER-LEFT: #cccccc =
+1px solid; BACKGROUND-COLOR: #eeeeee; FONT-FAMILY: Courier New; =
+FONT-SIZE: 8pt; BORDER-TOP: #cccccc 1px solid; BORDER-RIGHT: #cccccc 1px =
+solid"><!-- width=3D"100%" -->
+        <TBODY>
+        <TR>
+          <TD align=3Dright><PRE style=3D"FONT-FAMILY: Courier =
+New"><CODE><SPAN style=3D"COLOR: #aaaaaa">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32</SPAN></CODE></PRE></TD>
+          <TD=20
+style=3D"BORDER-LEFT: #5f9ea0 1px dotted; FONT-SIZE: 2pt">&nbsp;</TD>
+          <TD><PRE><CODE><SPAN style=3D"COLOR: #0000ff">using</SPAN> =
+<SPAN style=3D"COLOR: #000080">System</SPAN>;
+<SPAN style=3D"COLOR: #0000ff">using</SPAN> <SPAN style=3D"COLOR: =
+#000080">System</SPAN><SPAN style=3D"COLOR: #000080">.</SPAN>Xml<SPAN =
+style=3D"COLOR: #000080">.</SPAN>Serialization;
+
+<SPAN style=3D"COLOR: #0000ff">namespace</SPAN> XmlEntities <SPAN =
+style=3D"COLOR: #000080">{</SPAN>
+    <SPAN style=3D"COLOR: #000080">[</SPAN>XmlRoot<SPAN style=3D"COLOR: =
+#000080">(</SPAN><SPAN style=3D"COLOR: #000080">"</SPAN>XmlDocRoot<SPAN =
+style=3D"COLOR: #000080">"</SPAN><SPAN style=3D"COLOR: =
+#000080">)</SPAN><SPAN style=3D"COLOR: #000080">]</SPAN>
+    <SPAN style=3D"COLOR: #0000ff">public</SPAN> <SPAN style=3D"COLOR: =
+#0000ff">class</SPAN> RootClass <SPAN style=3D"COLOR: #000080">{</SPAN>
+        <SPAN style=3D"COLOR: #0000ff">private</SPAN> Description =
+element_description;
+
+        <SPAN style=3D"COLOR: #000080">[</SPAN>XmlElement<SPAN =
+style=3D"COLOR: #000080">(</SPAN><SPAN style=3D"COLOR: =
+#000080">"</SPAN>Description<SPAN style=3D"COLOR: #000080">"</SPAN><SPAN =
+style=3D"COLOR: #000080">)</SPAN><SPAN style=3D"COLOR: #000080">]</SPAN>
+        <SPAN style=3D"COLOR: #0000ff">public</SPAN> Description =
+Description <SPAN style=3D"COLOR: #000080">{</SPAN>
+            <SPAN style=3D"COLOR: #0000ff">get</SPAN> <SPAN =
+style=3D"COLOR: #000080">{</SPAN> <SPAN style=3D"COLOR: =
+#0000ff">return</SPAN> element_description; <SPAN style=3D"COLOR: =
+#000080">}</SPAN>
+            <SPAN style=3D"COLOR: #0000ff">set</SPAN> <SPAN =
+style=3D"COLOR: #000080">{</SPAN> element_description <SPAN =
+style=3D"COLOR: #000080">=3D</SPAN> <SPAN style=3D"COLOR: =
+#0000ff">value</SPAN>; <SPAN style=3D"COLOR: #000080">}</SPAN>
+        <SPAN style=3D"COLOR: #000080">}</SPAN>
+    <SPAN style=3D"COLOR: #000080">}</SPAN>
+   =20
+    <SPAN style=3D"COLOR: #0000ff">public</SPAN> <SPAN style=3D"COLOR: =
+#0000ff">class</SPAN> Description <SPAN style=3D"COLOR: =
+#000080">{</SPAN>
+        <SPAN style=3D"COLOR: #0000ff">private</SPAN> <SPAN =
+style=3D"COLOR: #0000ff">int</SPAN> attribute_id;
+        <SPAN style=3D"COLOR: #0000ff">private</SPAN> <SPAN =
+style=3D"COLOR: #0000ff">string</SPAN> element_text;
+
+        <SPAN style=3D"COLOR: #000080">[</SPAN>XmlAttribute<SPAN =
+style=3D"COLOR: #000080">(</SPAN><SPAN style=3D"COLOR: =
+#000080">"</SPAN>id<SPAN style=3D"COLOR: #000080">"</SPAN><SPAN =
+style=3D"COLOR: #000080">)</SPAN><SPAN style=3D"COLOR: #000080">]</SPAN>
+        <SPAN style=3D"COLOR: #0000ff">public</SPAN> <SPAN =
+style=3D"COLOR: #0000ff">int</SPAN> Id <SPAN style=3D"COLOR: =
+#000080">{</SPAN>
+            <SPAN style=3D"COLOR: #0000ff">get</SPAN> <SPAN =
+style=3D"COLOR: #000080">{</SPAN> <SPAN style=3D"COLOR: =
+#0000ff">return</SPAN> attribute_id; <SPAN style=3D"COLOR: =
+#000080">}</SPAN>
+            <SPAN style=3D"COLOR: #0000ff">set</SPAN> <SPAN =
+style=3D"COLOR: #000080">{</SPAN> attribute_id <SPAN style=3D"COLOR: =
+#000080">=3D</SPAN> <SPAN style=3D"COLOR: #0000ff">value</SPAN>; <SPAN =
+style=3D"COLOR: #000080">}</SPAN>
+        <SPAN style=3D"COLOR: #000080">}</SPAN>
+
+        <SPAN style=3D"COLOR: #000080">[</SPAN>XmlText<SPAN =
+style=3D"COLOR: #000080">(</SPAN><SPAN style=3D"COLOR: =
+#000080">)</SPAN><SPAN style=3D"COLOR: #000080">]</SPAN>
+        <SPAN style=3D"COLOR: #0000ff">public</SPAN> <SPAN =
+style=3D"COLOR: #0000ff">string</SPAN> Text <SPAN style=3D"COLOR: =
+#000080">{</SPAN>
+            <SPAN style=3D"COLOR: #0000ff">get</SPAN> <SPAN =
+style=3D"COLOR: #000080">{</SPAN> <SPAN style=3D"COLOR: =
+#0000ff">return</SPAN> element_text; <SPAN style=3D"COLOR: =
+#000080">}</SPAN>
+            <SPAN style=3D"COLOR: #0000ff">set</SPAN> <SPAN =
+style=3D"COLOR: #000080">{</SPAN> element_text <SPAN style=3D"COLOR: =
+#000080">=3D</SPAN> <SPAN style=3D"COLOR: #0000ff">value</SPAN>; <SPAN =
+style=3D"COLOR: #000080">}</SPAN>
+        <SPAN style=3D"COLOR: #000080">}</SPAN>
+    <SPAN style=3D"COLOR: #000080">}</SPAN>
+<SPAN style=3D"COLOR: =
+#000080">}</SPAN></CODE></PRE></TD></TR></TBODY></TABLE>
+      <P>Will serialize to something similar to this...</P>
+      <TABLE=20
+      style=3D"BORDER-BOTTOM: #cccccc 1px solid; BORDER-LEFT: #cccccc =
+1px solid; BACKGROUND-COLOR: #eeeeee; FONT-FAMILY: Courier New; =
+FONT-SIZE: 8pt; BORDER-TOP: #cccccc 1px solid; BORDER-RIGHT: #cccccc 1px =
+solid"><!-- width=3D"100%" -->
+        <TBODY>
+        <TR>
+          <TD align=3Dright><PRE style=3D"FONT-FAMILY: Courier =
+New"><CODE><SPAN style=3D"COLOR: #aaaaaa">1
+2
+3</SPAN></CODE></PRE></TD>
+          <TD=20
+style=3D"BORDER-LEFT: #5f9ea0 1px dotted; FONT-SIZE: 2pt">&nbsp;</TD>
+          <TD><PRE><CODE><SPAN style=3D"COLOR: =
+#000080">&lt;</SPAN>XmlDocRoot<SPAN style=3D"COLOR: #000080">&gt;</SPAN>
+    <SPAN style=3D"COLOR: #000080">&lt;</SPAN>Description id<SPAN =
+style=3D"COLOR: #000080">=3D</SPAN><SPAN style=3D"COLOR: =
+#000080">"</SPAN>1<SPAN style=3D"COLOR: #000080">"</SPAN><SPAN =
+style=3D"COLOR: #000080">&gt;</SPAN>text<SPAN style=3D"COLOR: =
+#000080">&lt;/</SPAN>Description<SPAN style=3D"COLOR: =
+#000080">&gt;</SPAN>
+<SPAN style=3D"COLOR: #000080">&lt;/</SPAN>XmlDocRoot<SPAN =
+style=3D"COLOR: =
+#000080">&gt;</SPAN></CODE></PRE></TD></TR></TBODY></TABLE>
+      <H4>XmlIgnoreAttribute</H4>
+      <P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Any public member that you do not =
+wish to=20
+      serialize, or that cannot be serialized can be excluded from =
+serialization=20
+      by using the <CODE class=3Dx>XmlIgnoreAttribute</CODE> on the =
+member. By=20
+      using this, you insure that the member will not be included in=20
+      serialization or de-serialization.</P>
+      <TABLE=20
+      style=3D"BORDER-BOTTOM: #cccccc 1px solid; BORDER-LEFT: #cccccc =
+1px solid; BACKGROUND-COLOR: #eeeeee; FONT-FAMILY: Courier New; =
+FONT-SIZE: 8pt; BORDER-TOP: #cccccc 1px solid; BORDER-RIGHT: #cccccc 1px =
+solid"><!-- width=3D"100%" -->
+        <TBODY>
+        <TR>
+          <TD align=3Dright><PRE style=3D"FONT-FAMILY: Courier =
+New"><CODE><SPAN style=3D"COLOR: #aaaaaa">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15</SPAN></CODE></PRE></TD>
+          <TD=20
+style=3D"BORDER-LEFT: #5f9ea0 1px dotted; FONT-SIZE: 2pt">&nbsp;</TD>
+          <TD><PRE><CODE><SPAN style=3D"COLOR: #0000ff">using</SPAN> =
+<SPAN style=3D"COLOR: #000080">System</SPAN>;
+<SPAN style=3D"COLOR: #0000ff">using</SPAN> <SPAN style=3D"COLOR: =
+#000080">System</SPAN><SPAN style=3D"COLOR: #000080">.</SPAN>Xml<SPAN =
+style=3D"COLOR: #000080">.</SPAN>Serialization;
+
+<SPAN style=3D"COLOR: #0000ff">namespace</SPAN> XmlEntities <SPAN =
+style=3D"COLOR: #000080">{</SPAN>
+    <SPAN style=3D"COLOR: #000080">[</SPAN>XmlRoot<SPAN style=3D"COLOR: =
+#000080">(</SPAN><SPAN style=3D"COLOR: #000080">"</SPAN>XmlDocRoot<SPAN =
+style=3D"COLOR: #000080">"</SPAN><SPAN style=3D"COLOR: =
+#000080">)</SPAN><SPAN style=3D"COLOR: #000080">]</SPAN>
+    <SPAN style=3D"COLOR: #0000ff">public</SPAN> <SPAN style=3D"COLOR: =
+#0000ff">class</SPAN> RootClass <SPAN style=3D"COLOR: #000080">{</SPAN>
+        <SPAN style=3D"COLOR: #0000ff">private</SPAN> <SPAN =
+style=3D"COLOR: #000080">System</SPAN><SPAN style=3D"COLOR: =
+#000080">.</SPAN>IO<SPAN style=3D"COLOR: #000080">.</SPAN>Stream stream;
+
+        <SPAN style=3D"COLOR: #000080">[</SPAN>XmlIgnore<SPAN =
+style=3D"COLOR: #000080">(</SPAN><SPAN style=3D"COLOR: =
+#000080">)</SPAN><SPAN style=3D"COLOR: #000080">]</SPAN>
+        <SPAN style=3D"COLOR: #0000ff">public</SPAN> <SPAN =
+style=3D"COLOR: #000080">System</SPAN><SPAN style=3D"COLOR: =
+#000080">.</SPAN>IO<SPAN style=3D"COLOR: #000080">.</SPAN>Stream Stream =
+<SPAN style=3D"COLOR: #000080">{</SPAN>
+            <SPAN style=3D"COLOR: #0000ff">get</SPAN> <SPAN =
+style=3D"COLOR: #000080">{</SPAN> <SPAN style=3D"COLOR: =
+#0000ff">return</SPAN> stream; <SPAN style=3D"COLOR: #000080">}</SPAN>
+            <SPAN style=3D"COLOR: #0000ff">set</SPAN> <SPAN =
+style=3D"COLOR: #000080">{</SPAN> stream <SPAN style=3D"COLOR: =
+#000080">=3D</SPAN> <SPAN style=3D"COLOR: #0000ff">value</SPAN>; <SPAN =
+style=3D"COLOR: #000080">}</SPAN>
+        <SPAN style=3D"COLOR: #000080">}</SPAN>
+    <SPAN style=3D"COLOR: #000080">}</SPAN>
+<SPAN style=3D"COLOR: =
+#000080">}</SPAN></CODE></PRE></TD></TR></TBODY></TABLE>
+      <H4>XmlArrayAttribute &amp; XmlArrayItemAttribute</H4>
+      <P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;When serializing an array or =
+collection,=20
+      without the use of attributes, the default behaviour of the =
+serializer is=20
+      to append an element per member of the collection. The <CODE=20
+      class=3Dx>XmlArrayAttribute</CODE> and <CODE=20
+      class=3Dx>XmlArrayItemAttribute</CODE> attributes allow you to =
+alter this=20
+      behaviour. The <CODE class=3Dx>XmlArrayItemAttribute</CODE> =
+attribute tells=20
+      the serializer what the name and type of the elements of the =
+collection=20
+      should be. The <CODE class=3Dx>XmlArrayAttribute</CODE> specifies =
+a parent=20
+      element for the collection elements.</P>
+      <TABLE=20
+      style=3D"BORDER-BOTTOM: #cccccc 1px solid; BORDER-LEFT: #cccccc =
+1px solid; BACKGROUND-COLOR: #eeeeee; FONT-FAMILY: Courier New; =
+FONT-SIZE: 8pt; BORDER-TOP: #cccccc 1px solid; BORDER-RIGHT: #cccccc 1px =
+solid"><!-- width=3D"100%" -->
+        <TBODY>
+        <TR>
+          <TD align=3Dright><PRE style=3D"FONT-FAMILY: Courier =
+New"><CODE><SPAN style=3D"COLOR: #aaaaaa">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16</SPAN></CODE></PRE></TD>
+          <TD=20
+style=3D"BORDER-LEFT: #5f9ea0 1px dotted; FONT-SIZE: 2pt">&nbsp;</TD>
+          <TD><PRE><CODE><SPAN style=3D"COLOR: #0000ff">using</SPAN> =
+<SPAN style=3D"COLOR: #000080">System</SPAN>;
+<SPAN style=3D"COLOR: #0000ff">using</SPAN> <SPAN style=3D"COLOR: =
+#000080">System</SPAN><SPAN style=3D"COLOR: #000080">.</SPAN>Xml<SPAN =
+style=3D"COLOR: #000080">.</SPAN>Serialization;
+
+<SPAN style=3D"COLOR: #0000ff">namespace</SPAN> XmlEntities <SPAN =
+style=3D"COLOR: #000080">{</SPAN>
+    <SPAN style=3D"COLOR: #000080">[</SPAN>XmlRoot<SPAN style=3D"COLOR: =
+#000080">(</SPAN><SPAN style=3D"COLOR: #000080">"</SPAN>XmlDocRoot<SPAN =
+style=3D"COLOR: #000080">"</SPAN><SPAN style=3D"COLOR: =
+#000080">)</SPAN><SPAN style=3D"COLOR: #000080">]</SPAN>
+    <SPAN style=3D"COLOR: #0000ff">public</SPAN> <SPAN style=3D"COLOR: =
+#0000ff">class</SPAN> RootClass <SPAN style=3D"COLOR: #000080">{</SPAN>
+        <SPAN style=3D"COLOR: #0000ff">private</SPAN> <SPAN =
+style=3D"COLOR: #0000ff">string</SPAN><SPAN style=3D"COLOR: =
+#000080">[</SPAN><SPAN style=3D"COLOR: #000080">]</SPAN> element_list;
+
+        <SPAN style=3D"COLOR: #000080">[</SPAN>XmlArrayItem<SPAN =
+style=3D"COLOR: #000080">(</SPAN><SPAN style=3D"COLOR: =
+#000080">"</SPAN>ListItem<SPAN style=3D"COLOR: #000080">"</SPAN><SPAN =
+style=3D"COLOR: #000080">,</SPAN> <SPAN style=3D"COLOR: =
+#0000ff">typeof</SPAN><SPAN style=3D"COLOR: #000080">(</SPAN><SPAN =
+style=3D"COLOR: #0000ff">string</SPAN><SPAN style=3D"COLOR: =
+#000080">)</SPAN><SPAN style=3D"COLOR: #000080">)</SPAN><SPAN =
+style=3D"COLOR: #000080">]</SPAN>
+        <SPAN style=3D"COLOR: #000080">[</SPAN>XmlArray<SPAN =
+style=3D"COLOR: #000080">(</SPAN><SPAN style=3D"COLOR: =
+#000080">"</SPAN>List<SPAN style=3D"COLOR: #000080">"</SPAN><SPAN =
+style=3D"COLOR: #000080">)</SPAN><SPAN style=3D"COLOR: #000080">]</SPAN>
+        <SPAN style=3D"COLOR: #0000ff">public</SPAN> <SPAN =
+style=3D"COLOR: #0000ff">string</SPAN><SPAN style=3D"COLOR: =
+#000080">[</SPAN><SPAN style=3D"COLOR: #000080">]</SPAN> List <SPAN =
+style=3D"COLOR: #000080">{</SPAN>
+            <SPAN style=3D"COLOR: #0000ff">get</SPAN> <SPAN =
+style=3D"COLOR: #000080">{</SPAN> <SPAN style=3D"COLOR: =
+#0000ff">return</SPAN> element_list; <SPAN style=3D"COLOR: =
+#000080">}</SPAN>
+            <SPAN style=3D"COLOR: #0000ff">set</SPAN> <SPAN =
+style=3D"COLOR: #000080">{</SPAN> element_list <SPAN style=3D"COLOR: =
+#000080">=3D</SPAN> <SPAN style=3D"COLOR: #0000ff">value</SPAN>; <SPAN =
+style=3D"COLOR: #000080">}</SPAN>
+        <SPAN style=3D"COLOR: #000080">}</SPAN>
+    <SPAN style=3D"COLOR: #000080">}</SPAN>
+<SPAN style=3D"COLOR: =
+#000080">}</SPAN></CODE></PRE></TD></TR></TBODY></TABLE>
+      <P>Will serialize to something similar to this...</P>
+      <TABLE=20
+      style=3D"BORDER-BOTTOM: #cccccc 1px solid; BORDER-LEFT: #cccccc =
+1px solid; BACKGROUND-COLOR: #eeeeee; FONT-FAMILY: Courier New; =
+FONT-SIZE: 8pt; BORDER-TOP: #cccccc 1px solid; BORDER-RIGHT: #cccccc 1px =
+solid"><!-- width=3D"100%" -->
+        <TBODY>
+        <TR>
+          <TD align=3Dright><PRE style=3D"FONT-FAMILY: Courier =
+New"><CODE><SPAN style=3D"COLOR: #aaaaaa">1
+2
+3
+4
+5
+6</SPAN></CODE></PRE></TD>
+          <TD=20
+style=3D"BORDER-LEFT: #5f9ea0 1px dotted; FONT-SIZE: 2pt">&nbsp;</TD>
+          <TD><PRE><CODE><SPAN style=3D"COLOR: =
+#000080">&lt;</SPAN>XmlDocRoot<SPAN style=3D"COLOR: #000080">&gt;</SPAN>
+    <SPAN style=3D"COLOR: #000080">&lt;</SPAN>List<SPAN style=3D"COLOR: =
+#000080">&gt;</SPAN>
+        <SPAN style=3D"COLOR: #000080">&lt;</SPAN>ListItem<SPAN =
+style=3D"COLOR: #000080">&gt;</SPAN><SPAN style=3D"COLOR: =
+#0000ff">string</SPAN><SPAN style=3D"COLOR: =
+#000080">&lt;/</SPAN>ListItem<SPAN style=3D"COLOR: #000080">&gt;</SPAN>
+        <SPAN style=3D"COLOR: #000080">&lt;</SPAN>ListItem<SPAN =
+style=3D"COLOR: #000080">&gt;</SPAN><SPAN style=3D"COLOR: =
+#0000ff">string</SPAN><SPAN style=3D"COLOR: =
+#000080">&lt;/</SPAN>ListItem<SPAN style=3D"COLOR: #000080">&gt;</SPAN>
+    <SPAN style=3D"COLOR: #000080">&lt;/</SPAN>List<SPAN style=3D"COLOR: =
+#000080">&gt;</SPAN>
+<SPAN style=3D"COLOR: #000080">&lt;/</SPAN>XmlDocRoot<SPAN =
+style=3D"COLOR: =
+#000080">&gt;</SPAN></CODE></PRE></TD></TR></TBODY></TABLE>
+      <H4>XmlIncludeAttribute</H4>
+      <P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;The <CODE=20
+      class=3Dx>XmlIncludeAttribute</CODE> attribute tells the =
+serializer what=20
+      types can be expected to extend a base type. When serializing to =
+XML,=20
+      members of the type that this attribute is attached to will be =
+serialized=20
+      based on the concrete type of the instance the property =
+references. When=20
+      de-serializing from XML, the attributes give the serializer a =
+finite list=20
+      of types that the instance data could fit. In the following =
+example, the=20
+      <CODE class=3Dx>XmlIncludeAttribute</CODE> lets the serializer =
+know that=20
+      wherever an AbstractLogger is referenced that it could be an =
+instance of=20
+      FileLogger, XmlLogger or DataLogger. Say we have a class that has =
+a=20
+      property of type AbstractLogger... During de-serialization the =
+serializer=20
+      will attempt to determine the type to de-serialize to based on the =
+
+      structure of the XML so that it can instantiate a concrete =
+instance for=20
+      the property. While serializing, if this property had an instance =
+of=20
+      FileLogger, the serializer will use the FileLogger class to =
+determine how=20
+      to serialize that property. The attributes just allow you to =
+specify a=20
+      finite list of the available types.</P>
+      <TABLE=20
+      style=3D"BORDER-BOTTOM: #cccccc 1px solid; BORDER-LEFT: #cccccc =
+1px solid; BACKGROUND-COLOR: #eeeeee; FONT-FAMILY: Courier New; =
+FONT-SIZE: 8pt; BORDER-TOP: #cccccc 1px solid; BORDER-RIGHT: #cccccc 1px =
+solid"><!-- width=3D"100%" -->
+        <TBODY>
+        <TR>
+          <TD align=3Dright><PRE style=3D"FONT-FAMILY: Courier =
+New"><CODE><SPAN style=3D"COLOR: #aaaaaa">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11</SPAN></CODE></PRE></TD>
+          <TD=20
+style=3D"BORDER-LEFT: #5f9ea0 1px dotted; FONT-SIZE: 2pt">&nbsp;</TD>
+          <TD><PRE><CODE><SPAN style=3D"COLOR: #0000ff">using</SPAN> =
+<SPAN style=3D"COLOR: #000080">System</SPAN>;
+<SPAN style=3D"COLOR: #0000ff">using</SPAN> <SPAN style=3D"COLOR: =
+#000080">System</SPAN><SPAN style=3D"COLOR: #000080">.</SPAN>Xml<SPAN =
+style=3D"COLOR: #000080">.</SPAN>Serialization;
+
+<SPAN style=3D"COLOR: #0000ff">namespace</SPAN> XmlEntities <SPAN =
+style=3D"COLOR: #000080">{</SPAN>
+    <SPAN style=3D"COLOR: #000080">[</SPAN>XmlInclude<SPAN =
+style=3D"COLOR: #000080">(</SPAN><SPAN style=3D"COLOR: =
+#0000ff">typeof</SPAN><SPAN style=3D"COLOR: =
+#000080">(</SPAN>FileLogger<SPAN style=3D"COLOR: #000080">)</SPAN><SPAN =
+style=3D"COLOR: #000080">)</SPAN><SPAN style=3D"COLOR: #000080">]</SPAN>
+    <SPAN style=3D"COLOR: #000080">[</SPAN>XmlInclude<SPAN =
+style=3D"COLOR: #000080">(</SPAN><SPAN style=3D"COLOR: =
+#0000ff">typeof</SPAN><SPAN style=3D"COLOR: =
+#000080">(</SPAN>XmlLogger<SPAN style=3D"COLOR: #000080">)</SPAN><SPAN =
+style=3D"COLOR: #000080">)</SPAN><SPAN style=3D"COLOR: #000080">]</SPAN>
+    <SPAN style=3D"COLOR: #000080">[</SPAN>XmlInclude<SPAN =
+style=3D"COLOR: #000080">(</SPAN><SPAN style=3D"COLOR: =
+#0000ff">typeof</SPAN><SPAN style=3D"COLOR: =
+#000080">(</SPAN>DataLogger<SPAN style=3D"COLOR: #000080">)</SPAN><SPAN =
+style=3D"COLOR: #000080">)</SPAN><SPAN style=3D"COLOR: #000080">]</SPAN>
+    <SPAN style=3D"COLOR: #0000ff">public</SPAN> <SPAN style=3D"COLOR: =
+#0000ff">abstract</SPAN> <SPAN style=3D"COLOR: #0000ff">class</SPAN> =
+AbstractLogger <SPAN style=3D"COLOR: #000080">:</SPAN> ILogger <SPAN =
+style=3D"COLOR: #000080">{</SPAN>
+        <SPAN style=3D"COLOR: #0000ff">public</SPAN> <SPAN =
+style=3D"COLOR: #0000ff">abstract</SPAN> <SPAN style=3D"COLOR: =
+#0000ff">void</SPAN> Log<SPAN style=3D"COLOR: #000080">(</SPAN>ILog =
+log<SPAN style=3D"COLOR: #000080">)</SPAN>;
+    <SPAN style=3D"COLOR: #000080">}</SPAN>
+<SPAN style=3D"COLOR: =
+#000080">}</SPAN></CODE></PRE></TD></TR></TBODY></TABLE>
+      <H3>Using the XmlSerializer</H3>
+      <P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Now we can talk about using the =
+<CODE=20
+      class=3Dx>XmlSerializer</CODE> to convert from XML to objects and =
+visa=20
+      versa... The following example class <CODE=20
+      class=3Dx>RootClassSerializer</CODE> is an example of how to use =
+the <CODE=20
+      class=3Dx>XmlSerializer</CODE> class to read XML to objects and =
+write=20
+      objects to XML. This example was generated using <A=20
+      href=3D"http://www.bonesoft.com/SkeletonCrew/">Skeleton Crew</A>. =
+A generic=20
+      implementation is easy enough to produce, but if you need to =
+support XML=20
+      namespaces, the <CODE class=3Dx>XmlSerializer</CODE> will need =
+them=20
+      explicitly declared. In any event, the following is just an =
+example of how=20
+      to use the <CODE class=3Dx>XmlSerializer</CODE>.</P>
+      <TABLE=20
+      style=3D"BORDER-BOTTOM: #cccccc 1px solid; BORDER-LEFT: #cccccc =
+1px solid; BACKGROUND-COLOR: #eeeeee; FONT-FAMILY: Courier New; =
+FONT-SIZE: 8pt; BORDER-TOP: #cccccc 1px solid; BORDER-RIGHT: #cccccc 1px =
+solid"><!-- width=3D"100%" -->
+        <TBODY>
+        <TR>
+          <TD align=3Dright><PRE style=3D"FONT-FAMILY: Courier =
+New"><CODE><SPAN style=3D"COLOR: #aaaaaa">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40
+41
+42
+43
+44
+45
+46
+47
+48
+49
+50
+51
+52
+53
+54
+55
+56
+57
+58
+59
+60
+61
+62
+63
+64
+65
+66
+67
+68
+69
+70
+71
+72
+73
+74
+75
+76
+77
+78
+79
+80
+81
+82
+83</SPAN></CODE></PRE></TD>
+          <TD=20
+style=3D"BORDER-LEFT: #5f9ea0 1px dotted; FONT-SIZE: 2pt">&nbsp;</TD>
+          <TD><PRE><CODE><SPAN style=3D"COLOR: #0000ff">using</SPAN> =
+<SPAN style=3D"COLOR: #000080">System</SPAN>;
+<SPAN style=3D"COLOR: #0000ff">using</SPAN> <SPAN style=3D"COLOR: =
+#000080">System</SPAN><SPAN style=3D"COLOR: #000080">.</SPAN>IO;
+<SPAN style=3D"COLOR: #0000ff">using</SPAN> <SPAN style=3D"COLOR: =
+#000080">System</SPAN><SPAN style=3D"COLOR: #000080">.</SPAN>Xml;
+<SPAN style=3D"COLOR: #0000ff">using</SPAN> <SPAN style=3D"COLOR: =
+#000080">System</SPAN><SPAN style=3D"COLOR: #000080">.</SPAN>Xml<SPAN =
+style=3D"COLOR: #000080">.</SPAN>Serialization;
+
+<SPAN style=3D"COLOR: #0000ff">namespace</SPAN> XmlEntities <SPAN =
+style=3D"COLOR: #000080">{</SPAN>
+    <SPAN style=3D"COLOR: #0000ff">public</SPAN> <SPAN style=3D"COLOR: =
+#0000ff">class</SPAN> RootClassSerializer <SPAN style=3D"COLOR: =
+#000080">{</SPAN>
+        <SPAN style=3D"COLOR: #0000ff">private</SPAN> XmlSerializer s =
+<SPAN style=3D"COLOR: #000080">=3D</SPAN> <SPAN style=3D"COLOR: =
+#0000ff">null</SPAN>;
+        <SPAN style=3D"COLOR: #0000ff">private</SPAN> Type type <SPAN =
+style=3D"COLOR: #000080">=3D</SPAN> <SPAN style=3D"COLOR: =
+#0000ff">null</SPAN>;
+
+        <SPAN style=3D"COLOR: #0000ff">public</SPAN> =
+RootClassSerializer<SPAN style=3D"COLOR: #000080">(</SPAN><SPAN =
+style=3D"COLOR: #000080">)</SPAN> <SPAN style=3D"COLOR: =
+#000080">{</SPAN>
+            <SPAN style=3D"COLOR: #0000ff">this</SPAN><SPAN =
+style=3D"COLOR: #000080">.</SPAN>type <SPAN style=3D"COLOR: =
+#000080">=3D</SPAN> <SPAN style=3D"COLOR: #0000ff">typeof</SPAN><SPAN =
+style=3D"COLOR: #000080">(</SPAN>RootClass<SPAN style=3D"COLOR: =
+#000080">)</SPAN>;
+            <SPAN style=3D"COLOR: #0000ff">this</SPAN><SPAN =
+style=3D"COLOR: #000080">.</SPAN>s <SPAN style=3D"COLOR: =
+#000080">=3D</SPAN> <SPAN style=3D"COLOR: #0000ff">new</SPAN> =
+XmlSerializer<SPAN style=3D"COLOR: #000080">(</SPAN><SPAN =
+style=3D"COLOR: #0000ff">this</SPAN><SPAN style=3D"COLOR: =
+#000080">.</SPAN>type<SPAN style=3D"COLOR: #000080">)</SPAN>;
+        <SPAN style=3D"COLOR: #000080">}</SPAN>
+
+        <SPAN style=3D"COLOR: #0000ff">public</SPAN> RootClass =
+Deserialize<SPAN style=3D"COLOR: #000080">(</SPAN><SPAN style=3D"COLOR: =
+#0000ff">string</SPAN> xml<SPAN style=3D"COLOR: #000080">)</SPAN> <SPAN =
+style=3D"COLOR: #000080">{</SPAN>
+            TextReader reader <SPAN style=3D"COLOR: #000080">=3D</SPAN> =
+<SPAN style=3D"COLOR: #0000ff">new</SPAN> StringReader<SPAN =
+style=3D"COLOR: #000080">(</SPAN>xml<SPAN style=3D"COLOR: =
+#000080">)</SPAN>;
+            <SPAN style=3D"COLOR: #0000ff">return</SPAN> =
+Deserialize<SPAN style=3D"COLOR: #000080">(</SPAN>reader<SPAN =
+style=3D"COLOR: #000080">)</SPAN>;
+        <SPAN style=3D"COLOR: #000080">}</SPAN>
+
+        <SPAN style=3D"COLOR: #0000ff">public</SPAN> RootClass =
+Deserialize<SPAN style=3D"COLOR: #000080">(</SPAN>XmlDocument doc<SPAN =
+style=3D"COLOR: #000080">)</SPAN> <SPAN style=3D"COLOR: =
+#000080">{</SPAN>
+            TextReader reader <SPAN style=3D"COLOR: #000080">=3D</SPAN> =
+<SPAN style=3D"COLOR: #0000ff">new</SPAN> StringReader<SPAN =
+style=3D"COLOR: #000080">(</SPAN>doc<SPAN style=3D"COLOR: =
+#000080">.</SPAN>OuterXml<SPAN style=3D"COLOR: #000080">)</SPAN>;
+            <SPAN style=3D"COLOR: #0000ff">return</SPAN> =
+Deserialize<SPAN style=3D"COLOR: #000080">(</SPAN>reader<SPAN =
+style=3D"COLOR: #000080">)</SPAN>;
+        <SPAN style=3D"COLOR: #000080">}</SPAN>
+
+        <SPAN style=3D"COLOR: #0000ff">public</SPAN> RootClass =
+Deserialize<SPAN style=3D"COLOR: #000080">(</SPAN>TextReader reader<SPAN =
+style=3D"COLOR: #000080">)</SPAN> <SPAN style=3D"COLOR: =
+#000080">{</SPAN>
+            RootClass o <SPAN style=3D"COLOR: #000080">=3D</SPAN> <SPAN =
+style=3D"COLOR: #000080">(</SPAN>RootClass<SPAN style=3D"COLOR: =
+#000080">)</SPAN>s<SPAN style=3D"COLOR: =
+#000080">.</SPAN>Deserialize<SPAN style=3D"COLOR: =
+#000080">(</SPAN>reader<SPAN style=3D"COLOR: #000080">)</SPAN>;
+            reader<SPAN style=3D"COLOR: #000080">.</SPAN>Close<SPAN =
+style=3D"COLOR: #000080">(</SPAN><SPAN style=3D"COLOR: =
+#000080">)</SPAN>;
+            <SPAN style=3D"COLOR: #0000ff">return</SPAN> o;
+        <SPAN style=3D"COLOR: #000080">}</SPAN>
+
+        <SPAN style=3D"COLOR: #0000ff">public</SPAN> XmlDocument =
+Serialize<SPAN style=3D"COLOR: #000080">(</SPAN>RootClass rootclass<SPAN =
+style=3D"COLOR: #000080">)</SPAN> <SPAN style=3D"COLOR: =
+#000080">{</SPAN>
+            <SPAN style=3D"COLOR: #0000ff">string</SPAN> xml <SPAN =
+style=3D"COLOR: #000080">=3D</SPAN> StringSerialize<SPAN style=3D"COLOR: =
+#000080">(</SPAN>rootclass<SPAN style=3D"COLOR: #000080">)</SPAN>;
+            XmlDocument doc <SPAN style=3D"COLOR: #000080">=3D</SPAN> =
+<SPAN style=3D"COLOR: #0000ff">new</SPAN> XmlDocument<SPAN =
+style=3D"COLOR: #000080">(</SPAN><SPAN style=3D"COLOR: =
+#000080">)</SPAN>;
+            doc<SPAN style=3D"COLOR: #000080">.</SPAN>PreserveWhitespace =
+<SPAN style=3D"COLOR: #000080">=3D</SPAN> <SPAN style=3D"COLOR: =
+#0000ff">true</SPAN>;
+            doc<SPAN style=3D"COLOR: #000080">.</SPAN>LoadXml<SPAN =
+style=3D"COLOR: #000080">(</SPAN>xml<SPAN style=3D"COLOR: =
+#000080">)</SPAN>;
+            <SPAN style=3D"COLOR: #0000ff">return</SPAN> doc;
+        <SPAN style=3D"COLOR: #000080">}</SPAN>
+
+        <SPAN style=3D"COLOR: #0000ff">private</SPAN> <SPAN =
+style=3D"COLOR: #0000ff">string</SPAN> StringSerialize<SPAN =
+style=3D"COLOR: #000080">(</SPAN>RootClass rootclass<SPAN =
+style=3D"COLOR: #000080">)</SPAN> <SPAN style=3D"COLOR: =
+#000080">{</SPAN>
+            TextWriter w <SPAN style=3D"COLOR: #000080">=3D</SPAN> =
+WriterSerialize<SPAN style=3D"COLOR: #000080">(</SPAN>rootclass<SPAN =
+style=3D"COLOR: #000080">)</SPAN>;
+            <SPAN style=3D"COLOR: #0000ff">string</SPAN> xml <SPAN =
+style=3D"COLOR: #000080">=3D</SPAN> w<SPAN style=3D"COLOR: =
+#000080">.</SPAN>ToString<SPAN style=3D"COLOR: #000080">(</SPAN><SPAN =
+style=3D"COLOR: #000080">)</SPAN>;
+            w<SPAN style=3D"COLOR: #000080">.</SPAN>Close<SPAN =
+style=3D"COLOR: #000080">(</SPAN><SPAN style=3D"COLOR: =
+#000080">)</SPAN>;
+            <SPAN style=3D"COLOR: #0000ff">return</SPAN> xml<SPAN =
+style=3D"COLOR: #000080">.</SPAN>Trim<SPAN style=3D"COLOR: =
+#000080">(</SPAN><SPAN style=3D"COLOR: #000080">)</SPAN>;
+        <SPAN style=3D"COLOR: #000080">}</SPAN>
+
+        <SPAN style=3D"COLOR: #0000ff">private</SPAN> TextWriter =
+WriterSerialize<SPAN style=3D"COLOR: #000080">(</SPAN>RootClass =
+rootclass<SPAN style=3D"COLOR: #000080">)</SPAN> <SPAN style=3D"COLOR: =
+#000080">{</SPAN>
+            TextWriter w <SPAN style=3D"COLOR: #000080">=3D</SPAN> <SPAN =
+style=3D"COLOR: #0000ff">new</SPAN> StringWriter<SPAN style=3D"COLOR: =
+#000080">(</SPAN><SPAN style=3D"COLOR: #000080">)</SPAN>;
+            <SPAN style=3D"COLOR: #0000ff">this</SPAN><SPAN =
+style=3D"COLOR: #000080">.</SPAN>s <SPAN style=3D"COLOR: =
+#000080">=3D</SPAN> <SPAN style=3D"COLOR: #0000ff">new</SPAN> =
+XmlSerializer<SPAN style=3D"COLOR: #000080">(</SPAN><SPAN =
+style=3D"COLOR: #0000ff">this</SPAN><SPAN style=3D"COLOR: =
+#000080">.</SPAN>type<SPAN style=3D"COLOR: #000080">)</SPAN>;
+            s<SPAN style=3D"COLOR: #000080">.</SPAN>Serialize<SPAN =
+style=3D"COLOR: #000080">(</SPAN>w<SPAN style=3D"COLOR: =
+#000080">,</SPAN> rootclass<SPAN style=3D"COLOR: #000080">)</SPAN>;
+            w<SPAN style=3D"COLOR: #000080">.</SPAN>Flush<SPAN =
+style=3D"COLOR: #000080">(</SPAN><SPAN style=3D"COLOR: =
+#000080">)</SPAN>;
+            <SPAN style=3D"COLOR: #0000ff">return</SPAN> w;
+        <SPAN style=3D"COLOR: #000080">}</SPAN>
+
+        <SPAN style=3D"COLOR: #0000ff">public</SPAN> <SPAN =
+style=3D"COLOR: #0000ff">static</SPAN> RootClass ReadFile<SPAN =
+style=3D"COLOR: #000080">(</SPAN><SPAN style=3D"COLOR: =
+#0000ff">string</SPAN> file<SPAN style=3D"COLOR: #000080">)</SPAN> <SPAN =
+style=3D"COLOR: #000080">{</SPAN>
+            RootClassSerializer serializer <SPAN style=3D"COLOR: =
+#000080">=3D</SPAN> <SPAN style=3D"COLOR: #0000ff">new</SPAN> =
+RootClassSerializer<SPAN style=3D"COLOR: #000080">(</SPAN><SPAN =
+style=3D"COLOR: #000080">)</SPAN>;
+            <SPAN style=3D"COLOR: #0000ff">try</SPAN> <SPAN =
+style=3D"COLOR: #000080">{</SPAN>
+                <SPAN style=3D"COLOR: #0000ff">string</SPAN> xml <SPAN =
+style=3D"COLOR: #000080">=3D</SPAN> <SPAN style=3D"COLOR: =
+#0000ff">string</SPAN><SPAN style=3D"COLOR: #000080">.</SPAN>Empty;
+                <SPAN style=3D"COLOR: #0000ff">using</SPAN> <SPAN =
+style=3D"COLOR: #000080">(</SPAN>StreamReader reader <SPAN =
+style=3D"COLOR: #000080">=3D</SPAN> <SPAN style=3D"COLOR: =
+#0000ff">new</SPAN> StreamReader<SPAN style=3D"COLOR: =
+#000080">(</SPAN>file<SPAN style=3D"COLOR: #000080">)</SPAN><SPAN =
+style=3D"COLOR: #000080">)</SPAN> <SPAN style=3D"COLOR: =
+#000080">{</SPAN>
+                    xml <SPAN style=3D"COLOR: #000080">=3D</SPAN> =
+reader<SPAN style=3D"COLOR: #000080">.</SPAN>ReadToEnd<SPAN =
+style=3D"COLOR: #000080">(</SPAN><SPAN style=3D"COLOR: =
+#000080">)</SPAN>;
+                    reader<SPAN style=3D"COLOR: =
+#000080">.</SPAN>Close<SPAN style=3D"COLOR: #000080">(</SPAN><SPAN =
+style=3D"COLOR: #000080">)</SPAN>;
+                <SPAN style=3D"COLOR: #000080">}</SPAN>
+                <SPAN style=3D"COLOR: #0000ff">return</SPAN> =
+serializer<SPAN style=3D"COLOR: #000080">.</SPAN>Deserialize<SPAN =
+style=3D"COLOR: #000080">(</SPAN>xml<SPAN style=3D"COLOR: =
+#000080">)</SPAN>;
+            <SPAN style=3D"COLOR: #000080">}</SPAN> <SPAN =
+style=3D"COLOR: #0000ff">catch</SPAN> <SPAN style=3D"COLOR: =
+#000080">{</SPAN><SPAN style=3D"COLOR: #000080">}</SPAN>
+            <SPAN style=3D"COLOR: #0000ff">return</SPAN> <SPAN =
+style=3D"COLOR: #0000ff">new</SPAN> RootClass<SPAN style=3D"COLOR: =
+#000080">(</SPAN><SPAN style=3D"COLOR: #000080">)</SPAN>;
+        <SPAN style=3D"COLOR: #000080">}</SPAN>
+
+        <SPAN style=3D"COLOR: #0000ff">public</SPAN> <SPAN =
+style=3D"COLOR: #0000ff">static</SPAN> <SPAN style=3D"COLOR: =
+#0000ff">bool</SPAN> WriteFile<SPAN style=3D"COLOR: =
+#000080">(</SPAN><SPAN style=3D"COLOR: #0000ff">string</SPAN> file<SPAN =
+style=3D"COLOR: #000080">,</SPAN> RootClass config<SPAN style=3D"COLOR: =
+#000080">)</SPAN> <SPAN style=3D"COLOR: #000080">{</SPAN>
+            <SPAN style=3D"COLOR: #0000ff">bool</SPAN> ok <SPAN =
+style=3D"COLOR: #000080">=3D</SPAN> <SPAN style=3D"COLOR: =
+#0000ff">false</SPAN>;
+            RootClassSerializer serializer <SPAN style=3D"COLOR: =
+#000080">=3D</SPAN> <SPAN style=3D"COLOR: #0000ff">new</SPAN> =
+RootClassSerializer<SPAN style=3D"COLOR: #000080">(</SPAN><SPAN =
+style=3D"COLOR: #000080">)</SPAN>;
+            <SPAN style=3D"COLOR: #0000ff">try</SPAN> <SPAN =
+style=3D"COLOR: #000080">{</SPAN>
+                <SPAN style=3D"COLOR: #0000ff">string</SPAN> xml <SPAN =
+style=3D"COLOR: #000080">=3D</SPAN> serializer<SPAN style=3D"COLOR: =
+#000080">.</SPAN>Serialize<SPAN style=3D"COLOR: =
+#000080">(</SPAN>config<SPAN style=3D"COLOR: #000080">)</SPAN><SPAN =
+style=3D"COLOR: #000080">.</SPAN>OuterXml;
+                <SPAN style=3D"COLOR: #0000ff">using</SPAN> <SPAN =
+style=3D"COLOR: #000080">(</SPAN>StreamWriter writer <SPAN =
+style=3D"COLOR: #000080">=3D</SPAN> <SPAN style=3D"COLOR: =
+#0000ff">new</SPAN> StreamWriter<SPAN style=3D"COLOR: =
+#000080">(</SPAN>file<SPAN style=3D"COLOR: #000080">,</SPAN> <SPAN =
+style=3D"COLOR: #0000ff">false</SPAN><SPAN style=3D"COLOR: =
+#000080">)</SPAN><SPAN style=3D"COLOR: #000080">)</SPAN> <SPAN =
+style=3D"COLOR: #000080">{</SPAN>
+                    writer<SPAN style=3D"COLOR: =
+#000080">.</SPAN>Write<SPAN style=3D"COLOR: #000080">(</SPAN>xml<SPAN =
+style=3D"COLOR: #000080">.</SPAN>Trim<SPAN style=3D"COLOR: =
+#000080">(</SPAN><SPAN style=3D"COLOR: #000080">)</SPAN><SPAN =
+style=3D"COLOR: #000080">)</SPAN>;
+                    writer<SPAN style=3D"COLOR: =
+#000080">.</SPAN>Flush<SPAN style=3D"COLOR: #000080">(</SPAN><SPAN =
+style=3D"COLOR: #000080">)</SPAN>;
+                    writer<SPAN style=3D"COLOR: =
+#000080">.</SPAN>Close<SPAN style=3D"COLOR: #000080">(</SPAN><SPAN =
+style=3D"COLOR: #000080">)</SPAN>;
+                <SPAN style=3D"COLOR: #000080">}</SPAN>
+                ok <SPAN style=3D"COLOR: #000080">=3D</SPAN> <SPAN =
+style=3D"COLOR: #0000ff">true</SPAN>;
+            <SPAN style=3D"COLOR: #000080">}</SPAN> <SPAN =
+style=3D"COLOR: #0000ff">catch</SPAN> <SPAN style=3D"COLOR: =
+#000080">{</SPAN><SPAN style=3D"COLOR: #000080">}</SPAN>
+            <SPAN style=3D"COLOR: #0000ff">return</SPAN> ok;
+        <SPAN style=3D"COLOR: #000080">}</SPAN>
+    <SPAN style=3D"COLOR: #000080">}</SPAN>
+<SPAN style=3D"COLOR: =
+#000080">}</SPAN></CODE></PRE></TD></TR></TBODY></TABLE>
+      <H2>Conclusion</H2>
+      <P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;The thing to take away from this=20
+      discussion, is that using this approach to working with XML is =
+extremely=20
+      quick, easy and effective. It takes very little work to setup =
+existing=20
+      models for serialization, there are great tools for building =
+models that=20
+      are serializable, and you don't have to write copious amounts of =
+code to=20
+      see if a node exists and if it has data and if it has the right =
+kind of=20
+      data and if you can cast that data to a usable type and blah... =
+I'm=20
+      getting a headache just thinking about it. And if you're not =
+working with=20
+      XML, maybe you should start, it has a lot to offer.</P>
+      <H2>Links and Tools</H2>
+      <UL>
+        <LI><A =
+href=3D"http://www.topxml.com/xmlserializer/default.asp">Top=20
+        XML</A> has an excellent article on the XmlSerializer.=20
+        <LI><A=20
+        =
+href=3D"http://www.sellsbrothers.com/tools/#XmlSerializerPreCompiler">Sel=
+ls=20
+        Brothers XML Pre-Compiler</A> is a good tool for testing the=20
+        serializability of a class or model that can tell you why a =
+class isn't=20
+        serializable. </LI></UL>
+      <P>Tools that can help you write XML Attributes=20
+      <TABLE>
+        <TBODY>
+        <TR>
+          <TD vAlign=3Dtop><A =
+href=3D"http://www.bonesoft.com/SkeletonCrew/"><IMG=20
+            border=3D0=20
+            =
+src=3D"http://www.bonesoft.com/Resources/SkeletonCrew.gif"><BR>Profession=
+al<BR>Edition</A></TD>
+          <TD vAlign=3Dtop><A =
+href=3D"http://www.bonesoft.com/XmlModeler/"><IMG=20
+            border=3D0=20
+        =
+src=3D"http://www.bonesoft.com/Resources/XML.Net.gif"></A></TD></TR></TBO=
+DY></TABLE></P></DIV></DIV><BR><BR><BR><BR>
+      <TABLE align=3Dcenter valign=3D"bottom">
+        <TBODY>
+        <TR>
+          <TD align=3Dmiddle><A id=3DPageBody1_SC_Link class=3Dmap=20
+            href=3D"http://www.bonesoft.com/SkeletonCrew/">Skeleton =
+Crew</A><!--a href=3D"SkeletonCrew/" class=3D"map">Skeleton =
+Crew</a--></TD>
+          <TD align=3Dmiddle>-</TD>
+          <TD align=3Dmiddle><A id=3DPageBody1_SCPE_Link class=3Dmap=20
+            href=3D"http://www.bonesoft.com/PseudoNet/">Skeleton Crew =
+PE</A><!--a href=3D"PseudoNet/" class=3D"map">Skeleton Crew =
+PE</a--></TD>
+          <TD align=3Dmiddle>-</TD>
+          <TD align=3Dmiddle><A id=3DPageBody1_SCXE_Link class=3Dmap=20
+            href=3D"http://www.bonesoft.com/XmlModeler/">Skeleton Crew =
+XE</A><!--a href=3D"XmlModeler/" class=3D"map">Skeleton Crew =
+XE</a--></TD>
+          <TD align=3Dmiddle>-</TD>
+          <TD align=3Dmiddle><A id=3DPageBody1_RXP_Link class=3Dmap=20
+            =
+href=3D"http://www.bonesoft.com/RegeXPath/">RegeXPath</A><!--a =
+href=3D"RegeXPath/" =
+class=3D"map">RegeXPath</a--></TD></TR></TBODY></TABLE>
+      <TABLE align=3Dcenter valign=3D"bottom">
+        <TBODY>
+        <TR>
+          <TD align=3Dmiddle><A id=3DPageBody1_Home_Link class=3Dmap=20
+            href=3D"http://www.bonesoft.com/Default.aspx">Home</A><!--a =
+href=3D"Default.aspx" class=3D"map">Home</a--></TD>
+          <TD align=3Dmiddle>-</TD>
+          <TD align=3Dmiddle><A id=3DPageBody1_Company_Link class=3Dmap=20
+            href=3D"http://www.bonesoft.com/About.aspx">Company</A><!--a =
+href=3D"About.aspx" class=3D"map">Company</a--></TD>
+          <TD align=3Dmiddle>-</TD>
+          <TD align=3Dmiddle><A id=3DPageBody1_Products_Link class=3Dmap =
+
+            =
+href=3D"http://www.bonesoft.com/Products.aspx">Products</A><!--a =
+href=3D"Products.aspx" class=3D"map">Products</a--></TD>
+          <TD align=3Dmiddle>-</TD>
+          <TD align=3Dmiddle><A id=3DPageBody1_Services_Link class=3Dmap =
+
+            =
+href=3D"http://www.bonesoft.com/Services.aspx">Services</A><!--a =
+href=3D"Services.aspx" class=3D"map">Services</a--></TD>
+          <TD align=3Dmiddle>-</TD>
+          <TD align=3Dmiddle><A id=3DPageBody1_Projects_Link class=3Dmap =
+
+            =
+href=3D"http://www.bonesoft.com/Projects.aspx">Projects</A><!--a =
+href=3D"Projects.aspx" class=3D"map">Projects</a--></TD>
+          <TD align=3Dmiddle>-</TD>
+          <TD align=3Dmiddle><A id=3DPageBody1_Contact_Link class=3Dmap=20
+            =
+href=3D"http://www.bonesoft.com/Contact.aspx">Contact</A><!--a =
+href=3D"Contact.aspx" class=3D"map">Contact</a--></TD>
+          <TD align=3Dmiddle>-</TD>
+          <TD align=3Dmiddle><A id=3DPageBody1_Download_Link class=3Dmap =
+
+            =
+href=3D"http://www.bonesoft.com/Download.aspx">Downloads</A><!--a =
+href=3D"Download.aspx" class=3D"map">Downloads</a--></TD>
+          <TD align=3Dmiddle>-</TD>
+          <TD align=3Dmiddle><A id=3DPageBody1_SiteMap_Link class=3Dmap=20
+            href=3D"http://www.bonesoft.com/SiteMap.aspx">Site =
+Map</A><!--a href=3D"SiteMap.aspx" class=3D"map">Site =
+Map</a--></TD></TR></TBODY></TABLE></TD></TR></TBODY></TABLE></BODY></HTM=
+L>
+
+------=_NextPart_000_0000_01CBEAF9.B7842C40
+Content-Type: image/gif
+Content-Transfer-Encoding: base64
+Content-Location: http://www.bonesoft.com/Resources/Logo.gif
+
+R0lGODlhiABGAPcAAAAAAAgIAAgICBAIABAMCBAQEBgQCBgYGCMcEDElEDEpGCEhISkpJTEpJTEx
+ITExKTkvGzExMTkxMTk5MUIzG0w/GEI5IUY9Kzk5OUI5OUJCOUJCQlJKMVJKOUpKSlJPRF1IJGVS
+Jl9SLl9SPFJSUlpaWmNaSmNeUnNaKW1aM3NeMYBoL2taQndlO3NnRnFnUGNjWmNjY2tra3NrWnNr
+Y3NvZ3Nza4N7YIR7a4yEa3Nzc4yEc3t7e4yEe4SEhIyMjJl+OaWGP62MQqqOTK2UUrWMQrWUQrmV
+Sr2cUsacSsalSsalUs6lSs6lUs6tUtatUqOOXp+UfpSUlKSikb+jZMyvZMOteMCvh96tUtatWt61
+Utq2X9a3cN69a969c9K8h5ycnKWlpa2lnK2tnLWtmL2tlL21nK2trca1mMO6os69mM69pda9lNbB
+mM7GpdbGoLW1tb21rb29rb29tc7Grc7GtdbKrdbOtb29vc7GvdbOvcbGxs7Oxs7OztbWztbW1v8A
+/+e1Uue1Wue9Wu+9Wue9Y++9Y+e9a+e9c969e969hO/GWvfGWufGY+/GY/fGY+fGa+/Ga/fGa+fG
+c+/Gc+fGe+/Ge97GhOfGhN7GjN7GlN7GnPfOY//OY/fOa//Oa//WY//Wa+/Oc/fOc//Oc//Wc+/O
+e/fOe/fWe//We+/OhPfOhPfWhP/WhOfOjO/OjOLOmOfOnO/OmO/WjO/WlO/WnPfWjPfWlP/WjPfW
+nN7OpefOpefWpe/Wpd7Ord7Otf/ee//ehP/ejPfelP/elPfenP/enP/nnOfWre/aqe/erffepffe
+rffnrf/epf/npeTYteLYv+HYy+feyu/etfTht+/exu/iyv/nrf/ntf/vtffnvfvnwf/nxv/vvf/v
+xt7e1t7e3ufe1ufn1ufn3u/nzvfrzu/n1u/r3vfv1vfv3v/vzv/v1v/v3v/3zv/31v/33ufn5+/v
+5/fv5/f35//35///5+/v7/fv7/f37//37///7/f39//39///9////yH5BAEAAIAALAAAAACIAEYA
+AAj+AAEJHEiwoMGDCBMqXMiwocOHEAWG80GxosUz4SJq3Hjw3hkfG0JuiOEjI8eCfT5aLAkx3AId
+MGPKJLEgApiTOB3e41GAhA48QPGA0bEgRh+cYCJE8CmTaEYwIkWeMYhnw7+rWLNe5RPDaM6vB5Pq
+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
+
+------=_NextPart_000_0000_01CBEAF9.B7842C40
+Content-Type: image/gif
+Content-Transfer-Encoding: base64
+Content-Location: http://www.bonesoft.com/Resources/login.gif
+
+R0lGODlhEAAQAPcAAAAAAISEAMbGxv8A////AP//////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////yH5BAEAAAMALAAAAAAQABAA
+AAhdAAcIHBigYICBCBEGEAAAQAAACRUyFFgQYsQBDxVajJiR4MaEDw1WPAhSpMmPAQqoXLmyI8UC
+BGLKjOkSYwGTBQXUTDlz5s6bOHWihNmTJkqcIj82XMq04cWnCAMCADs=
+
+------=_NextPart_000_0000_01CBEAF9.B7842C40
+Content-Type: image/gif
+Content-Transfer-Encoding: base64
+Content-Location: http://www.bonesoft.com/Resources/register.gif
+
+R0lGODlhEAAQAPcAAAgAABAQEBgYGCFK1iFjISGUISkpKSmcKTExMTFSjDFS3jF7lDGUSjk5OTla
+MTm1OUJCQkJj50Jz1kKlQkohSkpKSkpSa0pjtUpr90q1SkrGSlIxKVJSUlJj/1Jr91Jr/1Jz71J7
+MVKM1lLGUlopEFpaY1pja1pr/1pz/1qE71rGWmNjWmNjY2N7/2Ota2OthGPOY2sYCGspCGtKe2ta
+KWtra2uE/2uM/3Nzc3PWc3t7e3vWe4SEhIS1hIxaEIyMjIznjJQpCJQpEJxzQpzO/6U5EKVzEKWl
+pa2ca63evbVKGLVSGLV7IbWMOb1SGL17EMZaGMZjIcaEIcaUOdZrIdZzIdacQtatUtatY95zId7v
+/+eUKefGhO+tQu/Wpe/3//eUKfeUMfe1Sv8A//+UMf+cMf+lOf+lQv+tSv+1Sv+1Uv+9Uv//////
+////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////yH5BAEAAGMALAAAAAAQABAA
+AAjWAMcIHEiwoMGCTRIWrFGiBIuBTbh4sYJkYAMWP45UgDAGC5MrWKwYqVhjI4QiUXzouCJGzBo1
+XWqMMdCARpgyYaissIIGTRo0Wx4GMCCkilEoK6acWWpGikwIAkgocbJECAckYMqUAUODh0ABAGQU
+ERKDg4shT5iEqEDwAoUNMy4s2AHkSxIVEwZGsJGCCBEQJ1700JIhxwgGNUR0aHFDBBEPJxZkcAFj
+xIMCNSIo6IACgwQMAxw4OMDgAAEHNWpcSMA6gQUTOFKnxhF7DO3YsmUe3H0wIAA7
+
+------=_NextPart_000_0000_01CBEAF9.B7842C40
+Content-Type: image/gif
+Content-Transfer-Encoding: base64
+Content-Location: http://www.bonesoft.com/Resources/bonesml.gif
+
+R0lGODlhEAAQAPcAAAAAABgYGDExOTFCADkhAEJCQkoxAEpKSlIpKVJSUmNKGGtSKWtrWnNzc3ta
+IXtjMXt7MXt7e4RzKYSEjJSUlJScnJx7CKWMWrWlSr29vda9jNbW1t61Y+/v7/f39/8A//+9Qv+9
+a//Ga//Wa//ne///jP//////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////yH5BAEAAB8ALAAAAAAQABAA
+AAinAD8IHEiwoEACABIqXJiQwIcAGEpInEhRogUAF0iICHFBhMePF0J4XABhhAgGGRhoWKkBJQOP
+CiB4ZOAhA4WbFDJ4eCnCgUwREXYyGDrUQ4SNBiTMPMDhowgOB16GGIAARIirWLOGAGEhwAcBBgwo
+eBA27IWwBLwSLMCAYAYABgVGeCswQIYEcQuY2FBAYIYOFeAWDDChgdoEExgILghAbd3FcSMLDAgA
+Ow==
+
+------=_NextPart_000_0000_01CBEAF9.B7842C40
+Content-Type: image/gif
+Content-Transfer-Encoding: base64
+Content-Location: http://www.bonesoft.com/Resources/SkeletonCrew.gif
+
+R0lGODlhXwA8APcAAAAAAAgICBAQEBgYGCEhISkpKTExMTk5OUJCQkpKSlIxAFJSAFJSUlpaWmNj
+Y2tra3NzAHNzc3t7e4SEhIyMjJRjAJSUAJSUlJycnKWlpa2trbW1tb17AL29vcbGxs7OztbW1t7e
+3ufn5+/v7/f39/8A//+Ma/+9Sv/Ga///a///jP//////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////yH5BAEAACUALAAAAABfADwA
+AAj+AEsIHEiwoMGDCBMqXMiw4cIRID58ELFC4IqIEic6LEgC4wcQJDaKHDlwRYcHBgwcMFDAQYcV
+GwbIlMkg5MgJAmYKmMBQRMaPFUkyJDGBgIQMIUaM2CCBwIQLBTxInGBgBEkHDDIycLCQBIOZMjcI
+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
+
+------=_NextPart_000_0000_01CBEAF9.B7842C40
+Content-Type: image/gif
+Content-Transfer-Encoding: base64
+Content-Location: http://www.bonesoft.com/Resources/XML.Net.gif
+
+R0lGODlhVwBbAPcAAAAAAAAAnAAA/wAIAABjAACEAACUMQCc/wC9OQgICAgQCAgYCAgpCAgxCBAQ
+EBAYEBAhEBApEBAxEBA5EBBCEBBKEBBSEBBjEBgYGBghGBgpGBgxGBg5GBhCGBhKGBhaGBhrGBhz
+GCEhISEpISExISE5ISFCISFKISFaISFjISFrISFzISF7ISH/ISkpKSkxKSk5KSlCKSlKKSlSKSla
+KSljKSl7KSmEKSmMKSmUKTExMTE5MTFCMTFKMTFSMTFaMTFjADFjMTFj/zFrMTFzMTGEMTGMMTGU
+MTGcADHOMTHO/zH//zk5OTlCOTlKOTlSOTlaOTljOTlrOTlzOTmEOTmMOTmUOTmcOUJCQkJKQkJS
+QkJaQkJjQkJrQkJzQkJ7QkKEQkKMQkKcQkKlQkpKSkpSSkpaSkpzSkqESkqMSkqUSkqcSkqlSlIx
+AFJSAFJSUlJaUlJjUlJzUlJ7UlKEUlKUUlKlUlKtUlpaWlpjWlp7WlqEWlqUWlqcWlqlWlqtWmNj
+Y2NrY2NzY2N7Y2OEY2OMY2OtY2O1Y2tra2t7a2uEa2uUa2uca2ula2uta2u1a2v/a3NzAHNzc3N7
+c3OMc3OUc3Occ3O1c3O9c3t7e3uEe3uMe3uce3ute3u1e3u9e4SEhISMhISUhISlhISthIS9hITG
+hIyMjIyUjIyljIy9jIzGjIz/jIz/rZRjAJSUlJSclJStlJS9lJTGlJTOlJycnJylnJytnJy1nJzG
+nJzOnKWlpaW1paXOpaXO96XWpa2tra21ra29ra3Gra3Ora3WrbW1tbW9tbXWtbXetbX/xr29vb3G
+vb3Wvb3evcbGxsbOxsbexsbnxs7Ozs7ezs7nzs7v/87/zs7//9bW1tbe1tbn1tbv1tb/1t7e3t7n
+3t7v3ufn5+fv5+f35+/v7+/37/f39/f/9///////////////////////////////////////////
+/////////////////////////////////////////////////////ywAAAAAVwBbAAAI/gDRCRyI
+ztu0g9OyCTRnEGE4c9kQHgxHEF04iRMjOqzIsaPHjx/DjXiggOSDZeiePTCpoAkwBwtgOlCQhyC5
+HTJjKthRsmcWcyCDCgVJ7sWHECtCQNCETtMDpCEkmIG1ACqLCiLEDZzm4EJSFiEqPKiatMIIckPT
+qhWY50SOIzk6YDGHpcPbHBB2wYKAA+6RFQ+mDbT14IbfHCge8IWL4uzax0FtjbhCOUWGaRhSUC6S
+4VstCFYoXzHywNZAQBtEV8YAurJjyLA5estAZYyYKg4APagiZsyMJudeQRDTu/cGQAt3nBhjm3kN
+1sTH1Hgduzo6c0yG2LHDZoODDdvZ/mgIhe7zGjt3ttN4ATRcBinb4w9hvSb9EBForVuXVOKPfx8A
++OBfGhlAU14Gdvjn3xcPeJOSA2ko6J8UGSA4IXVDoYXEhujkFxswGfTxyCFoZICGIY908QJatWRg
+CIoo9vEAMOgI9+KIjxjSRYU3doFhUORwmAQSQAjhIWTu0XHJko9cgsklJSAiUIuOPPmkIyMwhUcM
+Ti755BkVVnmJFy4cSRQS6FwzJBBFClGdOWRA8Ukpc37ySSMYHDNlBp7cucecPmRBjg5c+GlnKWDy
+OecZP3YUAFpCAJEEm0ocIAQAHT4KGSgjlGLKKp+uoocIFKEDiwie6qFAJ6aMCg0G/oWsskUGpYCq
+BwYalKJKq2UGFYAv6AiBzQFFKqGEEEIQgKkvmq5lzAOkzDILLdI+8cZAtWigyix6JLDILJZgAMoD
+nczCQwaqUKtHBiKky22vHlnza4fCLmFspckiAQBazFqz1isZyPKLLr3okssLk2A7Qi66EALAILrM
+IoIOI8ySywgV99ILIRksTDAh8DoKLKQbHlApAQRco2+H6DC7FhxaFCPzzHE0AVR5I/RSjCIAxFyM
+EwBkUYwsDuQssyIiGL1zyBzJOzKaSRBwwAEEDKkvvwH4m1Y4ImySDDLOfO3MKBgIhjMxyVACwAvI
+ICMIAIogE0sCI6DdDCUd200J/tMid4hE1FInS0AByzab1jIZCOOMNNE0Hg0yLrwy5QjNRKM2BsNE
+E8sOsUSzCQAuIBONNJokXbnlfDuqIRIEICuEAAJgSk4AmzIhTTW4515NIGScU54L0VQTygAO2IJ7
+8LuDjnwoGQCPeygrrgUAALDHjmlsdE0CzjfcQCPM9tzwIoKDtbhADTiiiIBBKOBw8w0425Qhgvng
+oD//+einDuT0+1rnjQjBGIc4vpEFHXxDgNvQQS1+9w1xoMIFWACEOAQ4jm/oAAsvaKAD59fAcaBC
+B2bSj7N0EI5ylEMbGHDAM0xoDkmUwRy1eMFDYPECRDSBHCykhgsQ4QJxlMMc/qeS4Q9hoT8RDkUS
+UhIIMDCAgVNsxQXeqAUIy6NAUg3kGTo4xRTLM7H8SDGERhQKOZhAI4EgAhB4IMNAyIGFWnyRisvA
+wDMGsgssvGKLtejilLYYRrVkA4oCGeMudoEBBwnkFHh4oxS94YIFCkQSgHgjF/HogmdspI9BqcUb
+bjYNKGZDBGVExzSyOEUphoMMSUQHHl4hyTxu0Rg6YIIsXXAtTIIED04UyCvUCCfkLAQLiCglCDMx
+lw4xYRmt1GMgzUEOc9zRlh8ZVC0Q8oZcnqKSCEEEFrAJijLtQgTLmIYxXJCN8llyGqCY3zkTgpBu
+QtMjp5QlFpiABYWgIxvz/pSlLMkQS1kCgiH5ZAIezAFLfdKznwbVJx7e6RFmkuOhNwtkMx86UYre
+bKLmuKhDMwpRjEI0ogwNqUhHCk1zYKRUJkVINsBIUkxOQgEyUQAcgPLSmCYsKBdR6Vpa0Qb++fSn
+QPWpC1oRFDhEIARg+QAGKAIHCUBFAnAIijmy0JOZGCMtkXBFN67Rja161atcBWtXucpVZbShDSCB
+AwfucoMF0OgNE/DLBKJKlBFQACwhWAAshhKJsSrjr4ANrGAHC9gWoNUjcOiAajZQk8SKpgN0jeYI
+PnCEI+AAAo4ESSv6qoxWsOKzoA2taEf72VZAog1E7QgcTFAc6Zxltb0Z/kMJ6MqQg2SjVOF4RgZq
+QBkrQCAT0zCkR1zAVc9+Voo6IK1odaDA0EKiBQ5ArAm2k54wPOAZq6WuCWZaix3gSgMVwgM0sjAT
+IrDBNibQwAjG9xEAdMO4rGAucpX7WfkyF7TPvR5H4BADCflhA5rAgwkUFAM4BOIBHlABDnDAgg9E
+oEIzCAN140MFB5itI+6Frw4cqkA3evjDIGRmcj/73Oh2ZEuHOIQjUgwFJpRBBit+RAyysADejqYI
+lKmCBBzwgzr8wRA/tkMavBCY9r4XtApkJnKZy2Qm10LJI2YFJBCg34rgQQZdchIfMsAELDuJByTY
+wHnX0IEHgOG8RFDA/kjo8IhHOAIGDngAID2SYdB+kZl49miepYlfKnsEDz2gU508kYEE9KBOPXhA
+EP6wnQwAQAp38MMaHvCKEZwBE59whAaAK1wMH7m+u3jokpvs5GZKEbQt8POJnRAqU+xqCwBwAqhW
+wYMHdEHFhnD0rV+UgUrLwVOEzqyRNQzRDn8YxMVGtao5gocnSIsWcpDDLBaRACdQixZOeMClL+EI
+R2/7Eb0egR5WsQpVaEDYdO4skhV4X/raN8otMECVCYIHLRCsF0/YgS5kkQEnaEwX2ZaDKUrhCQ0A
+YA7A7rULIBYxEew1KA5AgGjnS9/6NvezqTaAiZnts2JoAQOyIAYn/kYxs4+PexalGAEA9DCLco/g
+gYT4RS8uhu6O8BQSkKi4zjGOAI2nltllEFsZAOA1ZyAjGc1IxschVjAnjKASBJvFCF7hgrghoxcj
+qHlHXGAABCCgBWAPu9jHTnavG6ANG+dIHsowumgMHQ7OaHvcy4ABRcyMGDqTWS9EQHVKOMPoWU+L
+C0TgCgMY/vCIT7ziDeAGB6Sd2XDIHRyK1gzdVYPufv/7MHDBeVykQgQP3ATumtFItbTCAT4FxTOC
+Oj3VA/XnHgEEHN63DTiQYQS7qN/7wEH3TUiDGs6gagIUkAAHJAAYLxDFNrahQ62nBRTomPdAoC/9
+oMh+guLAAx7e/oAICopDHHDAgCi4p0MAFH/4x3cBKsQBv9LHxvUegf9a0PjDcuQhkjsooTlMiAcM
+wOL72+ACADAJzMAMx8B3OgALJvQNL+B8QwEKEBh/ETh/voQOaPRJF6ZKfHcO5SAOOgAAsJBR4hA5
+CuQ75OB+myIQq8cR0JcS1TcQKWVbeFCBgAAIbJRLAtF/jjQoALCDOnBHjgQnb1ALzwBSQtGC6LAM
+oFBlSKiEL3hPJRFnCsAENLhQmUAGEYUHLtCCPLgLAsE1u4CCz4BGInBVatGCz+CEBIGGaugR2QAD
+jBCHMPACNIgcy8BeAgEIZMAE+fEKklAqxiAC+ISEgaRAa6F6/svwDBDIhGmoiEv4EdmQBb8wiVqg
+AwuVhwsFhqfxBiIACmYyDWQgCRaIB0ciTY8BAEv4iBWBiqwIEpEoDLBYQG9ATb6kfbSYR0yQCcDw
+DK+AByJABg6yRFS4CwfxDCioFq2IYaoIiQilA/ykT1mkRBckS9H4DJlQg2cUSR6yDNeoh9Rohi1V
+ESwVjuRYjuZ4juiYjkHREAjRaR2iEe0IGfA4DaXyETGYEOOoFoyEAerDRHxIEIjARPzIRHOWFsYg
+kCLgAJsEEqDgAAPpAIQYG5gBDLa1RHNUiKAgEUuUgUJhTgfRTfkICLN4EG9QgdWBGRdGDiKQWdmA
+ASixFWWz/hatxEcdUYOnYZISKQIXZg7cR0dWtBU6KZN4RJMcgUancYnWgZJr+I/oQEwgpZQWoRHe
+AFK1FUXw8kbmkFP0eDM2mYe+VFsJUY9aGZYRUY+YYU8CEUcKASepJBBnmQ2AMHhMoAMYgAW7ABTP
+gAex5AIuMJTksAycGEs6IAJvcFUzeJTmUEcTwwR8CQjTwJMCmUJ8yVyA4CBQKRD/QyMniG6YsQsX
+VAvLQA7eAAySsIXhoAOAsFLTsAuhJEWvIAJ4sAvhIJq7AAgYUAtdqUqAIAkYkAnG8FDltE3LsIXs
+BAq1cFvPgAUDNQ1BCYNYkAkpIUcVgRlv8AYUARH58U2n/oCH10EQ5bOFQEEO2QAU5pAJOlCSmygC
+XhiVX1idKJiVA3GHBhGTAImF5fOJ/PiSz4ABomhM/JQf+NSaOjBnr+AA6/k/ZICUgIAFWHgdgCCI
+AnGQKHiF+REOLkCMGKAQ4RBq6PBN4YAIWEgOHCpKGOACpVILALBF3bRFuwAATHAzeYSUeAAAFchP
+FeiLktMhH7ieXLOShQgAZSRNSjmkLvmc6GAMFuaWGIBHKepFyoSieCQCNEijp2GJA6GDP7qDfOmD
+PViI0xSUmIESJ5gJ6lkjSUqiV9mkU/KkaspFN0qleYiaV+qjOtqlOkqnPOiD0xSTXNGCWhiUgJAA
+ZoMZ/kwapYXqpFN6o3Kag7eZpYE0eFyqp2cpSgqpS6DzUExwppjhAjDapq7kRZ4qpVcKpxZopTmI
+px/og6hKo270Crc5pA4wRcuQAAPFNZq6pKBqqLmKqNOnA0gICIuqSo3qoDpghieIqlRYgzV4EGDq
+eBraRilRfINaoru6poe6phXITAQRlzdKp9fhIYOCqjUHqwmwnhnVoY43rdc6SdXqpjCIEW8QrFj6
+hSr1DCIgrhwxqYQKnQQhCUxAn5vaqbo6JaFagQ1ZfMaXAFQ4p0H4Bo53fgngfqY4nXyKAWkUUTxp
+m+rarp9KsFH6pgkAsQvLqFx6fsYnsYY4nWAqLiS0/ka+CrDU6rFOuq55NKUjmQ02eqXDyoMZOQ32
+iq8UKxgTKQIXeU/qCbM0y6YfO6o0aKoaGKmPCrQEoa9yhILjpJZKyqkya60cK6p5SKrAeqM7m6qF
+KLUwKbRlgwep9ApYsJ/TaqIEy5TmuWEC0aIN+jt3CwgAkERwIq9b+KM8eq96mq9gqpOgUEwWmJow
+e6ECkQ2IsJ5j9AZMuaFoKUUQeqSOiZkuQAY0iAVY0Id/GKHzM7hBS6LixF5j9ApQiRnAWoQ2kU7A
+wHce4g1eBEFv4I7hIAnKSYOc6InTiUopO7FTiwEUuZEtSYx3aAwTeRBLZAz9RwagsAzG4K+N6qpt
+erQMiCClH1msjPm4z7ALPKQDy6CHtygCubiLvfiLf9Szxlhz3hBQWDCVeKBP8fu+BhW/5ICbgJCN
+mVC02Lu/gJAJBjVQ3nAK2FiDoOAgWkRPc+lE1njA2mgOwAqN4EgQDtVMC2FRErVRsFFRRsgRHEVR
+QrFnH4wOAQEAADs=
+
+------=_NextPart_000_0000_01CBEAF9.B7842C40
+Content-Type: text/css;
+	charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
+Content-Location: http://www.bonesoft.com/Resources/yellow.css
+
+BODY {
+	BACKGROUND-IMAGE: url(BGyellow.jpg); MARGIN: 0px; FONT-FAMILY: verdana; =
+COLOR: #203920; FONT-SIZE: 10pt
+}
+.TitleBar {
+	BACKGROUND-IMAGE: url(BarBack.jpg); BACKGROUND-COLOR: cornsilk; =
+BACKGROUND-REPEAT: repeat-y; BACKGROUND-POSITION: right 50%
+}
+HR {
+	BORDER-BOTTOM: darkgreen 1px solid; BORDER-LEFT: darkgreen 1px solid; =
+BORDER-TOP: darkgreen 1px solid; BORDER-RIGHT: darkgreen 1px solid
+}
+.dark {
+	BACKGROUND-COLOR: darkgreen
+}
+TD.menutop {
+	BORDER-BOTTOM: darkgreen 1px solid; BORDER-LEFT: darkgreen 1px solid; =
+BACKGROUND-COLOR: #ddeedd; COLOR: darkgreen; FONT-SIZE: 10pt; =
+BORDER-TOP: darkgreen 1px solid; FONT-WEIGHT: bold; BORDER-RIGHT: =
+darkgreen 1px solid
+}
+TH {
+	COLOR: darkgreen; FONT-SIZE: 12pt
+}
+TD {
+	FONT-FAMILY: verdana; COLOR: #203920; FONT-SIZE: 10pt
+}
+A:link {
+	FONT-FAMILY: verdana; COLOR: #4f914f; FONT-SIZE: 9pt; FONT-WEIGHT: =
+bold; TEXT-DECORATION: none
+}
+A:active {
+	FONT-FAMILY: verdana; COLOR: #69ad69; FONT-SIZE: 9pt; FONT-WEIGHT: =
+bold; TEXT-DECORATION: none
+}
+A:visited {
+	FONT-FAMILY: verdana; COLOR: #4f914f; FONT-SIZE: 9pt; FONT-WEIGHT: =
+bold; TEXT-DECORATION: none
+}
+A:hover {
+	FONT-FAMILY: verdana; COLOR: #3c6c3c; FONT-SIZE: 9pt; FONT-WEIGHT: =
+bold; TEXT-DECORATION: none
+}
+A.w:link {
+	FONT-FAMILY: verdana; COLOR: #b4d6b4; FONT-SIZE: 9pt; TEXT-DECORATION: =
+none
+}
+A.w:active {
+	FONT-FAMILY: verdana; COLOR: #b4d6b4; FONT-SIZE: 9pt; TEXT-DECORATION: =
+none
+}
+A.w:visited {
+	FONT-FAMILY: verdana; COLOR: #b4d6b4; FONT-SIZE: 9pt; TEXT-DECORATION: =
+none
+}
+A.w:hover {
+	FONT-FAMILY: verdana; COLOR: #ffffff; FONT-SIZE: 9pt; TEXT-DECORATION: =
+none
+}
+A.xp:link {
+	BORDER-BOTTOM: #ffffff 1px solid; BORDER-LEFT: #ffffff 1px solid; =
+BACKGROUND-COLOR: #ffffff; COLOR: #3c6c3c; FONT-SIZE: 9pt; BORDER-TOP: =
+#ffffff 1px solid; CURSOR: hand; FONT-WEIGHT: bold; BORDER-RIGHT: =
+#ffffff 1px solid
+}
+A.xp:active {
+	BORDER-BOTTOM: #ffffff 1px solid; BORDER-LEFT: #ffffff 1px solid; =
+BACKGROUND-COLOR: #ffffff; COLOR: #3c6c3c; FONT-SIZE: 9pt; BORDER-TOP: =
+#ffffff 1px solid; CURSOR: hand; FONT-WEIGHT: bold; BORDER-RIGHT: =
+#ffffff 1px solid
+}
+A.xp:visited {
+	BORDER-BOTTOM: #ffffff 1px solid; BORDER-LEFT: #ffffff 1px solid; =
+BACKGROUND-COLOR: #ffffff; COLOR: #3c6c3c; FONT-SIZE: 9pt; BORDER-TOP: =
+#ffffff 1px solid; CURSOR: hand; FONT-WEIGHT: bold; BORDER-RIGHT: =
+#ffffff 1px solid
+}
+A.xp:hover {
+	BORDER-BOTTOM: #4f914f 1px solid; BORDER-LEFT: #4f914f 1px solid; =
+BACKGROUND-COLOR: #b4d6b4; COLOR: #3c6c3c; FONT-SIZE: 9pt; BORDER-TOP: =
+#4f914f 1px solid; CURSOR: hand; FONT-WEIGHT: bold; BORDER-RIGHT: =
+#4f914f 1px solid
+}
+A.map:link {
+	FONT-FAMILY: verdana; COLOR: #4f914f; FONT-SIZE: 8pt; FONT-WEIGHT: =
+normal; TEXT-DECORATION: none
+}
+A.map:active {
+	FONT-FAMILY: verdana; COLOR: #69ad69; FONT-SIZE: 8pt; FONT-WEIGHT: =
+normal; TEXT-DECORATION: none
+}
+A.map:visited {
+	FONT-FAMILY: verdana; COLOR: #4f914f; FONT-SIZE: 8pt; FONT-WEIGHT: =
+normal; TEXT-DECORATION: none
+}
+A.map:hover {
+	FONT-FAMILY: verdana; COLOR: #3c6c3c; FONT-SIZE: 8pt; FONT-WEIGHT: =
+normal; TEXT-DECORATION: none
+}
+TD.opt {
+	BORDER-BOTTOM: #3c6c3c 1px solid; BORDER-LEFT: #3c6c3c 1px solid; =
+WIDTH: 33%; BACKGROUND: #b4d6b4; FONT-SIZE: 8pt; BORDER-TOP: #3c6c3c 1px =
+solid; BORDER-RIGHT: #3c6c3c 1px solid
+}
+.border {
+	BORDER-BOTTOM: #aaaaaa 1px solid; BORDER-LEFT: #aaaaaa 1px solid; =
+BORDER-TOP: #aaaaaa 1px solid; BORDER-RIGHT: #aaaaaa 1px solid
+}
+.heading {
+	COLOR: #000000; FONT-SIZE: 12pt; FONT-WEIGHT: bold
+}
+TABLE.menu {
+	BORDER-BOTTOM: #aaaaaa 1px solid; BORDER-LEFT: #aaaaaa 1px solid; =
+BACKGROUND-COLOR: cornsilk; BORDER-TOP: #aaaaaa 1px solid; BORDER-RIGHT: =
+#aaaaaa 1px solid
+}
+.light {
+	BORDER-BOTTOM: #449944 1px solid; BORDER-LEFT: #e1f2e1 2px solid; =
+BACKGROUND-COLOR: #ffffff; BORDER-TOP: #e1f2e1 2px solid; BORDER-RIGHT: =
+#449944 1px solid
+}
+TH.menuhead {
+	BORDER-BOTTOM: #449944 1px solid; BORDER-LEFT: #e1f2e1 2px solid; =
+BACKGROUND-COLOR: #e1f2e1; FONT-SIZE: 10pt; BORDER-TOP: #e1f2e1 2px =
+solid; BORDER-RIGHT: #449944 1px solid
+}
+SPAN.code {
+	FONT-FAMILY: Courier New; COLOR: navy
+}
+.horizontal {
+	BACKGROUND-REPEAT: repeat-x
+}
+.verticle {
+	BACKGROUND-REPEAT: repeat-y
+}
+TD.MenuTitle {
+	FONT-FAMILY: Verdana; COLOR: darkgreen; FONT-SIZE: 9pt; FONT-WEIGHT: =
+bold
+}
+TD.MenuBody {
+	FONT-FAMILY: Verdana; FONT-SIZE: 10pt
+}
+.spacer {
+	FONT-SIZE: 4pt
+}
+.code {
+	BORDER-BOTTOM: #d8d5f0 1px solid; BORDER-LEFT: #d8d5f0 1px solid; =
+BACKGROUND-COLOR: #f2f1fa; FONT-FAMILY: Courier New; FONT-SIZE: 8pt; =
+BORDER-TOP: #d8d5f0 1px solid; BORDER-RIGHT: #d8d5f0 1px solid
+}
+PRE {
+	FONT-FAMILY: Courier New
+}
+SPAN.Comment {
+	COLOR: #006400
+}
+SPAN.KeyWord {
+	COLOR: #0000ff
+}
+SPAN.Special {
+	COLOR: #000080
+}
+SPAN.Operator {
+	COLOR: #000080
+}
+SPAN.Number {
+	COLOR: #bab6e4
+}
+SPAN.csComment {
+	COLOR: #006400
+}
+SPAN.csKeyWord {
+	COLOR: #0000ff
+}
+SPAN.csSpecial {
+	COLOR: #000080
+}
+SPAN.csOperator {
+	COLOR: #000080
+}
+SPAN.vbComment {
+	COLOR: #006400
+}
+SPAN.vbKeyWord {
+	COLOR: #0000ff
+}
+SPAN.vbSpecial {
+	COLOR: #000080
+}
+SPAN.vbOperator {
+	COLOR: #000080
+}
+SPAN.javaComment {
+	COLOR: #006400
+}
+SPAN.javaKeyWord {
+	COLOR: purple
+}
+SPAN.javaSpecial {
+	COLOR: #b200b2
+}
+SPAN.javaOperator {
+	COLOR: #3d003e
+}
+SPAN.pscComment {
+	COLOR: gray
+}
+SPAN.pscKeyWord {
+	COLOR: red
+}
+SPAN.pscSpecial {
+	COLOR: maroon
+}
+SPAN.pscOperator {
+	COLOR: navy
+}
+SPAN.sqlComment {
+	COLOR: #006400
+}
+SPAN.sqlKeyWord {
+	COLOR: #0000ff
+}
+SPAN.sqlSpecial {
+	COLOR: #000080
+}
+SPAN.sqlOperator {
+	COLOR: #000080
+}
+SPAN.xsdComment {
+	COLOR: #006400
+}
+SPAN.xsdKeyWord {
+	COLOR: red
+}
+SPAN.xsdSpecial {
+	COLOR: maroon
+}
+SPAN.xsdOperator {
+	COLOR: navy
+}
+SPAN.Number {
+	COLOR: #bab6e4
+}
+TD.sub {
+	BORDER-BOTTOM: #eeeeee 1px solid; BORDER-LEFT: #eeeeee 1px solid; =
+BORDER-TOP: #eeeeee 1px solid; BORDER-RIGHT: #eeeeee 1px solid
+}
+TD.future {
+	BORDER-BOTTOM: #eeeeee 1px solid; BORDER-LEFT: #eeeeee 1px solid; =
+COLOR: maroon; BORDER-TOP: #eeeeee 1px solid; BORDER-RIGHT: #eeeeee 1px =
+solid
+}
+SPAN.h1 {
+	TEXT-ALIGN: center; COLOR: #bc6505; FONT-SIZE: 14pt; FONT-WEIGHT: bold
+}
+HR {
+	COLOR: #aaaaaa
+}
+SPAN.title {
+	FONT-FAMILY: Verdana; COLOR: navy; FONT-SIZE: 16pt; FONT-WEIGHT: bold
+}
+TH.info {
+	BORDER-BOTTOM: #aaaaaa 1px solid; BORDER-LEFT: #aaaaaa 1px solid; =
+BACKGROUND-COLOR: #eeeeee; FONT-SIZE: 10pt; BORDER-TOP: #aaaaaa 1px =
+solid; FONT-WEIGHT: bold; BORDER-RIGHT: #aaaaaa 1px solid
+}
+TABLE.purchase {
+	BORDER-BOTTOM: #dddddd 1px solid; BORDER-LEFT: #dddddd 1px solid; =
+BORDER-TOP: #dddddd 1px solid; BORDER-RIGHT: #dddddd 1px solid
+}
+TH.purchase {
+	BORDER-BOTTOM: #dddddd 1px solid; BORDER-LEFT: #dddddd 1px solid; =
+BACKGROUND-COLOR: #eeeeee; BORDER-TOP: #dddddd 1px solid; BORDER-RIGHT: =
+#dddddd 1px solid
+}
+TD.purchasesub {
+	BORDER-BOTTOM: #dddddd 1px solid; BORDER-LEFT: #dddddd 1px solid; =
+BORDER-TOP: #dddddd 1px solid; BORDER-RIGHT: #dddddd 1px solid
+}
+
+------=_NextPart_000_0000_01CBEAF9.B7842C40--

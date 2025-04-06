@@ -1,0 +1,24 @@
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.4.33205.214
+MinimumVisualStudioVersion = 16.0.0
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TestErrorDisplay.DF80.2022", "TestErrorDisplay.DF80.2022.csproj", "{BD57520A-D852-41F3-B893-754A471F9F3D}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{BD57520A-D852-41F3-B893-754A471F9F3D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BD57520A-D852-41F3-B893-754A471F9F3D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BD57520A-D852-41F3-B893-754A471F9F3D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BD57520A-D852-41F3-B893-754A471F9F3D}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {65BF495E-D4D2-4D89-B81A-8907992880D0}
+	EndGlobalSection
+EndGlobal
