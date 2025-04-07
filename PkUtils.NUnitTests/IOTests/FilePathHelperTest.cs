@@ -205,13 +205,13 @@ public class FilePathHelperTest
 
     /// <summary>
     /// A test for IsPathRootOnly which should succeed.
-    /// It tests that the method accepts input plonger than Win32.MAX_PATH without exception.
+    /// It tests that the method accepts input longer than Win32.MAX_PATH without exception.
     /// </summary>
     [Test()]
     public void FilePathHelper_IsPathRootOnlyTest_01()
     {
         bool actual = FilePathHelper.IsPathRootOnly(_320CharsAbsolutePath, false);
-        Assert.That(actual, Is.EqualTo(false));
+        Assert.That(actual, Is.False);
     }
 
     /// <summary>
