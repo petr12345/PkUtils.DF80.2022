@@ -22,11 +22,11 @@ using PK.PkUtils.Extensions;
 using PK.PkUtils.Reflection;
 using PK.PkUtils.WinApi;
 
+namespace PK.PkUtils.IO;
+
 #pragma warning disable IDE0090 // Use 'new(...)'
 #pragma warning disable IDE0057 // Use range operator
 #pragma warning disable IDE0305 // Collection initialization can be simplified
-
-namespace PK.PkUtils.IO;
 
 /// <summary> <para>
 /// Provides some helper methods related to file-system objects paths, or IO-related functionality.
@@ -65,7 +65,7 @@ public static class FilePathHelper
     private static readonly char[] _directorySeparators = [Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar];
 
     /// <summary> 'Wild' characters. </summary>
-    private static readonly char[] _WilldChars = "*?".ToCharArray();
+    private static readonly char[] _WildChars = "*?".ToCharArray();
     private static readonly char[] _ExtraInvalidChars = "<>".ToCharArray();
 
     private static readonly char[] _PathInvalidCharacters =
@@ -75,7 +75,7 @@ public static class FilePathHelper
     /// An union of Path.GetInvalidPathChars() and _WillChars ('*' and '?').
     /// </summary>
     private static readonly char[] _PathInvalidOrWildCharacters =
-        _PathInvalidCharacters.Concat(_WilldChars).Distinct().ToArray();
+        _PathInvalidCharacters.Concat(_WildChars).Distinct().ToArray();
 
     private const string _PrefixCurDirBackSlash = @".\";
     private const string _PrefixCurDirForwSlash = @"./";
@@ -188,7 +188,7 @@ public static class FilePathHelper
     /// otherwise false.</returns>
     public static bool HasWildCard(string path)
     {
-        return ((!string.IsNullOrEmpty(path)) && (0 <= path.IndexOfAny(_WilldChars)));
+        return ((!string.IsNullOrEmpty(path)) && (0 <= path.IndexOfAny(_WildChars)));
     }
 
     /// <summary>
@@ -972,6 +972,38 @@ public static class FilePathHelper
         result ??= FieldsUtils.GetInstanceFieldValueEx<string>(fs, "FullPath");
 
         return result;
+    }
+
+    /// <summary>
+    /// Searches for the longest existing directory path prefix of the specified input path.
+    /// </summary>
+    /// <param name="inputPath">The full input path (can point to a non-existent file or directory).</param>
+    /// <returns>
+    /// The longest existing directory path that is a prefix of the input path.
+    /// Returns <c>null</c> if no part of the input path corresponds to an existing directory.
+    /// </returns>
+    /// <remarks>
+    /// This method trims the input path iteratively until it finds an existing directory,
+    /// using <c>SafeGetDirectoryInfo</c> to ensure exception safety.
+    /// </remarks>
+    public static string GetLongestExistingDirectory(string inputPath)
+    {
+        if (string.IsNullOrWhiteSpace(inputPath))
+            return null;
+        try
+        {
+            for (string currentPath = inputPath.Trim(); !string.IsNullOrEmpty(currentPath);)
+            {
+                DirectoryInfo dir = SafeGetDirectoryInfo(currentPath);
+                if (dir != null && dir.Exists)
+                    return dir.FullName;
+                else
+                    currentPath = Path.GetDirectoryName(currentPath);
+            }
+        }
+        catch { }  // Intentionally suppressed — the method is designed to be fail-safe
+
+        return null;
     }
 
     /// <summary> For the given exception <paramref name="ex"/> and full (rooted) path either to file-system 

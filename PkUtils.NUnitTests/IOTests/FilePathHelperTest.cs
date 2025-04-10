@@ -3,12 +3,15 @@
 using System.Globalization;
 using PK.PkUtils.IO;
 
-#pragma warning disable VSSpell001
-
 namespace PK.PkUtils.NUnitTests.IOTests;
+
+#pragma warning disable VSSpell001
+#pragma warning disable IDE0057 // Use range operator
+#pragma warning disable IDE0305 // Collection initialization can be simplified
 
 /// <summary> This is a test class for <see cref="FilePathHelper"/>. </summary>
 [TestFixture()]
+[CLSCompliant(false)]
 public class FilePathHelperTest
 {
     private const string _320CharsAbsolutePath = @"c:\Tools\000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000\000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000\000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000\M602\uvwxyz";
@@ -1193,8 +1196,46 @@ public class FilePathHelperTest
         Assert.That(fullName, Is.EqualTo(strNonExistingFile));
     }
     #endregion // SafeGetFullName_Test
+
+    #region GetLongestExistingDirectory_Test
+
+    [Test, Description("A test for GetLongestExistingDirectory which checks if it returns null as expected.")]
+    [TestCase(null!)]
+    [TestCase("")]
+    [TestCase("  ")]
+    public void FilePathHelper_GetLongestExistingDirectory_Test_ReturnsNull(string inputPath)
+    {
+        // Act
+        string actual = FilePathHelper.GetLongestExistingDirectory(inputPath);
+
+        // Assert
+        Assert.That(actual, Is.Null);
+    }
+
+    [Test, Description("A test for GetLongestExistingDirectory which checks if it returns expected value.")]
+    public void FilePathHelper_GetLongestExistingDirectory_Test_ReturnsExpected()
+    {
+        // Arrange
+        string systemDirectory = Environment.SystemDirectory;
+        string inputPath1 = systemDirectory;
+        string inputPath2 = Path.Combine(systemDirectory, Guid.NewGuid().ToString());
+
+        // Act
+        string actual1 = FilePathHelper.GetLongestExistingDirectory(inputPath1);
+        string actual2 = FilePathHelper.GetLongestExistingDirectory(inputPath2);
+
+        // Assert
+
+        Assert.Multiple(() =>
+        {
+            Assert.That(actual1, Is.EqualTo(systemDirectory));
+            Assert.That(actual2, Is.EqualTo(systemDirectory));
+        });
+    }
+    #endregion // GetLonestExistingDirectory_Test
     #endregion // Tests
 }
-
-
+#pragma warning restore IDE0305
+#pragma warning restore IDE0057
 #pragma warning restore VSSpell001
+#pragma warning restore gVSSpell001
