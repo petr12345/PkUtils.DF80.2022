@@ -6,15 +6,16 @@ using System.Drawing;
 using System.Windows.Forms;
 using PK.PkUtils.Consoles;
 using PK.PkUtils.Extensions;
+using PK.PkUtils.UI.General;
 
 namespace TestMultiSelectTreeview;
 
-public partial class TestForm : Form
+public partial class TestForm : FormWithLayoutPersistence
 {
     #region Fields
 
-    private readonly Color _treeviewBackColor;
-    private readonly Color _treeviewForeColor;
+    private Color _treeviewBackColor;
+    private Color _treeviewForeColor;
     private const int IL_0_icoRoot = 0;
     private const int IL_1_selRoot = 1;
     private const int IL_2_icoFolder = 2;
@@ -29,22 +30,37 @@ public partial class TestForm : Form
     {
         InitializeComponent();
 
-        this.Icon = ConsoleIconManager.CreateIcon(Resources.tree);
+        Icon = ConsoleIconManager.CreateIcon(Resources.tree);
+        InitializeTreeview();
+        InitializeTreeViewTextLogger(true);
+        LoadLayout();
+    }
+    #endregion // Constructor(s)
+
+    protected bool ShoudlShowLog { get => this._checkBoxShowLog.Checked; }
+
+    #region Methods
+
+    #region Initialize
+
+    protected void InitializeTreeview()
+    {
         _treeviewBackColor = this._multiSelectTreeview.BackColor;
         _treeviewForeColor = this._multiSelectTreeview.ForeColor;
 
         _multiSelectTreeview.AfterExpand += (sender, e) => UpdateSingleNodeImages(e.Node);
         _multiSelectTreeview.AfterCollapse += (sender, e) => UpdateSingleNodeImages(e.Node);
+        _multiSelectTreeview.GetAllNodes().ForEach(node => node.Expand());
     }
-    #endregion // Constructor(s)
 
-    #region Methods
-
-    protected static void TurnOffSingleNodeImages(TreeNode node)
+    protected void InitializeTreeViewTextLogger(bool showLog)
     {
-        node.ImageIndex = node.SelectedImageIndex = -1;
+        _checkBoxShowLog.Checked = showLog;
+        _splitContainer.Panel2Collapsed = !showLog;
     }
+    #endregion // Initialize
 
+    #region Updating_tree_nodes
     protected static void UpdateSingleNodeImages(TreeNode node)
     {
         if (node.Level == 0)
@@ -64,9 +80,12 @@ public partial class TestForm : Form
         }
     }
 
-
     protected void TurnOffImagesOnAllNodes()
     {
+        static void TurnOffSingleNodeImages(TreeNode node)
+        {
+            node.ImageIndex = node.SelectedImageIndex = -1;
+        }
         _multiSelectTreeview.ImageList = null;
         foreach (TreeNode node in _multiSelectTreeview.GetAllNodes())
         {
@@ -90,7 +109,7 @@ public partial class TestForm : Form
         else
             TurnOffImagesOnAllNodes();
     }
-
+    #endregion // Updating_tree_nodes
     #endregion // Methods
 
     #region Event_handlers
@@ -123,6 +142,11 @@ public partial class TestForm : Form
             _multiSelectTreeview.BackColor = _treeviewBackColor;
             _multiSelectTreeview.ForeColor = _treeviewForeColor;
         }
+    }
+
+    private void OnCheckBoxShowLog_CheckedChanged(object sender, EventArgs e)
+    {
+        InitializeTreeViewTextLogger(_checkBoxShowLog.Checked);
     }
 
     private void TestForm_Load(object sender, EventArgs e)
