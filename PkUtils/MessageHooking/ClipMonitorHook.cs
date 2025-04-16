@@ -101,11 +101,11 @@ public class ClipMonitorHook : ControlMessageHook
     /// provides additional verification ( in debug mode only ).
     /// </summary>
     ///
-    /// <param name="e">    The event arguments of the original Control.HandleCreated Event. </param>
-    protected override void OnHandleCreated(EventArgs e)
+    /// <param name="args"> The event arguments of the original Control.HandleCreated Event. </param>
+    protected override void OnHandleCreated(EventArgs args)
     {
         Debug.Assert(!IsClipViewerRegistered);
-        base.OnHandleCreated(e);
+        base.OnHandleCreated(args);
     }
 #endif // DEBUG
 

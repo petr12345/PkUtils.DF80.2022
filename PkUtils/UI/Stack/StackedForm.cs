@@ -194,7 +194,7 @@ public partial class StackedForm : Form, IStackedForm
     /// The virtual method which is called by the event handler private void FormClosingHandler.
     /// In your derived form, you may overwrite this method
     /// ( and that's what you should do if you want to prevent your form from closing.
-    ///  Don't override virtual void OnClosing(CancelEventArgs e);)
+    ///  Don't override virtual void OnClosing(CancelEventArgs args);)
     /// </summary>
     /// <param name="sender">The sender (originator) of the event.</param>
     /// <param name="args">Provides data for a cancelable event.</param>

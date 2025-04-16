@@ -7,7 +7,7 @@ using PK.PkUtils.Extensions;
 using PK.PkUtils.WinApi;
 using static System.FormattableString;
 
-namespace PK.PkUtils.Utils;
+namespace PK.PkUtils.Dump;
 
 /// <summary> A static utility to dump window32 messages to text. </summary>
 [CLSCompliant(true)]

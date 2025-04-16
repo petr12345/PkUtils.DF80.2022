@@ -138,9 +138,9 @@ public static class ConsoleHelper
         return result;
     }
 
-    private static void ConsoleOnCancelKeyPress(object sender, ConsoleCancelEventArgs e)
+    private static void ConsoleOnCancelKeyPress(object sender, ConsoleCancelEventArgs args)
     {
-        e.Cancel = true;
+        args.Cancel = true;
     }
     #endregion // Methods
 }

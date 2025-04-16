@@ -103,8 +103,8 @@ public class ControlMessageHook : WindowMessageHook
     /// The virtual method called from the OnctrlToHook_HandleCreated.
     /// This base implementation just hooks the new window handle.
     /// </summary>
-    /// <param name="e"> The event arguments of the original Control.HandleCreated Event </param>
-    protected virtual void OnHandleCreated(EventArgs e)
+    /// <param name="args"> The event arguments of the original Control.HandleCreated Event </param>
+    protected virtual void OnHandleCreated(EventArgs args)
     {
         HookWindow(ControlHooked.Handle);
     }
@@ -132,11 +132,11 @@ public class ControlMessageHook : WindowMessageHook
     /// the base class WindowMessageHook upon encountering WM_NCDESTROY.
     /// </summary>
     /// <param name="sender">The source of the original Control.HandleCreated Event </param>
-    /// <param name="e"> The event arguments of the original Control.HandleCreated Event </param>
-    protected void OnCtrlToHook_HandleCreated(object sender, EventArgs e)
+    /// <param name="args"> The event arguments of the original Control.HandleCreated Event </param>
+    protected void OnCtrlToHook_HandleCreated(object sender, EventArgs args)
     {
         Debug.Assert(!this.IsHooked);
-        OnHandleCreated(e);
+        OnHandleCreated(args);
     }
     #endregion // Protected methods
 

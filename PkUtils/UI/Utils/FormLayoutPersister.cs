@@ -42,7 +42,7 @@ namespace PK.PkUtils.UI.Utils;
 ///   }
 ///      
 ///   // attach store to the FormClosing event
-///   private void SimpleClass_FormClosing(object sender, FormClosingEventArgs e)
+///   private void SimpleClass_FormClosing(object sender, FormClosingEventArgs args)
 ///   {
 ///     _frmLayoutPersister.StoreLastSize();
 ///     _frmLayoutPersister.StoreLastLocation();

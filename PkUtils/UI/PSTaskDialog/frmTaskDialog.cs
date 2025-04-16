@@ -485,18 +485,18 @@ public partial class frmTaskDialog : Form
     ///
     /// <exception cref="InvalidOperationException">  Thrown when the requested operation is invalid. </exception>
     ///
-    /// <param name="e">  A <see cref="T:System.EventArgs" /> that contains the event data. </param>
-    protected override void OnShown(EventArgs e)
+    /// <param name="args">  A <see cref="T:System.EventArgs" /> that contains the event data. </param>
+    protected override void OnShown(EventArgs args)
     {
         if (!_formBuilt)
         {
             throw new InvalidOperationException("frmTaskDialog : Please call .BuildForm() before showing the TaskDialog");
         }
-        base.OnShown(e);
+        base.OnShown(args);
     }
 
     /* PetrK 04/24/2012: commented-out as not needed
-    protected override void OnLoad(EventArgs e)
+    protected override void OnLoad(EventArgs args)
     {
       base.OnLoad(e);
     }
@@ -591,33 +591,33 @@ public partial class frmTaskDialog : Form
 
     #region Event Handlers
 
-    private void CommandButton_Click(object sender, EventArgs e)
+    private void CommandButton_Click(object sender, EventArgs args)
     {
         _commandButtonClicked = (int)((CommandButton)sender).Tag;
         this.DialogResult = DialogResult.OK;
     }
 
-    private void LbDetails_MouseEnter(object sender, EventArgs e)
+    private void LbDetails_MouseEnter(object sender, EventArgs args)
     {
         lbShowHideDetails.ImageIndex = (_Expanded ? 1 : 4);
     }
 
-    private void LbDetails_MouseLeave(object sender, EventArgs e)
+    private void LbDetails_MouseLeave(object sender, EventArgs args)
     {
         lbShowHideDetails.ImageIndex = (_Expanded ? 0 : 3);
     }
 
-    private void LbDetails_MouseUp(object sender, MouseEventArgs e)
+    private void LbDetails_MouseUp(object sender, MouseEventArgs args)
     {
         lbShowHideDetails.ImageIndex = (_Expanded ? 1 : 4);
     }
 
-    private void LbDetails_MouseDown(object sender, MouseEventArgs e)
+    private void LbDetails_MouseDown(object sender, MouseEventArgs args)
     {
         lbShowHideDetails.ImageIndex = (_Expanded ? 2 : 5);
     }
 
-    private void LbDetails_Click(object sender, EventArgs e)
+    private void LbDetails_Click(object sender, EventArgs args)
     {
         _Expanded = !_Expanded;
         pnlExpandedInfo.Visible = _Expanded;
@@ -628,18 +628,18 @@ public partial class frmTaskDialog : Form
             this.Height -= pnlExpandedInfo.Height;
     }
 
-    private void PnlMainInstruction_Paint(object sender, PaintEventArgs e)
+    private void PnlMainInstruction_Paint(object sender, PaintEventArgs args)
     {
         SizeF szL = GetMainInstructionTextSizeF();
-        e.Graphics.TextRenderingHint = System.Drawing.Text.TextRenderingHint.ClearTypeGridFit;
-        e.Graphics.DrawString(
+        args.Graphics.TextRenderingHint = System.Drawing.Text.TextRenderingHint.ClearTypeGridFit;
+        args.Graphics.DrawString(
           _mainInstruction,
           _mainInstructionFont,
           new SolidBrush(Color.DarkBlue),
           new RectangleF(new PointF(MAIN_INSTRUCTION_LEFT_MARGIN, 10), szL));
     }
 
-    private void FrmTaskDialog_Shown(object sender, EventArgs e)
+    private void FrmTaskDialog_Shown(object sender, EventArgs args)
     {
         if (cTaskDialog.PlaySystemSounds)
         {

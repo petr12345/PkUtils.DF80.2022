@@ -383,10 +383,10 @@ public class SerialPortManager : Repository<SerialPort>, IDisposable
 
     #region Event handlers
 
-    private void OnCurrentSerialSettings_PropertyChanged(object sender, PropertyChangedEventArgs e)
+    private void OnCurrentSerialSettings_PropertyChanged(object sender, PropertyChangedEventArgs args)
     {
         // if serial port is changed, a new baud query is issued
-        if (e.PropertyName.Equals(nameof(SerialPortSettingsEx.PortName), StringComparison.Ordinal))
+        if (args.PropertyName.Equals(nameof(SerialPortSettingsEx.PortName), StringComparison.Ordinal))
         {
             if ((null != this.SerialPort) && (null != CurrentSerialSettingsEx))
                 SerialPort.PortName = CurrentSerialSettingsEx.PortName;
@@ -394,7 +394,7 @@ public class SerialPortManager : Repository<SerialPort>, IDisposable
         }
     }
 
-    private void OnSerialPort_DataReceived(object sender, SerialDataReceivedEventArgs e)
+    private void OnSerialPort_DataReceived(object sender, SerialDataReceivedEventArgs args)
     {
         int dataLength = SerialPort.BytesToRead;
         byte[] data = new byte[dataLength];

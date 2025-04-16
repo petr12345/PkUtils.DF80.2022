@@ -113,13 +113,12 @@ public partial class FormWithLayoutPersistence : Form
         return LayoutPersister;
     }
 
-    /// <summary>
-    /// Ensures layout is saved when the form is closing.
-    /// </summary>
-    protected override void OnFormClosing(FormClosingEventArgs e)
+    /// <summary>   Ensures layout is saved when the form is closing. </summary>
+    /// <param name="args"> A FormClosingEventArgs that contains the event data. </param>
+    protected override void OnFormClosing(FormClosingEventArgs args)
     {
         SaveLayout();
-        base.OnFormClosing(e);
+        base.OnFormClosing(args);
     }
 
     private IComplexResult Initialize(StorageAction actions)

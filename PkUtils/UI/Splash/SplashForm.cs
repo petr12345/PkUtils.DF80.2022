@@ -454,7 +454,7 @@ private bool _bShouldClose;
 
     // Tick Event handler for the Timer control.  Handle fade in and fade out.  Also
     // handle the smoothed progress bar.
-    private void OnTimer_Tick(object sender, EventArgs e)
+    private void OnTimer_Tick(object sender, EventArgs args)
     {
         try
         {
@@ -538,12 +538,10 @@ private bool _bShouldClose;
         }
     }
 
-    /// <summary>
-    /// The double-click handler. Close the form if they double click on it.
-    /// </summary>
-    /// <param name="sender"></param>
-    /// <param name="e"></param>
-    private void SplashScreen_DoubleClick(object sender, System.EventArgs e)
+    /// <summary>   The double-click handler. Close the form if they double click on it. </summary>
+    /// <param name="sender"> . </param>
+    /// <param name="args"> . </param>
+    private void SplashScreen_DoubleClick(object sender, EventArgs args)
     {
         CloseSplash(false);
     }

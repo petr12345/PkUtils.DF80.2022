@@ -315,8 +315,8 @@ public partial class SmoothProgressBar : UserControl
     /// <summary>
     /// Overrides the method of the base class, to invalidate the control on resize
     /// </summary>
-    /// <param name="e">The resize event arguments </param>
-    protected override void OnResize(EventArgs e)
+    /// <param name="args">The resize event arguments </param>
+    protected override void OnResize(EventArgs args)
     {
         // Invalidate the control to get a repaint.
         this.Invalidate();
@@ -324,11 +324,11 @@ public partial class SmoothProgressBar : UserControl
 
     /// <summary> Overrides the method of the base class to do custom painting. </summary>
     ///
-    /// <param name="e"> A PaintEventArgs specifies the Graphics to use to paint the control and the
+    /// <param name="args"> A PaintEventArgs specifies the Graphics to use to paint the control and the
     /// ClipRectangle in which to paint. </param>
-    protected override void OnPaint(PaintEventArgs e)
+    protected override void OnPaint(PaintEventArgs args)
     {
-        Graphics g = e.Graphics;
+        Graphics g = args.Graphics;
         float percent = (_val - _min) / (float)(_max - _min);
         Rectangle cl_rect = this.ClientRectangle;
         Rectangle rectL = cl_rect;
@@ -358,7 +358,7 @@ public partial class SmoothProgressBar : UserControl
             font = thisFont;
         else
             font = new Font(thisFont.Name, thisFont.Size, FontStyle.Bold);
-        deltaY = (int)((centered.Height - e.Graphics.MeasureString(text, font).Height) / 2);
+        deltaY = (int)((centered.Height - args.Graphics.MeasureString(text, font).Height) / 2);
 
         centered.Offset(0, deltaY);
         g.DrawString(text, font, _brText, centered, sf);

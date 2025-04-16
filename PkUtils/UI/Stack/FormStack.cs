@@ -1334,8 +1334,8 @@ public class FormStack : List<IStackedForm>, IDisposable, ISuspendable, ICompact
     /// <remarks> Handles stopping the application for case the for stack is executed by <see cref="RunApplication"/>;
     ///           i.e.  when this.ExecutionState == ExecState.RunsAppRun </remarks>
     /// <param name="sender"> The source of the event. </param>
-    /// <param name="e">      The specific event data </param>
-    private void Application_Idle(object sender, EventArgs e)
+    /// <param name="args">      The specific event data </param>
+    private void Application_Idle(object sender, EventArgs args)
     {
         if (this.IsStopRequest)
         {

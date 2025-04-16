@@ -1,10 +1,14 @@
-// Ignore Spelling: Ctrl, Treeview, treeview, Multiselect, unselects
+// Ignore Spelling: Ctrl, Treeview, treeview, Multiselect, Sel, unselects
 //
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
+using PK.PkUtils.DataStructures;
+using PK.PkUtils.Extensions;
+using PK.PkUtils.WinApi;
 
 
 namespace PK.PkUtils.UI.General;
@@ -14,11 +18,54 @@ namespace PK.PkUtils.UI.General;
 /// Multiselect Treeview Implementation.</seealso>
 public partial class MultiSelectTreeview : TreeView
 {
+    #region Typedefs
+
+    /// <summary>   Additional information for treeview selected change events. </summary>
+    public class TreeviewSelChangeArgs : EventArgs
+    {
+        private readonly MultiSelectTreeview _treeview;
+        private readonly IReadOnlyCollection<TreeNode> _selectedNodes;
+        private readonly StackTrace _stackTrace;
+
+        /// <summary> Single-argument constructor. </summary>
+        /// <exception cref="ArgumentNullException"> Thrown when required argument <paramref name="treeview"/> is null. </exception>
+        /// <param name="treeview"> The treeview. Can't be null. </param>
+        public TreeviewSelChangeArgs(MultiSelectTreeview treeview) :
+            this(treeview, (treeview is not null) ? treeview.SelectedNodes : throw new ArgumentNullException(nameof(treeview)))
+        { }
+
+        /// <summary> Two-arguments constructor. </summary>
+        /// <exception cref="ArgumentNullException"> Thrown when one or more required arguments are null. </exception>
+        /// <param name="treeview"> The treeview. Can't be null. </param>
+        /// <param name="selectedNodes"> The selected nodes. Can't be null. </param>
+        protected TreeviewSelChangeArgs(
+            MultiSelectTreeview treeview,
+            IReadOnlyCollection<TreeNode> selectedNodes)
+        {
+            _treeview = treeview ?? throw new ArgumentNullException(nameof(treeview));
+            _selectedNodes = selectedNodes ?? throw new ArgumentNullException(nameof(selectedNodes));
+            _stackTrace = new StackTrace(skipFrames: 2);
+        }
+
+        /// <summary>   Gets the treeview. </summary>
+        public MultiSelectTreeview Treeview { get => _treeview; }
+
+        /// <summary> Gets the selected nodes. </summary>
+        public IReadOnlyCollection<TreeNode> SelectedNodes { get => _selectedNodes; }
+
+        /// <summary>   Gets the stack trace. </summary>
+        public StackTrace StackTrace { get => _stackTrace; }
+    }
+    #endregion // Typedefs
+
     #region Fields
 
-    private readonly HashSet<TreeNode> _selectedNodes = [];
-    private TreeNode _selectedNode;
     private ColorsCache _colorsCache;
+    private int _selectionChangeDepth;
+    private bool _selectionChangedPending;
+    private TreeNode _selectedNode;
+    private bool _selectionInitialized;
+    private readonly HashSet<TreeNode> _selectedNodes = [];
     #endregion // Fields
 
     #region Constructor(s)
@@ -38,12 +85,18 @@ public partial class MultiSelectTreeview : TreeView
         get => _selectedNodes;
         set
         {
-            ClearSelectedNodes();
-            if (value != null)
+            if (ReferenceEquals(value, _selectedNodes)) return;
+            if ((value is not null) && _selectedNodes.SetEquals(value)) return;
+
+            using (IDisposable defered = DeferSelectionChange())
             {
-                foreach (TreeNode node in value)
+                ClearSelectedNodes();
+                if (value != null)
                 {
-                    ToggleNode(node, true);
+                    foreach (TreeNode node in value)
+                    {
+                        ToggleNode(node, true);  // MarkSelectionChanged() is called from inside of ToggleNode
+                    }
                 }
             }
         }
@@ -58,13 +111,20 @@ public partial class MultiSelectTreeview : TreeView
         set
         {
             if (value == SelectedNode) return;
-            ClearSelectedNodes();
-            if (value != null)
+
+            using (IDisposable defered = DeferSelectionChange())
             {
-                SelectNode(value);
+                ClearSelectedNodes();  // MarkSelectionChanged() is called from inside of ToggleNode
+                if (value != null)
+                {
+                    SelectNode(value);
+                }
             }
         }
     }
+
+    /// <summary>  Event queue for all listeners interested in SelectionChanged events. </summary>
+    public event EventHandler<TreeviewSelChangeArgs> SelectionChanged;
 
     /// <summary>   Gets a value indicating whether this object is using visual styles. </summary>
     /// <remarks>
@@ -80,6 +140,12 @@ public partial class MultiSelectTreeview : TreeView
 
     /// <summary> Gets the visual styles colors cache (if any has been initialized). </summary>
     protected ColorsCache VisualStylesColorsCache { get => _colorsCache; }
+
+    /// <summary> Gets a value indicating whether a selection changed is pending. </summary>
+    protected bool IsSelectionChangedPending { get => _selectionChangedPending; }
+
+    /// <summary>   Gets a value indicating whether the selection initialized. </summary>
+    protected bool SelectionInitialized { get => _selectionInitialized; }
     #endregion // Properties
 
     #region Methods
@@ -98,14 +164,15 @@ public partial class MultiSelectTreeview : TreeView
     #endregion // Public Methods
 
     #region Protected Methods
+    #region Colors_cache_related
+
     /// <summary>
     /// Initializes and retrieves the visual styles colors cache. If the cache has not been initialized, it is
     /// created and populated with the appropriate colors.
     /// </summary>
     /// <remarks>
-    /// This method should be called only if visual styles are enabled. 
-    /// It initializes a new instance of <see cref="ColorsCache"/>
-    /// and attempts to populate it with colors from existing tree node; 
+    /// This method should be called only if visual styles are enabled. It initializes a new instance of <see cref="ColorsCache"/>
+    /// and attempts to populate it with colors from existing tree node;
     /// if that fails, it falls back to default initialization.
     /// </remarks>
     /// <returns>   The initialized <see cref="ColorsCache"/> instance. </returns>
@@ -123,6 +190,101 @@ public partial class MultiSelectTreeview : TreeView
 
         return VisualStylesColorsCache;
     }
+    #endregion // Colors_cache_related
+
+    #region Selection_change_related
+
+    /// <summary> Begins selection change, incrementing internal depth counter. </summary>
+    protected void BeginSelectionChange()
+    {
+        _selectionChangeDepth++;
+    }
+
+    /// <summary>
+    /// Ends selection change, decrementing selection change depth. If that depth becomes zero, and selection
+    /// change is pending, calls <see cref="OnSelectionChanged"/>.
+    /// </summary>
+    /// <exception cref="InvalidOperationException"> Thrown when the requested operation is invalid. </exception>
+    protected void EndSelectionChange()
+    {
+        if (_selectionChangeDepth <= 0)
+        {
+            throw new InvalidOperationException($"Unbalanced {nameof(EndSelectionChange)} call, {_selectionChangeDepth.AsNameValue()}.");
+        }
+        if ((--_selectionChangeDepth == 0) && IsSelectionChangedPending)
+        {
+            _selectionChangedPending = false;
+            OnSelectionChanged();
+        }
+    }
+
+    /// <summary> Begins selection change, and defers <see cref="EndSelectionChange"/>. </summary>
+    /// <returns> An IDisposable object that will call <see cref="EndSelectionChange"/>. </returns>
+    protected IDisposable DeferSelectionChange()
+    {
+        BeginSelectionChange();
+        return new DisposableAction(EndSelectionChange);
+    }
+
+    /// <summary>
+    /// To be called when individual selection part is being changed.
+    /// If selection changed depth is nonzero, marks the change as pending;
+    /// otherwise calls <see cref="OnSelectionChanged"/> directly.
+    /// </summary>
+    protected void MarkSelectionChanged()
+    {
+        if (_selectionChangeDepth > 0)
+        {
+            _selectionChangedPending = true;
+        }
+        else
+        {
+            OnSelectionChanged();
+        }
+    }
+
+    /// <summary> Invokes the 'selection changed' event <see cref="SelectionChanged"/>. </summary>
+    protected virtual void OnSelectionChanged()
+    {
+        if (_selectionChangeDepth > 0)
+        {
+            throw new InvalidOperationException($"Event should not be raised with this value being positive, {_selectionChangeDepth.AsNameValue()}.");
+        }
+        SelectionChanged?.Invoke(this, new TreeviewSelChangeArgs(this));
+    }
+
+    /// <summary>
+    /// Initialize the selection if not initialized already. 
+    /// </summary>
+    /// <remarks>
+    /// This is an attempt to address the odd behavior of the tree view, namely that it selects some of the nodes 
+    /// you added and draws them that way, despite the SelectedNode property still returns null.
+    /// So, this method is the attempt to unify the initial displayed selection
+    /// and SelectedNodes property. See also
+    /// https://stackoverflow.com/questions/11310912/how-to-disable-treeview-auto-first-node-select.
+    /// </remarks>
+    /// <param name="selectedNodes"> (Optional) The collection of selected nodes. </param>
+    /// <seealso cref="SelectedNodes"/>
+    protected virtual void InitSelection(IEnumerable<TreeNode> selectedNodes = null)
+    {
+        if (!SelectionInitialized)
+        {
+            if (selectedNodes.IsNullOrEmpty())
+            {
+                selectedNodes = new TreeNode[] { TopNode }.Where(x => x is not null);
+            }
+            _selectedNodes.Clear();
+            _selectedNodes.UnionWith(selectedNodes);
+            _selectedNode = selectedNodes.FirstOrDefault();
+            _selectionInitialized = true;
+
+            // Notify things has changed
+            OnSelectionChanged();
+        }
+    }
+    #endregion // Selection_change_related
+
+    #region Error_handling_releted
 
     /// <summary> Handles exceptions that occur in the control. </summary>
     /// <remarks>
@@ -135,29 +297,29 @@ public partial class MultiSelectTreeview : TreeView
     {
         MessageBox.Show($"{ex.GetType().Name} has occurred: {ex.Message}.");
     }
+    #endregion // Error_handling_releted
     #endregion // Protected Methods
 
-    #region Overridden Events
+    #region Protected Overridden Events
+
+    /// <summary>
+    /// Overrides <see cref="M:System.Windows.Forms.Control.WndProc(System.Windows.Forms.Message@)" />.
+    /// </summary>
+    /// <param name="m"> [in,out] The Windows <see cref="T:System.Windows.Forms.Message" /> to process. </param>
+    protected override void WndProc(ref Message m)
+    {
+        if ((m.Msg == (int)Win32.WM.WM_PAINT) && !SelectionInitialized)
+        {
+            InitSelection();
+        }
+        base.WndProc(ref m);
+    }
 
     /// <inheritdoc/>
     protected override void OnGotFocus(EventArgs e)
     {
-        // Make sure at least one node has a selection
-        // this way we can tab to the ctrl and use the 
-        // keyboard to select nodes
-        try
-        {
-            if (SelectedNode == null && this.TopNode != null)
-            {
-                ToggleNode(this.TopNode, true);
-            }
-
-            base.OnGotFocus(e);
-        }
-        catch (Exception ex)
-        {
-            HandleException(ex);
-        }
+        InitSelection();
+        base.OnGotFocus(e);
     }
 
     /// <inheritdoc/>
@@ -173,16 +335,19 @@ public partial class MultiSelectTreeview : TreeView
             int rightBound = node.Bounds.Right + 10;
             if (e.Location.X < leftBound || e.Location.X > rightBound) return;
 
-            if (ModifierKeys == Keys.None && SelectedNodes.Contains(node))
+            using (IDisposable defered = DeferSelectionChange())
             {
-                // Potential drag operation, selection on MouseUp
-            }
-            else
-            {
-                SelectNode(node);
-            }
+                if (ModifierKeys == Keys.None && SelectedNodes.Contains(node))
+                {
+                    // Potential drag operation, selection on MouseUp
+                }
+                else
+                {
+                    SelectNode(node);
+                }
 
-            base.OnMouseDown(e);
+                base.OnMouseDown(e);
+            }
         }
         catch (Exception ex)
         {
@@ -193,12 +358,14 @@ public partial class MultiSelectTreeview : TreeView
     /// <inheritdoc/>
     protected override void OnMouseUp(MouseEventArgs e)
     {
-        // If the clicked on a node that WAS previously
+        // If the clicked on a node that WAS previously 
         // selected then, reselect it now. This will clear
         // any other selected nodes. e.g. A B C D are selected
         // the user clicks on B, now A C & D are no longer selected.
         try
         {
+            BeginSelectionChange();
+
             // Check to see if a node was clicked on 
             TreeNode node = this.GetNodeAt(e.Location);
             if (node != null)
@@ -220,6 +387,10 @@ public partial class MultiSelectTreeview : TreeView
         {
             HandleException(ex);
         }
+        finally
+        {
+            EndSelectionChange();
+        }
     }
 
     /// <inheritdoc/>
@@ -231,6 +402,8 @@ public partial class MultiSelectTreeview : TreeView
         // 
         try
         {
+            BeginSelectionChange();
+
             if (e.Item is TreeNode node)
             {
                 if (!SelectedNodes.Contains(node))
@@ -245,6 +418,10 @@ public partial class MultiSelectTreeview : TreeView
         catch (Exception ex)
         {
             HandleException(ex);
+        }
+        finally
+        {
+            EndSelectionChange();
         }
     }
 
@@ -292,6 +469,10 @@ public partial class MultiSelectTreeview : TreeView
         // Start updating the tree view to optimize UI performance
         BeginUpdate();
         bool isShiftPressed = (ModifierKeys == Keys.Shift);
+
+        // Begin potential selection change. 
+        // Related MarkSelectionChanged are called from individual handlers.
+        using IDisposable defered = DeferSelectionChange();
 
         try
         {
@@ -352,7 +533,7 @@ public partial class MultiSelectTreeview : TreeView
             EndUpdate();
         }
     }
-    #endregion // Overridden Events
+    #endregion // Protected Overridden Events
 
     #region Private_utilities_called_by_OnKeyDown
 
@@ -404,10 +585,10 @@ public partial class MultiSelectTreeview : TreeView
         }
         else
         {
-            TreeNode lastNode = Nodes[0].LastNode;
-            while (lastNode.IsExpanded && lastNode.LastNode != null)
+            TreeNode nextLastNode, lastNode = Nodes[0].LastNode;
+            while (lastNode.IsExpanded && (nextLastNode = lastNode.LastNode) != null)
             {
-                lastNode = lastNode.LastNode;
+                lastNode = nextLastNode;
             }
             SelectSingleNode(lastNode);
         }
@@ -463,7 +644,8 @@ public partial class MultiSelectTreeview : TreeView
     {
         try
         {
-            this.BeginUpdate();
+            BeginSelectionChange();
+            BeginUpdate();
 
             if (SelectedNode == null || ModifierKeys == Keys.Control)
             {
@@ -592,12 +774,16 @@ public partial class MultiSelectTreeview : TreeView
         }
         finally
         {
-            this.EndUpdate();
+            EndUpdate();
+            EndSelectionChange();
         }
     }
 
     private void ClearSelectedNodes()
     {
+        // early return to avoid unnecessary call of MarkSelectionChanged
+        if ((_selectedNodes.Count == 0) && (_selectedNode is null)) return;
+
         try
         {
             DetermineUnselectedNodeColor(out Color bgColor, out Color fgColor);
@@ -611,41 +797,74 @@ public partial class MultiSelectTreeview : TreeView
         {
             _selectedNodes.Clear();
             _selectedNode = null;
+            MarkSelectionChanged();
         }
     }
 
     private void SelectSingleNode(TreeNode node)
     {
         if (node == null)
-        {
             return;
-        }
 
-        ClearSelectedNodes();
-        ToggleNode(node, true);
-        node.EnsureVisible();
-    }
-
-    private void ToggleNode(TreeNode node, bool bSelectNode)
-    {
-        Color bgColor, fgColor;
-
-        if (bSelectNode)
+        if ((SelectedNodes.Count == 1) && (node == SelectedNodes.First()) && (node == SelectedNode))
         {
-            _selectedNode = node;
-            _selectedNodes.Add(node);
-
-            bgColor = SystemColors.Highlight;
-            fgColor = SystemColors.HighlightText;
+            // Nothing more is needed, so avoid doing any calls that would trigger MarkSelectionChanged()
+            node.EnsureVisible();
         }
         else
         {
-            _selectedNodes.Remove(node);
-
-            DetermineUnselectedNodeColor(out bgColor, out fgColor);
+            using (IDisposable defered = DeferSelectionChange())
+            {
+                ClearSelectedNodes();
+                ToggleNode(node, true);
+                node.EnsureVisible();
+            }
         }
-        node.BackColor = bgColor;
-        node.ForeColor = fgColor;
+    }
+
+    private bool ToggleNode(TreeNode node, bool bSelectNode)
+    {
+        // Should not be called for any null node; only to be on the safe side
+        if (node is null) return false;
+
+        bool result = false;
+        Color bgColor = Color.Empty;
+        Color fgColor = Color.Empty;
+        // Assign these two just to prevent compiler warning "Use of unassigned local variable".
+        // Compiler does not recognize these are later used if and only if initialized before
+
+        if (bSelectNode)
+        {
+            if (result = ((SelectedNode != node) || !SelectedNodes.Contains(node)))
+            {
+                _selectedNode = node;
+                _selectedNodes.Add(node);
+
+                bgColor = SystemColors.Highlight;
+                fgColor = SystemColors.HighlightText;
+            }
+        }
+        else
+        {
+            if (result = _selectedNodes.Remove(node))
+            {
+                if (ReferenceEquals(SelectedNode, node))
+                {
+                    _selectedNode = null;
+                }
+                DetermineUnselectedNodeColor(out bgColor, out fgColor);
+            }
+        }
+
+        if (result)
+        {
+            node.BackColor = bgColor;
+            node.ForeColor = fgColor;
+
+            MarkSelectionChanged();
+        }
+
+        return result;
     }
 
     private void DetermineUnselectedNodeColor(out Color bgColor, out Color fgColor)

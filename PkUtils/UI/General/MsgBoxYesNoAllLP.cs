@@ -245,10 +245,10 @@ public partial class MsgBoxYesNoAllLP : Form
     /// of Form for multiple ShowDialog calls).
     /// </summary>
     ///
-    /// <param name="e">  An <see cref="System.EventArgs" /> that contains the event data. </param>
-    protected override void OnLoad(EventArgs e)
+    /// <param name="args"> An <see cref="EventArgs" /> that contains the event data. </param>
+    protected override void OnLoad(EventArgs args)
     {
-        base.OnLoad(e);
+        base.OnLoad(args);
 
         DialogResult = DialogResult.None;
         _Result = MsgBoxResult.Cancel;
@@ -260,10 +260,10 @@ public partial class MsgBoxYesNoAllLP : Form
     }
 
     /// <summary> Raises the <see cref="Form.Closing" /> event. </summary>
-    /// <param name="e"> A <see cref="System.ComponentModel.CancelEventArgs" /> that contains the event data. </param>
-    protected override void OnClosing(CancelEventArgs e)
+    /// <param name="args"> A <see cref="System.ComponentModel.CancelEventArgs" /> that contains the event data. </param>
+    protected override void OnClosing(CancelEventArgs args)
     {
-        base.OnClosing(e);
+        base.OnClosing(args);
         _lastLocation = this.Location;
     }
     #endregion // Protected Interface
@@ -414,13 +414,13 @@ public partial class MsgBoxYesNoAllLP : Form
     /// <summary> The event handler called by _lblMainInstruction.TextChanged 
     ///           or _lblContent.TextChanged event. </summary>
     /// <param name="sender"> The sender. </param>
-    /// <param name="e"> Event information. </param>
-    private void AnyLabel_TextChanged(object sender, EventArgs e)
+    /// <param name="args"> Event information. </param>
+    private void AnyLabel_TextChanged(object sender, EventArgs args)
     {
         UpdateSize(false);
     }
 
-    private void MsgBoxYesNoAllLP_DoubleClick(object sender, EventArgs e)
+    private void MsgBoxYesNoAllLP_DoubleClick(object sender, EventArgs args)
     {
         _EmphasizeCells = !EmphasizeCells;
         UpdateCellEmphasizeProperties(true);
@@ -429,8 +429,8 @@ public partial class MsgBoxYesNoAllLP : Form
     /// <summary> The Event handler for any button being clicked.</summary>
     ///
     /// <param name="sender"></param>
-    /// <param name="e"> </param>
-    private void OnBtn_Click(object sender, EventArgs e)
+    /// <param name="args"> </param>
+    private void OnBtn_Click(object sender, EventArgs args)
     {
         Button btn = (Button)sender; // raise an exception if the sender is not a button
 

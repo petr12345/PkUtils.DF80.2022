@@ -176,7 +176,7 @@ public class StackedFormWrapper<TForm> : IStackedForm, IDisposable where TForm :
     /// The virtual method which is called by the event handler private void FormClosingHandler.
     /// In your derived form, you may overwrite this method
     /// ( and that's what you should do if you want to prevent your form from closing.
-    ///  Don't overwrite virtual void OnClosing(CancelEventArgs e);)
+    ///  Don't overwrite virtual void OnClosing(CancelEventArgs args);)
     /// </summary>
     /// <param name="sender">The sender (originator) of the event.</param>
     /// <param name="args">Provides data for a cancelable event.</param>

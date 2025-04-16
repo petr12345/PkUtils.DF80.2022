@@ -135,13 +135,13 @@ public partial class BaseDataCtrl<D> : UserControl where D : class
 
     #region Event Handlers
 
-    private void BaseDataCtrl_Load(object sender, EventArgs e)
+    private void BaseDataCtrl_Load(object sender, EventArgs args)
     {
         if (null != _lblTypeText)
             _lblTypeText.Visible = TypeLabelVisible;
     }
 
-    private void UC_BaseCtrl_VisibleChanged(object sender, EventArgs e)
+    private void UC_BaseCtrl_VisibleChanged(object sender, EventArgs args)
     {
 #if DEBUG
         AdjustDescriptionText();

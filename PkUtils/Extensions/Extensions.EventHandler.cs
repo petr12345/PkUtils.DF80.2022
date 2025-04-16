@@ -23,13 +23,13 @@ public static class EventHandlerExtensions
     /// <typeparam name="TEventArgs"> Type of the event arguments. </typeparam>
     /// <param name="handler">  The generic handler to act on. </param>
     /// <param name="sender">   Source of the event. </param>
-    /// <param name="e">  Event information to send to registered event handlers. </param>
+    /// <param name="args">  Event information to send to registered event handlers. </param>
     public static void Fire<TEventArgs>(
         this EventHandler<TEventArgs> handler,
         object sender,
-        TEventArgs e)
+        TEventArgs args)
     {
-        handler?.Invoke(sender, e);
+        handler?.Invoke(sender, args);
     }
 
     /// <summary> An EventHandler extension method that fires event. </summary>

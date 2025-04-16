@@ -399,29 +399,29 @@ public class ApplicationDesktopToolbar : Form
     /// <summary>
     /// Overwrites the virtual method of the predecessor, to provide additional initialization.
     /// </summary>
-    /// <param name="e">An EventArgs that contains the event data.</param>
-    protected override void OnLoad(EventArgs e)
+    /// <param name="args">An EventArgs that contains the event data.</param>
+    protected override void OnLoad(EventArgs args)
     {
         _PrevSize = Size;
         _PrevLocation = Location;
-        base.OnLoad(e);
+        base.OnLoad(args);
     }
 
     /// <summary>
     /// Overwrites the virtual method of the predecessor, to provide custom processing.
     /// </summary>
-    /// <param name="e">Provides data for a cancelable event. </param>
-    protected override void OnClosing(CancelEventArgs e)
+    /// <param name="args">Provides data for a cancel able event. </param>
+    protected override void OnClosing(CancelEventArgs args)
     {
         AppbarRemove();
-        base.OnClosing(e);
+        base.OnClosing(args);
     }
 
     /// <summary>
     /// Overwrites the virtual method of the predecessor, to provide additional processing (custom resizing).
     /// </summary>
-    /// <param name="e">An EventArgs that contains the event data.</param>
-    protected override void OnSizeChanged(EventArgs e)
+    /// <param name="args">An EventArgs that contains the event data.</param>
+    protected override void OnSizeChanged(EventArgs args)
     {
         if (IsAppbarMode)
         {
@@ -433,7 +433,7 @@ public class ApplicationDesktopToolbar : Form
             SizeAppBar();
         }
 
-        base.OnSizeChanged(e);
+        base.OnSizeChanged(args);
     }
     #endregion // Overrides
 

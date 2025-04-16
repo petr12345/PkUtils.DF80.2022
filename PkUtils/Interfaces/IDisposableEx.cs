@@ -92,9 +92,9 @@ public interface IDisposableEx : IDisposable
 /// Subsequent calls of Dispose should not cause that call being repeated.
 /// </remarks>
 /// <param name="sender">The source of the event.</param>
-/// <param name="e">An object that contains the event data.</param>
+/// <param name="args">An object that contains the event data.</param>
 [CLSCompliant(true)]
-public delegate void DisposedEventHandler(IDisposableEx sender, EventArgs e);
+public delegate void DisposedEventHandler(IDisposableEx sender, EventArgs args);
 
 /// <summary>
 /// Extends the IDisposableEx interface

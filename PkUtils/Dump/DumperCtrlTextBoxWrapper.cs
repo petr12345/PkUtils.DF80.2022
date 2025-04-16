@@ -106,8 +106,8 @@ public class DumperCtrlTextBoxWrapper : DumperCtrlWrapper<TextBoxBase>
     /// tabbed dialog, and the related tab is not initially visible. </summary>
     ///
     /// <param name="sender"> The sender of the event. </param>
-    /// <param name="e">   The event arguments. </param>
-    private void WrappedTextBox_VisibleChanged(object sender, EventArgs e)
+    /// <param name="args">   The event arguments. </param>
+    private void WrappedTextBox_VisibleChanged(object sender, EventArgs args)
     {
         TextBoxSelInfo selInfo;
         TextBoxBase txtBx = WrappedControl;

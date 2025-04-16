@@ -494,9 +494,8 @@ public class WeakEventHandler<TEventArgs> where TEventArgs : EventArgs
     /// Note that for case TargetMethod.IsStatic the handler never tries to deregister itself.
     /// </remarks>
     /// <param name="sender">The source of the event.</param>
-    /// <param name="e">An object that contains the event data.</param>
-
-    protected void FnHandlerNonGeneric(object sender, EventArgs e)
+    /// <param name="args">An object that contains the event data.</param>
+    protected void FnHandlerNonGeneric(object sender, EventArgs args)
     {
         Action<object, EventArgs> callback;
         Debug.Assert(!this.IsDeregistered);
@@ -506,7 +505,7 @@ public class WeakEventHandler<TEventArgs> where TEventArgs : EventArgs
         {
             callback = (Action<object, EventArgs>)Delegate.CreateDelegate(
               typeof(Action<object, EventArgs>), target, TargetMethod, true);
-            callback?.Invoke(sender, e);
+            callback?.Invoke(sender, args);
         }
         else
         {
@@ -525,9 +524,9 @@ public class WeakEventHandler<TEventArgs> where TEventArgs : EventArgs
     /// Note that for case TargetMethod.IsStatic the handler never tries to deregister itself.
     /// </remarks>
     /// <param name="sender">The source of the event.</param>
-    /// <param name="e">An object that contains the event data.</param>
+    /// <param name="args">An object that contains the event data.</param>
 
-    protected void FnHandlerGeneric(object sender, TEventArgs e)
+    protected void FnHandlerGeneric(object sender, TEventArgs args)
     {
         Action<object, TEventArgs> callback;
         Debug.Assert(!this.IsDeregistered);
@@ -538,7 +537,7 @@ public class WeakEventHandler<TEventArgs> where TEventArgs : EventArgs
             callback = (Action<object, TEventArgs>)Delegate.CreateDelegate(
               typeof(Action<object, TEventArgs>), target, TargetMethod, true);
 
-            callback?.Invoke(sender, e);
+            callback?.Invoke(sender, args);
         }
         else
         {

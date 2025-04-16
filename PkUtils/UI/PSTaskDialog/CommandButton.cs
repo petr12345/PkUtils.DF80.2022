@@ -195,11 +195,11 @@ public partial class CommandButton : Button
     /// Overrides the implementation of the base class, in order to perform custom painting.
     /// </summary>
     ///
-    /// <param name="e"> A <see cref="T:System.Windows.Forms.PaintEventArgs" /> that contains the event data. </param>
-    protected override void OnPaint(PaintEventArgs e)
+    /// <param name="args"> A <see cref="T:System.Windows.Forms.PaintEventArgs" /> that contains the event data. </param>
+    protected override void OnPaint(PaintEventArgs args)
     {
-        e.Graphics.SmoothingMode = SmoothingMode.HighQuality;
-        e.Graphics.TextRenderingHint = System.Drawing.Text.TextRenderingHint.ClearTypeGridFit;
+        args.Graphics.SmoothingMode = SmoothingMode.HighQuality;
+        args.Graphics.TextRenderingHint = System.Drawing.Text.TextRenderingHint.ClearTypeGridFit;
 
         LinearGradientBrush brush;
         LinearGradientMode mode = LinearGradientMode.Vertical;
@@ -214,26 +214,26 @@ public partial class CommandButton : Button
             switch (_State)
             {
                 case eButtonState.Normal:
-                    e.Graphics.FillRectangle(Brushes.White, newRect);
+                    args.Graphics.FillRectangle(Brushes.White, newRect);
                     if (base.Focused)
-                        e.Graphics.DrawRectangle(new Pen(Color.SkyBlue, 1), newRect);
+                        args.Graphics.DrawRectangle(new Pen(Color.SkyBlue, 1), newRect);
                     else
-                        e.Graphics.DrawRectangle(new Pen(Color.White, 1), newRect);
+                        args.Graphics.DrawRectangle(new Pen(Color.White, 1), newRect);
                     text_color = Color.DarkBlue;
                     break;
 
                 case eButtonState.MouseOver:
                     brush = new LinearGradientBrush(newRect, Color.White, Color.WhiteSmoke, mode);
-                    e.Graphics.FillRectangle(brush, newRect);
-                    e.Graphics.DrawRectangle(new Pen(Color.Silver, 1), newRect);
+                    args.Graphics.FillRectangle(brush, newRect);
+                    args.Graphics.DrawRectangle(new Pen(Color.Silver, 1), newRect);
                     img = _imgArrow2;
                     text_color = Color.Blue;
                     break;
 
                 case eButtonState.Down:
                     brush = new LinearGradientBrush(newRect, Color.WhiteSmoke, Color.White, mode);
-                    e.Graphics.FillRectangle(brush, newRect);
-                    e.Graphics.DrawRectangle(new Pen(Color.DarkGray, 1), newRect);
+                    args.Graphics.FillRectangle(brush, newRect);
+                    args.Graphics.DrawRectangle(new Pen(Color.DarkGray, 1), newRect);
                     text_color = Color.DarkBlue;
                     break;
             }
@@ -241,8 +241,8 @@ public partial class CommandButton : Button
         else
         {
             brush = new LinearGradientBrush(newRect, Color.WhiteSmoke, Color.Gainsboro, mode);
-            e.Graphics.FillRectangle(brush, newRect);
-            e.Graphics.DrawRectangle(new Pen(Color.DarkGray, 1), newRect);
+            args.Graphics.FillRectangle(brush, newRect);
+            args.Graphics.DrawRectangle(new Pen(Color.DarkGray, 1), newRect);
             text_color = Color.DarkBlue;
         }
 
@@ -251,66 +251,66 @@ public partial class CommandButton : Button
 
         SizeF szL = GetLargeTextSizeF();
         //e.Graphics.DrawString(largetext, base.Font, new SolidBrush(text_color), new RectangleF(new PointF(LEFT_MARGIN + _imgArrow1.Width + 5, TOP_MARGIN), szL));
-        TextRenderer.DrawText(e.Graphics, largetext, base.Font, new Rectangle(LEFT_MARGIN + _imgArrow1.Width + 5, TOP_MARGIN, (int)szL.Width, (int)szL.Height), text_color, TextFormatFlags.Default);
+        TextRenderer.DrawText(args.Graphics, largetext, base.Font, new Rectangle(LEFT_MARGIN + _imgArrow1.Width + 5, TOP_MARGIN, (int)szL.Width, (int)szL.Height), text_color, TextFormatFlags.Default);
 
         if (!string.IsNullOrEmpty(smalltext))
         {
             SizeF szS = GetSmallTextSizeF();
-            e.Graphics.DrawString(smalltext, _smallFont, new SolidBrush(text_color), new RectangleF(new PointF(LEFT_MARGIN + _imgArrow1.Width + 8, TOP_MARGIN + (int)szL.Height), szS));
+            args.Graphics.DrawString(smalltext, _smallFont, new SolidBrush(text_color), new RectangleF(new PointF(LEFT_MARGIN + _imgArrow1.Width + 8, TOP_MARGIN + (int)szL.Height), szS));
         }
 
-        e.Graphics.DrawImage(img, new Point(LEFT_MARGIN, TOP_MARGIN + (int)(szL.Height / 2) - img.Height / 2));
+        args.Graphics.DrawImage(img, new Point(LEFT_MARGIN, TOP_MARGIN + (int)(szL.Height / 2) - img.Height / 2));
     }
 
     //--------------------------------------------------------------------------------
     /// <summary> Overrides the implementation of the base class, in order to perform additional processing. </summary>
     ///
-    /// <param name="e">  An EventArgs that contains the event data. </param>
-    protected override void OnMouseLeave(System.EventArgs e)
+    /// <param name="args">  An EventArgs that contains the event data. </param>
+    protected override void OnMouseLeave(System.EventArgs args)
     {
         _State = eButtonState.Normal;
         this.Invalidate();
-        base.OnMouseLeave(e);
+        base.OnMouseLeave(args);
     }
 
     //--------------------------------------------------------------------------------
     /// <summary> Overrides the implementation of the base class, in order to perform additional processing. </summary>
     ///
-    /// <param name="e">  An EventArgs that contains the event data. </param>
-    protected override void OnMouseEnter(System.EventArgs e)
+    /// <param name="args">  An EventArgs that contains the event data. </param>
+    protected override void OnMouseEnter(EventArgs args)
     {
         _State = eButtonState.MouseOver;
         this.Invalidate();
-        base.OnMouseEnter(e);
+        base.OnMouseEnter(args);
     }
 
     //--------------------------------------------------------------------------------
     /// <summary> Overrides the implementation of the base class, in order to perform additional processing. </summary>
     ///
-    /// <param name="e">  An EventArgs that contains the event data. </param>
-    protected override void OnMouseUp(System.Windows.Forms.MouseEventArgs e)
+    /// <param name="args">  An EventArgs that contains the event data. </param>
+    protected override void OnMouseUp(MouseEventArgs args)
     {
         _State = eButtonState.MouseOver;
         this.Invalidate();
-        base.OnMouseUp(e);
+        base.OnMouseUp(args);
     }
 
     //--------------------------------------------------------------------------------
     /// <summary> Overrides the implementation of the base class, in order to perform additional processing. </summary>
     ///
-    /// <param name="e">  An EventArgs that contains the event data. </param>
-    protected override void OnMouseDown(System.Windows.Forms.MouseEventArgs e)
+    /// <param name="args">  An EventArgs that contains the event data. </param>
+    protected override void OnMouseDown(MouseEventArgs args)
     {
         _State = eButtonState.Down;
         this.Invalidate();
-        base.OnMouseDown(e);
+        base.OnMouseDown(args);
     }
 
     //--------------------------------------------------------------------------------
     /// <summary> Overrides the implementation of the base class, in order to perform additional processing. </summary>
     ///
-    /// <param name="e">  An <see cref="T:System.EventArgs" /> that contains the event data. </param>
-    protected override void OnSizeChanged(EventArgs e)
+    /// <param name="args">  An <see cref="T:System.EventArgs" /> that contains the event data. </param>
+    protected override void OnSizeChanged(EventArgs args)
     {
         if (AutoHeight)
         {
@@ -321,7 +321,7 @@ public partial class CommandButton : Button
                 return;
             }
         }
-        base.OnSizeChanged(e);
+        base.OnSizeChanged(args);
     }
 
     /// <summary>

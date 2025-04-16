@@ -337,8 +337,8 @@ public class PopupTooltip : Control, IPopupText
     /// </summary>
     ///
     /// <param name="source"> Source for the event. </param>
-    /// <param name="e">      Event information to send to registered event handlers. </param>
-    protected void OnTimer(object source, ElapsedEventArgs e)
+    /// <param name="args">      Event information to send to registered event handlers. </param>
+    protected void OnTimer(object source, ElapsedEventArgs args)
     {
         try
         {
@@ -361,10 +361,10 @@ public class PopupTooltip : Control, IPopupText
     /// This implementation performs some additional updates.
     /// </summary>
     ///
-    /// <param name="e">  An <see cref="System.EventArgs" /> that contains the event data. </param>
-    protected override void OnSizeChanged(EventArgs e)
+    /// <param name="args">  An <see cref="System.EventArgs" /> that contains the event data. </param>
+    protected override void OnSizeChanged(EventArgs args)
     {
-        base.OnSizeChanged(e);
+        base.OnSizeChanged(args);
         // let's set bounds, imho it is better 
         /* _textBox.Size = this.Size; */
         _textBox.Bounds = new Rectangle(0, 0, this.Size.Width, this.Size.Height);

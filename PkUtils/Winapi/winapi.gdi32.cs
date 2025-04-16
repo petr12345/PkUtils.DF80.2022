@@ -134,7 +134,7 @@ public struct COLORREF
 /// <code language="xml" title="Usage example">
 /// <![CDATA[
 /// private void printDoc_PrintPage(object sender, 
-///    System.Drawing.Printing.PrintPageEventArgs e)
+///    System.Drawing.Printing.PrintPageEventArgs args)
 /// {
 ///   PrinterBounds objBounds = new PrinterBounds(e);
 ///   Rectangle r = objBounds.Bounds;  // Get the REAL Margin Bounds !
@@ -166,20 +166,20 @@ public class PrinterBounds
     /// <summary>
     /// Constructor initializing read-only fields.
     /// </summary>
-    /// <param name="e">Provides data for the PrintPage event. </param>
-    public PrinterBounds(PrintPageEventArgs e)
+    /// <param name="args">Provides data for the PrintPage event. </param>
+    public PrinterBounds(PrintPageEventArgs args)
     {
-        IntPtr hDC = e.Graphics.GetHdc();
+        IntPtr hDC = args.Graphics.GetHdc();
 
         HardMarginLeft = Gdi32.GetDeviceCaps(hDC, Gdi32.PHYSICALOFFSETX);
         HardMarginTop = Gdi32.GetDeviceCaps(hDC, Gdi32.PHYSICALOFFSETY);
 
-        e.Graphics.ReleaseHdc(hDC);
+        args.Graphics.ReleaseHdc(hDC);
 
-        HardMarginLeft = (int)(HardMarginLeft * 100.0 / e.Graphics.DpiX);
-        HardMarginTop = (int)(HardMarginTop * 100.0 / e.Graphics.DpiY);
+        HardMarginLeft = (int)(HardMarginLeft * 100.0 / args.Graphics.DpiX);
+        HardMarginTop = (int)(HardMarginTop * 100.0 / args.Graphics.DpiY);
 
-        Bounds = e.MarginBounds;
+        Bounds = args.MarginBounds;
 
         Bounds.Offset(-HardMarginLeft, -HardMarginTop);
     }

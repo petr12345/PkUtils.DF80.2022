@@ -65,15 +65,15 @@ public abstract class NotifyPropertyChanged : INotifyPropertyChanged
     }
 
     /// <summary> Raises the <see cref="PropertyChanged"/> event. </summary>
-    /// <param name="eventArgs"> Event information to send to registered event handlers. </param>
-    protected virtual void OnPropertyChanged(PropertyChangedEventArgs eventArgs)
+    /// <param name="args"> Event information to send to registered event handlers. </param>
+    protected virtual void OnPropertyChanged(PropertyChangedEventArgs args)
     {
-        ArgumentNullException.ThrowIfNull(eventArgs);
+        ArgumentNullException.ThrowIfNull(args);
 
         // test name again just for case of call without involving RaisePropertyChanged
-        VerifyPropertyName(eventArgs.PropertyName);
+        VerifyPropertyName(args.PropertyName);
         PropertyChangedEventHandler handler = PropertyChanged;
-        handler?.Invoke(this, eventArgs);
+        handler?.Invoke(this, args);
     }
 
     /// <summary> Sets a new value of a property <paramref name="propertyName"/>. </summary>
