@@ -82,6 +82,7 @@ partial class TestForm
         _splitContainer = new System.Windows.Forms.SplitContainer();
         _dumpTextBox = new System.Windows.Forms.TextBox();
         _checkBoxShowLog = new System.Windows.Forms.CheckBox();
+        _btnClearLog = new System.Windows.Forms.Button();
         ((System.ComponentModel.ISupportInitialize)_splitContainer).BeginInit();
         _splitContainer.Panel1.SuspendLayout();
         _splitContainer.Panel2.SuspendLayout();
@@ -94,7 +95,7 @@ partial class TestForm
         _multiSelectTreeview.ImageIndex = 0;
         _multiSelectTreeview.ImageList = _treeImageList;
         _multiSelectTreeview.Location = new System.Drawing.Point(0, 0);
-        _multiSelectTreeview.Margin = new System.Windows.Forms.Padding(4);
+        _multiSelectTreeview.Margin = new System.Windows.Forms.Padding(5);
         _multiSelectTreeview.Name = "_multiSelectTreeview";
         treeNode1.Name = "Node16";
         treeNode1.Text = "Node16";
@@ -181,8 +182,9 @@ partial class TestForm
         _multiSelectTreeview.Nodes.AddRange(new System.Windows.Forms.TreeNode[] { treeNode10, treeNode20, treeNode30, treeNode40 });
         _multiSelectTreeview.SelectedImageIndex = 0;
         _multiSelectTreeview.SelectedNodes = (System.Collections.Generic.IReadOnlyCollection<System.Windows.Forms.TreeNode>)resources.GetObject("_multiSelectTreeview.SelectedNodes");
-        _multiSelectTreeview.Size = new System.Drawing.Size(306, 240);
+        _multiSelectTreeview.Size = new System.Drawing.Size(428, 315);
         _multiSelectTreeview.TabIndex = 0;
+        _multiSelectTreeview.SelectionChanged += OnMultiSelectTreeview_SelectionChanged;
         // 
         // _treeImageList
         // 
@@ -199,10 +201,10 @@ partial class TestForm
         // _btnSelectNodes
         // 
         _btnSelectNodes.Anchor = System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right;
-        _btnSelectNodes.Location = new System.Drawing.Point(197, 442);
-        _btnSelectNodes.Margin = new System.Windows.Forms.Padding(4);
+        _btnSelectNodes.Location = new System.Drawing.Point(303, 581);
+        _btnSelectNodes.Margin = new System.Windows.Forms.Padding(5);
         _btnSelectNodes.Name = "_btnSelectNodes";
-        _btnSelectNodes.Size = new System.Drawing.Size(122, 26);
+        _btnSelectNodes.Size = new System.Drawing.Size(139, 35);
         _btnSelectNodes.TabIndex = 4;
         _btnSelectNodes.Text = "Select Nodes";
         _btnSelectNodes.UseVisualStyleBackColor = true;
@@ -211,22 +213,22 @@ partial class TestForm
         // _btnClearNodes
         // 
         _btnClearNodes.Anchor = System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right;
-        _btnClearNodes.Location = new System.Drawing.Point(197, 411);
-        _btnClearNodes.Margin = new System.Windows.Forms.Padding(4);
+        _btnClearNodes.Location = new System.Drawing.Point(303, 540);
+        _btnClearNodes.Margin = new System.Windows.Forms.Padding(5);
         _btnClearNodes.Name = "_btnClearNodes";
-        _btnClearNodes.Size = new System.Drawing.Size(122, 26);
+        _btnClearNodes.Size = new System.Drawing.Size(139, 35);
         _btnClearNodes.TabIndex = 3;
         _btnClearNodes.Text = "Clear Nodes";
         _btnClearNodes.UseVisualStyleBackColor = true;
-        _btnClearNodes.Click += OnButton_ClearNodes_Click;
+        _btnClearNodes.Click += OnButton_ClearSelection_Click;
         // 
         // _btnExit
         // 
         _btnExit.Anchor = System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right;
-        _btnExit.Location = new System.Drawing.Point(197, 473);
-        _btnExit.Margin = new System.Windows.Forms.Padding(4);
+        _btnExit.Location = new System.Drawing.Point(303, 623);
+        _btnExit.Margin = new System.Windows.Forms.Padding(5);
         _btnExit.Name = "_btnExit";
-        _btnExit.Size = new System.Drawing.Size(122, 26);
+        _btnExit.Size = new System.Drawing.Size(139, 35);
         _btnExit.TabIndex = 5;
         _btnExit.Text = "Exit";
         _btnExit.UseVisualStyleBackColor = true;
@@ -236,10 +238,9 @@ partial class TestForm
         // 
         _checkBoxCustomColors.Anchor = System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left;
         _checkBoxCustomColors.AutoSize = true;
-        _checkBoxCustomColors.Location = new System.Drawing.Point(18, 449);
-        _checkBoxCustomColors.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+        _checkBoxCustomColors.Location = new System.Drawing.Point(21, 592);
         _checkBoxCustomColors.Name = "_checkBoxCustomColors";
-        _checkBoxCustomColors.Size = new System.Drawing.Size(123, 19);
+        _checkBoxCustomColors.Size = new System.Drawing.Size(151, 24);
         _checkBoxCustomColors.TabIndex = 1;
         _checkBoxCustomColors.Text = "Use custom colors";
         _checkBoxCustomColors.UseVisualStyleBackColor = true;
@@ -249,10 +250,9 @@ partial class TestForm
         // 
         _checkBoxUseImages.Anchor = System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left;
         _checkBoxUseImages.AutoSize = true;
-        _checkBoxUseImages.Location = new System.Drawing.Point(18, 480);
-        _checkBoxUseImages.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+        _checkBoxUseImages.Location = new System.Drawing.Point(21, 633);
         _checkBoxUseImages.Name = "_checkBoxUseImages";
-        _checkBoxUseImages.Size = new System.Drawing.Size(86, 19);
+        _checkBoxUseImages.Size = new System.Drawing.Size(107, 24);
         _checkBoxUseImages.TabIndex = 2;
         _checkBoxUseImages.Text = "Use images";
         _checkBoxUseImages.UseVisualStyleBackColor = true;
@@ -261,9 +261,9 @@ partial class TestForm
         // _splitContainer
         // 
         _splitContainer.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right;
-        _splitContainer.Location = new System.Drawing.Point(14, 18);
-        _splitContainer.Margin = new System.Windows.Forms.Padding(2);
-        _splitContainer.MinimumSize = new System.Drawing.Size(128, 128);
+        _splitContainer.Location = new System.Drawing.Point(16, 24);
+        _splitContainer.Margin = new System.Windows.Forms.Padding(2, 3, 2, 3);
+        _splitContainer.MinimumSize = new System.Drawing.Size(146, 171);
         _splitContainer.Name = "_splitContainer";
         _splitContainer.Orientation = System.Windows.Forms.Orientation.Horizontal;
         // 
@@ -276,39 +276,54 @@ partial class TestForm
         // 
         _splitContainer.Panel2.Controls.Add(_dumpTextBox);
         _splitContainer.Panel2MinSize = 64;
-        _splitContainer.Size = new System.Drawing.Size(306, 386);
-        _splitContainer.SplitterDistance = 240;
+        _splitContainer.Size = new System.Drawing.Size(428, 507);
+        _splitContainer.SplitterDistance = 315;
+        _splitContainer.SplitterWidth = 5;
         _splitContainer.TabIndex = 0;
         // 
         // _dumpTextBox
         // 
         _dumpTextBox.Dock = System.Windows.Forms.DockStyle.Fill;
         _dumpTextBox.Location = new System.Drawing.Point(0, 0);
+        _dumpTextBox.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
         _dumpTextBox.MaxLength = 65535;
         _dumpTextBox.Multiline = true;
         _dumpTextBox.Name = "_dumpTextBox";
         _dumpTextBox.ReadOnly = true;
-        _dumpTextBox.Size = new System.Drawing.Size(306, 142);
+        _dumpTextBox.ScrollBars = System.Windows.Forms.ScrollBars.Both;
+        _dumpTextBox.Size = new System.Drawing.Size(428, 187);
         _dumpTextBox.TabIndex = 0;
         // 
         // _checkBoxShowLog
         // 
         _checkBoxShowLog.Anchor = System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left;
         _checkBoxShowLog.AutoSize = true;
-        _checkBoxShowLog.Location = new System.Drawing.Point(18, 418);
-        _checkBoxShowLog.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+        _checkBoxShowLog.Location = new System.Drawing.Point(21, 550);
         _checkBoxShowLog.Name = "_checkBoxShowLog";
-        _checkBoxShowLog.Size = new System.Drawing.Size(127, 19);
+        _checkBoxShowLog.Size = new System.Drawing.Size(96, 24);
         _checkBoxShowLog.TabIndex = 0;
-        _checkBoxShowLog.Text = "Show TreeView Log";
+        _checkBoxShowLog.Text = "Show Log";
         _checkBoxShowLog.UseVisualStyleBackColor = true;
         _checkBoxShowLog.CheckedChanged += OnCheckBoxShowLog_CheckedChanged;
         // 
+        // _btnClearLog
+        // 
+        _btnClearLog.Anchor = System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right;
+        _btnClearLog.Location = new System.Drawing.Point(151, 540);
+        _btnClearLog.Margin = new System.Windows.Forms.Padding(5);
+        _btnClearLog.Name = "_btnClearLog";
+        _btnClearLog.Size = new System.Drawing.Size(139, 35);
+        _btnClearLog.TabIndex = 6;
+        _btnClearLog.Text = "Clear Log";
+        _btnClearLog.UseVisualStyleBackColor = true;
+        _btnClearLog.Click += OnButtonClearLog_Click;
+        // 
         // TestForm
         // 
-        AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
+        AutoScaleDimensions = new System.Drawing.SizeF(8F, 20F);
         AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-        ClientSize = new System.Drawing.Size(336, 511);
+        ClientSize = new System.Drawing.Size(462, 673);
+        Controls.Add(_btnClearLog);
         Controls.Add(_checkBoxShowLog);
         Controls.Add(_splitContainer);
         Controls.Add(_checkBoxUseImages);
@@ -317,8 +332,8 @@ partial class TestForm
         Controls.Add(_btnClearNodes);
         Controls.Add(_btnSelectNodes);
         Icon = (System.Drawing.Icon)resources.GetObject("$this.Icon");
-        Margin = new System.Windows.Forms.Padding(4);
-        MinimumSize = new System.Drawing.Size(352, 550);
+        Margin = new System.Windows.Forms.Padding(5);
+        MinimumSize = new System.Drawing.Size(480, 720);
         Name = "TestForm";
         Text = "Test Multiselect Tree View";
         Load += TestForm_Load;
@@ -344,5 +359,6 @@ partial class TestForm
     private System.Windows.Forms.ImageList _treeImageList;
     private System.Windows.Forms.SplitContainer _splitContainer;
     private System.Windows.Forms.TextBox _dumpTextBox;
+    private System.Windows.Forms.Button _btnClearLog;
 }
 

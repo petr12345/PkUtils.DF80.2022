@@ -2,20 +2,26 @@
 //
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Drawing;
 using System.Windows.Forms;
 using PK.PkUtils.Consoles;
+using PK.PkUtils.Dump;
 using PK.PkUtils.Extensions;
+using PK.PkUtils.Interfaces;
 using PK.PkUtils.UI.General;
 
 namespace TestMultiSelectTreeview;
 
-public partial class TestForm : FormWithLayoutPersistence
+public partial class TestForm : FormWithLayoutPersistence, IDumper
 {
     #region Fields
 
     private Color _treeviewBackColor;
     private Color _treeviewForeColor;
+    private DumperCtrlTextBoxWrapper _wrapper;
+    private const bool _shoCallStack = false;
+    private const int _maxMsgHistoryItems = 2048;
     private const int IL_0_icoRoot = 0;
     private const int IL_1_selRoot = 1;
     private const int IL_2_icoFolder = 2;
@@ -37,12 +43,29 @@ public partial class TestForm : FormWithLayoutPersistence
     }
     #endregion // Constructor(s)
 
-    protected bool ShoudlShowLog { get => this._checkBoxShowLog.Checked; }
+    #region Properties
+
+    protected bool ShouldShowLog { get => _checkBoxShowLog.Checked; }
+
+    protected override IDumper Dumper
+    {
+        get { return (_wrapper ??= new DumperCtrlTextBoxWrapper(_dumpTextBox, _maxMsgHistoryItems)); }
+    }
+    #endregion // Properties
+
+    #region IDumper Members
+
+    public bool DumpText(string text) => Dumper.DumpText(text);
+
+    public bool DumpError(string text) => Dumper.DumpError(text);
+
+    public bool Reset() => Dumper.Reset();
+
+    #endregion // IDumper Members
 
     #region Methods
 
     #region Initialize
-
     protected void InitializeTreeview()
     {
         _treeviewBackColor = this._multiSelectTreeview.BackColor;
@@ -110,11 +133,29 @@ public partial class TestForm : FormWithLayoutPersistence
             TurnOffImagesOnAllNodes();
     }
     #endregion // Updating_tree_nodes
+
+    #region Updating_tree_selection_info
+
+    protected void DumpTreeSelectionInfo(
+        IReadOnlyCollection<TreeNode> selectedNodes,
+        string timingSpec,
+        StackTrace stackTrace)
+    {
+        int count = selectedNodes.Count;
+        string timingFinal = timingSpec ?? "Now";
+        string info1 = $"{timingFinal} {count} tree node(s) selected";
+        string info2 = (count == 0) ? string.Empty : $" ({selectedNodes.Join(", ", x => x.Name)})";
+        string info3 = _shoCallStack && (stackTrace != null) ? $" [ {stackTrace.AsNameValue()} ]" : string.Empty;
+
+        Dumper.DumpLine(info1 + info2 + info3);
+    }
+    #endregion // Updating_tree_selection_info
+
     #endregion // Methods
 
     #region Event_handlers
 
-    private void OnButton_SelectNodes(object sender, EventArgs e)
+    private void OnButton_SelectNodes(object sender, EventArgs args)
     {
         List<TreeNode> list = [
             _multiSelectTreeview.Nodes[0],
@@ -124,12 +165,17 @@ public partial class TestForm : FormWithLayoutPersistence
         _multiSelectTreeview.SelectedNodes = list;
     }
 
-    private void OnButton_ClearNodes_Click(object sender, EventArgs e)
+    private void OnButton_ClearSelection_Click(object sender, EventArgs args)
     {
         _multiSelectTreeview.SelectedNodes = [];
     }
 
-    private void OnCheckBoxBackgroundImage_CheckedChanged(object sender, EventArgs e)
+    private void OnButtonClearLog_Click(object sender, EventArgs e)
+    {
+        Dumper.Reset();
+    }
+
+    private void OnCheckBoxBackgroundImage_CheckedChanged(object sender, EventArgs args)
     {
 
         if (_checkBoxCustomColors.Checked)
@@ -144,25 +190,30 @@ public partial class TestForm : FormWithLayoutPersistence
         }
     }
 
-    private void OnCheckBoxShowLog_CheckedChanged(object sender, EventArgs e)
+    private void OnCheckBoxShowLog_CheckedChanged(object sender, EventArgs args)
     {
         InitializeTreeViewTextLogger(_checkBoxShowLog.Checked);
     }
 
-    private void TestForm_Load(object sender, EventArgs e)
+    private void TestForm_Load(object sender, EventArgs args)
+    {
+        AdjustAllNodesImages();
+        DumpTreeSelectionInfo(_multiSelectTreeview.SelectedNodes, "Initially", null);
+    }
+
+    private void OnCheckBoxUseImages_CheckedChanged(object sender, EventArgs args)
     {
         AdjustAllNodesImages();
     }
 
-    private void OnCheckBoxUseImages_CheckedChanged(object sender, EventArgs e)
+    private void OnMultiSelectTreeview_SelectionChanged(object sender, MultiSelectTreeview.TreeviewSelChangeArgs args)
     {
-        AdjustAllNodesImages();
+        DumpTreeSelectionInfo(args.SelectedNodes, null, args.StackTrace);
     }
 
-    private void OnButton_Exit_Click(object sender, EventArgs e)
+    private void OnButton_Exit_Click(object sender, EventArgs args)
     {
-        this.Close();
+        Close();
     }
     #endregion // Event_handlers
 }
-

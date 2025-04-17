@@ -20,41 +20,33 @@ public partial class MultiSelectTreeview : TreeView
 {
     #region Typedefs
 
-    /// <summary>   Additional information for treeview selected change events. </summary>
-    public class TreeviewSelChangeArgs : EventArgs
+    /// <summary>
+    /// Additional information for TreeView selection change events.
+    /// </summary>
+    /// <remarks>
+    /// Initializes a new instance of the <see cref="TreeviewSelChangeArgs"/> struct with custom selection.
+    /// </remarks>
+    /// <param name="treeview">The TreeView control. Must not be null.</param>
+    /// <param name="selectedNodes">The selected nodes. Must not be null.</param>
+    /// <exception cref="ArgumentNullException">Thrown when any parameter is null.</exception>
+    public readonly struct TreeviewSelChangeArgs(MultiSelectTreeview treeview, IReadOnlyCollection<TreeNode> selectedNodes)
     {
-        private readonly MultiSelectTreeview _treeview;
-        private readonly IReadOnlyCollection<TreeNode> _selectedNodes;
-        private readonly StackTrace _stackTrace;
+        /// <summary> The TreeView instance. </summary>
+        public MultiSelectTreeview Treeview { get; } = treeview ?? throw new ArgumentNullException(nameof(treeview));
 
-        /// <summary> Single-argument constructor. </summary>
-        /// <exception cref="ArgumentNullException"> Thrown when required argument <paramref name="treeview"/> is null. </exception>
-        /// <param name="treeview"> The treeview. Can't be null. </param>
-        public TreeviewSelChangeArgs(MultiSelectTreeview treeview) :
-            this(treeview, (treeview is not null) ? treeview.SelectedNodes : throw new ArgumentNullException(nameof(treeview)))
-        { }
+        /// <summary> The collection of selected nodes. </summary>
+        public IReadOnlyCollection<TreeNode> SelectedNodes { get; } = selectedNodes ?? throw new ArgumentNullException(nameof(selectedNodes));
 
-        /// <summary> Two-arguments constructor. </summary>
-        /// <exception cref="ArgumentNullException"> Thrown when one or more required arguments are null. </exception>
-        /// <param name="treeview"> The treeview. Can't be null. </param>
-        /// <param name="selectedNodes"> The selected nodes. Can't be null. </param>
-        protected TreeviewSelChangeArgs(
-            MultiSelectTreeview treeview,
-            IReadOnlyCollection<TreeNode> selectedNodes)
-        {
-            _treeview = treeview ?? throw new ArgumentNullException(nameof(treeview));
-            _selectedNodes = selectedNodes ?? throw new ArgumentNullException(nameof(selectedNodes));
-            _stackTrace = new StackTrace(skipFrames: 2);
-        }
+        /// <summary> The stack trace when this object was created. </summary>
+        public StackTrace StackTrace { get; } = new StackTrace(skipFrames: 2);
 
-        /// <summary>   Gets the treeview. </summary>
-        public MultiSelectTreeview Treeview { get => _treeview; }
-
-        /// <summary> Gets the selected nodes. </summary>
-        public IReadOnlyCollection<TreeNode> SelectedNodes { get => _selectedNodes; }
-
-        /// <summary>   Gets the stack trace. </summary>
-        public StackTrace StackTrace { get => _stackTrace; }
+        /// <summary>
+        /// Initializes a new instance of the <see cref="TreeviewSelChangeArgs"/> struct.
+        /// </summary>
+        /// <param name="treeview">The TreeView control. Must not be null.</param>
+        /// <exception cref="ArgumentNullException">Thrown when <paramref name="treeview"/> is null.</exception>
+        public TreeviewSelChangeArgs(MultiSelectTreeview treeview)
+            : this(treeview, treeview?.SelectedNodes ?? throw new ArgumentNullException(nameof(treeview))) { }
     }
     #endregion // Typedefs
 
@@ -88,15 +80,13 @@ public partial class MultiSelectTreeview : TreeView
             if (ReferenceEquals(value, _selectedNodes)) return;
             if ((value is not null) && _selectedNodes.SetEquals(value)) return;
 
-            using (IDisposable defered = DeferSelectionChange())
+            using IDisposable defered = DeferSelectionChange();
+            ClearSelectedNodes();
+            if (value != null)
             {
-                ClearSelectedNodes();
-                if (value != null)
+                foreach (TreeNode node in value)
                 {
-                    foreach (TreeNode node in value)
-                    {
-                        ToggleNode(node, true);  // MarkSelectionChanged() is called from inside of ToggleNode
-                    }
+                    ToggleNode(node, true);  // MarkSelectionChanged() is called from inside of ToggleNode
                 }
             }
         }
@@ -112,13 +102,11 @@ public partial class MultiSelectTreeview : TreeView
         {
             if (value == SelectedNode) return;
 
-            using (IDisposable defered = DeferSelectionChange())
+            using IDisposable defered = DeferSelectionChange();
+            ClearSelectedNodes();  // MarkSelectionChanged() is called from inside of ToggleNode
+            if (value != null)
             {
-                ClearSelectedNodes();  // MarkSelectionChanged() is called from inside of ToggleNode
-                if (value != null)
-                {
-                    SelectNode(value);
-                }
+                SelectNode(value);
             }
         }
     }
@@ -335,19 +323,17 @@ public partial class MultiSelectTreeview : TreeView
             int rightBound = node.Bounds.Right + 10;
             if (e.Location.X < leftBound || e.Location.X > rightBound) return;
 
-            using (IDisposable defered = DeferSelectionChange())
+            using IDisposable defered = DeferSelectionChange();
+            if (ModifierKeys == Keys.None && SelectedNodes.Contains(node))
             {
-                if (ModifierKeys == Keys.None && SelectedNodes.Contains(node))
-                {
-                    // Potential drag operation, selection on MouseUp
-                }
-                else
-                {
-                    SelectNode(node);
-                }
-
-                base.OnMouseDown(e);
+                // Potential drag operation, selection on MouseUp
             }
+            else
+            {
+                SelectNode(node);
+            }
+
+            base.OnMouseDown(e);
         }
         catch (Exception ex)
         {
@@ -813,12 +799,10 @@ public partial class MultiSelectTreeview : TreeView
         }
         else
         {
-            using (IDisposable defered = DeferSelectionChange())
-            {
-                ClearSelectedNodes();
-                ToggleNode(node, true);
-                node.EnsureVisible();
-            }
+            using IDisposable defered = DeferSelectionChange();
+            ClearSelectedNodes();
+            ToggleNode(node, true);
+            node.EnsureVisible();
         }
     }
 
@@ -827,7 +811,7 @@ public partial class MultiSelectTreeview : TreeView
         // Should not be called for any null node; only to be on the safe side
         if (node is null) return false;
 
-        bool result = false;
+        bool result;
         Color bgColor = Color.Empty;
         Color fgColor = Color.Empty;
         // Assign these two just to prevent compiler warning "Use of unassigned local variable".

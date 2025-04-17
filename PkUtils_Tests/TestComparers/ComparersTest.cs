@@ -50,7 +50,7 @@ namespace PK.TestComparers
 
         #region Public Methods
 
-        public static void TestCaseInsenzitiveDistinct(ComparersTest.TestMode testMode, IDumper dumper)
+        public static void TestCaseInsensitiveDistinct(ComparersTest.TestMode testMode, IDumper dumper)
         {
             IEnumerable<string> foo = ["abc", "de", "Abc", "DE", "aBc", "abC",];
             IEnumerable<string> distinct1 = null;
@@ -97,7 +97,7 @@ namespace PK.TestComparers
         public static void DoTest(ComparersTest.TestMode testMode, IDumper dumper)
         {
             dumper.CheckArgNotNull(nameof(dumper));
-            TestCaseInsenzitiveDistinct(testMode, dumper);
+            TestCaseInsensitiveDistinct(testMode, dumper);
         }
         #endregion // Public Methods
         #endregion // Methods
