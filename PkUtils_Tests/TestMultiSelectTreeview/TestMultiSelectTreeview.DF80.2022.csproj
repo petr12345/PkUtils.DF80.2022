@@ -2,8 +2,8 @@
   <PropertyGroup>
     <TargetFramework>net8.0-windows</TargetFramework>
     <OutputType>WinExe</OutputType>
-    <RootNamespace>TestMultiSelectTreeview</RootNamespace>
-    <AssemblyName>TestMultiSelectTreeview</AssemblyName>
+    <RootNamespace>TestMultiSelectTreeView</RootNamespace>
+    <AssemblyName>TestMultiSelectTreeView</AssemblyName>
     <StartupObject>
     </StartupObject>
     <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
@@ -23,8 +23,8 @@
     <ProjectReference Include="..\..\PkUtils\PkUtils.DF80.2022.csproj" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Update="MultiSelectTreeview.ColorsCache.cs" />
-    <Compile Update="MultiSelectTreeview.cs">
+    <Compile Update="MultiSelectTreeView.ColorsCache.cs" />
+    <Compile Update="MultiSelectTreeView.cs">
       <SubType>Component</SubType>
     </Compile>
     <Compile Update="Resources.Designer.cs">

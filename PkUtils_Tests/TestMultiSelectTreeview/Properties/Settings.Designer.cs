@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace TestMultiSelectTreeview.Properties {
+namespace TestMultiSelectTreeView.Properties {
     
     
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]

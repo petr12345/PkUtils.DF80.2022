@@ -13,10 +13,11 @@ using PK.PkUtils.WinApi;
 
 namespace PK.PkUtils.UI.General;
 
+
 /// <summary> Represents a TreeView control that supports multiple selection of nodes. </summary>
 /// <seealso href="https://www.codeproject.com/Articles/20581/Multiselect-Treeview-Implementation/">
 /// Multiselect Treeview Implementation.</seealso>
-public partial class MultiSelectTreeview : TreeView
+public partial class MultiSelectTreeView : TreeView
 {
     #region Typedefs
 
@@ -29,10 +30,10 @@ public partial class MultiSelectTreeview : TreeView
     /// <param name="treeview">The TreeView control. Must not be null.</param>
     /// <param name="selectedNodes">The selected nodes. Must not be null.</param>
     /// <exception cref="ArgumentNullException">Thrown when any parameter is null.</exception>
-    public readonly struct TreeviewSelChangeArgs(MultiSelectTreeview treeview, IReadOnlyCollection<TreeNode> selectedNodes)
+    public readonly struct TreeviewSelChangeArgs(MultiSelectTreeView treeview, IReadOnlyCollection<TreeNode> selectedNodes)
     {
         /// <summary> The TreeView instance. </summary>
-        public MultiSelectTreeview Treeview { get; } = treeview ?? throw new ArgumentNullException(nameof(treeview));
+        public MultiSelectTreeView Treeview { get; } = treeview ?? throw new ArgumentNullException(nameof(treeview));
 
         /// <summary> The collection of selected nodes. </summary>
         public IReadOnlyCollection<TreeNode> SelectedNodes { get; } = selectedNodes ?? throw new ArgumentNullException(nameof(selectedNodes));
@@ -45,7 +46,7 @@ public partial class MultiSelectTreeview : TreeView
         /// </summary>
         /// <param name="treeview">The TreeView control. Must not be null.</param>
         /// <exception cref="ArgumentNullException">Thrown when <paramref name="treeview"/> is null.</exception>
-        public TreeviewSelChangeArgs(MultiSelectTreeview treeview)
+        public TreeviewSelChangeArgs(MultiSelectTreeView treeview)
             : this(treeview, treeview?.SelectedNodes ?? throw new ArgumentNullException(nameof(treeview))) { }
     }
     #endregion // Typedefs
@@ -63,7 +64,7 @@ public partial class MultiSelectTreeview : TreeView
     #region Constructor(s)
 
     /// <summary> Default constructor. </summary>
-    public MultiSelectTreeview()
+    public MultiSelectTreeView()
     {
         base.SelectedNode = null;
     }
@@ -142,6 +143,35 @@ public partial class MultiSelectTreeview : TreeView
     #region Methods
 
     #region Public Methods
+
+    /// <summary>
+    /// Removes the specified <see cref="TreeNode"/> from the <see cref="TreeView"/>,
+    /// and ensures that the internal selection set remains consistent by removing the node
+    /// and all of its descendant nodes from <see cref="_selectedNodes"/> collection.
+    /// </summary>
+    /// <param name="node">The <see cref="TreeNode"/> to remove from the control.</param>
+    /// <remarks>
+    /// The standard <see cref="TreeNode.Remove"/> method does not raise any event or callback
+    /// that would allow the control to react to the removal of a node. As a result, if a selected node
+    /// is removed directly, it would remain in the internal <see cref="_selectedNodes"/> set, leading to
+    /// inconsistencies such as invalid selection states, rendering errors, or exceptions.
+    ///
+    /// To avoid this, the <c>RemoveNode</c> method provides a safe and consistent way to remove a node.
+    /// Always use this method instead of calling <c>TreeNode.Remove()</c> directly when working with
+    /// <see cref="MultiSelectTreeView"/> to preserve selection integrity.
+    /// </remarks>
+    public void RemoveNode(TreeNode node)
+    {
+        if (node == null)
+            return;
+
+        RemoveDescendantsFromSelection(node);
+
+        _selectedNodes.Remove(node);
+        node.Remove();
+
+        Invalidate();
+    }
 
     /// <summary> 
     /// Clears the cache retrieved by <see cref="InitializeColorsCache()"/>. 
@@ -273,9 +303,38 @@ public partial class MultiSelectTreeview : TreeView
             OnSelectionChanged();
         }
     }
+
+    /// <summary>
+    /// Removes all selected nodes that are descendants (children, grandchildren, etc.)
+    /// of the specified <paramref name="node"/> from the selection set.
+    /// </summary>
+    /// <param name="node">The node whose descendants should be removed from selection.</param>
+    /// <remarks>
+    /// This method is useful when a node is being removed or collapsed, and its children
+    /// should no longer be considered part of the current selection. It ensures the
+    /// internal selection set remains valid and free of dangling references to disposed nodes.
+    /// </remarks>
+    protected virtual void RemoveDescendantsFromSelection(TreeNode node)
+    {
+        if (node == null || _selectedNodes.Count == 0)
+            return;
+
+        // Use a stack for depth-first traversal to avoid recursion
+        Stack<TreeNode> stack = new();
+        stack.PushRange(node.Nodes.Cast<TreeNode>());
+
+        while (stack.Count > 0)
+        {
+            TreeNode current = stack.Pop();
+
+            _selectedNodes.Remove(current);
+            stack.PushRange(current.Nodes.Cast<TreeNode>());
+        }
+    }
+
     #endregion // Selection_change_related
 
-    #region Error_handling_releted
+    #region Error_handling_related
 
     /// <summary> Handles exceptions that occur in the control. </summary>
     /// <remarks>
@@ -288,7 +347,7 @@ public partial class MultiSelectTreeview : TreeView
     {
         MessageBox.Show($"{ex.GetType().Name} has occurred: {ex.Message}.");
     }
-    #endregion // Error_handling_releted
+    #endregion // Error_handling_related
     #endregion // Protected Methods
 
     #region Protected Overridden Events

@@ -8,12 +8,12 @@ using PK.PkUtils.Extensions;
 
 namespace PK.PkUtils.UI.General;
 
-public partial class MultiSelectTreeview : TreeView
+public partial class MultiSelectTreeView : TreeView
 {
     #region Typedefs
 
     /// <summary>
-    /// An auxiliary class used by <see cref="MultiSelectTreeview"/>.
+    /// An auxiliary class used by <see cref="MultiSelectTreeView"/>.
     /// Caches the background and foreground colors used for tree nodes when visual styles are enabled.
     /// </summary>
     protected class ColorsCache
