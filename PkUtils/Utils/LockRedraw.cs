@@ -12,6 +12,7 @@
 // Ignore Spelling: Utils
 
 using System;
+using System.Windows.Forms;
 using PK.PkUtils.WinApi;
 
 namespace PK.PkUtils.Utils;
@@ -64,63 +65,69 @@ namespace PK.PkUtils.Utils;
 public class LockRedraw : UsageCounter
 {
     #region Fields
+
     /// <summary>
-    /// The handle of window that we temporarily prevent redrawing.
+    /// Handle of the window that is temporarily prevented from redrawing.
     /// </summary>
-    protected readonly IntPtr _hwnd;
+    protected readonly IntPtr _handle;
     private IntPtr _eventMask;
     #endregion // Fields
 
     #region Constructor(s)
 
     /// <summary>
-    /// Constructor providing the window locked from redrawing.
+    /// Initializes a new instance of the <see cref="LockRedraw"/> class for a given window handle.
     /// </summary>
-    /// <remarks>The class does NOT become an owner of the provided window</remarks>
-    /// <param name="hwnd">The handle of the window to be locked from redrawing.</param>
-    public LockRedraw(IntPtr hwnd)
-      : this(hwnd, false)
-    {
-    }
+    /// <remarks>The class does NOT become an owner of the provided window handle.</remarks>
+    /// <param name="handle">Handle of the window to lock redrawing for.</param>
+    public LockRedraw(IntPtr handle)
+        : this(handle, shouldLock: false)
+    { }
 
     /// <summary>
-    /// Constructor providing the window locked from redrawing, 
-    /// and the boolean that specifies whether the lock should be called by constructor.
+    /// Initializes a new instance of the <see cref="LockRedraw"/> class for a given window handle,
+    /// with an option to lock immediately.
     /// </summary>
-    /// <remarks>The class does NOT become an owner of the provided window</remarks>
-    /// <param name="hwnd">The handle of the window to be locked from redrawing.</param>
-    /// <param name="bLock">Should the contructor perform the lock.</param>
-    public LockRedraw(IntPtr hwnd, bool bLock)
-      : base()
+    /// <remarks>The class does NOT become an owner of the provided window handle.</remarks>
+    /// <param name="handle">Handle of the window to lock redrawing for.</param>
+    /// <param name="shouldLock">If true, locking will be performed during construction.</param>
+    public LockRedraw(IntPtr handle, bool shouldLock)
+        : base()
     {
-        _hwnd = hwnd;
-        if (bLock)
+        _handle = handle;
+        if (shouldLock)
         {
             this.AddReference();
         }
     }
+
+    /// <summary>
+    /// Initializes a new instance of the <see cref="LockRedraw"/> class for a given WinForms control,
+    /// with an option to lock immediately.
+    /// </summary>
+    /// <param name="control">The WinForms control to lock redrawing for.</param>
+    /// <param name="shouldLock">If true, locking will be performed during construction.</param>
+    public LockRedraw(Control control, bool shouldLock)
+        : this(control?.Handle ?? throw new ArgumentNullException(nameof(control)), shouldLock)
+    { }
+
     #endregion // Constructor(s)
 
     #region Properties
 
     /// <summary>
-    /// The window handle provided to constructor
+    /// The window handle provided to the constructor.
     /// </summary>
-    protected IntPtr Handle
-    {
-        get { return _hwnd; }
-    }
+    protected IntPtr Handle => _handle;
+
     #endregion // Properties
 
     #region Methods
 
-    #region Public Methods
-    #endregion // Public Methods
-
     #region Protected Methods
 
     /// <summary>
-    /// Overrides ( implements) the method of the base class. Calls StopRepaint.
+    /// Overrides the method of the base class. Calls StopRepaint.
     /// </summary>
     protected override void OnFirstAddReference()
     {
@@ -128,7 +135,7 @@ public class LockRedraw : UsageCounter
     }
 
     /// <summary>
-    /// Overrides ( implements) the method of the base class. Calls StartRepaint.
+    /// Overrides the method of the base class. Calls StartRepaint.
     /// </summary>
     protected override void OnLastRelease()
     {
@@ -136,24 +143,24 @@ public class LockRedraw : UsageCounter
     }
 
     /// <summary>
-    /// Stops control redrawing by sending WM_SETREDRAW with wParam = IntPtr.Zero
+    /// Prevents window redrawing by sending WM_SETREDRAW with wParam = IntPtr.Zero.
     /// </summary>
     protected virtual void StopRepaint()
     {
-        // Stop redrawing:   
+        // Stop redrawing
         User32.SendMessage(this.Handle, (int)Win32.WM.WM_SETREDRAW, IntPtr.Zero, IntPtr.Zero);
-        // Stop sending of events:         
+        // Stop sending of events
         _eventMask = User32.SendMessage(this.Handle, (int)Win32.RichEm.EM_GETEVENTMASK, IntPtr.Zero, IntPtr.Zero);
     }
 
     /// <summary>
-    /// Starts control redrawing by sending WM_SETREDRAW with wParam = IntPtr(1)
+    /// Enables window redrawing by sending WM_SETREDRAW with wParam = IntPtr(1).
     /// </summary>
     protected virtual void StartRepaint()
     {
-        // turn on events         
+        // Restore event mask
         User32.SendMessage(this.Handle, (int)Win32.RichEm.EM_SETEVENTMASK, IntPtr.Zero, _eventMask);
-        // turn on redrawing         
+        // Resume redrawing
         User32.SendMessage(this.Handle, (int)Win32.WM.WM_SETREDRAW, new IntPtr(1), IntPtr.Zero);
     }
     #endregion // Protected Methods

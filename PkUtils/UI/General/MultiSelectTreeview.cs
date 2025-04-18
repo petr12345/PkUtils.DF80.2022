@@ -71,6 +71,9 @@ public partial class MultiSelectTreeview : TreeView
 
     #region Properties
 
+    /// <summary> Gets the root node, if there is any. </summary>
+    public TreeNode RootNode => Nodes.Count > 0 ? Nodes[0] : null;
+
     /// <summary>   Gets or sets the collection of selected nodes. </summary>
     public IReadOnlyCollection<TreeNode> SelectedNodes
     {
@@ -80,7 +83,7 @@ public partial class MultiSelectTreeview : TreeView
             if (ReferenceEquals(value, _selectedNodes)) return;
             if ((value is not null) && _selectedNodes.SetEquals(value)) return;
 
-            using IDisposable defered = DeferSelectionChange();
+            using IDisposable deferred = DeferSelectionChange();
             ClearSelectedNodes();
             if (value != null)
             {
@@ -102,7 +105,7 @@ public partial class MultiSelectTreeview : TreeView
         {
             if (value == SelectedNode) return;
 
-            using IDisposable defered = DeferSelectionChange();
+            using IDisposable deferred = DeferSelectionChange();
             ClearSelectedNodes();  // MarkSelectionChanged() is called from inside of ToggleNode
             if (value != null)
             {
@@ -323,7 +326,7 @@ public partial class MultiSelectTreeview : TreeView
             int rightBound = node.Bounds.Right + 10;
             if (e.Location.X < leftBound || e.Location.X > rightBound) return;
 
-            using IDisposable defered = DeferSelectionChange();
+            using IDisposable deferred = DeferSelectionChange();
             if (ModifierKeys == Keys.None && SelectedNodes.Contains(node))
             {
                 // Potential drag operation, selection on MouseUp
@@ -458,7 +461,7 @@ public partial class MultiSelectTreeview : TreeView
 
         // Begin potential selection change. 
         // Related MarkSelectionChanged are called from individual handlers.
-        using IDisposable defered = DeferSelectionChange();
+        using IDisposable deferred = DeferSelectionChange();
 
         try
         {
@@ -799,7 +802,7 @@ public partial class MultiSelectTreeview : TreeView
         }
         else
         {
-            using IDisposable defered = DeferSelectionChange();
+            using IDisposable deferred = DeferSelectionChange();
             ClearSelectedNodes();
             ToggleNode(node, true);
             node.EnsureVisible();

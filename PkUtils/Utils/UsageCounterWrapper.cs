@@ -104,8 +104,7 @@ public class UsageCounterWrapper : IDisposableEx
             if (disposing)
             {
                 // Dispose managed resources here ( if there are any )
-                ReleaseFirstTimeUse();
-                Debug.Assert(this.IsDisposed);
+                ReleaseCounter();
             }
         }
     }
@@ -158,16 +157,24 @@ public class UsageCounterWrapper : IDisposableEx
     {
         if (!IsDisposed)
         {
-            if (IsCounterAcquired)
-            {
-                if (_counter.IsUsed)
-                {
-                    _counter.Release();
-                }
-                _counter = null;
-            }
-            _disposed = true;
+            ReleaseCounter();
         }
+    }
+
+    /// <summary>
+    /// Internal helper that releases the counter and marks disposed.
+    /// </summary>
+    private void ReleaseCounter()
+    {
+        if (IsCounterAcquired)
+        {
+            if (_counter.IsUsed)
+            {
+                _counter.Release();
+            }
+            _counter = null;
+        }
+        _disposed = true;
     }
     #endregion // Methods
 
@@ -175,15 +182,12 @@ public class UsageCounterWrapper : IDisposableEx
     #region IDisposable Members
 
     /// <summary>
-    /// Implement IDisposable.
-    /// Do not make this method virtual.
+    /// Implement IDisposable. Do not make this method virtual. 
     /// A derived class should not be able to override this method.
     /// </summary>
     public void Dispose()
     {
         Dispose(true);
-        // Take yourself off the Finalization queue to prevent finalization code 
-        // for this object from executing a second time.
         GC.SuppressFinalize(this);
     }
     #endregion // IDisposable Members
@@ -196,4 +200,4 @@ public class UsageCounterWrapper : IDisposableEx
         get { return _disposed; }
     }
     #endregion // IDisposableEx Members
-};
+}

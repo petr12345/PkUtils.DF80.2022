@@ -4,12 +4,17 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Drawing;
+using System.Linq;
 using System.Windows.Forms;
-using PK.PkUtils.Consoles;
 using PK.PkUtils.Dump;
 using PK.PkUtils.Extensions;
 using PK.PkUtils.Interfaces;
 using PK.PkUtils.UI.General;
+using PK.PkUtils.WinApi;
+using static PK.PkUtils.UI.General.MultiSelectTreeview;
+using static PK.PkUtils.WinApi.Win32;
+
+#pragma warning disable IDE0305 // Collection initialization can be simplified
 
 namespace TestMultiSelectTreeview;
 
@@ -36,7 +41,6 @@ public partial class TestForm : FormWithLayoutPersistence, IDumper
     {
         InitializeComponent();
 
-        Icon = ConsoleIconManager.CreateIcon(Resources.tree);
         InitializeTreeview();
         InitializeTreeViewTextLogger(true);
         LoadLayout();
@@ -45,7 +49,7 @@ public partial class TestForm : FormWithLayoutPersistence, IDumper
 
     #region Properties
 
-    protected bool ShouldShowLog { get => _checkBoxShowLog.Checked; }
+    protected bool ShouldShowLog { get => this._checkBoxShowLog.Checked; }
 
     protected override IDumper Dumper
     {
@@ -60,7 +64,6 @@ public partial class TestForm : FormWithLayoutPersistence, IDumper
     public bool DumpError(string text) => Dumper.DumpError(text);
 
     public bool Reset() => Dumper.Reset();
-
     #endregion // IDumper Members
 
     #region Methods
@@ -157,10 +160,16 @@ public partial class TestForm : FormWithLayoutPersistence, IDumper
 
     private void OnButton_SelectNodes(object sender, EventArgs args)
     {
-        List<TreeNode> list = [
-            _multiSelectTreeview.Nodes[0],
-            _multiSelectTreeview.Nodes[2],
-            _multiSelectTreeview.Nodes[3]];
+        List<TreeNode> list = [];
+        string[] targetNames = ["Node0", "Node1", "Node2", "Node3"];
+
+        foreach (TreeNode node in _multiSelectTreeview.Nodes)
+        {
+            if (targetNames.Contains(node.Name))
+            {
+                list.Add(node);
+            }
+        }
 
         _multiSelectTreeview.SelectedNodes = list;
     }
@@ -168,6 +177,24 @@ public partial class TestForm : FormWithLayoutPersistence, IDumper
     private void OnButton_ClearSelection_Click(object sender, EventArgs args)
     {
         _multiSelectTreeview.SelectedNodes = [];
+    }
+
+    private void OnButtonDeleteNodes_Click(object sender, EventArgs e)
+    {
+        User32.SendMessage(_multiSelectTreeview.Handle, (int)WM.WM_SETREDRAW, IntPtr.Zero, IntPtr.Zero);
+
+        TreeNode root = _multiSelectTreeview.RootNode;
+        // const int keepLevel = 0;
+        // List<TreeNode> belowRoot = _multiSelectTreeview.GetAllNodes()
+        //    .Where(x => x.Level > keepLevel)
+        //    .OrderByDescending(x => x.Level)
+        //    .ToList();
+        List<TreeNode> notRoot = _multiSelectTreeview.GetAllNodes().Except(root.FromSingle()).ToList();
+        notRoot.ForEach(x => x.Remove());
+        User32.SendMessage(_multiSelectTreeview.Handle, (int)WM.WM_SETREDRAW, new IntPtr(1), IntPtr.Zero);
+
+        _multiSelectTreeview.Refresh();
+
     }
 
     private void OnButtonClearLog_Click(object sender, EventArgs e)
@@ -206,7 +233,7 @@ public partial class TestForm : FormWithLayoutPersistence, IDumper
         AdjustAllNodesImages();
     }
 
-    private void OnMultiSelectTreeview_SelectionChanged(object sender, MultiSelectTreeview.TreeviewSelChangeArgs args)
+    private void OnMultiSelectTreeview_SelectionChanged(object sender, TreeviewSelChangeArgs args)
     {
         DumpTreeSelectionInfo(args.SelectedNodes, null, args.StackTrace);
     }
@@ -217,3 +244,5 @@ public partial class TestForm : FormWithLayoutPersistence, IDumper
     }
     #endregion // Event_handlers
 }
+
+#pragma warning restore IDE0305
