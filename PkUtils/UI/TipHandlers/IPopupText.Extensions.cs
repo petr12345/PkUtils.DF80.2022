@@ -1,13 +1,3 @@
-/***************************************************************************************************************
-*
-* FILE NAME:   .\UI\TipHandlers\IPopupText.Extensions.cs
-*
-* AUTHOR:      Petr Kodet
-*
-* DESCRIPTION: The file contains definition of static class PopupTextExtensions
-*
-**************************************************************************************************************/
-
 // Ignore Spelling: Utils, Popup
 //
 using System;

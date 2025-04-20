@@ -1,20 +1,10 @@
-﻿/***************************************************************************************************************
-*
-* FILE NAME:   .\UI\General\RtlAwareMessageBox.cs
-*
-* AUTHOR:      Petr Kodet
-*
-* DESCRIPTION: The file contains definition of class RtlAwareMessageBox
-*
-**************************************************************************************************************/
-
-// Ignore Spelling: Utils, Rtl
+﻿// Ignore Spelling: Utils, Rtl
 //
 using System;
 using System.Globalization;
 using System.Windows.Forms;
 
-namespace PK.PkUtils.UI.General;
+namespace PK.PkUtils.UI.Dialogs.MsgBoxes;
 
 /// <summary> Auxiliary class for proper message box displaying.  Displays a message box that has
 /// options that are appropriate for the reading order of the culture. <br/>
@@ -38,7 +28,7 @@ public static class RtlAwareMessageBox
     ///                         the dialog box's top-level window and owner. </param>
     /// <param name="text">     The text to display in the message box. </param>
     /// <param name="caption">  The text to display in the title of message box. </param>
-    /// <returns> One of the <see cref="System.Windows.Forms.DialogResult"/> values. </returns>
+    /// <returns> One of the <see cref="DialogResult"/> values. </returns>
     public static DialogResult Show(IWin32Window owner, string text, string caption)
     {
         return Show(owner, text, caption, MessageBoxButtons.OK, MessageBoxIcon.None, MessageBoxDefaultButton.Button1);
@@ -53,10 +43,10 @@ public static class RtlAwareMessageBox
     ///                         the dialog box's top-level window and owner. </param>
     /// <param name="text">     The text to display in the message box. </param>
     /// <param name="caption">  The text to display in the title of message box. </param>
-    /// <param name="icon">     One of the <see cref="System.Windows.Forms.MessageBoxIcon"/> values,
+    /// <param name="icon">     One of the <see cref="MessageBoxIcon"/> values,
     ///                         that specify which icon will be displayed in MessageBox. </param>
     ///
-    /// <returns> One of the <see cref="System.Windows.Forms.DialogResult"/> values. </returns>
+    /// <returns> One of the <see cref="DialogResult"/> values. </returns>
     public static DialogResult Show(IWin32Window owner, string text, string caption, MessageBoxIcon icon)
     {
         return Show(owner, text, caption, MessageBoxButtons.OK, icon, MessageBoxDefaultButton.Button1);
@@ -72,10 +62,10 @@ public static class RtlAwareMessageBox
     /// <param name="text">     The text to display in the message box. </param>
     /// <param name="caption">  The text to display in the title of message box. </param>
     /// <param name="buttons">  Specifies which buttons to display in MessageBox. </param>
-    /// <param name="icon">     One of the <see cref="System.Windows.Forms.MessageBoxIcon"/> values,
+    /// <param name="icon">     One of the <see cref="MessageBoxIcon"/> values,
     ///                         that specify which icon will be displayed in MessageBox. </param>
     ///
-    /// <returns> One of the <see cref="System.Windows.Forms.DialogResult"/> values. </returns>
+    /// <returns> One of the <see cref="DialogResult"/> values. </returns>
     public static DialogResult Show(IWin32Window owner, string text, string caption, MessageBoxButtons buttons, MessageBoxIcon icon)
     {
         return Show(owner, text, caption, buttons, icon, MessageBoxDefaultButton.Button1);
@@ -90,15 +80,15 @@ public static class RtlAwareMessageBox
     ///                               serve as the dialog box's top-level window and owner. </param>
     /// <param name="text">           The text to display in the message box. </param>
     /// <param name="caption">        The text to display in the title of message box. </param>
-    /// <param name="buttons">        One of the <see cref="System.Windows.Forms.MessageBoxButtons "/>
+    /// <param name="buttons">        One of the <see cref="MessageBoxButtons "/>
     ///                               values, that specify which buttons will be displayed in MessageBox.
     ///                               </param>
-    /// <param name="icon">           One of the <see cref="System.Windows.Forms.MessageBoxIcon"/>
+    /// <param name="icon">           One of the <see cref="MessageBoxIcon"/>
     ///                               values, that specify which icon will be displayed in MessageBox.
     ///                               </param>
     /// <param name="defaultButton">  Value defining a default button of MessageBox. </param>
     ///
-    /// <returns> One of the <see cref="System.Windows.Forms.DialogResult"/> values. </returns>
+    /// <returns> One of the <see cref="DialogResult"/> values. </returns>
     public static DialogResult Show(IWin32Window owner, string text, string caption, MessageBoxButtons buttons, MessageBoxIcon icon, MessageBoxDefaultButton defaultButton)
     {
         return Show(owner, text, caption, buttons, icon, defaultButton, 0);
@@ -113,21 +103,21 @@ public static class RtlAwareMessageBox
     ///                               serve as the dialog box's top-level window and owner. </param>
     /// <param name="text">           The text to display in the message box. </param>
     /// <param name="caption">        The text to display in the title of message box. </param>
-    /// <param name="buttons">        One of the <see cref="System.Windows.Forms.MessageBoxButtons "/>
+    /// <param name="buttons">        One of the <see cref="MessageBoxButtons "/>
     ///                               values, that specify which buttons will be displayed in MessageBox.
     ///                               </param>
-    /// <param name="icon">           One of the <see cref="System.Windows.Forms.MessageBoxIcon"/>
+    /// <param name="icon">           One of the <see cref="MessageBoxIcon"/>
     ///                               values, that specify which icon will be displayed in MessageBox.
     ///                               </param>
     /// <param name="defaultButton">  Value defining a default button of MessageBox. </param>
     /// <param name="options">        Specifies additional options of a message box. </param>
     ///
-    /// <returns> One of the <see cref="System.Windows.Forms.DialogResult"/> values. </returns>
+    /// <returns> One of the <see cref="DialogResult"/> values. </returns>
     public static DialogResult Show(IWin32Window owner, string text, string caption, MessageBoxButtons buttons, MessageBoxIcon icon, MessageBoxDefaultButton defaultButton, MessageBoxOptions options)
     {
         if (IsRightToLeft(owner))
         {
-            options |= (MessageBoxOptions.RtlReading | MessageBoxOptions.RightAlign);
+            options |= MessageBoxOptions.RtlReading | MessageBoxOptions.RightAlign;
         }
 
         return MessageBox.Show(owner, text, caption, buttons, icon, defaultButton, options);
@@ -145,7 +135,7 @@ public static class RtlAwareMessageBox
 
         if (owner is Control control)
         {
-            bRes = (control.RightToLeft == RightToLeft.Yes);
+            bRes = control.RightToLeft == RightToLeft.Yes;
         }
         else
         {

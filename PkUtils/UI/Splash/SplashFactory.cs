@@ -12,7 +12,6 @@
 // Ignore Spelling: Utils
 //
 using System;
-using System.Diagnostics.CodeAnalysis;
 using System.Drawing;
 using System.Globalization;
 using System.IO;
@@ -81,19 +80,17 @@ public class SplashFactory : ISplashFactory
         if (!string.IsNullOrEmpty(strResourceImage))
         {
             Assembly asm = resourceAssembly ?? Assembly.GetExecutingAssembly();
-            using (Stream strm = asm.GetManifestResourceStream(strResourceImage))
+            using Stream strm = asm.GetManifestResourceStream(strResourceImage);
+            if (null != strm)
             {
-                if (null != strm)
-                {
-                    backgroundImage = Image.FromStream(strm);
-                }
-                else
-                { /* rather the caller should do that
+                backgroundImage = Image.FromStream(strm);
+            }
+            else
+            { /* rather the caller should do that
         string strErr = string.Format(CultureInfo.InvariantCulture,
           "Failed to load resource stream {0}", strResourceImage);
         throw new InvalidOperationException(strErr);
          */
-                }
             }
         }
         return backgroundImage;
@@ -170,7 +167,6 @@ public class SplashFactory : ISplashFactory
     /// Otherwise it is called by finalizer.
     /// </param>
     /// <remarks> This implementation is thread-safe, as it uses double-checked locking.</remarks>
-    [SuppressMessage("Microsoft.Usage", "CA2213:DisposableFieldsShouldBeDisposed", MessageId = "_splashThread")]
     protected virtual void Dispose(bool disposing)
     {
         // Check to see if Dispose has already been called.

@@ -1,13 +1,3 @@
-/***************************************************************************************************************
-*
-* FILE NAME:   .\UI\TipHandlers\IPopupText.cs
-*
-* AUTHOR:      Petr Kodet
-*
-* DESCRIPTION: The file contains definition of interface IPopupText
-*
-**************************************************************************************************************/
-
 // Ignore Spelling: Utils, Popup
 //
 using System;

@@ -25,7 +25,7 @@ using System.Windows.Forms;
 // <remarks/>
 //------------------------------------------------------------------
 
-namespace PK.PkUtils.UI.PSTaskDialog;
+namespace PK.PkUtils.UI.Dialogs.PSTaskDialog;
 
 /// <summary>
 /// TaskDialog wrapped in a CommonDialog class. This is required to work well in
@@ -70,7 +70,7 @@ public class VistaTaskDialogCommonDialog : CommonDialog
     /// </summary>
     public VistaTaskDialog TaskDialog
     {
-        get { return this.taskDialog; }
+        get { return taskDialog; }
     }
 
     /// <summary>
@@ -79,7 +79,7 @@ public class VistaTaskDialogCommonDialog : CommonDialog
     /// </summary>
     public int TaskDialogResult
     {
-        get { return this.taskDialogResult; }
+        get { return taskDialogResult; }
     }
 
     /// <summary>
@@ -88,7 +88,7 @@ public class VistaTaskDialogCommonDialog : CommonDialog
     /// </summary>
     public bool VerificationFlagCheckedResult
     {
-        get { return this.verificationFlagCheckedResult; }
+        get { return verificationFlagCheckedResult; }
     }
 
     /// <summary>
@@ -96,7 +96,7 @@ public class VistaTaskDialogCommonDialog : CommonDialog
     /// </summary>
     public override void Reset()
     {
-        this.taskDialog.Reset();
+        taskDialog.Reset();
     }
 
     /// <summary>
@@ -107,9 +107,9 @@ public class VistaTaskDialogCommonDialog : CommonDialog
     /// If this method returns false, then ShowDialog will return DialogResult.Cancel. The
     /// user of this class must use the TaskDialogResult member to get more information.
     /// </returns>
-    protected override bool RunDialog(IntPtr hwndOwner)
+    protected override bool RunDialog(nint hwndOwner)
     {
-        this.taskDialogResult = this.taskDialog.Show(hwndOwner, out this.verificationFlagCheckedResult);
-        return (this.taskDialogResult != (int)DialogResult.Cancel);
+        taskDialogResult = taskDialog.Show(hwndOwner, out verificationFlagCheckedResult);
+        return taskDialogResult != (int)DialogResult.Cancel;
     }
 }

@@ -17,8 +17,9 @@
 using System;
 using System.Collections.Generic;
 using System.Windows.Forms;
+using PK.PkUtils.UI.PSTaskDialog;
 
-namespace PK.PkUtils.UI.PSTaskDialog;
+namespace PK.PkUtils.UI.Dialogs.PSTaskDialog;
 
 #region Typedefs
 /// <summary> Values that represent eSysIcons. </summary>
@@ -85,6 +86,7 @@ public static class cTaskDialog
     private static bool _PlaySystemSounds = true;
     #endregion // Private Static Fields
     #endregion // Fields
+
     #region Properties
 
     #region Dialog_results_related
@@ -94,8 +96,8 @@ public static class cTaskDialog
     /// <value> true if verification checked, false if not. </value>
     public static bool VerificationChecked
     {
-        get { return cTaskDialog._VerificationChecked; }
-        private set { cTaskDialog._VerificationChecked = value; }
+        get { return _VerificationChecked; }
+        private set { _VerificationChecked = value; }
     }
 
     /// <summary> Gets or sets the radio button result. </summary>
@@ -103,8 +105,8 @@ public static class cTaskDialog
     /// <value> The radio button result. </value>
     public static int RadioButtonResult
     {
-        get { return cTaskDialog._RadioButtonResult; }
-        private set { cTaskDialog._RadioButtonResult = value; }
+        get { return _RadioButtonResult; }
+        private set { _RadioButtonResult = value; }
     }
 
     /// <summary> Gets or sets the command button result. </summary>
@@ -112,8 +114,8 @@ public static class cTaskDialog
     /// <value> The command button result. </value>
     public static int CommandButtonResult
     {
-        get { return cTaskDialog._CommandButtonResult; }
-        private set { cTaskDialog._CommandButtonResult = value; }
+        get { return _CommandButtonResult; }
+        private set { _CommandButtonResult = value; }
     }
     #endregion // Dialog_results_related
 
@@ -124,8 +126,8 @@ public static class cTaskDialog
 
     public static int EmulatedFormWidth
     {
-        get { return cTaskDialog._EmulatedFormWidth; }
-        set { cTaskDialog._EmulatedFormWidth = value; }
+        get { return _EmulatedFormWidth; }
+        set { _EmulatedFormWidth = value; }
     }
 
     /// <summary> Gets or sets a value indicating whether the emulation mode should be forced. </summary>
@@ -133,8 +135,8 @@ public static class cTaskDialog
     /// <value> true if force emulation mode, false if not. </value>
     public static bool ForceEmulationMode
     {
-        get { return cTaskDialog._ForceEmulationMode; }
-        set { cTaskDialog._ForceEmulationMode = value; }
+        get { return _ForceEmulationMode; }
+        set { _ForceEmulationMode = value; }
     }
 
     /// <summary> Gets or sets a value indicating whether this object use tool window on XP. </summary>
@@ -142,8 +144,8 @@ public static class cTaskDialog
     /// <value> true if use tool window on xp, false if not. </value>
     public static bool UseToolWindowOnXP
     {
-        get { return cTaskDialog._UseToolWindowOnXP; }
-        set { cTaskDialog._UseToolWindowOnXP = value; }
+        get { return _UseToolWindowOnXP; }
+        set { _UseToolWindowOnXP = value; }
     }
 
     /// <summary> Gets or sets a value indicating whether the play system sounds. </summary>
@@ -151,8 +153,8 @@ public static class cTaskDialog
     /// <value> true if play system sounds, false if not. </value>
     public static bool PlaySystemSounds
     {
-        get { return cTaskDialog._PlaySystemSounds; }
-        set { cTaskDialog._PlaySystemSounds = value; }
+        get { return _PlaySystemSounds; }
+        set { _PlaySystemSounds = value; }
     }
     #endregion // Emulation_related
     #endregion // Properties
@@ -230,7 +232,7 @@ public static class cTaskDialog
                     }
                 }
                 vtd.RadioButtons = lst.ToArray();
-                vtd.NoDefaultRadioButton = (DefaultIndex == -1);
+                vtd.NoDefaultRadioButton = DefaultIndex == -1;
                 if (DefaultIndex >= 0)
                     vtd.DefaultRadioButton = DefaultIndex;
             }
@@ -239,7 +241,7 @@ public static class cTaskDialog
             if (!string.IsNullOrEmpty(CommandButtons))
             {
                 List<VistaTaskDialogButton> lst = [];
-                string[] arr = CommandButtons.Split(new char[] { '|' });
+                string[] arr = CommandButtons.Split(['|']);
                 for (int i = 0; i < arr.Length; i++)
                 {
                     try
@@ -303,10 +305,10 @@ public static class cTaskDialog
 
             vtd.EnableHyperlinks = false;
             vtd.ShowProgressBar = false;
-            vtd.AllowDialogCancellation = (Buttons == eTaskDialogButtons.Cancel ||
+            vtd.AllowDialogCancellation = Buttons == eTaskDialogButtons.Cancel ||
                                            Buttons == eTaskDialogButtons.Close ||
                                            Buttons == eTaskDialogButtons.OKCancel ||
-                                           Buttons == eTaskDialogButtons.YesNoCancel);
+                                           Buttons == eTaskDialogButtons.YesNoCancel;
             vtd.CallbackTimer = false;
             vtd.ExpandedByDefault = false;
             vtd.ExpandFooterArea = false;
@@ -324,13 +326,13 @@ public static class cTaskDialog
             vtd.Callback = null;
 
             // Show the Dialog
-            result = (DialogResult)vtd.Show((vtd.CanBeMinimized ? null : Owner), out _VerificationChecked, out _RadioButtonResult);
+            result = (DialogResult)vtd.Show(vtd.CanBeMinimized ? null : Owner, out _VerificationChecked, out _RadioButtonResult);
 
             // if a command button was clicked, then change return result
             // to "DialogResult.OK" and set the CommandButtonResult
             if ((int)result >= 2000)
             {
-                CommandButtonResult = ((int)result - 2000);
+                CommandButtonResult = (int)result - 2000;
                 result = DialogResult.OK;
             }
             if (RadioButtonResult >= 1000)
@@ -747,7 +749,7 @@ public static class cTaskDialog
       eSysIcons FooterIcon)
     {
         DialogResult res = ShowTaskDialogBox(Owner, Title, MainInstruction, Content, ExpandedInfo, Footer, VerificationText,
-                                             "", CommandButtons, (ShowCancelButton ? eTaskDialogButtons.Cancel : eTaskDialogButtons.None),
+                                             "", CommandButtons, ShowCancelButton ? eTaskDialogButtons.Cancel : eTaskDialogButtons.None,
                                              MainIcon, FooterIcon);
         if (res == DialogResult.OK)
             return CommandButtonResult;
@@ -782,7 +784,7 @@ public static class cTaskDialog
       eSysIcons FooterIcon)
     {
         DialogResult res = ShowTaskDialogBox(null, Title, MainInstruction, Content, ExpandedInfo, Footer, VerificationText,
-                                             "", CommandButtons, (ShowCancelButton ? eTaskDialogButtons.Cancel : eTaskDialogButtons.None),
+                                             "", CommandButtons, ShowCancelButton ? eTaskDialogButtons.Cancel : eTaskDialogButtons.None,
                                              MainIcon, FooterIcon);
         if (res == DialogResult.OK)
             return CommandButtonResult;

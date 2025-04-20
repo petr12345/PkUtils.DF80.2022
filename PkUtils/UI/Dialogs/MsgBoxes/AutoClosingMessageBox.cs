@@ -1,11 +1,11 @@
-﻿// Ignore Spelling: Utils, autoclosing
+﻿// Ignore Spelling: Utils, autoclosing, autoclose
 //
 using System;
 using System.Threading;
 using System.Windows.Forms;
 using PK.PkUtils.WinApi;
 
-namespace PK.PkUtils.UI.Utils;
+namespace PK.PkUtils.UI.Dialogs.MsgBoxes;
 
 /// <summary> An automatic closing message box. </summary>
 public class AutoClosingMessageBox
@@ -29,7 +29,7 @@ public class AutoClosingMessageBox
 
         internal Impl(Func<string, MessageBoxButtons, DialogResult> showMethod, string caption)
         {
-            getResult = (TimeSpan timeout, MessageBoxButtons buttons, DialogResult defaultResult) =>
+            getResult = (timeout, buttons, defaultResult) =>
                 new AutoClosingMessageBox(caption, timeout, showMethod, buttons, defaultResult).Result;
         }
 
@@ -57,7 +57,7 @@ public class AutoClosingMessageBox
 
     #region Methods
 
-    /// <summary> Shows the autoclose messagebox. </summary>
+    /// <summary> Shows the autoclose MessageBox. </summary>
     /// <param name="text"> The text. </param>
     /// <param name="caption"> (Optional) The caption. </param>
     /// <param name="timeout"> (Optional) The timeout. </param>
@@ -76,10 +76,10 @@ public class AutoClosingMessageBox
         return new AutoClosingMessageBox(
             caption,
             timeout,
-            (string capt, MessageBoxButtons btns) => MessageBox.Show(text, capt, btns, icon), buttons, defaultResult).Result;
+            (capt, btns) => MessageBox.Show(text, capt, btns, icon), buttons, defaultResult).Result;
     }
 
-    /// <summary> Shows the autoclose messagebox. </summary>
+    /// <summary> Shows the autoclose MessageBox. </summary>
     /// <param name="owner"> The owner. </param>
     /// <param name="text"> The text. </param>
     /// <param name="caption"> (Optional) The caption. </param>
@@ -100,7 +100,7 @@ public class AutoClosingMessageBox
         return new AutoClosingMessageBox(
             caption,
             timeout,
-            (string capt, MessageBoxButtons btns) => MessageBox.Show(owner, text, capt, btns, icon), buttons, defaultResult).Result;
+            (capt, btns) => MessageBox.Show(owner, text, capt, btns, icon), buttons, defaultResult).Result;
     }
 
     /// <summary> Creates <see cref="IAutoClosingMessageBox"/>. </summary>
@@ -141,7 +141,7 @@ public class AutoClosingMessageBox
 
     private void CloseMessageBoxWindow(int dlgButtonId)
     {
-        IntPtr hWnd = User32.FindMessageBox(Caption);
+        nint hWnd = User32.FindMessageBox(Caption);
         User32.SendCommandToDlgButton(hWnd, dlgButtonId);
     }
     #endregion // Methods

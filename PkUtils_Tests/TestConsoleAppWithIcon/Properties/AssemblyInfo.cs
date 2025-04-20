@@ -1,14 +1,16 @@
 ﻿using System.Reflection;
 using System.Runtime.InteropServices;
+using System.Runtime.Versioning;
 
 // General Information about an assembly is controlled through the following 
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("YourAppName")]
+[assembly: AssemblyTitle("Console application with custom icon")]
 [assembly: AssemblyDescription("Console application with custom icon")]
+[assembly: SupportedOSPlatform("windows")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("YourCompany")]
-[assembly: AssemblyProduct("YourProductName")]
+[assembly: AssemblyCompany("PK")]
+[assembly: AssemblyProduct("PKNetUtils")]
 [assembly: AssemblyCopyright("Copyright © PK 2025")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]

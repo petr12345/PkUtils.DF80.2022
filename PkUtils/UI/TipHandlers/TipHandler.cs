@@ -1,13 +1,3 @@
-/***************************************************************************************************************
-*
-* FILE NAME:   .\UI\TipHandlers\TipHandler.cs
-*
-* AUTHOR:      Petr Kodet
-*
-* DESCRIPTION: The file contains definition of class TipHandler 
-*
-**************************************************************************************************************/
-
 // Ignore Spelling: Utils, Sel, Msec, Meth, kbs, ctrl, Coord, tooltip
 //
 using System;

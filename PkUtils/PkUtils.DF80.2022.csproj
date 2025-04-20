@@ -147,16 +147,16 @@
     <Compile Update="SerialPortUILib\SerialPortSettingsCtrl_Design.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Update="UI\General\BaseDataCtrl.cs">
+    <Compile Update="UI\Controls\BaseDataCtrl.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Update="UI\General\SmoothProgressBar.cs">
+    <Compile Update="UI\Controls\SmoothProgressBar.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Update="UI\PSTaskDialog\CommandButton.cs">
+    <Compile Update="UI\Dialogs\PSTaskDialog\CommandButton.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Update="UI\PSTaskDialog\VistaTaskDialogCommonDialog.cs">
+    <Compile Update="UI\Dialogs\PSTaskDialog\VistaTaskDialogCommonDialog.cs">
       <SubType>Component</SubType>
     </Compile>
     <Compile Update="UI\TipHandlers\PopupTooltip.cs">
@@ -181,8 +181,8 @@
     </BootstrapperPackage>
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="UI\PSTaskDialog\green_arrow1.png" />
-    <EmbeddedResource Include="UI\PSTaskDialog\green_arrow2.png" />
+    <EmbeddedResource Include="UI\Dialogs\PSTaskDialog\green_arrow1.png" />
+    <EmbeddedResource Include="UI\Dialogs\PSTaskDialog\green_arrow2.png" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="EntityFramework" Version="6.5.1" />

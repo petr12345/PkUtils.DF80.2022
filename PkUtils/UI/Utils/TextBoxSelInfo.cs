@@ -1,14 +1,4 @@
-﻿/***************************************************************************************************************
-*
-* FILE NAME:   .\UI\Utils\TextBoxSelInfo.cs
-*
-* AUTHOR:      Petr Kodet
-*
-* DESCRIPTION: The file contains definition of class TextBoxSelInfo
-*
-**************************************************************************************************************/
-
-// Ignore Spelling: rhs, Sel, Utils
+﻿// Ignore Spelling: rhs, Sel, Utils
 //
 using System;
 using System.Diagnostics;

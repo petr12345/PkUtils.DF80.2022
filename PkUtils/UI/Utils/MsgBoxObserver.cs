@@ -1,14 +1,4 @@
-﻿/***************************************************************************************************************
-*
-* FILE NAME:   .\UI\Utils\MsgBoxObserver.cs
-*
-* AUTHOR:      Petr Kodet
-*
-* DESCRIPTION: The file contains definition of class MsgBoxObserver
-*
-**************************************************************************************************************/
-
-// Ignore Spelling: Utils, Dict
+﻿// Ignore Spelling: Utils, Dict
 //
 using System;
 using System.Collections.Generic;

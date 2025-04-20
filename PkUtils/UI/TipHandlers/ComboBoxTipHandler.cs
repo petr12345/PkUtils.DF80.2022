@@ -1,14 +1,3 @@
-/***************************************************************************************************************
-*
-* FILE NAME:   .\UI\TipHandlers\ComboBoxTipHandler.cs
-*
-* AUTHOR:      Petr Kodet
-*
-* DESCRIPTION: The file contains definition of class ComboBoxTipHandler
-*
-**************************************************************************************************************/
-
-
 // Ignore Spelling: Utils, Msec
 //
 using System;

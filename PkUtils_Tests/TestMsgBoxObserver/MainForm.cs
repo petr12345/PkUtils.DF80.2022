@@ -5,7 +5,8 @@ using System.Windows.Forms;
 using PK.PkUtils.Dump;
 using PK.PkUtils.Interfaces;
 using PK.PkUtils.SystemEx;
-using PK.PkUtils.UI.General;
+using PK.PkUtils.UI.Dialogs.MsgBoxes;
+using PK.PkUtils.UI.Dialogs.PSTaskDialog;
 using PK.PkUtils.UI.Utils;
 using PK.PkUtils.Utils;
 using PK.TestMsgBoxObserver.Properties;
@@ -157,13 +158,13 @@ namespace PK.TestMsgBoxObserver
                   "Since your system is {0}, you can enjoy the TaskDialog.", sysVer);
                 GenerateText(out strMsg, out string strTitle);
 
-                PSTaskDialog.cTaskDialog.MessageBox(
+                cTaskDialog.MessageBox(
                   this,
                   strTitle,
                   strMsg,
                   strContent,
-                  PSTaskDialog.eTaskDialogButtons.OK,
-                  PSTaskDialog.eSysIcons.Information);
+                  eTaskDialogButtons.OK,
+                  eSysIcons.Information);
             }
         }
 

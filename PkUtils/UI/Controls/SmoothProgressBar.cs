@@ -1,14 +1,4 @@
-﻿/***************************************************************************************************************
-*
-* FILE NAME:   .\UI\General\SmoothProgressBar.cs
-*
-* AUTHOR:      Petr Kodet
-*
-* DESCRIPTION: The file contains definition of class SmoothProgressBar
-*
-**************************************************************************************************************/
-
-///////////////////////////////////////////////////////////////////////////////////////////////////////////////
+﻿///////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //
 // Microsoft Copyright notice
 // 
@@ -335,9 +325,6 @@ public partial class SmoothProgressBar : UserControl
 
         // Calculate area for drawing the progress.
         rectL.Width = (int)(rectL.Width * percent);
-        Rectangle rectR = new(
-            new Point(rectL.X + rectL.Width, rectL.Y),
-            new Size(cl_rect.Width - rectL.Width, rectL.Height));
 
         // Draw the progress meter - left part
         g.FillRectangle(_brLeft, rectL);

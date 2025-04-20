@@ -22,7 +22,32 @@
 // <remarks/>
 //------------------------------------------------------------------
 
-namespace PK.PkUtils.UI.PSTaskDialog;
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//
+// The Code Project Open License Notice
+// 
+// This software is a Derivative Work based upon a Code Project article
+// Vista TaskDialog Wrapper and Emulator
+// http://www.codeproject.com/Articles/21276/Vista-TaskDialog-Wrapper-and-Emulator
+//
+// The Code Project Open License (CPOL) text is available at
+// http://www.codeproject.com/info/cpol10.aspx
+//
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+// Ignore Spelling: Utils, hyperlink
+// 
+
+//------------------------------------------------------------------
+// <summary>
+// A P/Invoke wrapper for TaskDialog. Usability was given preference to performance and size.
+// </summary>
+//
+// <remarks/>
+//------------------------------------------------------------------
+
+namespace PK.PkUtils.UI.Dialogs.PSTaskDialog;
 
 /// <summary>
 /// Arguments passed to the TaskDialog callback.
@@ -67,8 +92,8 @@ public class VistaTaskDialogNotificationArgs
     /// </summary>
     public VistaTaskDialogNotification Notification
     {
-        get { return this.notification; }
-        set { this.notification = value; }
+        get { return notification; }
+        set { notification = value; }
     }
 
     /// <summary>
@@ -78,8 +103,8 @@ public class VistaTaskDialogNotificationArgs
     /// </summary>
     public int ButtonId
     {
-        get { return this.buttonId; }
-        set { this.buttonId = value; }
+        get { return buttonId; }
+        set { buttonId = value; }
     }
 
     /// <summary>
@@ -87,8 +112,8 @@ public class VistaTaskDialogNotificationArgs
     /// </summary>
     public string Hyperlink
     {
-        get { return this.hyperlink; }
-        set { this.hyperlink = value; }
+        get { return hyperlink; }
+        set { hyperlink = value; }
     }
 
     /// <summary>
@@ -97,8 +122,8 @@ public class VistaTaskDialogNotificationArgs
     /// </summary>
     public uint TimerTickCount
     {
-        get { return this.timerTickCount; }
-        set { this.timerTickCount = value; }
+        get { return timerTickCount; }
+        set { timerTickCount = value; }
     }
 
     /// <summary>
@@ -106,8 +131,8 @@ public class VistaTaskDialogNotificationArgs
     /// </summary>
     public bool VerificationFlagChecked
     {
-        get { return this.verificationFlagChecked; }
-        set { this.verificationFlagChecked = value; }
+        get { return verificationFlagChecked; }
+        set { verificationFlagChecked = value; }
     }
 
     /// <summary>
@@ -115,7 +140,7 @@ public class VistaTaskDialogNotificationArgs
     /// </summary>
     public bool Expanded
     {
-        get { return this.expanded; }
-        set { this.expanded = value; }
+        get { return expanded; }
+        set { expanded = value; }
     }
 }

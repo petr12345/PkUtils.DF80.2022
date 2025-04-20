@@ -1,15 +1,4 @@
-﻿/***************************************************************************************************************
-*
-* FILE NAME:   .\UI\General\BaseDataCtrl.cs
-*
-* AUTHOR:      Petr Kodet
-*
-* DESCRIPTION: The file contains definition of generic class BaseDataCtrl
-*
-**************************************************************************************************************/
-
-
-// Ignore Spelling: Utils, Ctrl
+﻿// Ignore Spelling: Utils, Ctrl
 //
 using System;
 using System.ComponentModel;

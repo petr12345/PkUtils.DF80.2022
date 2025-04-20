@@ -25,7 +25,7 @@ using System.Runtime.InteropServices;
 // <remarks/>
 //------------------------------------------------------------------
 
-namespace PK.PkUtils.UI.PSTaskDialog;
+namespace PK.PkUtils.UI.Dialogs.PSTaskDialog;
 
 #pragma warning disable SYSLIB1054  // Use 'LibraryImportAttribute' instead of 'DllImportAttribute' to generate P/Invoke marshalling code at compile time
 
@@ -48,7 +48,7 @@ internal static partial class VistaUnsafeNativeMethods
     /// <param name="lParam">wParam which is interpreted differently depending on the message.</param>
     /// <param name="refData">The reference data that was set to TaskDialog.CallbackData.</param>
     /// <returns>A HRESULT value. The return value is specific to the message being processed. </returns>
-    internal delegate int VistaTaskDialogCallback([In] IntPtr hwnd, [In] uint msg, [In] UIntPtr wParam, [In] IntPtr lParam, [In] IntPtr refData);
+    internal delegate int VistaTaskDialogCallback([In] nint hwnd, [In] uint msg, [In] nuint wParam, [In] nint lParam, [In] nint refData);
 
     /// <summary>
     /// TASKDIALOG_FLAGS taken from CommCtrl.h.
@@ -305,7 +305,7 @@ internal static partial class VistaUnsafeNativeMethods
     /// <param name="lParam">Specifies additional message-specific information.</param>
     /// <returns>The return value specifies the result of the message processing; it depends on the message sent.</returns>
     [DllImport("user32.dll")]
-    internal static extern IntPtr SendMessage(IntPtr hWnd, uint Msg, IntPtr wParam, IntPtr lParam);
+    internal static extern nint SendMessage(nint hWnd, uint Msg, nint wParam, nint lParam);
 
     /// <summary>
     /// Win32 SendMessage.
@@ -316,7 +316,7 @@ internal static partial class VistaUnsafeNativeMethods
     /// <param name="lParam">Specifies additional message-specific information as a string.</param>
     /// <returns>The return value specifies the result of the message processing; it depends on the message sent.</returns>
     [DllImport("user32.dll", EntryPoint = "SendMessage")]
-    internal static extern IntPtr SendMessageWithString(IntPtr hWnd, uint Msg, IntPtr wParam, [MarshalAs(UnmanagedType.LPWStr)] string lParam);
+    internal static extern nint SendMessageWithString(nint hWnd, uint Msg, nint wParam, [MarshalAs(UnmanagedType.LPWStr)] string lParam);
 
 
     /// <summary>
@@ -335,13 +335,13 @@ internal static partial class VistaUnsafeNativeMethods
         /// Parent window handle.
         /// </summary>
         [SuppressMessage("Microsoft.Reliability", "CA2006:UseSafeHandleToEncapsulateNativeResources")] // Managed code owns actual resource. Passed to native in syncronous call. No lifetime issues.
-        public IntPtr hwndParent;
+        public nint hwndParent;
 
         /// <summary>
         /// Module instance handle for resources.
         /// </summary>
         [SuppressMessage("Microsoft.Reliability", "CA2006:UseSafeHandleToEncapsulateNativeResources")] // Managed code owns actual resource. Passed to native in syncronous call. No lifetime issues.
-        public IntPtr hInstance;
+        public nint hInstance;
 
         /// <summary>
         /// Flags.
@@ -363,7 +363,7 @@ internal static partial class VistaUnsafeNativeMethods
         /// The Main icon. Overloaded member. Can be string, a handle, a special value or a resource ID.
         /// </summary>
         [SuppressMessage("Microsoft.Reliability", "CA2006:UseSafeHandleToEncapsulateNativeResources")] // Managed code owns actual resource. Passed to native in syncronous call. No lifetime issues.
-        public IntPtr MainIcon;
+        public nint MainIcon;
 
         /// <summary>
         /// Main Instruction.
@@ -386,7 +386,7 @@ internal static partial class VistaUnsafeNativeMethods
         /// Array of custom _buttons.
         /// </summary>
         [SuppressMessage("Microsoft.Reliability", "CA2006:UseSafeHandleToEncapsulateNativeResources")] // Managed code owns actual resource. Passed to native in syncronous call. No lifetime issues.
-        public IntPtr pButtons;
+        public nint pButtons;
 
         /// <summary>
         /// ID of default button.
@@ -402,7 +402,7 @@ internal static partial class VistaUnsafeNativeMethods
         /// Array of radio _buttons.
         /// </summary>
         [SuppressMessage("Microsoft.Reliability", "CA2006:UseSafeHandleToEncapsulateNativeResources")] // Managed code owns actual resource. Passed to native in syncronous call. No lifetime issues.
-        public IntPtr pRadioButtons;
+        public nint pRadioButtons;
 
         /// <summary>
         /// ID of default radio button.
@@ -437,7 +437,7 @@ internal static partial class VistaUnsafeNativeMethods
         /// Icon for the footer. An overloaded member link MainIcon.
         /// </summary>
         [SuppressMessage("Microsoft.Reliability", "CA2006:UseSafeHandleToEncapsulateNativeResources")] // Managed code owns actual resource. Passed to native in syncronous call. No lifetime issues.
-        public IntPtr FooterIcon;
+        public nint FooterIcon;
 
         /// <summary>
         /// Footer Text.
@@ -454,7 +454,7 @@ internal static partial class VistaUnsafeNativeMethods
         /// Data that will be passed to the call back.
         /// </summary>
         [SuppressMessage("Microsoft.Reliability", "CA2006:UseSafeHandleToEncapsulateNativeResources")] // Managed code owns actual resource. Passed to native in syncronous call. No lifetime issues.
-        public IntPtr lpCallbackData;
+        public nint lpCallbackData;
 
         /// <summary>
         /// Width of the Task Dialog's area in DLU's.

@@ -1,14 +1,3 @@
-/***************************************************************************************************************
-*
-* FILE NAME:   .\UI\TipHandlers\WindowTitleTipHandler.cs
-*
-* AUTHOR:      Petr Kodet
-*
-* DESCRIPTION: The file contains definition of class WindowTitleTipHandler
-*
-**************************************************************************************************************/
-
-
 // Ignore Spelling: Meth, Msec, mss, Utils, tooltip
 //
 using System;
@@ -19,6 +8,7 @@ using PK.PkUtils.SystemEx;
 using PK.PkUtils.Utils;
 using PK.PkUtils.WinApi;
 
+#pragma warning disable IDE0290     // Use primary constructor
 
 namespace PK.PkUtils.UI.TipHandlers
 {
@@ -222,11 +212,9 @@ namespace PK.PkUtils.UI.TipHandlers
 
                     s = GetItemText(nItem, nSubItem);
                     rc = TitleBarRectangle();
-                    using (Graphics g = Graphics.FromHwnd(this.HookedHWND))
-                    {
-                        Size size = TextRenderer.MeasureText(g, s, pFont);
-                        rc = new Rectangle(rc.Location, size);
-                    }
+                    using Graphics g = Graphics.FromHwnd(this.HookedHWND);
+                    Size size = TextRenderer.MeasureText(g, s, pFont);
+                    rc = new Rectangle(rc.Location, size);
                 }
                 else
                 {
@@ -531,3 +519,4 @@ namespace PK.PkUtils.UI.TipHandlers
         #endregion // Methods
     }
 }
+#pragma warning restore IDE0290 // Use primary constructor

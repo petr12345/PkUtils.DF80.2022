@@ -21,7 +21,7 @@ using PK.PkUtils.Extensions;
 using PK.PkUtils.Interfaces;
 using PK.PkUtils.IO;
 
-namespace PK.PkUtils.UI.Utils;
+namespace PK.PkUtils.UI.Layout;
 
 
 /// <summary>
@@ -63,7 +63,7 @@ public class FormLayoutPersister
     /// <summary>
     /// Available actions what to store/restore
     /// </summary>
-    [FlagsAttribute]
+    [Flags]
     public enum StorageAction
     {
         /// <summary> A binary constant representing the width flag. </summary>
@@ -145,7 +145,7 @@ public class FormLayoutPersister
     /// </summary>
     public Form CurrentForm
     {
-        get { return this._form; }
+        get { return _form; }
     }
 
     /// <summary> Returns underlying isolated storage scope, as provided by constructor. </summary>        
@@ -754,7 +754,7 @@ public class FormLayoutPersister
     private bool AssignWidth(int nLastWidth)
     {
         bool bRes = false;
-        if ((CurrentForm.MinimumSize.Width <= nLastWidth) && (nLastWidth < SystemInformation.PrimaryMonitorSize.Width))
+        if (CurrentForm.MinimumSize.Width <= nLastWidth && nLastWidth < SystemInformation.PrimaryMonitorSize.Width)
         {
             CurrentForm.Width = nLastWidth;
             bRes = true;
@@ -770,7 +770,7 @@ public class FormLayoutPersister
     private bool AssignHeight(int nLastHeight)
     {
         bool bRes = false;
-        if ((CurrentForm.MinimumSize.Width <= nLastHeight) && (nLastHeight < SystemInformation.PrimaryMonitorSize.Height))
+        if (CurrentForm.MinimumSize.Width <= nLastHeight && nLastHeight < SystemInformation.PrimaryMonitorSize.Height)
         {
             CurrentForm.Height = nLastHeight;
             bRes = true;
@@ -787,8 +787,8 @@ public class FormLayoutPersister
     {
         bool bCxOk, bCyOk, bRes;
 
-        bCxOk = ((CurrentForm.MinimumSize.Width <= sz.Width) && (sz.Width < SystemInformation.PrimaryMonitorSize.Width));
-        bCyOk = ((CurrentForm.MinimumSize.Height <= sz.Height) && (sz.Height < SystemInformation.PrimaryMonitorSize.Height));
+        bCxOk = CurrentForm.MinimumSize.Width <= sz.Width && sz.Width < SystemInformation.PrimaryMonitorSize.Width;
+        bCyOk = CurrentForm.MinimumSize.Height <= sz.Height && sz.Height < SystemInformation.PrimaryMonitorSize.Height;
         if (bRes = bCxOk && bCyOk)
         {
             CurrentForm.Size = sz;
@@ -805,8 +805,8 @@ public class FormLayoutPersister
     {
         bool bCxOk, bCyOk, bRes;
 
-        bCxOk = ((0 <= pt.X) && (pt.X < SystemInformation.PrimaryMonitorSize.Width));
-        bCyOk = ((0 <= pt.Y) && (pt.Y < SystemInformation.PrimaryMonitorSize.Height));
+        bCxOk = 0 <= pt.X && pt.X < SystemInformation.PrimaryMonitorSize.Width;
+        bCyOk = 0 <= pt.Y && pt.Y < SystemInformation.PrimaryMonitorSize.Height;
         if (bRes = bCxOk && bCyOk)
         {
             CurrentForm.StartPosition = FormStartPosition.Manual;

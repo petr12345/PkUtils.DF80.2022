@@ -90,7 +90,7 @@ public static class CollectionEditorUtils
         if (itemsProperty != null)
         {
             object[] items = (object[])itemsProperty.GetValue(collectionForm);
-            result = items.OfType<T>().ToList();
+            result = [.. items.OfType<T>()];
         }
 
         return result;

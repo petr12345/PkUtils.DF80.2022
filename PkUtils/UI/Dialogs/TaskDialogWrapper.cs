@@ -5,13 +5,14 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
+using PK.PkUtils.UI.Utils;
 
-namespace PK.PkUtils.UI.Utils;
+namespace PK.PkUtils.UI.Dialogs;
 
 /// <summary> Several utilities as example of usage of <see cref="TaskDialog"/> </summary>
 /// <remarks>
 /// For the actual value of 'owner' argument in each method, you should use a Form, 
-/// Control or instance of of <see cref="Win32Window"/>, created from window handle.
+/// Control or instance of <see cref="Win32Window"/>, created from window handle.
 /// </remarks>
 public static class TaskDialogWrapper
 {

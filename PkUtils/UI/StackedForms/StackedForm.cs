@@ -33,12 +33,12 @@ using PK.PkUtils.Reflection;
 using PK.PkUtils.UI.Utils;
 using PK.PkUtils.Utils;
 
-namespace PK.PkUtils.UI.Stack;
+namespace PK.PkUtils.UI.StackedForms;
 
 /// <summary> The abstract class adding to its base class Form the functionality of <see cref="IStackedForm"/>
 /// interface, which is needed for usability with FormStack.
-/// <see cref="PK.PkUtils.UI.Stack.IStackedForm"/>
-/// <see cref="PK.PkUtils.UI.Stack.FormStack"/> </summary>
+/// <see cref="IStackedForm"/>
+/// <see cref="FormStack"/> </summary>
 ///
 /// <remarks> <para>
 /// Note how the event handling chain works:   <br/>
@@ -165,7 +165,7 @@ public partial class StackedForm : Form, IStackedForm
     /// </summary>
     protected void InitializeClosingHandler()
     {
-        this.Closing += new System.ComponentModel.CancelEventHandler(FormClosingHandler);
+        Closing += new CancelEventHandler(FormClosingHandler);
     }
 
     /// <summary>
@@ -174,7 +174,10 @@ public partial class StackedForm : Form, IStackedForm
     /// <param name="args">Argument containing characteristic data for event that is raised when the FormStack item is closed.</param>
     protected void FireEventStackItemClosed(EventFormStackItemClosedArgs args)
     {
-        _evStackItemClosed?.Invoke(this, args);
+        if (null != _evStackItemClosed)
+        {
+            _evStackItemClosed(this, args);
+        }
     }
 
     /// <summary>
@@ -199,11 +202,11 @@ public partial class StackedForm : Form, IStackedForm
     {
         if (!args.Cancel)
         {
-            if (this.PermitsCaching)
+            if (PermitsCaching)
             {
-                if (!this.IsModalState)
+                if (!IsModalState)
                 {
-                    this.Visible = false;
+                    Visible = false;
                     args.Cancel = true;
                 }
                 else
@@ -305,7 +308,7 @@ public partial class StackedForm : Form, IStackedForm
     /// </summary>
     public virtual IStackId FormId
     {
-        get { return new FormStack.StackId(this.GetType()); }
+        get { return new FormStack.StackId(GetType()); }
     }
 
     /// <inheritdoc/>
@@ -335,7 +338,7 @@ public partial class StackedForm : Form, IStackedForm
     /// <inheritdoc/>
     public bool IsFormVisible
     {
-        get { return base.Visible; }
+        get { return Visible; }
     }
 
     /// <inheritdoc/>
@@ -345,17 +348,17 @@ public partial class StackedForm : Form, IStackedForm
         {
             /* this.ShowInTaskbar = true;  generally may not be suitable */
         }
-        base.Visible = bValue;
+        Visible = bValue;
     }
 
     /// <inheritdoc/>
     public virtual DialogResult StackedShowModal()
     {
-        DialogResult result;
+        DialogResult result = DialogResult.None;
 
         Debug.Assert(!IsModalState);
         _bModal = true;
-        result = base.ShowDialog();
+        result = ShowDialog();
         _bModal = false;
         return result;
     }
@@ -365,8 +368,8 @@ public partial class StackedForm : Form, IStackedForm
     {
         // activation itself
         /* this.ShowInTaskbar = true;  generally may not be suitable */
-        base.Visible = true;
-        base.Activate();
+        Visible = true;
+        Activate();
     }
 
     /// <summary>

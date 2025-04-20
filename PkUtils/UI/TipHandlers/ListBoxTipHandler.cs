@@ -1,13 +1,3 @@
-/***************************************************************************************************************
-*
-* FILE NAME:   .\UI\TipHandlers\ListBoxTipHandler.cs
-*
-* AUTHOR:      Petr Kodet
-*
-* DESCRIPTION: The file contains definition of class ListBoxTipHandler
-*
-**************************************************************************************************************/
-
 // define following if you want to test the old approach, without TextRenderer
 // #define DONT_USE_TEXT_RENDERER
 

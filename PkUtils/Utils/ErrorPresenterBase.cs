@@ -18,7 +18,7 @@ using System.Windows.Forms;
 using PK.PkUtils.Extensions;
 using PK.PkUtils.Interfaces;
 using PK.PkUtils.Reflection;
-using PK.PkUtils.UI.General;
+using PK.PkUtils.UI.Dialogs.MsgBoxes;
 
 namespace PK.PkUtils.Utils;
 

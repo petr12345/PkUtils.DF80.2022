@@ -3,7 +3,7 @@ using System.Globalization;
 using System.Windows.Forms;
 using PK.PkUtils.DataStructures;
 using PK.PkUtils.Extensions;
-using PK.PkUtils.UI.General;
+using PK.PkUtils.UI.Dialogs.MsgBoxes;
 using PK.PkUtils.UI.Utils;
 
 namespace PK.TestSingletonGeneric

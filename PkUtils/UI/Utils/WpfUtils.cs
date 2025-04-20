@@ -7,13 +7,13 @@ using System.Windows.Interop;
 namespace PK.PkUtils.UI.Utils;
 
 /// <summary> A WPF-related utilities. </summary>
-internal static class WpfUtils
+public static class WpfUtils
 {
     #region Methods
 
     /// <summary> Gets main window handle. </summary>
     /// <returns>   The main window handle, or IntPtr.Zero if failed. </returns>
-    internal static IntPtr GetMainWindowHandle()
+    public static IntPtr GetMainWindowHandle()
     {
         // Ensure the application has a main window and it's loaded
         System.Windows.Window mainWindow = System.Windows.Application.Current?.MainWindow;
@@ -30,7 +30,7 @@ internal static class WpfUtils
 
     /// <summary> Gets main window. </summary>
     /// <returns>   The main window, or null if none found. </returns>
-    internal static Win32Window GetMainWindow()
+    public static Win32Window GetMainWindow()
     {
         IntPtr handle = GetMainWindowHandle();
         Win32Window result = (handle == IntPtr.Zero) ? null : new Win32Window(handle);

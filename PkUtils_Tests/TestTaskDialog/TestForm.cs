@@ -14,7 +14,7 @@
 using System;
 using System.Text;
 using System.Windows.Forms;
-
+using PK.PkUtils.UI.Dialogs.PSTaskDialog;
 using PSTaskDialog = PK.PkUtils.UI.PSTaskDialog;
 
 namespace TestTaskDialog
@@ -37,9 +37,9 @@ namespace TestTaskDialog
             StringBuilder sb = new();
 
             sb.Append("Result : " + Enum.GetName(typeof(DialogResult), res) + Environment.NewLine);
-            sb.Append("RadioButtonIndex : " + PSTaskDialog.cTaskDialog.RadioButtonResult.ToString() + Environment.NewLine);
-            sb.Append("CommandButtonIndex : " + PSTaskDialog.cTaskDialog.CommandButtonResult.ToString() + Environment.NewLine);
-            sb.Append("Verify CheckBox : " + (PSTaskDialog.cTaskDialog.VerificationChecked ? "true" : "false"));
+            sb.Append("RadioButtonIndex : " + cTaskDialog.RadioButtonResult.ToString() + Environment.NewLine);
+            sb.Append("CommandButtonIndex : " + cTaskDialog.CommandButtonResult.ToString() + Environment.NewLine);
+            sb.Append("Verify CheckBox : " + (cTaskDialog.VerificationChecked ? "true" : "false"));
 
             lbResult.Text = sb.ToString();
         }
@@ -49,11 +49,11 @@ namespace TestTaskDialog
 
         private void button1_Click(object sender, EventArgs e)
         {
-            PSTaskDialog.cTaskDialog.ForceEmulationMode = checkBox1.Checked;
-            try { PSTaskDialog.cTaskDialog.EmulatedFormWidth = Convert.ToInt32(edWidth.Text); }
-            catch (Exception) { PSTaskDialog.cTaskDialog.EmulatedFormWidth = 450; }
+            cTaskDialog.ForceEmulationMode = checkBox1.Checked;
+            try { cTaskDialog.EmulatedFormWidth = Convert.ToInt32(edWidth.Text); }
+            catch (Exception) { cTaskDialog.EmulatedFormWidth = 450; }
 
-            DialogResult res = PSTaskDialog.cTaskDialog.ShowTaskDialogBox(
+            DialogResult res = cTaskDialog.ShowTaskDialogBox(
               this,
              "Task Dialog Title",
              "The main instruction text for the TaskDialog goes here.",
@@ -63,19 +63,19 @@ namespace TestTaskDialog
              "Don't show me this message again",
              "Radio Option 1|Radio Option 2|Radio Option 3",
              "Command &Button 1|Command Button 2\nLine 2\nLine 3|Command Button 3",
-             PSTaskDialog.eTaskDialogButtons.OKCancel,
-             PSTaskDialog.eSysIcons.Information,
-             PSTaskDialog.eSysIcons.Warning);
+             eTaskDialogButtons.OKCancel,
+             eSysIcons.Information,
+             eSysIcons.Warning);
             UpdateResult(res);
         }
 
         private void button2_Click(object sender, EventArgs e)
         {
-            PSTaskDialog.cTaskDialog.ForceEmulationMode = checkBox1.Checked;
-            try { PSTaskDialog.cTaskDialog.EmulatedFormWidth = Convert.ToInt32(edWidth.Text); }
-            catch (Exception) { PSTaskDialog.cTaskDialog.EmulatedFormWidth = 450; }
+            cTaskDialog.ForceEmulationMode = checkBox1.Checked;
+            try { cTaskDialog.EmulatedFormWidth = Convert.ToInt32(edWidth.Text); }
+            catch (Exception) { cTaskDialog.EmulatedFormWidth = 450; }
 
-            DialogResult res = PSTaskDialog.cTaskDialog.MessageBox(
+            DialogResult res = cTaskDialog.MessageBox(
               this,
               "MessageBox Title",
               "The main instruction text for the message box is shown here.",
@@ -83,9 +83,9 @@ namespace TestTaskDialog
               "Any expanded content text for the message box is shown here and the text will automatically wrap as needed.",
               "Optional footer text with an icon can be included",
               "ARRGHH! Don't show me this again!!!!",
-              PSTaskDialog.eTaskDialogButtons.YesNoCancel,
-              PSTaskDialog.eSysIcons.Information,
-              PSTaskDialog.eSysIcons.Error);
+              eTaskDialogButtons.YesNoCancel,
+              eSysIcons.Information,
+              eSysIcons.Error);
 
             /*
             DialogResult res = PSTaskDialog.cTaskDialog.MessageBox(
@@ -106,27 +106,27 @@ namespace TestTaskDialog
 
         private void button3_Click(object sender, EventArgs e)
         {
-            PSTaskDialog.cTaskDialog.ForceEmulationMode = checkBox1.Checked;
-            try { PSTaskDialog.cTaskDialog.EmulatedFormWidth = Convert.ToInt32(edWidth.Text); }
-            catch (Exception) { PSTaskDialog.cTaskDialog.EmulatedFormWidth = 450; }
+            cTaskDialog.ForceEmulationMode = checkBox1.Checked;
+            try { cTaskDialog.EmulatedFormWidth = Convert.ToInt32(edWidth.Text); }
+            catch (Exception) { cTaskDialog.EmulatedFormWidth = 450; }
 
-            DialogResult res = PSTaskDialog.cTaskDialog.MessageBox(
+            DialogResult res = cTaskDialog.MessageBox(
               this,
               "MessageBox Title",
               "The main instruction text for the message box is shown here.",
               "The content text for the message box is shown here and the text will automatically wrap as needed.",
-              PSTaskDialog.eTaskDialogButtons.OK,
-              PSTaskDialog.eSysIcons.Warning);
+              eTaskDialogButtons.OK,
+              eSysIcons.Warning);
             UpdateResult(res);
         }
 
         private void button4_Click(object sender, EventArgs e)
         {
-            PSTaskDialog.cTaskDialog.ForceEmulationMode = checkBox1.Checked;
-            try { PSTaskDialog.cTaskDialog.EmulatedFormWidth = Convert.ToInt32(edWidth.Text); }
-            catch (Exception) { PSTaskDialog.cTaskDialog.EmulatedFormWidth = 450; }
+            cTaskDialog.ForceEmulationMode = checkBox1.Checked;
+            try { cTaskDialog.EmulatedFormWidth = Convert.ToInt32(edWidth.Text); }
+            catch (Exception) { cTaskDialog.EmulatedFormWidth = 450; }
 
-            int idx = PSTaskDialog.cTaskDialog.ShowRadioBox(
+            int idx = cTaskDialog.ShowRadioBox(
               this,
               "RadioBox Title",
               "The main instruction text for the radiobox is shown here.",
@@ -135,19 +135,19 @@ namespace TestTaskDialog
               "Optional footer text with an icon can be included",
               "Don't show this message again",
               "Radio Option 1|Radio Option 2|Radio Option 3|Radio Option 4|Radio Option 5",
-              PSTaskDialog.eSysIcons.Information,
-              PSTaskDialog.eSysIcons.Warning);
+              eSysIcons.Information,
+              eSysIcons.Warning);
 
             lbResult.Text = "ShowRadioBox return value : " + idx.ToString();
         }
 
         private void button5_Click(object sender, EventArgs e)
         {
-            PSTaskDialog.cTaskDialog.ForceEmulationMode = checkBox1.Checked;
-            try { PSTaskDialog.cTaskDialog.EmulatedFormWidth = Convert.ToInt32(edWidth.Text); }
-            catch (Exception) { PSTaskDialog.cTaskDialog.EmulatedFormWidth = 450; }
+            cTaskDialog.ForceEmulationMode = checkBox1.Checked;
+            try { cTaskDialog.EmulatedFormWidth = Convert.ToInt32(edWidth.Text); }
+            catch (Exception) { cTaskDialog.EmulatedFormWidth = 450; }
 
-            int idx = PSTaskDialog.cTaskDialog.ShowCommandBox(
+            int idx = cTaskDialog.ShowCommandBox(
               this,
               "CommandBox Title",
               "The main instruction text for the commandbox is shown here.",
@@ -157,8 +157,8 @@ namespace TestTaskDialog
               "Don't show this message again",
               "Command Button 1|Command Button 2|Command Button 3|Command Button 4",
               true,
-              PSTaskDialog.eSysIcons.Information,
-              PSTaskDialog.eSysIcons.Warning);
+              eSysIcons.Information,
+              eSysIcons.Warning);
 
             lbResult.Text = "ShowCommandBox return value : " + idx.ToString();
         }

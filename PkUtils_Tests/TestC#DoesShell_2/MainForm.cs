@@ -7,6 +7,7 @@ using System.Reflection;
 using PK.PkUtils.Extensions;
 using PK.PkUtils.IO;
 using PK.PkUtils.SystemEx;
+using PK.PkUtils.UI.Dialogs.PSTaskDialog;
 using PK.PkUtils.UI.Utils;
 using PK.PkUtils.Utils;
 using PSTaskDialog = PK.PkUtils.UI.PSTaskDialog;
@@ -143,13 +144,13 @@ namespace WinTester2
 
         protected void UnableToFindMsg()
         {
-            PSTaskDialog.cTaskDialog.MessageBox(
+            cTaskDialog.MessageBox(
               this,
               "Error",
               "Unable to find suitable file.",
               "You may need to modify the code of testing project to fixup this problem",
-              PSTaskDialog.eTaskDialogButtons.OK,
-              PSTaskDialog.eSysIcons.Warning);
+              eTaskDialogButtons.OK,
+              eSysIcons.Warning);
         }
         #endregion // Protected Non-static Methods
         #endregion // Protected Methods
@@ -245,23 +246,23 @@ namespace WinTester2
 
             if (retVal)
             {
-                PSTaskDialog.cTaskDialog.MessageBox(
+                cTaskDialog.MessageBox(
                   this,
                   "Success",
                   "Copying of following files complete without errors:",
                   allSources,
-                  PSTaskDialog.eTaskDialogButtons.OK,
-                  PSTaskDialog.eSysIcons.Information);
+                  eTaskDialogButtons.OK,
+                  eSysIcons.Information);
             }
             else
             {
-                PSTaskDialog.cTaskDialog.MessageBox(
+                cTaskDialog.MessageBox(
                   this,
                   "Error",
                   "Copying of following files completed with errors!",
                   allSources,
-                  PSTaskDialog.eTaskDialogButtons.OK,
-                  PSTaskDialog.eSysIcons.Warning);
+                  eTaskDialogButtons.OK,
+                  eSysIcons.Warning);
             }
         }
 
@@ -302,23 +303,23 @@ namespace WinTester2
 
                 if (retVal)
                 {
-                    PSTaskDialog.cTaskDialog.MessageBox(
+                    cTaskDialog.MessageBox(
                       this,
                       "Success",
                       "Moving of following files complete without errors:",
                       allSources,
-                      PSTaskDialog.eTaskDialogButtons.OK,
-                      PSTaskDialog.eSysIcons.Information);
+                      eTaskDialogButtons.OK,
+                      eSysIcons.Information);
                 }
                 else
                 {
-                    PSTaskDialog.cTaskDialog.MessageBox(
+                    cTaskDialog.MessageBox(
                       this,
                       "Error",
                       "Moving of following files completed with errors!",
                       allSources,
-                      PSTaskDialog.eTaskDialogButtons.OK,
-                      PSTaskDialog.eSysIcons.Warning);
+                      eTaskDialogButtons.OK,
+                      eSysIcons.Warning);
                 }
             }
         }
@@ -358,23 +359,23 @@ namespace WinTester2
 
                 if (retVal)
                 {
-                    PSTaskDialog.cTaskDialog.MessageBox(
+                    cTaskDialog.MessageBox(
                       this,
                       "Success",
                       "Deleting of following files complete without errors:",
                       allSources,
-                      PSTaskDialog.eTaskDialogButtons.OK,
-                      PSTaskDialog.eSysIcons.Information);
+                      eTaskDialogButtons.OK,
+                      eSysIcons.Information);
                 }
                 else
                 {
-                    PSTaskDialog.cTaskDialog.MessageBox(
+                    cTaskDialog.MessageBox(
                       this,
                       "Error",
                       "Deleting of following files completed with errors!",
                       allSources,
-                      PSTaskDialog.eTaskDialogButtons.OK,
-                      PSTaskDialog.eSysIcons.Warning);
+                      eTaskDialogButtons.OK,
+                      eSysIcons.Warning);
                 }
             }
         }
@@ -399,13 +400,13 @@ namespace WinTester2
             if (!string.IsNullOrEmpty(strFile))
             {
                 ShellLib.ShellAddRecent.AddToList(strFile);
-                PSTaskDialog.cTaskDialog.MessageBox(
+                cTaskDialog.MessageBox(
                   this,
                   "Success",
                   "Following file has been added to System Recent List:",
                   strFile,
-                  PSTaskDialog.eTaskDialogButtons.OK,
-                  PSTaskDialog.eSysIcons.Information);
+                  eTaskDialogButtons.OK,
+                  eSysIcons.Information);
             }
             else
             {
@@ -416,13 +417,13 @@ namespace WinTester2
         private void btnClearList_Click(object sender, System.EventArgs e)
         {
             ShellLib.ShellAddRecent.ClearList();
-            PSTaskDialog.cTaskDialog.MessageBox(
+            cTaskDialog.MessageBox(
               this,
               "Success",
               "The System Recent List has been cleared",
               null,
-              PSTaskDialog.eTaskDialogButtons.OK,
-              PSTaskDialog.eSysIcons.Information);
+              eTaskDialogButtons.OK,
+              eSysIcons.Information);
         }
 
         private void btnOpenPrinter_Click(object sender, System.EventArgs e)

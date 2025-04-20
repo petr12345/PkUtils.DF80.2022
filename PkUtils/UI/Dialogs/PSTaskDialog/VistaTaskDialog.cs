@@ -30,7 +30,7 @@ using System.Windows.Forms;
 #pragma warning disable IDE0290 // Use primary constructor
 #pragma warning disable IDE0301 // Simplify collection initialization
 
-namespace PK.PkUtils.UI.PSTaskDialog;
+namespace PK.PkUtils.UI.Dialogs.PSTaskDialog;
 
 /// <summary>
 /// The signature of the callback that receives notifications from the Task Dialog.
@@ -246,8 +246,8 @@ public struct VistaTaskDialogButton
     /// <param name="text">The string that appears on the button.</param>
     public VistaTaskDialogButton(int id, string text)
     {
-        this.buttonId = id;
-        this.buttonText = text;
+        buttonId = id;
+        buttonText = text;
     }
 
     /// <summary>
@@ -255,8 +255,8 @@ public struct VistaTaskDialogButton
     /// </summary>
     public int ButtonId
     {
-        readonly get { return this.buttonId; }
-        set { this.buttonId = value; }
+        readonly get { return buttonId; }
+        set { buttonId = value; }
     }
 
     /// <summary>
@@ -264,8 +264,8 @@ public struct VistaTaskDialogButton
     /// </summary>
     public string ButtonText
     {
-        readonly get { return this.buttonText; }
-        set { this.buttonText = value; }
+        readonly get { return buttonText; }
+        set { buttonText = value; }
     }
 }
 
@@ -418,7 +418,7 @@ public class VistaTaskDialog
     /// </summary>
     public VistaTaskDialog()
     {
-        this.Reset();
+        Reset();
     }
 
     /// <summary>
@@ -432,7 +432,7 @@ public class VistaTaskDialog
             OperatingSystem os = Environment.OSVersion;
             if (os.Platform != PlatformID.Win32NT)
                 return false;
-            return (os.Version.CompareTo(VistaTaskDialog.RequiredOSVersion) >= 0);
+            return os.Version.CompareTo(RequiredOSVersion) >= 0;
         }
     }
 
@@ -449,8 +449,8 @@ public class VistaTaskDialog
     /// </summary>
     public string WindowTitle
     {
-        get { return this.windowTitle; }
-        set { this.windowTitle = value; }
+        get { return windowTitle; }
+        set { windowTitle = value; }
     }
 
     /// <summary>
@@ -458,8 +458,8 @@ public class VistaTaskDialog
     /// </summary>
     public string MainInstruction
     {
-        get { return this.mainInstruction; }
-        set { this.mainInstruction = value; }
+        get { return mainInstruction; }
+        set { mainInstruction = value; }
     }
 
     /// <summary>
@@ -469,8 +469,8 @@ public class VistaTaskDialog
     /// </summary>
     public string Content
     {
-        get { return this.content; }
-        set { this.content = value; }
+        get { return content; }
+        set { content = value; }
     }
 
     /// <summary>
@@ -480,8 +480,8 @@ public class VistaTaskDialog
     /// </summary>
     public VistaTaskDialogCommonButtons CommonButtons
     {
-        get { return this.commonButtons; }
-        set { this.commonButtons = value; }
+        get { return commonButtons; }
+        set { commonButtons = value; }
     }
 
     /// <summary>
@@ -490,8 +490,8 @@ public class VistaTaskDialog
     /// </summary>
     public VistaTaskDialogIcon MainIcon
     {
-        get { return this.mainIcon; }
-        set { this.mainIcon = value; }
+        get { return mainIcon; }
+        set { mainIcon = value; }
     }
 
     /// <summary>
@@ -500,8 +500,8 @@ public class VistaTaskDialog
     /// </summary>
     public Icon CustomMainIcon
     {
-        get { return this.customMainIcon; }
-        set { this.customMainIcon = value; }
+        get { return customMainIcon; }
+        set { customMainIcon = value; }
     }
 
     /// <summary>
@@ -511,8 +511,8 @@ public class VistaTaskDialog
     /// </summary>
     public VistaTaskDialogIcon FooterIcon
     {
-        get { return this.footerIcon; }
-        set { this.footerIcon = value; }
+        get { return footerIcon; }
+        set { footerIcon = value; }
     }
 
     /// <summary>
@@ -522,8 +522,8 @@ public class VistaTaskDialog
     /// </summary>
     public Icon CustomFooterIcon
     {
-        get { return this.customFooterIcon; }
-        set { this.customFooterIcon = value; }
+        get { return customFooterIcon; }
+        set { customFooterIcon = value; }
     }
 
     /// <summary>
@@ -535,13 +535,13 @@ public class VistaTaskDialog
     {
         get
         {
-            return this._buttons;
+            return _buttons;
         }
 
         set
         {
             ArgumentNullException.ThrowIfNull(value);
-            this._buttons = value;
+            _buttons = value;
         }
     }
 
@@ -550,11 +550,11 @@ public class VistaTaskDialog
     /// </summary>
     public VistaTaskDialogButton[] RadioButtons
     {
-        get => this._radioButtons;
+        get => _radioButtons;
         set
         {
             ArgumentNullException.ThrowIfNull(value);
-            this._radioButtons = value;
+            _radioButtons = value;
         }
     }
 
@@ -568,8 +568,8 @@ public class VistaTaskDialog
     /// </summary>
     public bool EnableHyperlinks
     {
-        get { return (this.flags & VistaUnsafeNativeMethods.TASKDIALOG_FLAGS.TDF_ENABLE_HYPERLINKS) != 0; }
-        set { this.SetFlag(VistaUnsafeNativeMethods.TASKDIALOG_FLAGS.TDF_ENABLE_HYPERLINKS, value); }
+        get { return (flags & VistaUnsafeNativeMethods.TASKDIALOG_FLAGS.TDF_ENABLE_HYPERLINKS) != 0; }
+        set { SetFlag(VistaUnsafeNativeMethods.TASKDIALOG_FLAGS.TDF_ENABLE_HYPERLINKS, value); }
     }
 
     /// <summary>
@@ -578,8 +578,8 @@ public class VistaTaskDialog
     /// </summary>
     public bool AllowDialogCancellation
     {
-        get { return (this.flags & VistaUnsafeNativeMethods.TASKDIALOG_FLAGS.TDF_ALLOW_DIALOG_CANCELLATION) != 0; }
-        set { this.SetFlag(VistaUnsafeNativeMethods.TASKDIALOG_FLAGS.TDF_ALLOW_DIALOG_CANCELLATION, value); }
+        get { return (flags & VistaUnsafeNativeMethods.TASKDIALOG_FLAGS.TDF_ALLOW_DIALOG_CANCELLATION) != 0; }
+        set { SetFlag(VistaUnsafeNativeMethods.TASKDIALOG_FLAGS.TDF_ALLOW_DIALOG_CANCELLATION, value); }
     }
 
     /// <summary>
@@ -591,8 +591,8 @@ public class VistaTaskDialog
     /// </summary>
     public bool UseCommandLinks
     {
-        get { return (this.flags & VistaUnsafeNativeMethods.TASKDIALOG_FLAGS.TDF_USE_COMMAND_LINKS) != 0; }
-        set { this.SetFlag(VistaUnsafeNativeMethods.TASKDIALOG_FLAGS.TDF_USE_COMMAND_LINKS, value); }
+        get { return (flags & VistaUnsafeNativeMethods.TASKDIALOG_FLAGS.TDF_USE_COMMAND_LINKS) != 0; }
+        set { SetFlag(VistaUnsafeNativeMethods.TASKDIALOG_FLAGS.TDF_USE_COMMAND_LINKS, value); }
     }
 
     /// <summary>
@@ -604,8 +604,8 @@ public class VistaTaskDialog
     /// </summary>
     public bool UseCommandLinksNoIcon
     {
-        get { return (this.flags & VistaUnsafeNativeMethods.TASKDIALOG_FLAGS.TDF_USE_COMMAND_LINKS_NO_ICON) != 0; }
-        set { this.SetFlag(VistaUnsafeNativeMethods.TASKDIALOG_FLAGS.TDF_USE_COMMAND_LINKS_NO_ICON, value); }
+        get { return (flags & VistaUnsafeNativeMethods.TASKDIALOG_FLAGS.TDF_USE_COMMAND_LINKS_NO_ICON) != 0; }
+        set { SetFlag(VistaUnsafeNativeMethods.TASKDIALOG_FLAGS.TDF_USE_COMMAND_LINKS_NO_ICON, value); }
     }
 
     /// <summary>
@@ -615,8 +615,8 @@ public class VistaTaskDialog
     /// </summary>
     public bool ExpandFooterArea
     {
-        get { return (this.flags & VistaUnsafeNativeMethods.TASKDIALOG_FLAGS.TDF_EXPAND_FOOTER_AREA) != 0; }
-        set { this.SetFlag(VistaUnsafeNativeMethods.TASKDIALOG_FLAGS.TDF_EXPAND_FOOTER_AREA, value); }
+        get { return (flags & VistaUnsafeNativeMethods.TASKDIALOG_FLAGS.TDF_EXPAND_FOOTER_AREA) != 0; }
+        set { SetFlag(VistaUnsafeNativeMethods.TASKDIALOG_FLAGS.TDF_EXPAND_FOOTER_AREA, value); }
     }
 
     /// <summary>
@@ -626,8 +626,8 @@ public class VistaTaskDialog
     /// </summary>
     public bool ExpandedByDefault
     {
-        get { return (this.flags & VistaUnsafeNativeMethods.TASKDIALOG_FLAGS.TDF_EXPANDED_BY_DEFAULT) != 0; }
-        set { this.SetFlag(VistaUnsafeNativeMethods.TASKDIALOG_FLAGS.TDF_EXPANDED_BY_DEFAULT, value); }
+        get { return (flags & VistaUnsafeNativeMethods.TASKDIALOG_FLAGS.TDF_EXPANDED_BY_DEFAULT) != 0; }
+        set { SetFlag(VistaUnsafeNativeMethods.TASKDIALOG_FLAGS.TDF_EXPANDED_BY_DEFAULT, value); }
     }
 
     /// <summary>
@@ -636,8 +636,8 @@ public class VistaTaskDialog
     /// </summary>
     public bool VerificationFlagChecked
     {
-        get { return (this.flags & VistaUnsafeNativeMethods.TASKDIALOG_FLAGS.TDF_VERIFICATION_FLAG_CHECKED) != 0; }
-        set { this.SetFlag(VistaUnsafeNativeMethods.TASKDIALOG_FLAGS.TDF_VERIFICATION_FLAG_CHECKED, value); }
+        get { return (flags & VistaUnsafeNativeMethods.TASKDIALOG_FLAGS.TDF_VERIFICATION_FLAG_CHECKED) != 0; }
+        set { SetFlag(VistaUnsafeNativeMethods.TASKDIALOG_FLAGS.TDF_VERIFICATION_FLAG_CHECKED, value); }
     }
 
     /// <summary>
@@ -645,8 +645,8 @@ public class VistaTaskDialog
     /// </summary>
     public bool ShowProgressBar
     {
-        get { return (this.flags & VistaUnsafeNativeMethods.TASKDIALOG_FLAGS.TDF_SHOW_PROGRESS_BAR) != 0; }
-        set { this.SetFlag(VistaUnsafeNativeMethods.TASKDIALOG_FLAGS.TDF_SHOW_PROGRESS_BAR, value); }
+        get { return (flags & VistaUnsafeNativeMethods.TASKDIALOG_FLAGS.TDF_SHOW_PROGRESS_BAR) != 0; }
+        set { SetFlag(VistaUnsafeNativeMethods.TASKDIALOG_FLAGS.TDF_SHOW_PROGRESS_BAR, value); }
     }
 
     /// <summary>
@@ -654,8 +654,8 @@ public class VistaTaskDialog
     /// </summary>
     public bool ShowMarqueeProgressBar
     {
-        get { return (this.flags & VistaUnsafeNativeMethods.TASKDIALOG_FLAGS.TDF_SHOW_MARQUEE_PROGRESS_BAR) != 0; }
-        set { this.SetFlag(VistaUnsafeNativeMethods.TASKDIALOG_FLAGS.TDF_SHOW_MARQUEE_PROGRESS_BAR, value); }
+        get { return (flags & VistaUnsafeNativeMethods.TASKDIALOG_FLAGS.TDF_SHOW_MARQUEE_PROGRESS_BAR) != 0; }
+        set { SetFlag(VistaUnsafeNativeMethods.TASKDIALOG_FLAGS.TDF_SHOW_MARQUEE_PROGRESS_BAR, value); }
     }
 
     /// <summary>
@@ -663,8 +663,8 @@ public class VistaTaskDialog
     /// </summary>
     public bool CallbackTimer
     {
-        get { return (this.flags & VistaUnsafeNativeMethods.TASKDIALOG_FLAGS.TDF_CALLBACK_TIMER) != 0; }
-        set { this.SetFlag(VistaUnsafeNativeMethods.TASKDIALOG_FLAGS.TDF_CALLBACK_TIMER, value); }
+        get { return (flags & VistaUnsafeNativeMethods.TASKDIALOG_FLAGS.TDF_CALLBACK_TIMER) != 0; }
+        set { SetFlag(VistaUnsafeNativeMethods.TASKDIALOG_FLAGS.TDF_CALLBACK_TIMER, value); }
     }
 
     /// <summary>
@@ -674,8 +674,8 @@ public class VistaTaskDialog
     /// </summary>
     public bool PositionRelativeToWindow
     {
-        get { return (this.flags & VistaUnsafeNativeMethods.TASKDIALOG_FLAGS.TDF_POSITION_RELATIVE_TO_WINDOW) != 0; }
-        set { this.SetFlag(VistaUnsafeNativeMethods.TASKDIALOG_FLAGS.TDF_POSITION_RELATIVE_TO_WINDOW, value); }
+        get { return (flags & VistaUnsafeNativeMethods.TASKDIALOG_FLAGS.TDF_POSITION_RELATIVE_TO_WINDOW) != 0; }
+        set { SetFlag(VistaUnsafeNativeMethods.TASKDIALOG_FLAGS.TDF_POSITION_RELATIVE_TO_WINDOW, value); }
     }
 
     /// <summary>
@@ -683,8 +683,8 @@ public class VistaTaskDialog
     /// </summary>
     public bool RightToLeftLayout
     {
-        get { return (this.flags & VistaUnsafeNativeMethods.TASKDIALOG_FLAGS.TDF_RTL_LAYOUT) != 0; }
-        set { this.SetFlag(VistaUnsafeNativeMethods.TASKDIALOG_FLAGS.TDF_RTL_LAYOUT, value); }
+        get { return (flags & VistaUnsafeNativeMethods.TASKDIALOG_FLAGS.TDF_RTL_LAYOUT) != 0; }
+        set { SetFlag(VistaUnsafeNativeMethods.TASKDIALOG_FLAGS.TDF_RTL_LAYOUT, value); }
     }
 
     /// <summary>
@@ -692,8 +692,8 @@ public class VistaTaskDialog
     /// </summary>
     public bool NoDefaultRadioButton
     {
-        get { return (this.flags & VistaUnsafeNativeMethods.TASKDIALOG_FLAGS.TDF_NO_DEFAULT_RADIO_BUTTON) != 0; }
-        set { this.SetFlag(VistaUnsafeNativeMethods.TASKDIALOG_FLAGS.TDF_NO_DEFAULT_RADIO_BUTTON, value); }
+        get { return (flags & VistaUnsafeNativeMethods.TASKDIALOG_FLAGS.TDF_NO_DEFAULT_RADIO_BUTTON) != 0; }
+        set { SetFlag(VistaUnsafeNativeMethods.TASKDIALOG_FLAGS.TDF_NO_DEFAULT_RADIO_BUTTON, value); }
     }
 
     /// <summary>
@@ -701,8 +701,8 @@ public class VistaTaskDialog
     /// </summary>
     public bool CanBeMinimized
     {
-        get { return (this.flags & VistaUnsafeNativeMethods.TASKDIALOG_FLAGS.TDF_CAN_BE_MINIMIZED) != 0; }
-        set { this.SetFlag(VistaUnsafeNativeMethods.TASKDIALOG_FLAGS.TDF_CAN_BE_MINIMIZED, value); }
+        get { return (flags & VistaUnsafeNativeMethods.TASKDIALOG_FLAGS.TDF_CAN_BE_MINIMIZED) != 0; }
+        set { SetFlag(VistaUnsafeNativeMethods.TASKDIALOG_FLAGS.TDF_CAN_BE_MINIMIZED, value); }
     }
 
     /// <summary>
@@ -714,8 +714,8 @@ public class VistaTaskDialog
     /// </summary>
     public int DefaultButton
     {
-        get { return this.defaultButton; }
-        set { this.defaultButton = value; }
+        get { return defaultButton; }
+        set { defaultButton = value; }
     }
 
     /// <summary>
@@ -727,8 +727,8 @@ public class VistaTaskDialog
     /// </summary>
     public int DefaultRadioButton
     {
-        get { return this.defaultRadioButton; }
-        set { this.defaultRadioButton = value; }
+        get { return defaultRadioButton; }
+        set { defaultRadioButton = value; }
     }
 
     /// <summary>
@@ -737,8 +737,8 @@ public class VistaTaskDialog
     /// </summary>
     public string VerificationText
     {
-        get { return this.verificationText; }
-        set { this.verificationText = value; }
+        get { return verificationText; }
+        set { verificationText = value; }
     }
 
     /// <summary>
@@ -750,8 +750,8 @@ public class VistaTaskDialog
     /// </summary>
     public string ExpandedInformation
     {
-        get { return this.expandedInformation; }
-        set { this.expandedInformation = value; }
+        get { return expandedInformation; }
+        set { expandedInformation = value; }
     }
 
     /// <summary>
@@ -762,8 +762,8 @@ public class VistaTaskDialog
     /// </summary>
     public string ExpandedControlText
     {
-        get { return this.expandedControlText; }
-        set { this.expandedControlText = value; }
+        get { return expandedControlText; }
+        set { expandedControlText = value; }
     }
 
     /// <summary>
@@ -774,8 +774,8 @@ public class VistaTaskDialog
     /// </summary>
     public string CollapsedControlText
     {
-        get { return this.collapsedControlText; }
-        set { this.collapsedControlText = value; }
+        get { return collapsedControlText; }
+        set { collapsedControlText = value; }
     }
 
     /// <summary>
@@ -786,8 +786,8 @@ public class VistaTaskDialog
     /// </summary>
     public string Footer
     {
-        get { return this.footer; }
-        set { this.footer = value; }
+        get { return footer; }
+        set { footer = value; }
     }
 
     /// <summary>
@@ -795,8 +795,8 @@ public class VistaTaskDialog
     /// </summary>
     public uint Width
     {
-        get { return this.width; }
-        set { this.width = value; }
+        get { return width; }
+        set { width = value; }
     }
 
     /// <summary>
@@ -804,8 +804,8 @@ public class VistaTaskDialog
     /// </summary>
     public VistaTaskDialogCallback Callback
     {
-        get { return this.callback; }
-        set { this.callback = value; }
+        get { return callback; }
+        set { callback = value; }
     }
 
     /// <summary>
@@ -813,8 +813,8 @@ public class VistaTaskDialog
     /// </summary>
     public object CallbackData
     {
-        get { return this.callbackData; }
-        set { this.callbackData = value; }
+        get { return callbackData; }
+        set { callbackData = value; }
     }
 
     /// <summary>
@@ -822,27 +822,27 @@ public class VistaTaskDialog
     /// </summary>
     public void Reset()
     {
-        this.windowTitle = null;
-        this.mainInstruction = null;
-        this.content = null;
-        this.commonButtons = 0;
-        this.mainIcon = VistaTaskDialogIcon.None;
-        this.customMainIcon = null;
-        this.footerIcon = VistaTaskDialogIcon.None;
-        this.customFooterIcon = null;
-        this._buttons = Array.Empty<VistaTaskDialogButton>();
-        this._radioButtons = Array.Empty<VistaTaskDialogButton>();
-        this.flags = 0;
-        this.defaultButton = 0;
-        this.defaultRadioButton = 0;
-        this.verificationText = null;
-        this.expandedInformation = null;
-        this.expandedControlText = null;
-        this.collapsedControlText = null;
-        this.footer = null;
-        this.callback = null;
-        this.callbackData = null;
-        this.width = 0;
+        windowTitle = null;
+        mainInstruction = null;
+        content = null;
+        commonButtons = 0;
+        mainIcon = VistaTaskDialogIcon.None;
+        customMainIcon = null;
+        footerIcon = VistaTaskDialogIcon.None;
+        customFooterIcon = null;
+        _buttons = Array.Empty<VistaTaskDialogButton>();
+        _radioButtons = Array.Empty<VistaTaskDialogButton>();
+        flags = 0;
+        defaultButton = 0;
+        defaultRadioButton = 0;
+        verificationText = null;
+        expandedInformation = null;
+        expandedControlText = null;
+        collapsedControlText = null;
+        footer = null;
+        callback = null;
+        callbackData = null;
+        width = 0;
     }
 
     /// <summary>
@@ -854,7 +854,7 @@ public class VistaTaskDialog
     /// member or the ButtonID from a TaskDialogButton structure set on the Buttons member.</returns>
     public int Show()
     {
-        return this.Show(IntPtr.Zero, out _, out _);
+        return Show(nint.Zero, out _, out _);
     }
 
     /// <summary>
@@ -867,7 +867,7 @@ public class VistaTaskDialog
     /// member or the ButtonID from a TaskDialogButton structure set on the Buttons member.</returns>
     public int Show(IWin32Window owner)
     {
-        return this.Show((owner == null ? IntPtr.Zero : owner.Handle), out _, out _);
+        return Show(owner == null ? nint.Zero : owner.Handle, out _, out _);
     }
 
     /// <summary>
@@ -878,9 +878,9 @@ public class VistaTaskDialog
     /// <param name="hwndOwner">Owner window the task Dialog will modal to.</param>
     /// <returns>The result of the dialog, either a DialogResult value for common push buttons set in the CommonButtons
     /// member or the ButtonID from a TaskDialogButton structure set on the Buttons member.</returns>
-    public int Show(IntPtr hwndOwner)
+    public int Show(nint hwndOwner)
     {
-        return this.Show(hwndOwner, out _, out _);
+        return Show(hwndOwner, out _, out _);
     }
 
     /// <summary>
@@ -895,7 +895,7 @@ public class VistaTaskDialog
     /// member or the ButtonID from a TaskDialogButton structure set on the Buttons member.</returns>
     public int Show(IWin32Window owner, out bool verificationFlagChecked)
     {
-        return this.Show((owner == null ? IntPtr.Zero : owner.Handle), out verificationFlagChecked, out _);
+        return Show(owner == null ? nint.Zero : owner.Handle, out verificationFlagChecked, out _);
     }
 
     /// <summary>
@@ -908,11 +908,11 @@ public class VistaTaskDialog
     /// was dismissed.</param>
     /// <returns>The result of the dialog, either a DialogResult value for common push buttons set in the CommonButtons
     /// member or the ButtonID from a TaskDialogButton structure set on the Buttons member.</returns>
-    public int Show(IntPtr hwndOwner, out bool verificationFlagChecked)
+    public int Show(nint hwndOwner, out bool verificationFlagChecked)
     {
         // We have to call a private version or PreSharp gets upset about a unsafe
         // block in a public method. (PreSharp error 56505)
-        return this.PrivateShow(hwndOwner, out verificationFlagChecked, out _);
+        return PrivateShow(hwndOwner, out verificationFlagChecked, out _);
     }
 
     /// <summary>
@@ -928,7 +928,7 @@ public class VistaTaskDialog
     /// member or the ButtonID from a TaskDialogButton structure set on the Buttons member.</returns>
     public int Show(IWin32Window owner, out bool verificationFlagChecked, out int radioButtonResult)
     {
-        return this.Show((owner == null ? IntPtr.Zero : owner.Handle), out verificationFlagChecked, out radioButtonResult);
+        return Show(owner == null ? nint.Zero : owner.Handle, out verificationFlagChecked, out radioButtonResult);
     }
 
     /// <summary>
@@ -942,11 +942,11 @@ public class VistaTaskDialog
     /// <param name="radioButtonResult">The radio botton selected by the user.</param>
     /// <returns>The result of the dialog, either a DialogResult value for common push buttons set in the CommonButtons
     /// member or the ButtonID from a TaskDialogButton structure set on the Buttons member.</returns>
-    public int Show(IntPtr hwndOwner, out bool verificationFlagChecked, out int radioButtonResult)
+    public int Show(nint hwndOwner, out bool verificationFlagChecked, out int radioButtonResult)
     {
         // We have to call a private version or PreSharp gets upset about a unsafe
         // block in a public method. (PreSharp error 56505)
-        return this.PrivateShow(hwndOwner, out verificationFlagChecked, out radioButtonResult);
+        return PrivateShow(hwndOwner, out verificationFlagChecked, out radioButtonResult);
     }
 
     /// <summary>
@@ -960,7 +960,7 @@ public class VistaTaskDialog
     /// <param name="radioButtonResult">The radio botton selected by the user.</param>
     /// <returns>The result of the dialog, either a DialogResult value for common push buttons set in the CommonButtons
     /// member or the ButtonID from a TaskDialogButton structure set on the Buttons member.</returns>
-    private int PrivateShow(IntPtr hwndOwner, out bool verificationFlagChecked, out int radioButtonResult)
+    private int PrivateShow(nint hwndOwner, out bool verificationFlagChecked, out int radioButtonResult)
     {
         verificationFlagChecked = false;
         radioButtonResult = 0;
@@ -971,32 +971,32 @@ public class VistaTaskDialog
         {
             config.cbSize = (uint)Marshal.SizeOf(typeof(VistaUnsafeNativeMethods.TASKDIALOGCONFIG));
             config.hwndParent = hwndOwner;
-            config.dwFlags = this.flags;
-            config.dwCommonButtons = this.commonButtons;
+            config.dwFlags = flags;
+            config.dwCommonButtons = commonButtons;
 
-            if (!string.IsNullOrEmpty(this.windowTitle))
+            if (!string.IsNullOrEmpty(windowTitle))
             {
-                config.pszWindowTitle = this.windowTitle;
+                config.pszWindowTitle = windowTitle;
             }
 
-            config.MainIcon = (IntPtr)this.mainIcon;
-            if (this.customMainIcon != null)
+            config.MainIcon = (nint)mainIcon;
+            if (customMainIcon != null)
             {
                 config.dwFlags |= VistaUnsafeNativeMethods.TASKDIALOG_FLAGS.TDF_USE_HICON_MAIN;
-                config.MainIcon = this.customMainIcon.Handle;
+                config.MainIcon = customMainIcon.Handle;
             }
 
-            if (!string.IsNullOrEmpty(this.mainInstruction))
+            if (!string.IsNullOrEmpty(mainInstruction))
             {
-                config.pszMainInstruction = this.mainInstruction;
+                config.pszMainInstruction = mainInstruction;
             }
 
-            if (!string.IsNullOrEmpty(this.content))
+            if (!string.IsNullOrEmpty(content))
             {
-                config.pszContent = this.content;
+                config.pszContent = content;
             }
 
-            VistaTaskDialogButton[] customButtons = this._buttons;
+            VistaTaskDialogButton[] customButtons = _buttons;
             if (customButtons.Length > 0)
             {
                 // Hand marshal the buttons array.
@@ -1007,14 +1007,14 @@ public class VistaTaskDialog
                     unsafe // Unsafe because of pointer arithmatic.
                     {
                         byte* p = (byte*)config.pButtons;
-                        Marshal.StructureToPtr(customButtons[i], (IntPtr)(p + (elementSize * i)), false);
+                        Marshal.StructureToPtr(customButtons[i], (nint)(p + elementSize * i), false);
                     }
 
                     config.cButtons++;
                 }
             }
 
-            VistaTaskDialogButton[] customRadioButtons = this._radioButtons;
+            VistaTaskDialogButton[] customRadioButtons = _radioButtons;
             if (customRadioButtons.Length > 0)
             {
                 // Hand marshal the buttons array.
@@ -1025,57 +1025,57 @@ public class VistaTaskDialog
                     unsafe // Unsafe because of pointer arithmetic.
                     {
                         byte* p = (byte*)config.pRadioButtons;
-                        Marshal.StructureToPtr(customRadioButtons[i], (IntPtr)(p + (elementSize * i)), false);
+                        Marshal.StructureToPtr(customRadioButtons[i], (nint)(p + elementSize * i), false);
                     }
 
                     config.cRadioButtons++;
                 }
             }
 
-            config.nDefaultButton = this.defaultButton;
-            config.nDefaultRadioButton = this.defaultRadioButton;
+            config.nDefaultButton = defaultButton;
+            config.nDefaultRadioButton = defaultRadioButton;
 
-            if (!string.IsNullOrEmpty(this.verificationText))
+            if (!string.IsNullOrEmpty(verificationText))
             {
-                config.pszVerificationText = this.verificationText;
+                config.pszVerificationText = verificationText;
             }
 
-            if (!string.IsNullOrEmpty(this.expandedInformation))
+            if (!string.IsNullOrEmpty(expandedInformation))
             {
-                config.pszExpandedInformation = this.expandedInformation;
+                config.pszExpandedInformation = expandedInformation;
             }
 
-            if (!string.IsNullOrEmpty(this.expandedControlText))
+            if (!string.IsNullOrEmpty(expandedControlText))
             {
-                config.pszExpandedControlText = this.expandedControlText;
+                config.pszExpandedControlText = expandedControlText;
             }
 
-            if (!string.IsNullOrEmpty(this.collapsedControlText))
+            if (!string.IsNullOrEmpty(collapsedControlText))
             {
-                config.pszCollapsedControlText = this.CollapsedControlText;
+                config.pszCollapsedControlText = CollapsedControlText;
             }
 
-            config.FooterIcon = (IntPtr)this.footerIcon;
-            if (this.customFooterIcon != null)
+            config.FooterIcon = (nint)footerIcon;
+            if (customFooterIcon != null)
             {
                 config.dwFlags |= VistaUnsafeNativeMethods.TASKDIALOG_FLAGS.TDF_USE_HICON_FOOTER;
-                config.FooterIcon = this.customFooterIcon.Handle;
+                config.FooterIcon = customFooterIcon.Handle;
             }
 
-            if (!string.IsNullOrEmpty(this.footer))
+            if (!string.IsNullOrEmpty(footer))
             {
-                config.pszFooter = this.footer;
+                config.pszFooter = footer;
             }
 
             // If our user has asked for a callback then we need to ask for one to
             // translate to the friendly version.
-            if (this.callback != null)
+            if (callback != null)
             {
-                config.pfCallback = new VistaUnsafeNativeMethods.VistaTaskDialogCallback(this.PrivateCallback);
+                config.pfCallback = new VistaUnsafeNativeMethods.VistaTaskDialogCallback(PrivateCallback);
             }
 
             ////config.lpCallbackData = this.callbackData; // How do you do this? Need to pin the ref?
-            config.cxWidth = this.width;
+            config.cxWidth = width;
 
             // The call all this mucking about is here for.
             VistaUnsafeNativeMethods.TaskDialogIndirect(ref config, out result, out radioButtonResult, out verificationFlagChecked);
@@ -1086,7 +1086,7 @@ public class VistaTaskDialog
             // There is the possiblity of leaking memory if the app-domain is destroyed in a non clean way
             // and the hosting OS process is kept alive but fixing this would require using hardening techniques
             // that are not required for the users of this class.
-            if (config.pButtons != IntPtr.Zero)
+            if (config.pButtons != nint.Zero)
             {
                 int elementSize = Marshal.SizeOf(typeof(VistaTaskDialogButton));
                 for (int i = 0; i < config.cButtons; i++)
@@ -1094,14 +1094,14 @@ public class VistaTaskDialog
                     unsafe
                     {
                         byte* p = (byte*)config.pButtons;
-                        Marshal.DestroyStructure((IntPtr)(p + (elementSize * i)), typeof(VistaTaskDialogButton));
+                        Marshal.DestroyStructure((nint)(p + elementSize * i), typeof(VistaTaskDialogButton));
                     }
                 }
 
                 Marshal.FreeHGlobal(config.pButtons);
             }
 
-            if (config.pRadioButtons != IntPtr.Zero)
+            if (config.pRadioButtons != nint.Zero)
             {
                 int elementSize = Marshal.SizeOf(typeof(VistaTaskDialogButton));
                 for (int i = 0; i < config.cRadioButtons; i++)
@@ -1109,7 +1109,7 @@ public class VistaTaskDialog
                     unsafe
                     {
                         byte* p = (byte*)config.pRadioButtons;
-                        Marshal.DestroyStructure((IntPtr)(p + (elementSize * i)), typeof(VistaTaskDialogButton));
+                        Marshal.DestroyStructure((nint)(p + elementSize * i), typeof(VistaTaskDialogButton));
                     }
                 }
 
@@ -1129,7 +1129,7 @@ public class VistaTaskDialog
     /// <param name="lparam">Specifies additional noitification information.  The contents of this parameter depends on the value of the msg parameter.</param>
     /// <param name="refData">Specifies the application-defined value given in the call to TaskDialogIndirect.</param>
     /// <returns>A HRESULT. It's not clear in the spec what a failed result will do.</returns>
-    private int PrivateCallback([In] IntPtr hwnd, [In] uint msg, [In] UIntPtr wparam, [In] IntPtr lparam, [In] IntPtr refData)
+    private int PrivateCallback([In] nint hwnd, [In] uint msg, [In] nuint wparam, [In] nint lparam, [In] nint refData)
     {
         VistaTaskDialogCallback callback = this.callback;
         if (callback != null)
@@ -1155,14 +1155,14 @@ public class VistaTaskDialog
                     args.TimerTickCount = (uint)wparam;
                     break;
                 case VistaTaskDialogNotification.VerificationClicked:
-                    args.VerificationFlagChecked = (wparam != UIntPtr.Zero);
+                    args.VerificationFlagChecked = wparam != nuint.Zero;
                     break;
                 case VistaTaskDialogNotification.ExpandoButtonClicked:
-                    args.Expanded = (wparam != UIntPtr.Zero);
+                    args.Expanded = wparam != nuint.Zero;
                     break;
             }
 
-            return (callback(activeDialog, args, this.callbackData) ? 1 : 0);
+            return callback(activeDialog, args, callbackData) ? 1 : 0;
         }
 
         return 0; // false;
@@ -1177,11 +1177,11 @@ public class VistaTaskDialog
     {
         if (value)
         {
-            this.flags |= flag;
+            flags |= flag;
         }
         else
         {
-            this.flags &= ~flag;
+            flags &= ~flag;
         }
     }
 }

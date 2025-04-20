@@ -1,20 +1,10 @@
-﻿/***************************************************************************************************************
-*
-* FILE NAME:   .\UI\General\DesignerSupport.cs
-*
-* AUTHOR:      Petr Kodet
-*
-* DESCRIPTION: The file contains definition of class DesignerSupport
-*
-**************************************************************************************************************/
-
-// Ignore Spelling: Utils, ctrl
+﻿// Ignore Spelling: Utils, ctrl
 //
 using System;
 using System.ComponentModel;
 using System.Windows.Forms;
 
-namespace PK.PkUtils.UI.General;
+namespace PK.PkUtils.UI.Utils;
 
 /// <summary>
 /// A static class containing several extension methods related to the design mode
@@ -63,7 +53,7 @@ public static class DesignerSupport
     /// <exception cref="ArgumentNullException"> Thrown when the argument <paramref name="ctrl"/> is null. </exception>
     public static bool IsRuntimeMode(this Control ctrl)
     {
-        return !IsDesignMode(ctrl);
+        return !ctrl.IsDesignMode();
     }
     #endregion // Public Methods
 
@@ -83,13 +73,13 @@ public static class DesignerSupport
 
         if (ctrl != null)
         {
-            if ((ctrl.Site != null) && ctrl.Site.DesignMode)
+            if (ctrl.Site != null && ctrl.Site.DesignMode)
             {
                 bRes = true;
             }
             else if (null != (parent = ctrl.Parent))
             {
-                bRes = GetDesignModeFromSite(parent);
+                bRes = parent.GetDesignModeFromSite();
             }
         }
         return bRes;
