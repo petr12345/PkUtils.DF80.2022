@@ -55,21 +55,21 @@ partial class TestForm
         _splitContainer.SuspendLayout();
         SuspendLayout();
         // 
-        // _multiSelectTreeview
+        // _treeView
         // 
         _treeView.Dock = DockStyle.Fill;
         _treeView.ImageIndex = 0;
         _treeView.ImageList = _treeImageList;
         _treeView.Location = new Point(0, 0);
         _treeView.Margin = new Padding(4);
-        _treeView.Name = "_multiSelectTreeview";
+        _treeView.Name = "_treeView";
         treeNode1.BackColor = SystemColors.Highlight;
         treeNode1.ForeColor = SystemColors.HighlightText;
         treeNode1.Name = "Node0";
         treeNode1.Text = "Node0";
         _treeView.Nodes.AddRange(new TreeNode[] { treeNode1 });
         _treeView.SelectedImageIndex = 0;
-        _treeView.SelectedNodes = (IReadOnlyCollection<TreeNode>)resources.GetObject("_multiSelectTreeview.SelectedNodes");
+        _treeView.SelectedNodes = (IReadOnlyCollection<TreeNode>)resources.GetObject("_treeView.SelectedNodes");
         _treeView.Size = new Size(374, 236);
         _treeView.TabIndex = 0;
         _treeView.SelectionChanged += OnMultiSelectTreeView_SelectionChanged;
@@ -94,7 +94,7 @@ partial class TestForm
         _btnSelectNodes.Name = "_btnSelectNodes";
         _btnSelectNodes.Size = new Size(110, 26);
         _btnSelectNodes.TabIndex = 7;
-        _btnSelectNodes.Text = "Select Nodes";
+        _btnSelectNodes.Text = "Select 4 Nodes";
         _btnSelectNodes.UseVisualStyleBackColor = true;
         _btnSelectNodes.Click += OnButton_SelectNodes;
         // 

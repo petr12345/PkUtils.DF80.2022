@@ -150,27 +150,24 @@ public partial class MultiSelectTreeView : TreeView
     /// and all of its descendant nodes from <see cref="_selectedNodes"/> collection.
     /// </summary>
     /// <param name="node">The <see cref="TreeNode"/> to remove from the control.</param>
-    /// <remarks>
-    /// The standard <see cref="TreeNode.Remove"/> method does not raise any event or callback
-    /// that would allow the control to react to the removal of a node. As a result, if a selected node
-    /// is removed directly, it would remain in the internal <see cref="_selectedNodes"/> set, leading to
-    /// inconsistencies such as invalid selection states, rendering errors, or exceptions.
+    /// <remarks> The standard <see cref="TreeNode.Remove"/> method does not raise any event or callback
+    /// that would allow the control to react to the removal of a node. If a selected node is removed directly,
+    /// it would remain in the internal <see cref="_selectedNodes"/> set, leading to inconsistencies
+    /// such as invalid selection states, rendering errors, or exceptions.
     ///
     /// To avoid this, the <c>RemoveNode</c> method provides a safe and consistent way to remove a node.
-    /// Always use this method instead of calling <c>TreeNode.Remove()</c> directly when working with
-    /// <see cref="MultiSelectTreeView"/> to preserve selection integrity.
+    /// Always use this method instead of calling TreeNode.Remove() directly, to preserve selection integrity.
     /// </remarks>
     public void RemoveNode(TreeNode node)
     {
-        if (node == null)
-            return;
+        if (node is not null)
+        {
+            using IDisposable deferred = DeferSelectionChange();
 
-        RemoveDescendantsFromSelection(node);
-
-        _selectedNodes.Remove(node);
-        node.Remove();
-
-        Invalidate();
+            RemoveDescendantsFromSelection(node, includeNode: true);
+            node.Remove();
+            Invalidate();
+        }
     }
 
     /// <summary> 
@@ -308,30 +305,40 @@ public partial class MultiSelectTreeView : TreeView
     /// Removes all selected nodes that are descendants (children, grandchildren, etc.)
     /// of the specified <paramref name="node"/> from the selection set.
     /// </summary>
-    /// <param name="node">The node whose descendants should be removed from selection.</param>
+    /// <param name="node">The node whose descendants should be removed from selection. Can be null. </param>
+    /// <param name="includeNode">
+    /// If <c>true</c>, the <paramref name="node"/> itself will also be removed from selection if it is present.
+    /// </param>
     /// <remarks>
     /// This method is useful when a node is being removed or collapsed, and its children
-    /// should no longer be considered part of the current selection. It ensures the
-    /// internal selection set remains valid and free of dangling references to disposed nodes.
+    /// (and optionally the node itself) should no longer be considered part of the current selection.
+    /// It ensures the internal selection set remains valid and free of dangling references to disposed nodes.
     /// </remarks>
-    protected virtual void RemoveDescendantsFromSelection(TreeNode node)
+    /// <returns>The number of nodes removed from selection.</returns>
+    protected virtual int RemoveDescendantsFromSelection(TreeNode node, bool includeNode)
     {
-        if (node == null || _selectedNodes.Count == 0)
-            return;
+        using IDisposable deferred = DeferSelectionChange();
+        int removedCount = 0;
 
-        // Use a stack for depth-first traversal to avoid recursion
-        Stack<TreeNode> stack = new();
-        stack.PushRange(node.Nodes.Cast<TreeNode>());
-
-        while (stack.Count > 0)
+        if (node is not null && SelectedNodes.Count > 0)
         {
-            TreeNode current = stack.Pop();
+            // Use a stack for depth-first traversal to avoid recursion; start from the root
+            for (Stack<TreeNode> stack = new([node]); stack.Count > 0;)
+            {
+                TreeNode current = stack.Pop();
 
-            _selectedNodes.Remove(current);
-            stack.PushRange(current.Nodes.Cast<TreeNode>());
+                if ((includeNode || current != node) && _selectedNodes.Remove(current))
+                {
+                    removedCount++;
+                    MarkSelectionChanged();
+                }
+
+                stack.PushRange(current.Nodes.Cast<TreeNode>());
+            }
         }
-    }
 
+        return removedCount;
+    }
     #endregion // Selection_change_related
 
     #region Error_handling_related
@@ -358,10 +365,23 @@ public partial class MultiSelectTreeView : TreeView
     /// <param name="m"> [in,out] The Windows <see cref="T:System.Windows.Forms.Message" /> to process. </param>
     protected override void WndProc(ref Message m)
     {
-        if ((m.Msg == (int)Win32.WM.WM_PAINT) && !SelectionInitialized)
+        switch (m.Msg)
         {
-            InitSelection();
+            case (int)Win32.WM.WM_PAINT:
+                if (!SelectionInitialized)
+                {
+                    InitSelection();
+                }
+                break;
+
+            // System colors or visual styles have changed. Reset any cached colors, and request a repaint
+            case (int)Win32.WM.WM_SYSCOLORCHANGE:
+            case (int)Win32.WM.WM_THEMECHANGED:
+                ResetColorsCache();
+                Invalidate();
+                break;
         }
+
         base.WndProc(ref m);
     }
 

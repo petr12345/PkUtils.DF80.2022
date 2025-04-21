@@ -197,6 +197,7 @@ public partial class TestForm : FormWithLayoutPersistence, IDumper
         TreeNode node3 = new TreeNode("Node3", [treeNode13, treeNode14, treeNode15]);
 
         _treeView.Nodes.AddRange([node1, node2, node3]);
+        _treeView.GetAllNodes().ForEach(node => node.Name = node.Text);
     }
     #endregion // Updating_tree_nodes
 
@@ -227,6 +228,16 @@ public partial class TestForm : FormWithLayoutPersistence, IDumper
 
         _btnInsertNodes.Enabled = (count <= 1);
         _btnDeleteNodes.Enabled = (count > 1); ;
+    }
+
+    protected void UpdateClearSelectionButton()
+    {
+        _btnClearSelection.Enabled = (_treeView.SelectedNodes.Count > 0);
+    }
+    protected void UpdateButtons()
+    {
+        UpdateInsertDeleteButtons();
+        UpdateClearSelectionButton();
     }
     #endregion // Methods
 
@@ -264,7 +275,7 @@ public partial class TestForm : FormWithLayoutPersistence, IDumper
 
         _treeView.Refresh();
         DumpTreeSelectionInfo(_treeView.SelectedNodes, null, null);
-        UpdateInsertDeleteButtons();
+        UpdateButtons();
     }
 
     private void OnBtnInsertNodes_Click(object sender, EventArgs e)
@@ -275,7 +286,7 @@ public partial class TestForm : FormWithLayoutPersistence, IDumper
             _treeView.Refresh();
         }
         DumpTreeSelectionInfo(_treeView.SelectedNodes, null, null);
-        UpdateInsertDeleteButtons();
+        UpdateButtons();
     }
 
     private void OnButtonClearLog_Click(object sender, EventArgs e)
@@ -306,7 +317,7 @@ public partial class TestForm : FormWithLayoutPersistence, IDumper
     private void TestForm_Load(object sender, EventArgs args)
     {
         AdjustAllNodesImages();
-        UpdateInsertDeleteButtons();
+        UpdateButtons();
         DumpTreeSelectionInfo(_treeView.SelectedNodes, "Initially", null);
     }
 
@@ -318,6 +329,7 @@ public partial class TestForm : FormWithLayoutPersistence, IDumper
     private void OnMultiSelectTreeView_SelectionChanged(object sender, TreeviewSelChangeArgs args)
     {
         DumpTreeSelectionInfo(args.SelectedNodes, null, args.StackTrace);
+        UpdateClearSelectionButton();
     }
 
     private void OnButton_Exit_Click(object sender, EventArgs args)

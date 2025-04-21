@@ -1,15 +1,4 @@
-﻿/***************************************************************************************************************
-*
-* FILE NAME:   .\Utils\BigEndianConverter.cs
-*
-* AUTHOR:      Petr Kodet
-*
-* DESCRIPTION: The class BigEndianConverter
-*
-**************************************************************************************************************/
-
-
-// Ignore Spelling: Utils, Endian
+﻿// Ignore Spelling: Utils, Endian
 //
 using System;
 using System.Collections.Generic;
@@ -33,203 +22,153 @@ namespace PK.PkUtils.Utils;
 [CLSCompliant(true)]
 public static class BigEndianConverter
 {
-    #region Properties
-
     /// <summary>
-    /// This value is true if the architecture is little-endian; false if it is big-endian.
+    /// This property returns <c>true</c> if the system is little-endian; otherwise, <c>false</c>.
+    /// <para>
+    /// In a little-endian system, the least significant byte is stored first. 
+    /// In contrast, a big-endian system stores the most significant byte first.
+    /// </para>
+    /// <para>
+    /// Most modern desktop and server architectures, such as x86, x86-64 (Intel/AMD), 
+    /// and ARM (in most operating modes), are little-endian.
+    /// Some older or specialized systems use big-endian, such as:
+    /// - Motorola 68k series (used in classic Mac computers)
+    /// - IBM mainframes (e.g., System/360, System/390, z/Architecture)
+    /// - SPARC (used in some Sun/Oracle systems)
+    /// - PowerPC (can be big-endian or little-endian depending on configuration)
+    /// </para>
     /// </summary>
-    public static bool IsLittleEndian
-    {
-        get { return BitConverter.IsLittleEndian; }
-    }
-    #endregion // Properties
-
-    #region Methods
+    public static bool IsLittleEndian => BitConverter.IsLittleEndian;
 
     #region Public Methods
 
-    #region conversions_to_byte_array
+    #region Conversions_to_byte_array
 
-    /// <summary>Returns the specified 16-bit signed integer value as an array of bytes. </summary>
-    /// <param name="value" type="short">The input value. </param>
-    /// <returns> An array of byte. </returns>
+    /// <summary>
+    /// Returns the specified 16-bit signed integer value as a big-endian byte array.
+    /// </summary>
     public static byte[] GetBigEndianBytes(short value)
-    {
-        byte[] result = BitConverter.GetBytes(value);
-        if (IsLittleEndian)
-            result = result.Reverse().ToArray();
-        return result;
-    }
+        => ConvertToBigEndian(BitConverter.GetBytes(value));
 
-    /// <summary> Returns the specified 32-bit signed integer value as an array of bytes. </summary>
-    /// <param name="value" type="int">The input value. </param>
-    /// <returns> An array of byte. </returns>
+    /// <summary>
+    /// Returns the specified 32-bit signed integer value as a big-endian byte array.
+    /// </summary>
     public static byte[] GetBigEndianBytes(int value)
-    {
-        byte[] result = BitConverter.GetBytes(value);
-        if (IsLittleEndian)
-            result = result.Reverse().ToArray();
-        return result;
-    }
+        => ConvertToBigEndian(BitConverter.GetBytes(value));
 
-    /// <summary> Returns the specified 64-bit signed integer value as an array of bytes. </summary>
-    /// <param name="value" type="long">The input value. </param>
-    /// <returns> An array of byte. </returns>
+    /// <summary>
+    /// Returns the specified 64-bit signed integer value as a big-endian byte array.
+    /// </summary>
     public static byte[] GetBigEndianBytes(long value)
-    {
-        byte[] result = BitConverter.GetBytes(value);
-        if (IsLittleEndian)
-            result = result.Reverse().ToArray();
-        return result;
-    }
+        => ConvertToBigEndian(BitConverter.GetBytes(value));
 
-    /// <summary> Returns the specified single-precision floating point value as an array of bytes. </summary>
-    /// <param name="value" type="float">The input value. </param>
-    /// <returns> An array of byte. </returns>
+    /// <summary>
+    /// Returns the specified single-precision floating point value as a big-endian byte array.
+    /// </summary>
     public static byte[] GetBigEndianBytes(float value)
-    {
-        byte[] result = BitConverter.GetBytes(value);
-        if (IsLittleEndian)
-            result = result.Reverse().ToArray();
-        return result;
-    }
+        => ConvertToBigEndian(BitConverter.GetBytes(value));
 
-    /// <summary> Returns the specified double-precision floating point value as an array of bytes. </summary>
-    /// <param name="value" type="double"> The input value. </param>
-    /// <returns> An array of byte. </returns>
+    /// <summary>
+    /// Returns the specified double-precision floating point value as a big-endian byte array.
+    /// </summary>
     public static byte[] GetBigEndianBytes(double value)
-    {
-        byte[] result = BitConverter.GetBytes(value);
-        if (IsLittleEndian)
-            result = result.Reverse().ToArray();
-        return result;
-    }
+        => ConvertToBigEndian(BitConverter.GetBytes(value));
 
-    /// <summary> Returns the specified 16-bit unsigned integer value as an array of bytes. </summary>
-    /// <param name="value" type="ushort">The input value. </param>
-    /// <returns> An array of byte. </returns>
+    /// <summary>
+    /// Returns the specified 16-bit unsigned integer value as a big-endian byte array.
+    /// </summary>
     [CLSCompliant(false)]
     public static byte[] GetBigEndianBytes(ushort value)
-    {
-        return GetBigEndianBytes((short)value);
-    }
+        => GetBigEndianBytes((short)value);
 
-    /// <summary> Returns the specified 32-bit unsigned integer value as an array of bytes. </summary>
-    /// <param name="value" type="uint">The input value. </param>
-    /// <returns> An array of byte. </returns>
+    /// <summary>
+    /// Returns the specified 32-bit unsigned integer value as a big-endian byte array.
+    /// </summary>
     [CLSCompliant(false)]
     public static byte[] GetBigEndianBytes(uint value)
-    {
-        return GetBigEndianBytes((int)value);
-    }
+        => GetBigEndianBytes((int)value);
 
-    /// <summary> Returns the specified 64-bit unsigned integer value as an array of bytes. </summary>
-    /// <param name="value" type="ulong">The input value. </param>
-    /// <returns> An array of byte. </returns>
+    /// <summary>
+    /// Returns the specified 64-bit unsigned integer value as a big-endian byte array.
+    /// </summary>
     [CLSCompliant(false)]
     public static byte[] GetBigEndianBytes(ulong value)
-    {
-        return GetBigEndianBytes((long)value);
-    }
-    #endregion // conversions_to_byte_array
+        => GetBigEndianBytes((long)value);
 
-    #region conversions_fro_byte_array
+    #endregion // Conversions_to_byte_array
 
-    /// <summary> Converts the byte input into low-endian collection in case it is not. </summary>
-    /// <param name="source"> Source of the data. </param>
-    /// <param name="isSourceBigEndian" type="bool"> true if this byte source is big-endian-based, 
-    ///  false if not. </param>
-    /// <returns> The given data source converted to a  low-endian order. </returns>
+    #region Conversions_from_byte_array
+
+    /// <summary>
+    /// Converts the given source byte sequence to little-endian ordering if necessary.
+    /// </summary>
     public static byte[] ToLowEndian(IEnumerable<byte> source, bool isSourceBigEndian)
     {
         ArgumentNullException.ThrowIfNull(source);
-
-        var tmp = (IsLittleEndian == isSourceBigEndian) ? source.Reverse() : source;
-        return tmp.ToArray();
+        return [.. (IsLittleEndian == isSourceBigEndian ? source.Reverse() : source)];
     }
 
-    /// <summary> Returns a 16-bit signed integer converted from first two bytes of arrBytes. </summary>
-    /// <param name="arrBytes" type="byte[]"> The array of bytes. </param>
-    /// <param name="isInputBigEndian" type="bool"> true if the input array is in big endian. </param>
-    /// <returns> The given data converted to a short. </returns>
+    /// <summary>
+    /// Converts a big-endian byte array to a 16-bit signed integer.
+    /// </summary>
     public static short ToInt16(byte[] arrBytes, bool isInputBigEndian)
-    {
-        return BitConverter.ToInt16(ToLowEndian(arrBytes, isInputBigEndian), 0);
-    }
+        => BitConverter.ToInt16(ToLowEndian(arrBytes, isInputBigEndian), 0);
 
-    /// <summary> Returns a 32-bit signed integer converted from first four bytes of arrBytes. </summary>
-    /// <param name="arrBytes" type="byte[]"> The array of bytes. </param>
-    /// <param name="isInputBigEndian" type="bool"> true if the input array is in big endian. </param>
-    /// <returns> The given data converted to an int. </returns>
+    /// <summary>
+    /// Converts a big-endian byte array to a 32-bit signed integer.
+    /// </summary>
     public static int ToInt32(byte[] arrBytes, bool isInputBigEndian)
-    {
-        return BitConverter.ToInt32(ToLowEndian(arrBytes, isInputBigEndian), 0);
-    }
+        => BitConverter.ToInt32(ToLowEndian(arrBytes, isInputBigEndian), 0);
 
-    /// <summary> Returns a 64-bit signed long converted from first eight bytes of arrBytes. </summary>
-    /// <param name="arrBytes" type="byte[]"> The array of bytes. </param>
-    /// <param name="isInputBigEndian" type="bool"> true if the input array is in big endian. </param>
-    /// <returns> The given data converted to long. </returns>
+    /// <summary>
+    /// Converts a big-endian byte array to a 64-bit signed integer.
+    /// </summary>
     public static long ToInt64(byte[] arrBytes, bool isInputBigEndian)
-    {
-        return BitConverter.ToInt64(ToLowEndian(arrBytes, isInputBigEndian), 0);
-    }
+        => BitConverter.ToInt64(ToLowEndian(arrBytes, isInputBigEndian), 0);
 
     /// <summary>
-    /// Returns a single-precision floating point number converted from first four bytes of arrBytes.
+    /// Converts a big-endian byte array to a single-precision floating point value.
     /// </summary>
-    /// <param name="arrBytes" type="byte[]"> The array of bytes. </param>
-    /// <param name="isInputBigEndian" type="bool"> true if the input array is in big endian. </param>
-    /// <returns> The given data converted to float. </returns>
     public static float ToSingle(byte[] arrBytes, bool isInputBigEndian)
-    {
-        return BitConverter.ToSingle(ToLowEndian(arrBytes, isInputBigEndian), 0);
-    }
+        => BitConverter.ToSingle(ToLowEndian(arrBytes, isInputBigEndian), 0);
 
     /// <summary>
-    /// Returns a double-precision floating point number converted from first eight bytes of arrBytes.
+    /// Converts a big-endian byte array to a double-precision floating point value.
     /// </summary>
-    /// <param name="arrBytes" type="byte[]"> The array of bytes. </param>
-    /// <param name="isInputBigEndian" type="bool"> true if the input array is in big endian. </param>
-    /// <returns> The given data converted to double. </returns>
     public static double ToDouble(byte[] arrBytes, bool isInputBigEndian)
-    {
-        return BitConverter.ToDouble(ToLowEndian(arrBytes, isInputBigEndian), 0);
-    }
+        => BitConverter.ToDouble(ToLowEndian(arrBytes, isInputBigEndian), 0);
 
-    /// <summary> Returns a 16-bit unsigned integer converted from first two bytes of arrBytes. </summary>
-    /// <param name="arrBytes" type="byte[]"> The array of bytes. </param>
-    /// <param name="isInputBigEndian" type="bool"> true if the input array is in big endian. </param>
-    /// <returns> The given data converted to an unsigned short. </returns>
+    /// <summary>
+    /// Converts a big-endian byte array to a 16-bit unsigned integer.
+    /// </summary>
     [CLSCompliant(false)]
     public static ushort ToUInt16(byte[] arrBytes, bool isInputBigEndian)
-    {
-        return BitConverter.ToUInt16(ToLowEndian(arrBytes, isInputBigEndian), 0);
-    }
+        => BitConverter.ToUInt16(ToLowEndian(arrBytes, isInputBigEndian), 0);
 
-    /// <summary> Returns a 32-bit unsigned integer converted from first four bytes of arrBytes. </summary>
-    /// <param name="arrBytes" type="byte[]"> The array of bytes. </param>
-    /// <param name="isInputBigEndian" type="bool"> true if the input array is in big endian. </param>
-    /// <returns> The given data converted to an unsigned int. </returns>
+    /// <summary>
+    /// Converts a big-endian byte array to a 32-bit unsigned integer.
+    /// </summary>
     [CLSCompliant(false)]
     public static uint ToUInt32(byte[] arrBytes, bool isInputBigEndian)
-    {
-        return BitConverter.ToUInt32(ToLowEndian(arrBytes, isInputBigEndian), 0);
-    }
+        => BitConverter.ToUInt32(ToLowEndian(arrBytes, isInputBigEndian), 0);
 
-    /// <summary> Returns a 64-bit unsigned long converted from first eight bytes of arrBytes. </summary>
-    /// <param name="arrBytes" type="byte[]"> The array of bytes. </param>
-    /// <param name="isInputBigEndian" type="bool"> true if the input array is in big endian. </param>
-    /// <returns> The given data converted to unsigned long. </returns>
+    /// <summary>
+    /// Converts a big-endian byte array to a 64-bit unsigned integer.
+    /// </summary>
     [CLSCompliant(false)]
     public static ulong ToUInt64(byte[] arrBytes, bool isInputBigEndian)
-    {
-        return BitConverter.ToUInt64(ToLowEndian(arrBytes, isInputBigEndian), 0);
-    }
-    #endregion // conversions_fro_byte_array
+        => BitConverter.ToUInt64(ToLowEndian(arrBytes, isInputBigEndian), 0);
+
+    #endregion // Conversions_from_byte_array
     #endregion // Public Methods
 
-    #region Private Methods
-    #endregion // Private Methods
-    #endregion // Methods
+    #region Private Helpers
+
+    /// <summary>
+    /// Helper method that returns a byte array in big-endian order regardless of platform endianness.
+    /// </summary>
+    private static byte[] ConvertToBigEndian(byte[] data)
+        => IsLittleEndian ? [.. data.Reverse()] : data;
+
+    #endregion // Private Helpers
 }
