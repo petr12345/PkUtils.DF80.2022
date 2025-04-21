@@ -15,7 +15,6 @@ using System;
 using System.Text;
 using System.Windows.Forms;
 using PK.PkUtils.UI.Dialogs.PSTaskDialog;
-using PSTaskDialog = PK.PkUtils.UI.PSTaskDialog;
 
 namespace TestTaskDialog
 {

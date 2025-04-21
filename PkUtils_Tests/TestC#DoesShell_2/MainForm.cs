@@ -10,7 +10,6 @@ using PK.PkUtils.SystemEx;
 using PK.PkUtils.UI.Dialogs.PSTaskDialog;
 using PK.PkUtils.UI.Utils;
 using PK.PkUtils.Utils;
-using PSTaskDialog = PK.PkUtils.UI.PSTaskDialog;
 using ShellLib = PK.PkUtils.ShellLib;
 
 namespace WinTester2

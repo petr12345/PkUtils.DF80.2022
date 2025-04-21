@@ -13,9 +13,10 @@
 
 using System;
 using System.Windows.Forms;
+using PK.PkUtils.Utils;
 using PK.PkUtils.WinApi;
 
-namespace PK.PkUtils.Utils;
+namespace PK.PkUtils.UI.Utils;
 
 /// <summary>
 /// LockRedraw locks ( prevents ) a window from redrawing. <br/>
@@ -69,8 +70,8 @@ public class LockRedraw : UsageCounter
     /// <summary>
     /// Handle of the window that is temporarily prevented from redrawing.
     /// </summary>
-    protected readonly IntPtr _handle;
-    private IntPtr _eventMask;
+    protected readonly nint _handle;
+    private nint _eventMask;
     #endregion // Fields
 
     #region Constructor(s)
@@ -80,7 +81,7 @@ public class LockRedraw : UsageCounter
     /// </summary>
     /// <remarks>The class does NOT become an owner of the provided window handle.</remarks>
     /// <param name="handle">Handle of the window to lock redrawing for.</param>
-    public LockRedraw(IntPtr handle)
+    public LockRedraw(nint handle)
         : this(handle, shouldLock: false)
     { }
 
@@ -91,13 +92,13 @@ public class LockRedraw : UsageCounter
     /// <remarks>The class does NOT become an owner of the provided window handle.</remarks>
     /// <param name="handle">Handle of the window to lock redrawing for.</param>
     /// <param name="shouldLock">If true, locking will be performed during construction.</param>
-    public LockRedraw(IntPtr handle, bool shouldLock)
+    public LockRedraw(nint handle, bool shouldLock)
         : base()
     {
         _handle = handle;
         if (shouldLock)
         {
-            this.AddReference();
+            AddReference();
         }
     }
 
@@ -118,7 +119,7 @@ public class LockRedraw : UsageCounter
     /// <summary>
     /// The window handle provided to the constructor.
     /// </summary>
-    protected IntPtr Handle => _handle;
+    protected nint Handle => _handle;
 
     #endregion // Properties
 
@@ -148,9 +149,9 @@ public class LockRedraw : UsageCounter
     protected virtual void StopRepaint()
     {
         // Stop redrawing
-        User32.SendMessage(this.Handle, (int)Win32.WM.WM_SETREDRAW, IntPtr.Zero, IntPtr.Zero);
+        User32.SendMessage(Handle, (int)Win32.WM.WM_SETREDRAW, nint.Zero, nint.Zero);
         // Stop sending of events
-        _eventMask = User32.SendMessage(this.Handle, (int)Win32.RichEm.EM_GETEVENTMASK, IntPtr.Zero, IntPtr.Zero);
+        _eventMask = User32.SendMessage(Handle, (int)Win32.RichEm.EM_GETEVENTMASK, nint.Zero, nint.Zero);
     }
 
     /// <summary>
@@ -159,9 +160,9 @@ public class LockRedraw : UsageCounter
     protected virtual void StartRepaint()
     {
         // Restore event mask
-        User32.SendMessage(this.Handle, (int)Win32.RichEm.EM_SETEVENTMASK, IntPtr.Zero, _eventMask);
+        User32.SendMessage(Handle, (int)Win32.RichEm.EM_SETEVENTMASK, nint.Zero, _eventMask);
         // Resume redrawing
-        User32.SendMessage(this.Handle, (int)Win32.WM.WM_SETREDRAW, new IntPtr(1), IntPtr.Zero);
+        User32.SendMessage(Handle, (int)Win32.WM.WM_SETREDRAW, new nint(1), nint.Zero);
     }
     #endregion // Protected Methods
     #endregion // Methods

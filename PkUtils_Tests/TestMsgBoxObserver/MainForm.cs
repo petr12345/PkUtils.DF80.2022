@@ -10,7 +10,6 @@ using PK.PkUtils.UI.Dialogs.PSTaskDialog;
 using PK.PkUtils.UI.Utils;
 using PK.PkUtils.Utils;
 using PK.TestMsgBoxObserver.Properties;
-using PSTaskDialog = PK.PkUtils.UI.PSTaskDialog;
 
 namespace PK.TestMsgBoxObserver
 {
