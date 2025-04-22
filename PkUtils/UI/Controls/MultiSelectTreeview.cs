@@ -1,4 +1,4 @@
-// Ignore Spelling: Ctrl, Treeview, treeview, Multiselect, Sel, unselects
+// Ignore Spelling: Ctrl, TreeView, treeview, Multiselect, Sel, unselects
 //
 using System;
 using System.Collections.Generic;
@@ -15,8 +15,8 @@ namespace PK.PkUtils.UI.General;
 
 
 /// <summary> Represents a TreeView control that supports multiple selection of nodes. </summary>
-/// <seealso href="https://www.codeproject.com/Articles/20581/Multiselect-Treeview-Implementation/">
-/// Multiselect Treeview Implementation.</seealso>
+/// <seealso href="https://www.codeproject.com/Articles/20581/Multiselect-TreeView-Implementation/">
+/// Multiselect TreeView Implementation.</seealso>
 public partial class MultiSelectTreeView : TreeView
 {
     #region Typedefs
@@ -25,15 +25,15 @@ public partial class MultiSelectTreeView : TreeView
     /// Additional information for TreeView selection change events.
     /// </summary>
     /// <remarks>
-    /// Initializes a new instance of the <see cref="TreeviewSelChangeArgs"/> struct with custom selection.
+    /// Initializes a new instance of the <see cref="TreeViewSelChangeArgs"/> struct with custom selection.
     /// </remarks>
     /// <param name="treeview">The TreeView control. Must not be null.</param>
     /// <param name="selectedNodes">The selected nodes. Must not be null.</param>
     /// <exception cref="ArgumentNullException">Thrown when any parameter is null.</exception>
-    public readonly struct TreeviewSelChangeArgs(MultiSelectTreeView treeview, IReadOnlyCollection<TreeNode> selectedNodes)
+    public readonly struct TreeViewSelChangeArgs(MultiSelectTreeView treeview, IReadOnlyCollection<TreeNode> selectedNodes)
     {
         /// <summary> The TreeView instance. </summary>
-        public MultiSelectTreeView Treeview { get; } = treeview ?? throw new ArgumentNullException(nameof(treeview));
+        public MultiSelectTreeView TreeView { get; } = treeview ?? throw new ArgumentNullException(nameof(treeview));
 
         /// <summary> The collection of selected nodes. </summary>
         public IReadOnlyCollection<TreeNode> SelectedNodes { get; } = selectedNodes ?? throw new ArgumentNullException(nameof(selectedNodes));
@@ -42,11 +42,11 @@ public partial class MultiSelectTreeView : TreeView
         public StackTrace StackTrace { get; } = new StackTrace(skipFrames: 2);
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="TreeviewSelChangeArgs"/> struct.
+        /// Initializes a new instance of the <see cref="TreeViewSelChangeArgs"/> struct.
         /// </summary>
         /// <param name="treeview">The TreeView control. Must not be null.</param>
         /// <exception cref="ArgumentNullException">Thrown when <paramref name="treeview"/> is null.</exception>
-        public TreeviewSelChangeArgs(MultiSelectTreeView treeview)
+        public TreeViewSelChangeArgs(MultiSelectTreeView treeview)
             : this(treeview, treeview?.SelectedNodes ?? throw new ArgumentNullException(nameof(treeview))) { }
     }
     #endregion // Typedefs
@@ -116,7 +116,7 @@ public partial class MultiSelectTreeView : TreeView
     }
 
     /// <summary>  Event queue for all listeners interested in SelectionChanged events. </summary>
-    public event EventHandler<TreeviewSelChangeArgs> SelectionChanged;
+    public event EventHandler<TreeViewSelChangeArgs> SelectionChanged;
 
     /// <summary>   Gets a value indicating whether this object is using visual styles. </summary>
     /// <remarks>
@@ -268,7 +268,7 @@ public partial class MultiSelectTreeView : TreeView
         {
             throw new InvalidOperationException($"Event should not be raised with this value being positive, {_selectionChangeDepth.AsNameValue()}.");
         }
-        SelectionChanged?.Invoke(this, new TreeviewSelChangeArgs(this));
+        SelectionChanged?.Invoke(this, new TreeViewSelChangeArgs(this));
     }
 
     /// <summary>
@@ -323,11 +323,11 @@ public partial class MultiSelectTreeView : TreeView
         if (node is not null && SelectedNodes.Count > 0)
         {
             // Use a stack for depth-first traversal to avoid recursion; start from the root
-            for (Stack<TreeNode> stack = new([node]); stack.Count > 0;)
+            for (var stack = new Stack<TreeNode>(includeNode ? [node] : node.Nodes.Cast<TreeNode>()); stack.Count > 0;)
             {
                 TreeNode current = stack.Pop();
 
-                if ((includeNode || current != node) && _selectedNodes.Remove(current))
+                if (_selectedNodes.Remove(current))
                 {
                     removedCount++;
                     MarkSelectionChanged();

@@ -139,11 +139,9 @@ public class PopupTooltip : Control, IPopupText
                         Rectangle rect = this.ClientRectangle;
                         Color clr = SystemColors.WindowFrame;
                         using Graphics g = this.CreateGraphics();
-                        using (Pen penTmp = new(clr, 1))
-                        {
-                            rect.Height--;
-                            g.DrawRectangle(penTmp, rect);
-                        }
+                        using Pen penTmp = new(clr, 1);
+                        rect.Height--;
+                        g.DrawRectangle(penTmp, rect);
                     }
                     break;
             }

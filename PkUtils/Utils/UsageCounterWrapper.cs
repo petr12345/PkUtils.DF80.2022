@@ -31,10 +31,13 @@ namespace PK.PkUtils.Utils;
 ///   }
 ///   else using(var wrapper = new UsageCounterWrapper(_counter))
 ///   {
-///     // Do something.
-///     // The 'using' statement makes sure that dispose of wrapper is called;
-///     // which in turn will release the _counter instance, 
-///     // regardless any exception thrown.
+///     if (wrapper.IsCounterAcquired)
+///     {
+///          // Do something.
+///          // The 'using' statement makes sure that dispose of wrapper is called;
+///          // which in turn will release the _counter instance, 
+///          // regardless any exception thrown.
+///     }
 ///   }
 /// }
 /// </code></example>

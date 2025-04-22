@@ -1,14 +1,4 @@
-﻿/***************************************************************************************************************
-*
-* FILE NAME:   .\Reflection\MethodsUtils.cs
-*
-* AUTHOR:      Petr Kodet
-*
-* DESCRIPTION: The class MethodsUtils
-*
-**************************************************************************************************************/
-
-// Ignore Spelling: Utils
+﻿// Ignore Spelling: bitmask, Stackoverflow, suma, Utils
 //
 using System;
 using System.Collections.Generic;

@@ -1,15 +1,5 @@
-/***************************************************************************************************************
-*
-* FILE NAME:   .\Utils\LockRedraw.cs
-*
-* AUTHOR:      Petr Kodet
-*
-* DESCRIPTION: The file contains the class LockRedraw.
-*
-**************************************************************************************************************/
-
-
-// Ignore Spelling: Utils
+// Ignore Spelling: Utils, Stackoverflow
+//
 
 using System;
 using System.Windows.Forms;
@@ -25,32 +15,29 @@ namespace PK.PkUtils.UI.Utils;
 /// Assuming you have declared a field of type LockRedraw in your class, 
 /// you can use it in following ways:
 /// <code>
-/// class CAnyClass
+/// class CAnyForm : Form
 /// {
-///   protected LockRedraw _rlock = new LockRedraw();
+///    private LockRedraw _lockRedraw;
+///    private TreeView _treeView;
 ///
-///   void SomeMyMethod()
-///   {
-///     try
-///     {
-///       _rlock.Lock();
-///       //  Do something.
-///     }
-///     finally
-///     { //  should unlock redrawing regardless any exception thrown
-///       _rlock.Unlock();
-///     }
-///   }
-///
-///   void SomeOtherMethod()
-///   {
-///     using (var lockUser = new UsageCounterWrapper(_rlock))
-///     {
-///       //  Do something.
-///       //  The 'using' statement makes sure that dispose of lockUser is called;
-///       //  which in turn will unlock the _rlock instance.
-///     }
-///   }
+///    protected override void OnLoad(EventArgs e)
+///    {
+///        // LockRedraw should only be created after the associated control handle is guaranteed to be created
+///        _lockRedraw = new LockRedraw(_treeView, shouldLock: false);
+///        base.OnLoad(e);
+///    }
+///    protected void SomeMyMethod()
+///    {
+///        // Constructor of UsageCounterWrapper causes the call of _lockRedraw.StopRedrawing();
+///        // unless it has already been called somewhere higher in the call stack.
+///        using (IDisposable _ = new UsageCounterWrapper(_lockRedraw))
+///        {
+///            // Do some long operation here involving many changes to _treeView,
+///            // while _lockRedraw prevents redrawing.
+///            //
+///            // The following Dispose in turn calls _lockRedraw.StartRedrawing, if no one else locked it.
+///        }
+///    }
 /// }
 /// </code>
 /// </summary>
@@ -70,8 +57,8 @@ public class LockRedraw : UsageCounter
     /// <summary>
     /// Handle of the window that is temporarily prevented from redrawing.
     /// </summary>
-    protected readonly nint _handle;
-    private nint _eventMask;
+    protected readonly IntPtr _handle;
+    private IntPtr _eventMask;
     #endregion // Fields
 
     #region Constructor(s)
@@ -81,7 +68,7 @@ public class LockRedraw : UsageCounter
     /// </summary>
     /// <remarks>The class does NOT become an owner of the provided window handle.</remarks>
     /// <param name="handle">Handle of the window to lock redrawing for.</param>
-    public LockRedraw(nint handle)
+    public LockRedraw(IntPtr handle)
         : this(handle, shouldLock: false)
     { }
 
@@ -92,13 +79,13 @@ public class LockRedraw : UsageCounter
     /// <remarks>The class does NOT become an owner of the provided window handle.</remarks>
     /// <param name="handle">Handle of the window to lock redrawing for.</param>
     /// <param name="shouldLock">If true, locking will be performed during construction.</param>
-    public LockRedraw(nint handle, bool shouldLock)
+    public LockRedraw(IntPtr handle, bool shouldLock)
         : base()
     {
         _handle = handle;
         if (shouldLock)
         {
-            AddReference();
+            this.AddReference();
         }
     }
 
@@ -119,7 +106,7 @@ public class LockRedraw : UsageCounter
     /// <summary>
     /// The window handle provided to the constructor.
     /// </summary>
-    protected nint Handle => _handle;
+    protected IntPtr Handle => _handle;
 
     #endregion // Properties
 
@@ -128,41 +115,41 @@ public class LockRedraw : UsageCounter
     #region Protected Methods
 
     /// <summary>
-    /// Overrides the method of the base class. Calls StopRepaint.
+    /// Overrides the method of the base class. Calls StopRedrawing.
     /// </summary>
     protected override void OnFirstAddReference()
     {
-        StopRepaint();
+        StopRedrawing();
     }
 
     /// <summary>
-    /// Overrides the method of the base class. Calls StartRepaint.
+    /// Overrides the method of the base class. Calls StartRedrawing.
     /// </summary>
     protected override void OnLastRelease()
     {
-        StartRepaint();
+        StartRedrawing();
     }
 
     /// <summary>
     /// Prevents window redrawing by sending WM_SETREDRAW with wParam = IntPtr.Zero.
     /// </summary>
-    protected virtual void StopRepaint()
+    protected virtual void StopRedrawing()
     {
         // Stop redrawing
-        User32.SendMessage(Handle, (int)Win32.WM.WM_SETREDRAW, nint.Zero, nint.Zero);
+        User32.SendMessage(this.Handle, (int)Win32.WM.WM_SETREDRAW, IntPtr.Zero, IntPtr.Zero);
         // Stop sending of events
-        _eventMask = User32.SendMessage(Handle, (int)Win32.RichEm.EM_GETEVENTMASK, nint.Zero, nint.Zero);
+        _eventMask = User32.SendMessage(this.Handle, (int)Win32.RichEm.EM_GETEVENTMASK, IntPtr.Zero, IntPtr.Zero);
     }
 
     /// <summary>
     /// Enables window redrawing by sending WM_SETREDRAW with wParam = IntPtr(1).
     /// </summary>
-    protected virtual void StartRepaint()
+    protected virtual void StartRedrawing()
     {
         // Restore event mask
-        User32.SendMessage(Handle, (int)Win32.RichEm.EM_SETEVENTMASK, nint.Zero, _eventMask);
+        User32.SendMessage(this.Handle, (int)Win32.RichEm.EM_SETEVENTMASK, IntPtr.Zero, _eventMask);
         // Resume redrawing
-        User32.SendMessage(Handle, (int)Win32.WM.WM_SETREDRAW, new nint(1), nint.Zero);
+        User32.SendMessage(this.Handle, (int)Win32.WM.WM_SETREDRAW, new IntPtr(1), IntPtr.Zero);
     }
     #endregion // Protected Methods
     #endregion // Methods

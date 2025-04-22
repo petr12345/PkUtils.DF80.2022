@@ -3,6 +3,8 @@ using PK.PkUtils.Interfaces;
 
 namespace PK.PkUtils.DataStructures;
 
+#pragma warning disable IDE0290     // Use primary constructor
+
 /// <summary>
 /// A "disposable action" implements a wrapper that executes an action in its dispose method.
 /// This way, you could alternatively guarantee  that action is performed in some finally statement.  
@@ -59,3 +61,4 @@ public class DisposableAction : IDisposableEx
     }
     #endregion // IDisposableEx members
 }
+#pragma warning restore IDE0290     // Use primary constructor

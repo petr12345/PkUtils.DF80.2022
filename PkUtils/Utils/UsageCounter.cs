@@ -1,14 +1,3 @@
-/***************************************************************************************************************
-*
-* FILE NAME:   .\Utils\UsageCounter.cs
-*
-* AUTHOR:      Petr Kodet
-*
-* DESCRIPTION: The file contains code of classes UsageCounter and UsageCounterWrapper
-*
-**************************************************************************************************************/
-
-
 // Ignore Spelling: Utils
 //
 using System;
@@ -23,7 +12,7 @@ namespace PK.PkUtils.Utils;
 /// Derived class may override ( re-implement ) <see cref="OnFirstAddReference"/> and <see cref="OnLastRelease"/>.
 /// </summary>
 /// <remarks> 
-/// Implementing IUsageCounter, this class intends to protect
+/// Implementing IUsageCounter, this class allows you to protect
 /// against reentrancy issues. Note that after the first usage is acquired,
 /// any subsequent usages on this thread or any other thread still may succeed as well.
 /// The using code should check <see cref="IsUsed"/> property in any case. 
@@ -52,16 +41,17 @@ public class UsageCounter : IUsageCounter
     #region Methods
 
     /// <summary>
-    /// Public method validating the object instance.
+    /// Public method validating the object instance. 
+    /// Current implementation just delegates the call to non-virtual method <see cref="ValidateMe"/>.
     /// </summary>
     [Conditional("DEBUG")]
-    public void AssertValid()
+    public virtual void AssertValid()
     {
         ValidateMe();
     }
 
     /// <summary>
-    /// Non-virtual method validating an instance of this type. 
+    /// Non-virtual method validating an instance of this type. Checks that usage counter is not unbalanced.
     /// </summary>
     [Conditional("DEBUG")]
     protected void ValidateMe()
@@ -93,7 +83,7 @@ public class UsageCounter : IUsageCounter
     {
         get
         {
-            ValidateMe();
+            AssertValid();
             return (References > 0);
         }
     }

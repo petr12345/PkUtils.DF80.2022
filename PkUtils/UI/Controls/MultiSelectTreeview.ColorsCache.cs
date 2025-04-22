@@ -1,4 +1,4 @@
-// Ignore Spelling: Ctrl, Treeview, treeview, unselects, Bg, Fg
+// Ignore Spelling: Ctrl, TreeView, treeview, unselects, Bg, Fg
 //
 using System;
 using System.Drawing;

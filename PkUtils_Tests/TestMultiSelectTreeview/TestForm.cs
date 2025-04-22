@@ -1,4 +1,4 @@
-// Ignore Spelling: Treeview
+// Ignore Spelling: TreeView
 //
 using System;
 using System.Collections.Generic;
@@ -26,8 +26,9 @@ public partial class TestForm : FormWithLayoutPersistence, IDumper
 
     private Color _treeviewBackColor;
     private Color _treeviewForeColor;
+    private LockRedraw _treeLockRedraw;
     private DumperCtrlTextBoxWrapper _wrapper;
-    private const bool _shoCallStack = false;
+    private const bool _showCallStack = false;
     private const int _maxMsgHistoryItems = 2048;
     private const int IL_0_icoRoot = 0;
     private const int IL_1_selRoot = 1;
@@ -43,7 +44,7 @@ public partial class TestForm : FormWithLayoutPersistence, IDumper
     {
         InitializeComponent();
         InitializeAdditionalTreeNodes();
-        InitializeTreeviewHandlers();
+        InitializeTreeViewHandlers();
         InitializeTreeViewTextLogger(true);
         LoadLayout();
     }
@@ -72,7 +73,7 @@ public partial class TestForm : FormWithLayoutPersistence, IDumper
 
     #region Initialize
 
-    protected void InitializeTreeviewHandlers()
+    protected void InitializeTreeViewHandlers()
     {
         _treeviewBackColor = this._treeView.BackColor;
         _treeviewForeColor = this._treeView.ForeColor;
@@ -213,15 +214,13 @@ public partial class TestForm : FormWithLayoutPersistence, IDumper
         string timingFinal = timingSpec ?? "Now";
         string info1 = $"{timingFinal} {count} tree node(s) selected";
         string info2 = (count == 0) ? string.Empty : $" ({selectedNodes.Join(", ", x => x.Name.NullIfEmpty() ?? x.Text)})";
-        string info3 = _shoCallStack && (stackTrace != null) ? $" [ {stackTrace.AsNameValue()} ]" : string.Empty;
+        string info3 = _showCallStack && (stackTrace != null) ? $" [ {stackTrace.AsNameValue()} ]" : string.Empty;
 
         Dumper.DumpLine(info1 + info2 + info3);
     }
     #endregion // Updatin_Buttons
 
-    #region Updatin_Buttons
-
-    #endregion // Updatin_Buttons
+    #region Updating_Buttons
 
     protected void UpdateInsertDeleteButtons()
     {
@@ -240,6 +239,7 @@ public partial class TestForm : FormWithLayoutPersistence, IDumper
         UpdateInsertDeleteButtons();
         UpdateClearSelectionButton();
     }
+    #endregion // Updating_Buttons
     #endregion // Methods
 
     #region Event_handlers
@@ -267,11 +267,11 @@ public partial class TestForm : FormWithLayoutPersistence, IDumper
 
     private void OnButtonDeleteNodes_Click(object sender, EventArgs e)
     {
-        using (IDisposable _ = new UsageCounterWrapper(new LockRedraw(_treeView, false)))
+        using (IDisposable _ = new UsageCounterWrapper(_treeLockRedraw))
         {
             TreeNode root = _treeView.RootNode;
             List<TreeNode> notRoot = _treeView.GetAllNodes().Except(root.FromSingle()).ToList();
-            notRoot.ForEach(x => _treeView.RemoveNode(x));
+            notRoot.ForEach(_treeView.RemoveNode);
         }
 
         _treeView.Refresh();
@@ -281,7 +281,7 @@ public partial class TestForm : FormWithLayoutPersistence, IDumper
 
     private void OnBtnInsertNodes_Click(object sender, EventArgs e)
     {
-        using (IDisposable _ = new UsageCounterWrapper(new LockRedraw(_treeView, false)))
+        using (IDisposable _ = new UsageCounterWrapper(_treeLockRedraw))
         {
             InitializeAdditionalTreeNodes();
             _treeView.Refresh();
@@ -297,7 +297,6 @@ public partial class TestForm : FormWithLayoutPersistence, IDumper
 
     private void OnCheckBoxBackgroundImage_CheckedChanged(object sender, EventArgs args)
     {
-
         if (_checkBoxCustomColors.Checked)
         {
             _treeView.BackColor = Color.Yellow;
@@ -317,6 +316,8 @@ public partial class TestForm : FormWithLayoutPersistence, IDumper
 
     private void TestForm_Load(object sender, EventArgs args)
     {
+        // This object should only be created after it is guaranteed that the tree control handle has been created
+        _treeLockRedraw = new LockRedraw(_treeView, false);
         AdjustAllNodesImages();
         UpdateButtons();
         DumpTreeSelectionInfo(_treeView.SelectedNodes, "Initially", null);
@@ -327,7 +328,7 @@ public partial class TestForm : FormWithLayoutPersistence, IDumper
         AdjustAllNodesImages();
     }
 
-    private void OnMultiSelectTreeView_SelectionChanged(object sender, TreeviewSelChangeArgs args)
+    private void OnMultiSelectTreeView_SelectionChanged(object sender, TreeViewSelChangeArgs args)
     {
         DumpTreeSelectionInfo(args.SelectedNodes, null, args.StackTrace);
         UpdateClearSelectionButton();
