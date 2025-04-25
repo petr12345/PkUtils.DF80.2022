@@ -25,12 +25,12 @@ public partial class FormWithLayoutPersistence : Form
     /// </summary>
     private FormLayoutPersister _frmLayoutPersister;
 
-    /// <summary>  Has the last layout persistence operation failed?. </summary>
+    /// <summary> Has the last layout persistence operation failed?. </summary>
     private bool _lastLayoutLoadHasFailed;
 
     #region Constructor(s)
 
-    /// <summary>  Default constructor. </summary>
+    /// <summary> Default constructor. </summary>
     public FormWithLayoutPersistence()
     {
         InitializeComponent();
@@ -104,7 +104,7 @@ public partial class FormWithLayoutPersistence : Form
         }
     }
 
-    /// <summary>   Resets the layout persister. </summary>
+    /// <summary> Resets the layout persister. </summary>
     /// <returns>   A new FormLayoutPersister. </returns>
     protected virtual FormLayoutPersister ResetLayoutPersister()
     {
@@ -114,7 +114,7 @@ public partial class FormWithLayoutPersistence : Form
         return LayoutPersister;
     }
 
-    /// <summary>   Ensures layout is saved when the form is closing. </summary>
+    /// <summary> Ensures layout is saved when the form is closing. </summary>
     /// <param name="args"> A FormClosingEventArgs that contains the event data. </param>
     protected override void OnFormClosing(FormClosingEventArgs args)
     {

@@ -43,7 +43,7 @@ public static class ConsoleIconManager
         }
     }
 
-    /// <summary>   Sets the Taskbar icon using a <see cref="NotifyIcon"/>. </summary>
+    /// <summary> Sets the Taskbar icon using a <see cref="NotifyIcon"/>. </summary>
     /// <param name="icon"> The icon to be displayed in the taskbar. </param>
     /// <param name="text"> (Optional) The text. </param>
     public static void SetTaskbarIcon(Icon icon, string text = null)

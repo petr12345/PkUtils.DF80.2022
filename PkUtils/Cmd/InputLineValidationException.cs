@@ -33,7 +33,7 @@ public class InputLineValidationException : Exception
         : base(message, innerException)
     { }
 
-    /// <summary>  Specialized constructor for to support of serialization. </summary>
+    /// <summary> Specialized constructor for to support of serialization. </summary>
     ///
     /// <param name="info">     The serialization information. </param>
     /// <param name="context">  The serialization context. </param>

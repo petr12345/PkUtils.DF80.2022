@@ -319,7 +319,7 @@ public class WorkerThread : Repository<Thread>, IDisposableEx
         }
     }
 
-    /// <summary>  The working function. Derived thread will overwrite it. </summary>
+    /// <summary> The working function. Derived thread will overwrite it. </summary>
     protected virtual void WorkerFunction()
     {
         EventWaitExit?.WaitOne();

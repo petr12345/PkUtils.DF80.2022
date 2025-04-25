@@ -174,7 +174,7 @@ public static class SysInfo
         return result;
     }
 
-    /// <summary>   Find the full path to "MSInfo32.exe". </summary>
+    /// <summary> Find the full path to "MSInfo32.exe". </summary>
     /// <returns>   Returns non-empty string on success, empty string on failure. </returns>
     public static string GetMsinfo32Path()
     {

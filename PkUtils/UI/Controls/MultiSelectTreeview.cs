@@ -75,7 +75,7 @@ public partial class MultiSelectTreeView : TreeView
     /// <summary> Gets the root node, if there is any. </summary>
     public TreeNode RootNode => Nodes.Count > 0 ? Nodes[0] : null;
 
-    /// <summary>   Gets or sets the collection of selected nodes. </summary>
+    /// <summary> Gets or sets the collection of selected nodes. </summary>
     public IReadOnlyCollection<TreeNode> SelectedNodes
     {
         get => _selectedNodes;
@@ -115,10 +115,10 @@ public partial class MultiSelectTreeView : TreeView
         }
     }
 
-    /// <summary>  Event queue for all listeners interested in SelectionChanged events. </summary>
+    /// <summary> Event queue for all listeners interested in SelectionChanged events. </summary>
     public event EventHandler<TreeViewSelChangeArgs> SelectionChanged;
 
-    /// <summary>   Gets a value indicating whether this object is using visual styles. </summary>
+    /// <summary> Gets a value indicating whether this object is using visual styles. </summary>
     /// <remarks>
     /// This property is needed to determine if visual styles are used, in order to assign proper tree nodes colors.
     /// In a WinForms application, the reason your TreeView background is white despite setting it to different
@@ -136,7 +136,7 @@ public partial class MultiSelectTreeView : TreeView
     /// <summary> Gets a value indicating whether a selection changed is pending. </summary>
     protected bool IsSelectionChangedPending { get => _selectionChangedPending; }
 
-    /// <summary>   Gets a value indicating whether the selection initialized. </summary>
+    /// <summary> Gets a value indicating whether the selection initialized. </summary>
     protected bool SelectionInitialized { get => _selectionInitialized; }
     #endregion // Properties
 

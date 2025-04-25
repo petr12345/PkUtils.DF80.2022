@@ -100,6 +100,22 @@ public static class TreeViewExtensions
         ArgumentNullException.ThrowIfNull(match);
         return FindAll(tv.Nodes, match);
     }
+
+    /// <summary> A TreeView extension method that expands all nodes. </summary>
+    /// <param name="tv"> A TreeView control whose nodes are retrieved. Can't be null. </param>
+    public static void ExpandAllNodes(this TreeView tv)
+    {
+        ArgumentNullException.ThrowIfNull(tv);
+        foreach (TreeNode node in tv.GetAllNodes()) { node.Expand(); }
+    }
+
+    /// <summary> A TreeView extension method that collapses all nodes. </summary>
+    /// <param name="tv"> A TreeView control whose nodes are retrieved. Can't be null. </param>
+    public static void CollapseAllNodes(this TreeView tv)
+    {
+        ArgumentNullException.ThrowIfNull(tv);
+        foreach (TreeNode node in tv.GetAllNodes()) { node.Collapse(); }
+    }
     #endregion // Extensions_of_TreeView
 
     #region Extensions_of_TreeNodeCollection

@@ -49,7 +49,7 @@ public class FolderNode : IFolderNode
 
     #region Methods
 
-    /// <summary>   Normalize root path. </summary>
+    /// <summary> Normalize root path. </summary>
     /// <param name="rootPath"> Full pathname of the root file. Can't be null. </param>
     /// <returns>   A normalized root path string. </returns>
     public static string NormalizeRootPath(string rootPath)

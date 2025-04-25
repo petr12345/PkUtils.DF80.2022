@@ -83,7 +83,7 @@ namespace TestBinding
             get { return (null != MyListenerAndDumper); }
         }
 
-        /// <summary>   Nomen est omen. </summary>
+        /// <summary> Nomen est omen. </summary>
         /// <value> True if this object is trace listener listening, false if not. </value>
         protected bool IsTraceListenerListening
         {

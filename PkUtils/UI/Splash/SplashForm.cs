@@ -538,7 +538,7 @@ private bool _bShouldClose;
         }
     }
 
-    /// <summary>   The double-click handler. Close the form if they double click on it. </summary>
+    /// <summary> The double-click handler. Close the form if they double click on it. </summary>
     /// <param name="sender"> . </param>
     /// <param name="args"> . </param>
     private void SplashScreen_DoubleClick(object sender, EventArgs args)
