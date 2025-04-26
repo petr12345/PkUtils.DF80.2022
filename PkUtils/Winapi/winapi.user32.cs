@@ -559,6 +559,96 @@ public static class User32
     }
 
     /// <summary>
+    /// Contains information about a menu item.
+    /// This structure is used with functions that operate on menus.
+    /// </summary>
+    [StructLayout(LayoutKind.Sequential)]
+    public struct MENUITEMINFO
+    {
+        /// <summary> Default constructor. </summary>
+        public MENUITEMINFO()
+        {
+            cbSize = (uint)Marshal.SizeOf(typeof(MENUITEMINFO));
+            fMask = 0;
+            fType = 0;
+            fState = 0;
+            wID = 0;
+            hSubMenu = IntPtr.Zero;
+            hbmpChecked = IntPtr.Zero;
+            hbmpUnchecked = IntPtr.Zero;
+            dwItemData = IntPtr.Zero;
+            dwTypeData = null;
+            cch = 0;
+            hbmpItem = IntPtr.Zero;
+        }
+
+        /// <summary>
+        /// Specifies the size of the structure, in bytes.
+        /// Before calling any function that uses this structure, set this member to <c>Marshal.SizeOf(typeof(MENUITEMINFO))</c>.
+        /// </summary>
+        public uint cbSize;
+
+        /// <summary>
+        /// Indicates which members contain valid data or are to be retrieved.
+        /// This member can be a combination of <c>MIIM_*</c> values.
+        /// </summary>
+        public uint fMask;
+
+        /// <summary>
+        /// Specifies the type of the menu item.
+        /// This member can be a combination of <c>MFT_*</c> values.
+        /// </summary>
+        public uint fType;
+
+        /// <summary>
+        /// Specifies the state of the menu item.
+        /// This member can be a combination of <c>MFS_*</c> values.
+        /// </summary>
+        public uint fState;
+
+        /// <summary>
+        /// Specifies the identifier of the menu item.
+        /// </summary>
+        public uint wID;
+
+        /// <summary>
+        /// Handle to the drop-down menu or submenu associated with the menu item, if applicable.
+        /// </summary>
+        public IntPtr hSubMenu;
+
+        /// <summary>
+        /// Handle to the bitmap displayed when the menu item is checked.
+        /// </summary>
+        public IntPtr hbmpChecked;
+
+        /// <summary>
+        /// Handle to the bitmap displayed when the menu item is unchecked.
+        /// </summary>
+        public IntPtr hbmpUnchecked;
+
+        /// <summary>
+        /// Application-defined value associated with the menu item.
+        /// </summary>
+        public IntPtr dwItemData;
+
+        /// <summary>
+        /// Pointer to a null-terminated string that contains the text for the menu item.
+        /// </summary>
+        public string dwTypeData;
+
+        /// <summary>
+        /// Specifies the length of the menu item text, in characters, excluding the null terminator.
+        /// Used when retrieving the item text.
+        /// </summary>
+        public uint cch;
+
+        /// <summary>
+        /// Handle to the bitmap displayed for the menu item.
+        /// </summary>
+        public IntPtr hbmpItem;
+    }
+
+    /// <summary>
     /// Defines constants that could be used as an argument for API <see cref="User32.ShowWindow"/>
     /// </summary>
     public enum SW
@@ -2886,6 +2976,30 @@ public static class User32
       IntPtr hMenu,
       uint uIDEnableItem,
       uint uEnable);
+
+    /// <summary>
+    /// Inserts a new menu item at the specified position in a menu.
+    /// </summary>
+    /// <param name="hMenu">A handle to the menu to be modified.</param>
+    /// <param name="uItem">The identifier or position where the new item is inserted, depending on <paramref name="fByPosition"/>.</param>
+    /// <param name="fByPosition">
+    /// If <c>true</c>, <paramref name="uItem"/> specifies the position; 
+    /// if <c>false</c>, <paramref name="uItem"/> specifies the identifier of the menu item.
+    /// </param>
+    /// <param name="lpmii">Reference to a <see cref="MENUITEMINFO"/> structure containing information about the new menu item.</param>
+    /// <returns><c>true</c> if successful; otherwise, <c>false</c>.</returns>
+    [DllImport("user32", SetLastError = true)]
+    public static extern bool InsertMenuItem(
+        IntPtr hMenu,
+        uint uItem,
+        bool fByPosition,
+        [In] ref MENUITEMINFO lpmii);
+
+    /// <summary> Updates the menu bar of the specified window. </summary>
+    /// <param name="hWnd"> A handle to the window whose menu bar is to be redrawn. </param>
+    /// <returns> <c>true</c> if successful; otherwise, <c>false</c>. </returns>
+    [DllImport("user32", SetLastError = true)]
+    public static extern bool DrawMenuBar(IntPtr hWnd);
 
     /// <summary>
     /// Retrieves a handle to a window that has the specified relationship 

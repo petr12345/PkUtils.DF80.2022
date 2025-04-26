@@ -1,18 +1,17 @@
 // Ignore Spelling: TreeView
 //
-using System;
-using System.Collections.Generic;
 using System.Diagnostics;
-using System.Drawing;
-using System.Linq;
-using System.Windows.Forms;
+using System.Runtime.InteropServices;
 using PK.PkUtils.Dump;
 using PK.PkUtils.Extensions;
 using PK.PkUtils.Interfaces;
 using PK.PkUtils.UI.General;
 using PK.PkUtils.UI.Utils;
 using PK.PkUtils.Utils;
+using PK.PkUtils.WinApi;
+using TestMultiSelectTreeView.Properties;
 using static PK.PkUtils.UI.General.MultiSelectTreeView;
+using static PK.PkUtils.WinApi.User32;
 
 #pragma warning disable IDE0090 // Use 'new(...)'
 #pragma warning disable IDE0305 // Collection initialization can be simplified
@@ -30,6 +29,8 @@ public partial class TestForm : FormWithLayoutPersistence, IDumper
     private DumperCtrlTextBoxWrapper _wrapper;
     private const bool _showCallStack = false;
     private const int _maxMsgHistoryItems = 2048;
+    private const int _aboutMenuItem_ID = 1234;
+
     private const int IL_0_icoRoot = 0;
     private const int IL_1_selRoot = 1;
     private const int IL_2_icoFolder = 2;
@@ -45,8 +46,11 @@ public partial class TestForm : FormWithLayoutPersistence, IDumper
         InitializeComponent();
         InitializeAdditionalTreeNodes();
         InitializeTreeViewHandlers();
-        InitializeTreeViewTextLogger(true);
+        InitializeFromSettings();
+
         LoadLayout();
+        ExtendSystemMenu();
+        this.KeyPreview = true; // This allows the form to capture key presses even when a control inside it has focus.
     }
     #endregion // Constructor(s)
 
@@ -87,6 +91,61 @@ public partial class TestForm : FormWithLayoutPersistence, IDumper
     {
         _checkBoxShowLog.Checked = showLog;
         _splitContainer.Panel2Collapsed = !showLog;
+    }
+
+    /// <summary> Add a custom menu item to the system menu of the form. </summary>
+    protected void ExtendSystemMenu()
+    {
+        IntPtr hMenu = User32.GetSystemMenu(this.Handle, false);
+        if (hMenu != IntPtr.Zero)
+        {
+            int menuItemCount = User32.GetMenuItemCount(hMenu);
+            const string aboutText = "About ...";
+
+            if (menuItemCount > 0)
+            {
+                // Insert separator
+                var sepInfo = new MENUITEMINFO
+                {
+                    fMask = 0x1 | 0x2, // MIIM_ID | MIIM_TYPE
+                    fType = 0x800,     // MFT_SEPARATOR
+                    wID = 0
+                };
+                InsertMenuItem(hMenu, (uint)(menuItemCount - 1), true, ref sepInfo);
+
+                // Insert custom item above separator (so it's before "Close")
+                var menuInfo = new MENUITEMINFO
+                {
+                    cbSize = (uint)Marshal.SizeOf(typeof(MENUITEMINFO)),
+                    fMask = 0x1 | 0x2 | 0x10, // MIIM_ID | MIIM_TYPE | MIIM_STRING
+                    fType = 0x0,              // MFT_STRING
+                    wID = _aboutMenuItem_ID,
+                    dwTypeData = aboutText,
+                    cch = (uint)aboutText.Length
+                };
+                InsertMenuItem(hMenu, (uint)(menuItemCount - 1), true, ref menuInfo);
+                DrawMenuBar(Handle);
+            }
+        }
+    }
+
+    protected void InitializeFromSettings()
+    {
+        _checkBoxShowLog.Checked = Settings.Default.ShowLog;
+        _checkBoxUseImages.Checked = Settings.Default.UseImages;
+        _checkBoxCustomColors.Checked = Settings.Default.UseCustomColors;
+
+        InitializeTreeViewTextLogger(_checkBoxShowLog.Checked);
+        AdjustAllNodesImages();
+        AdjustCustomColors();
+    }
+
+    protected void SaveSettings()
+    {
+        Settings.Default.ShowLog = _checkBoxShowLog.Checked;
+        Settings.Default.UseImages = _checkBoxUseImages.Checked;
+        Settings.Default.UseCustomColors = _checkBoxCustomColors.Checked;
+        Settings.Default.Save();
     }
     #endregion // Initialize
 
@@ -138,6 +197,20 @@ public partial class TestForm : FormWithLayoutPersistence, IDumper
             TurnOnImagesOnAllNodes();
         else
             TurnOffImagesOnAllNodes();
+    }
+
+    protected void AdjustCustomColors()
+    {
+        if (_checkBoxCustomColors.Checked)
+        {
+            _treeView.BackColor = Color.Yellow;
+            _treeView.ForeColor = Color.DarkGreen;
+        }
+        else
+        {
+            _treeView.BackColor = _treeviewBackColor;
+            _treeView.ForeColor = _treeviewForeColor;
+        }
     }
 
     private void InitializeAdditionalTreeNodes()
@@ -240,9 +313,45 @@ public partial class TestForm : FormWithLayoutPersistence, IDumper
         UpdateClearSelectionButton();
     }
     #endregion // Updating_Buttons
+
+    #region Handling_menu
+
+    protected void ShowAboutDialogBox()
+    {
+        using Form aboutBox = new AboutBox();
+        aboutBox.ShowDialog(this);
+    }
+
+    protected override void WndProc(ref Message m)
+    {
+        base.WndProc(ref m);
+        if ((m.Msg == (int)Win32.WM.WM_SYSCOMMAND) && ((int)m.WParam == _aboutMenuItem_ID))
+        {
+            ShowAboutDialogBox();
+        }
+    }
+    #endregion // Handling_menu
     #endregion // Methods
 
     #region Event_handlers
+
+    private void TestForm_Load(object sender, EventArgs args)
+    {
+        // This object should only be created after it is guaranteed that the tree control handle has been created
+        _treeLockRedraw = new LockRedraw(_treeView, false);
+        AdjustAllNodesImages();
+        UpdateButtons();
+        DumpTreeSelectionInfo(_treeView.SelectedNodes, "Initially", null);
+    }
+
+    private void TestForm_KeyDown(object sender, KeyEventArgs e)
+    {
+        if (e.KeyCode == Keys.F1)
+        {
+            ShowAboutDialogBox();
+            e.Handled = true;
+        }
+    }
 
     private void OnButton_SelectNodes(object sender, EventArgs args)
     {
@@ -284,6 +393,7 @@ public partial class TestForm : FormWithLayoutPersistence, IDumper
         using (IDisposable _ = new UsageCounterWrapper(_treeLockRedraw))
         {
             InitializeAdditionalTreeNodes();
+            AdjustAllNodesImages();
             _treeView.Refresh();
         }
         DumpTreeSelectionInfo(_treeView.SelectedNodes, null, null);
@@ -297,30 +407,12 @@ public partial class TestForm : FormWithLayoutPersistence, IDumper
 
     private void OnCheckBoxBackgroundImage_CheckedChanged(object sender, EventArgs args)
     {
-        if (_checkBoxCustomColors.Checked)
-        {
-            _treeView.BackColor = Color.Yellow;
-            _treeView.ForeColor = Color.DarkGreen;
-        }
-        else
-        {
-            _treeView.BackColor = _treeviewBackColor;
-            _treeView.ForeColor = _treeviewForeColor;
-        }
+        AdjustCustomColors();
     }
 
     private void OnCheckBoxShowLog_CheckedChanged(object sender, EventArgs args)
     {
         InitializeTreeViewTextLogger(_checkBoxShowLog.Checked);
-    }
-
-    private void TestForm_Load(object sender, EventArgs args)
-    {
-        // This object should only be created after it is guaranteed that the tree control handle has been created
-        _treeLockRedraw = new LockRedraw(_treeView, false);
-        AdjustAllNodesImages();
-        UpdateButtons();
-        DumpTreeSelectionInfo(_treeView.SelectedNodes, "Initially", null);
     }
 
     private void OnCheckBoxUseImages_CheckedChanged(object sender, EventArgs args)
@@ -332,6 +424,11 @@ public partial class TestForm : FormWithLayoutPersistence, IDumper
     {
         DumpTreeSelectionInfo(args.SelectedNodes, null, args.StackTrace);
         UpdateClearSelectionButton();
+    }
+
+    private void TestForm_FormClosing(object sender, FormClosingEventArgs e)
+    {
+        SaveSettings();
     }
 
     private void OnButton_Exit_Click(object sender, EventArgs args)

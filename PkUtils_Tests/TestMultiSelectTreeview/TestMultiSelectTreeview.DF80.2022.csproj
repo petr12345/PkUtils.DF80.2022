@@ -4,14 +4,12 @@
     <OutputType>WinExe</OutputType>
     <RootNamespace>TestMultiSelectTreeView</RootNamespace>
     <AssemblyName>TestMultiSelectTreeView</AssemblyName>
-    <StartupObject>
-    </StartupObject>
     <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
     <NeutralLanguage>en</NeutralLanguage>
     <UseWindowsForms>true</UseWindowsForms>
+    <ImplicitUsings>enable</ImplicitUsings>		
     <ImportWindowsDesktopTargets>true</ImportWindowsDesktopTargets>
     <ApplicationIcon>ResourceBinaries\tree.ico</ApplicationIcon>
-    <ImportWindowsDesktopTargets>true</ImportWindowsDesktopTargets>	
   </PropertyGroup>
   <ItemGroup>
     <Content Include="ResourceBinaries\tree.ico" />
@@ -27,6 +25,11 @@
     <Compile Update="MultiSelectTreeView.cs">
       <SubType>Component</SubType>
     </Compile>
+    <Compile Update="Properties\Settings.Designer.cs">
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Settings.settings</DependentUpon>
+    </Compile>
     <Compile Update="Resources.Designer.cs">
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
@@ -38,5 +41,11 @@
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <None Update="Properties\Settings.settings">
+      <Generator>SettingsSingleFileGenerator</Generator>
+      <LastGenOutput>Settings.Designer.cs</LastGenOutput>
+    </None>
   </ItemGroup>
 </Project>

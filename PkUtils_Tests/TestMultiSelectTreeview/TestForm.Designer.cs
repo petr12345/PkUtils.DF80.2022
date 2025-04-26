@@ -252,7 +252,9 @@ partial class TestForm
         MinimumSize = new Size(422, 550);
         Name = "TestForm";
         Text = "Test MultiSelect Tree View";
+        FormClosing += TestForm_FormClosing;
         Load += TestForm_Load;
+        KeyDown += TestForm_KeyDown;
         _splitContainer.Panel1.ResumeLayout(false);
         _splitContainer.Panel2.ResumeLayout(false);
         _splitContainer.Panel2.PerformLayout();

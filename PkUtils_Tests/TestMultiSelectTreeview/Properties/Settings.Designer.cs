@@ -22,5 +22,41 @@ namespace TestMultiSelectTreeView.Properties {
                 return defaultInstance;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool ShowLog {
+            get {
+                return ((bool)(this["ShowLog"]));
+            }
+            set {
+                this["ShowLog"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool UseImages {
+            get {
+                return ((bool)(this["UseImages"]));
+            }
+            set {
+                this["UseImages"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool UseCustomColors {
+            get {
+                return ((bool)(this["UseCustomColors"]));
+            }
+            set {
+                this["UseCustomColors"] = value;
+            }
+        }
     }
 }
