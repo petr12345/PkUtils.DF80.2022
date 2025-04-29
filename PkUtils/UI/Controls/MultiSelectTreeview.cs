@@ -2,6 +2,7 @@
 //
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Diagnostics;
 using System.Drawing;
 using System.Linq;
@@ -76,6 +77,7 @@ public partial class MultiSelectTreeView : TreeView
     public TreeNode RootNode => Nodes.Count > 0 ? Nodes[0] : null;
 
     /// <summary> Gets or sets the collection of selected nodes. </summary>
+    [Browsable(false)]
     public IReadOnlyCollection<TreeNode> SelectedNodes
     {
         get => _selectedNodes;
@@ -115,10 +117,10 @@ public partial class MultiSelectTreeView : TreeView
         }
     }
 
-    /// <summary> Event queue for all listeners interested in SelectionChanged events. </summary>
+    /// <summary>  Event queue for all listeners interested in SelectionChanged events. </summary>
     public event EventHandler<TreeViewSelChangeArgs> SelectionChanged;
 
-    /// <summary> Gets a value indicating whether this object is using visual styles. </summary>
+    /// <summary>   Gets a value indicating whether this object is using visual styles. </summary>
     /// <remarks>
     /// This property is needed to determine if visual styles are used, in order to assign proper tree nodes colors.
     /// In a WinForms application, the reason your TreeView background is white despite setting it to different
@@ -136,7 +138,7 @@ public partial class MultiSelectTreeView : TreeView
     /// <summary> Gets a value indicating whether a selection changed is pending. </summary>
     protected bool IsSelectionChangedPending { get => _selectionChangedPending; }
 
-    /// <summary> Gets a value indicating whether the selection initialized. </summary>
+    /// <summary>   Gets a value indicating whether the selection initialized. </summary>
     protected bool SelectionInitialized { get => _selectionInitialized; }
     #endregion // Properties
 
@@ -287,17 +289,21 @@ public partial class MultiSelectTreeView : TreeView
     {
         if (!SelectionInitialized)
         {
-            if (selectedNodes.IsNullOrEmpty())
-            {
-                selectedNodes = new TreeNode[] { TopNode }.Where(x => x is not null);
-            }
+            selectedNodes ??= [];
+
             _selectedNodes.Clear();
             _selectedNodes.UnionWith(selectedNodes);
             _selectedNode = selectedNodes.FirstOrDefault();
-            _selectionInitialized = true;
 
-            // Notify things has changed
-            OnSelectionChanged();
+            // Force a change in the behavior of the standard tree control, which, when there is no selection, 
+            // still wants to draw the root as selected
+            if ((SelectedNode is null) && (RootNode is not null))
+            {
+                EnforceNodeColor(RootNode, false);
+            }
+
+            _selectionInitialized = true;
+            OnSelectionChanged(); // Notify things has changed
         }
     }
 
@@ -322,7 +328,7 @@ public partial class MultiSelectTreeView : TreeView
 
         if (node is not null && SelectedNodes.Count > 0)
         {
-            // Use a stack for depth-first traversal to avoid recursion; start from the root
+            // Use a stack for depth-first traversal to avoid recursion; start either from the root or child nodes
             for (var stack = new Stack<TreeNode>(includeNode ? [node] : node.Nodes.Cast<TreeNode>()); stack.Count > 0;)
             {
                 TreeNode current = stack.Pop();
@@ -888,49 +894,54 @@ public partial class MultiSelectTreeView : TreeView
         }
     }
 
-    private bool ToggleNode(TreeNode node, bool bSelectNode)
+    private bool ToggleNode(TreeNode node, bool selectNode)
     {
         // Should not be called for any null node; only to be on the safe side
         if (node is null) return false;
 
         bool result;
-        Color bgColor = Color.Empty;
-        Color fgColor = Color.Empty;
-        // Assign these two just to prevent compiler warning "Use of unassigned local variable".
-        // Compiler does not recognize these are later used if and only if initialized before
 
-        if (bSelectNode)
+        if (selectNode)
         {
             if (result = ((SelectedNode != node) || !SelectedNodes.Contains(node)))
             {
                 _selectedNode = node;
                 _selectedNodes.Add(node);
-
-                bgColor = SystemColors.Highlight;
-                fgColor = SystemColors.HighlightText;
             }
         }
-        else
+        else if (result = _selectedNodes.Remove(node))
         {
-            if (result = _selectedNodes.Remove(node))
+            if (ReferenceEquals(SelectedNode, node))
             {
-                if (ReferenceEquals(SelectedNode, node))
-                {
-                    _selectedNode = null;
-                }
-                DetermineUnselectedNodeColor(out bgColor, out fgColor);
+                _selectedNode = null;
             }
         }
 
         if (result)
         {
-            node.BackColor = bgColor;
-            node.ForeColor = fgColor;
-
+            EnforceNodeColor(node, selectNode);
             MarkSelectionChanged();
         }
 
         return result;
+    }
+
+    /// <summary>  Enforce node color to be selected or unselected; depending <paramref name="selectNode"/>. </summary>
+    /// <param name="node"> The <see cref="TreeNode"/> to be modified. Can't be null. </param>
+    /// <param name="selectNode"> True to use select, false unselected node color. </param>
+    private void EnforceNodeColor(TreeNode node, bool selectNode)
+    {
+        if (selectNode)
+        {
+            node.BackColor = SystemColors.Highlight;
+            node.ForeColor = SystemColors.HighlightText;
+        }
+        else
+        {
+            DetermineUnselectedNodeColor(out Color bgColor, out Color fgColor);
+            node.BackColor = bgColor;
+            node.ForeColor = fgColor;
+        }
     }
 
     private void DetermineUnselectedNodeColor(out Color bgColor, out Color fgColor)

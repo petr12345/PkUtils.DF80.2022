@@ -69,7 +69,6 @@ partial class TestForm
         treeNode1.Text = "Node0";
         _treeView.Nodes.AddRange(new TreeNode[] { treeNode1 });
         _treeView.SelectedImageIndex = 0;
-        _treeView.SelectedNodes = (IReadOnlyCollection<TreeNode>)resources.GetObject("_treeView.SelectedNodes");
         _treeView.Size = new Size(374, 236);
         _treeView.TabIndex = 0;
         _treeView.SelectionChanged += OnMultiSelectTreeView_SelectionChanged;

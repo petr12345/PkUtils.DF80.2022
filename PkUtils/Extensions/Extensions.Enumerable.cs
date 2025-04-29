@@ -575,11 +575,11 @@ public static class EnumerableExtensions
         if (!string.IsNullOrEmpty(listed))
         {
             string sequenceName = string.IsNullOrEmpty(argName) ? string.Empty : Invariant($" '{argName}'");
-            string sequenceForExeption = string.IsNullOrEmpty(argName) ? nameof(source) : Invariant($"'{argName}'");
+            string sequenceForException = string.IsNullOrEmpty(argName) ? nameof(source) : Invariant($"'{argName}'");
             string message1 = Invariant($"The {sequenceName} cannot contain duplicate {typeof(T).Name},");
             string message2 = Invariant($" but there are duplicated values {listed}");
 
-            throw new ArgumentException(message1 + message2, sequenceForExeption);
+            throw new ArgumentException(message1 + message2, sequenceForException);
         }
 
         return source;

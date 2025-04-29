@@ -300,7 +300,7 @@ public partial class TestForm : FormWithLayoutPersistence, IDumper
         int count = _treeView.Nodes.Count;
 
         _btnInsertNodes.Enabled = (count <= 1);
-        _btnDeleteNodes.Enabled = (count > 1); ;
+        _btnDeleteNodes.Enabled = (count > 1);
     }
 
     protected void UpdateClearSelectionButton()

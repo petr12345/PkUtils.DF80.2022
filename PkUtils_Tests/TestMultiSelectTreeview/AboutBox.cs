@@ -1,9 +1,8 @@
-using System.Diagnostics;
 using System.Reflection;
 using System.Text;
 using PK.PkUtils.Consoles;
+using PK.PkUtils.Extensions;
 using PK.PkUtils.UI.Utils;
-
 
 namespace TestMultiSelectTreeView;
 
@@ -12,8 +11,7 @@ public partial class AboutBox : Form
 {
     #region Fields
     private bool _expanded = true;
-    private int _collapsedHeight;
-    private int _expandedHeight;
+    private int _verticalDelta;
     #endregion // Fields
 
     #region Constructor(s)
@@ -36,55 +34,37 @@ public partial class AboutBox : Form
         else
         {
             _textBoxDescription.Text = GetLoadedAssembliesInfo();
-            InitializeWebsiteLink("https://www.linkedin.com/in/petr-kodet-3b0bb/");
+            _linkLabelWebsite.InitializeWebsiteLink("https://www.linkedin.com/in/petr-kodet-3b0bb/");
         }
     }
     #endregion // Constructor(s)
 
     #region Properties
 
-    private int CollapsedHeight { get => _collapsedHeight; }
-    private int ExpandedHeight { get => _expandedHeight; }
+    /// <summary> Gets a value indicating whether this object is expanded. </summary>
+    protected bool IsExpanded { get => _expanded; }
+
+    private int VerticalDelta { get => _verticalDelta; }
+
     #endregion // Properties
 
     #region Methods
 
-    /// <summary>
-    /// Initializes the <see cref="_linkLabelWebsite"/> with the specified link and optional display text.
-    /// If no display text is provided, the link itself is shown as the label text.
-    /// <para>
-    /// If the display text differs from the link, a separate handler is attached
-    /// to open the link manually, because automatic browser navigation only occurs when the full URL is displayed.
-    /// </para>
-    /// </summary>
-    /// <param name="link">The URL to navigate to when the link is clicked. Must not be null or empty.</param>
-    /// <param name="displayText">
-    /// Optional text to display instead of the full link. 
-    /// If omitted, the full link is shown and navigation happens automatically.
-    /// </param>
-    /// <exception cref="ArgumentException">Thrown if the link is null or empty.</exception>
-    public void InitializeWebsiteLink(string link, string displayText = null)
+    /// <summary>   Switch expanded/collapsed state. </summary>
+    /// <param name="enforceChange"> (Optional) True to enforce change, regardless of _textBoxDescription.Visible
+    /// current value. This is needed for instance when being called for instance from Load event handler. </param>
+    protected void SwitchExpandedCollapsed(bool enforceChange = false)
     {
-        ArgumentNullException.ThrowIfNullOrEmpty(link);
-        string linkText = displayText ?? link;
+        _expanded = !IsExpanded;
 
-        _linkLabelWebsite.Text = linkText;
-        _linkLabelWebsite.Links.Clear();
-        _linkLabelWebsite.Links.Add(0, linkText.Length, link);
-
-        // If the displayed text is not the full link, we must handle LinkClicked manually
-        if (displayText != null && !displayText.Equals(link, StringComparison.OrdinalIgnoreCase))
+        if (enforceChange || (_textBoxDescription.Visible != IsExpanded))
         {
-            _linkLabelWebsite.LinkClicked -= LinkLabelWebsite_LinkClicked; // Ensure no multiple subscriptions
-            _linkLabelWebsite.LinkClicked += LinkLabelWebsite_LinkClicked;
+            if (_textBoxDescription.Visible = IsExpanded)
+                Height += VerticalDelta;
+            else
+                Height -= VerticalDelta;
         }
-    }
-
-    private void SwitchExpandedCollapsed()
-    {
-        this.Height = (_expanded = !_expanded) ? ExpandedHeight : CollapsedHeight;
-        _textBoxDescription.Visible = _expanded;
-        _buttonMore.Text = _expanded ? "<< Less" : "More >>";
+        _buttonMore.Text = IsExpanded ? "<< Less" : "More >>";
     }
 
     #region Assembly Attribute Accessors
@@ -135,7 +115,6 @@ public partial class AboutBox : Form
         // Return the complete string of assembly information
         return sb.ToString();
     }
-
     #endregion // Assembly Attribute Accessors
     #endregion // Methods
 
@@ -143,54 +122,16 @@ public partial class AboutBox : Form
 
     private void AboutBox_Load(object sender, EventArgs e)
     {
-        _collapsedHeight = (_expandedHeight = Height) - _textBoxDescription.Height;
-        if (_expanded)
+        _verticalDelta = _textBoxDescription.Height;
+        if (IsExpanded)
         {
-            SwitchExpandedCollapsed();
-        }
-    }
-
-    /// <summary>
-    /// Handles the click event on <see cref="_linkLabelWebsite"/> and opens the associated link.
-    /// </summary>
-    private void LinkLabelWebsite_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
-    {
-        if (e.Link.LinkData is string target && !string.IsNullOrEmpty(target))
-        {
-            try
-            {
-                Process.Start(new ProcessStartInfo
-                {
-                    FileName = target,
-                    UseShellExecute = true
-                });
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show($"Unable to open link: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-            }
+            SwitchExpandedCollapsed(enforceChange: true);
         }
     }
 
     private void OnButtonMore_Click(object sender, EventArgs e)
     {
-        SwitchExpandedCollapsed();
-    }
-
-    private void OnLinkLabelWebsite_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
-    {
-        // Process.Start(new ProcessStartInfo(_linkLabelWebsite.Text) { UseShellExecute = true });
-        if (e.Link.LinkData is string target && !string.IsNullOrEmpty(target))
-        {
-            try
-            {
-                Process.Start(new ProcessStartInfo { FileName = target, UseShellExecute = true });
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show($"Unable to open link: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-            }
-        }
+        SwitchExpandedCollapsed(enforceChange: false);
     }
 
     private void OnButtonOK_Click(object sender, EventArgs e)

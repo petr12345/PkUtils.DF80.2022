@@ -69,7 +69,6 @@ partial class AboutBox
         _linkLabelWebsite.TabIndex = 3;
         _linkLabelWebsite.TabStop = true;
         _linkLabelWebsite.Text = "Website";
-        _linkLabelWebsite.LinkClicked += OnLinkLabelWebsite_LinkClicked;
         // 
         // _textBoxDescription
         // 
