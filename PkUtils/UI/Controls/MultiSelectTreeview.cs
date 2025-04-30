@@ -146,6 +146,14 @@ public partial class MultiSelectTreeView : TreeView
 
     #region Public Methods
 
+    /// <summary> Query if <paramref name="node"/> is one of selected nodes. </summary>
+    /// <param name="node"> The <see cref="TreeNode"/> to be examined. It can be null. </param>
+    /// <returns> True if <paramref name="node"/> is part of selection, false if not. </returns>
+    public bool IsSelected(TreeNode node)
+    {
+        return (node is not null) && SelectedNodes.Contains(node);
+    }
+
     /// <summary>
     /// Removes the specified <see cref="TreeNode"/> from the <see cref="TreeView"/>,
     /// and ensures that the internal selection set remains consistent by removing the node
@@ -273,9 +281,7 @@ public partial class MultiSelectTreeView : TreeView
         SelectionChanged?.Invoke(this, new TreeViewSelChangeArgs(this));
     }
 
-    /// <summary>
-    /// Initialize the selection if not initialized already. 
-    /// </summary>
+    /// <summary> Initialize the selection if not initialized already. </summary>
     /// <remarks>
     /// This is an attempt to address the odd behavior of the tree view, namely that it selects some of the nodes 
     /// you added and draws them that way, despite the SelectedNode property still returns null.
@@ -289,17 +295,15 @@ public partial class MultiSelectTreeView : TreeView
     {
         if (!SelectionInitialized)
         {
-            selectedNodes ??= [];
-
             _selectedNodes.Clear();
-            _selectedNodes.UnionWith(selectedNodes);
-            _selectedNode = selectedNodes.FirstOrDefault();
+            _selectedNodes.UnionWith(selectedNodes ?? []);
+            _selectedNode = selectedNodes?.FirstOrDefault();
 
             // Force a change in the behavior of the standard tree control, which, when there is no selection, 
             // still wants to draw the root as selected
             if ((SelectedNode is null) && (RootNode is not null))
             {
-                EnforceNodeColor(RootNode, false);
+                EnforceNodeColor(RootNode, selectNode: false);
             }
 
             _selectionInitialized = true;
@@ -412,7 +416,7 @@ public partial class MultiSelectTreeView : TreeView
             if (e.Location.X < leftBound || e.Location.X > rightBound) return;
 
             using IDisposable deferred = DeferSelectionChange();
-            if (ModifierKeys == Keys.None && SelectedNodes.Contains(node))
+            if (ModifierKeys == Keys.None && IsSelected(node))
             {
                 // Potential drag operation, selection on MouseUp
             }
@@ -444,7 +448,7 @@ public partial class MultiSelectTreeView : TreeView
             TreeNode node = this.GetNodeAt(e.Location);
             if (node != null)
             {
-                if (ModifierKeys == Keys.None && SelectedNodes.Contains(node))
+                if (ModifierKeys == Keys.None && IsSelected(node))
                 {
                     int leftBound = node.Bounds.X; // -20; // Allow user to click on image
                     int rightBound = node.Bounds.Right + 10; // Give a little extra room
@@ -480,7 +484,7 @@ public partial class MultiSelectTreeView : TreeView
 
             if (e.Item is TreeNode node)
             {
-                if (!SelectedNodes.Contains(node))
+                if (!IsSelected(node))
                 {
                     SelectSingleNode(node);
                     ToggleNode(node, true);
@@ -724,7 +728,7 @@ public partial class MultiSelectTreeView : TreeView
             if (SelectedNode == null || ModifierKeys == Keys.Control)
             {
                 // Ctrl + Click selects an unselected node, or unselects a selected node.
-                bool bIsSelected = SelectedNodes.Contains(node);
+                bool bIsSelected = IsSelected(node);
                 ToggleNode(node, !bIsSelected);
             }
             else if (ModifierKeys == Keys.Shift)
@@ -903,7 +907,7 @@ public partial class MultiSelectTreeView : TreeView
 
         if (selectNode)
         {
-            if (result = ((SelectedNode != node) || !SelectedNodes.Contains(node)))
+            if (result = ((SelectedNode != node) || !IsSelected(node)))
             {
                 _selectedNode = node;
                 _selectedNodes.Add(node);

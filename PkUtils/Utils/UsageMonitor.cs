@@ -1,14 +1,3 @@
-/***************************************************************************************************************
-*
-* FILE NAME:   .\Utils\UsageCounterWrapper.cs
-*
-* AUTHOR:      Petr Kodet
-*
-* DESCRIPTION: The file contains code of classes UsageCounter and UsageCounterWrapper
-*
-**************************************************************************************************************/
-
-
 // Ignore Spelling: Utils
 
 using System;
@@ -17,21 +6,24 @@ using PK.PkUtils.Interfaces;
 
 namespace PK.PkUtils.Utils;
 
-/// <summary> A helper class, providing easier usage of IUsageCounter>-implementing class. </summary>
+/// <summary> A helper class, providing easier usage of IUsageCounter-implementing class. </summary>
 ///
 /// <example> Usage example: <br/>
 /// Assume you have declared as a member variable in your class CAnyClass UsageCounter _counter;
-/// and in the code of the method of the class you will use locally the instance of UsageCounterWrapper:
+/// and in the code of the method of the class you will use locally the instance of UsageMonitor:
 /// <code>
-/// void CAnyClass.SomeMythod()
+/// void CAnyClass.SomeMethod()
 /// {
 ///   if (_counter.IsUsed)
 ///   {
 ///     return;
 ///   }
-///   else using(var wrapper = new UsageCounterWrapper(_counter))
+///   else using(var monitor = new UsageMonitor(_counter))
 ///   {
-///     if (wrapper.IsCounterAcquired)
+///     // The 'íf' condition below should be checked just in potentially multi-threading scenarios;
+///     // not when the purpose of '_counter' is some kind of re-entrance check (locking, etc.) in a single-threaded UI
+///     //
+///     if (monitor.IsCounterAcquired)
 ///     {
 ///          // Do something.
 ///          // The 'using' statement makes sure that dispose of wrapper is called;
@@ -42,7 +34,7 @@ namespace PK.PkUtils.Utils;
 /// }
 /// </code></example>
 [CLSCompliant(true)]
-public class UsageCounterWrapper : IDisposableEx
+public class UsageMonitor : IDisposableEx
 {
     #region Fields
     /// <summary> The wrapped usage counter. </summary>
@@ -61,7 +53,7 @@ public class UsageCounterWrapper : IDisposableEx
     /// <paramref name="counter"/> is null.</exception>
     /// 
     /// <param name="counter">The object implementing <see cref="IUsageCounter"/> that is going to be locked.</param>
-    public UsageCounterWrapper(IUsageCounter counter)
+    public UsageMonitor(IUsageCounter counter)
         : this(counter, firstTimeUseOnly: true)
     { }
 
@@ -75,7 +67,7 @@ public class UsageCounterWrapper : IDisposableEx
     ///
     /// <param name="counter"> The object implementing <see cref="IUsageCounter"/> that is going to be locked. </param>
     /// <param name="firstTimeUseOnly"> True to add reference for first time use only. </param>
-    public UsageCounterWrapper(IUsageCounter counter, bool firstTimeUseOnly)
+    public UsageMonitor(IUsageCounter counter, bool firstTimeUseOnly)
     {
         ArgumentNullException.ThrowIfNull(counter);
         AcquireUse(counter, firstTimeUseOnly);
@@ -196,7 +188,7 @@ public class UsageCounterWrapper : IDisposableEx
     #endregion // IDisposable Members
 
     /// <summary>
-    /// Returns true in case this UsageCounterWrapper has been disposed and no longer should be used.
+    /// Returns true in case this UsageMonitor has been disposed and no longer should be used.
     /// </summary>
     public bool IsDisposed
     {

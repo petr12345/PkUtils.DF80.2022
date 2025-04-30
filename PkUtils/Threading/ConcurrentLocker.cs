@@ -21,7 +21,7 @@ public class ConcurrentLocker<TKey> : IConcurrentLocker<TKey>
 
     /// <summary> 
     /// Instance of SemaphoreWrapper is used as value in ConcurrentLocker internal dictionary.
-    /// The object returned from LockAsync is UsageCounterWrapper, referring to this SemaphoreWrapper.
+    /// The object returned from LockAsync is UsageMonitor, referring to this SemaphoreWrapper.
     /// </summary>
     protected class SemaphoreWrapper(ConcurrentLocker<TKey> owner, TKey relatedKey) : UsageCounter, IDisposableEx
     {
@@ -250,10 +250,10 @@ public class ConcurrentLocker<TKey> : IConcurrentLocker<TKey>
     /// <returns>   The disposable lock object. </returns>
     protected async Task<IDisposable> WaitForSemaphoreAsync(SemaphoreWrapper semaphoreWrapper)
     {
-        // Note, the returned UsageCounterWrapper will on release calls SemaphoreWrapper.Release(),
+        // Note, the returned UsageMonitor will on release calls SemaphoreWrapper.Release(),
         // which in turn calls SemaphoreSlim.Release();
         // 
-        UsageCounterWrapper usageWrapper = new(semaphoreWrapper, firstTimeUseOnly: false);
+        UsageMonitor usageWrapper = new(semaphoreWrapper, firstTimeUseOnly: false);
 
         await semaphoreWrapper.SemaphoreSlim.WaitAsync();
         return usageWrapper;
@@ -271,7 +271,7 @@ public class ConcurrentLocker<TKey> : IConcurrentLocker<TKey>
         int millisecondsTimeout,
         CancellationToken cancellationToken)
     {
-        UsageCounterWrapper usageWrapper = new(semaphoreWrapper, firstTimeUseOnly: false);
+        UsageMonitor usageWrapper = new(semaphoreWrapper, firstTimeUseOnly: false);
         bool succeeded;
 
         try
@@ -298,7 +298,7 @@ public class ConcurrentLocker<TKey> : IConcurrentLocker<TKey>
         }
         else
         {
-            semaphoreWrapper.BaseRelease();  // 'manually' release the reference acquired by new UsageCounterWrapper
+            semaphoreWrapper.BaseRelease();  // 'manually' release the reference acquired by new UsageMonitor
             throw new OptimisticConcurrencyException(_fnErrorMessage(semaphoreWrapper.RelatedKey));
         }
     }

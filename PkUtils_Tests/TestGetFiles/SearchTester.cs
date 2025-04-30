@@ -107,11 +107,11 @@ namespace PK.TestGetFiles
                 List<string> seqBminusA = sortedFilesB.Except(sortedFilesA).ToList();
                 const int nFragmentCount = 5;
 
-                if (seqAminusB.Count() == 0)
+                if (seqAminusB.Count == 0)
                 { // A is subset of B
                     Dump("All results of {0} are contained in {1} results", strDescrA, strDescrB);
                 }
-                else if (seqBminusA.Count() == 0)
+                else if (seqBminusA.Count == 0)
                 { // B is subset of A
                     Dump("All results of {0} are contained in {1} results", strDescrB, strDescrA);
                 }
@@ -121,7 +121,7 @@ namespace PK.TestGetFiles
                       strDescrA, strDescrB);
                 }
 
-                if (seqAminusB.Count() > 0)
+                if (seqAminusB.Count > 0)
                 {
                     string strMsg = string.Format(CultureInfo.InvariantCulture,
                       "Several items found by {0} but NOT present in {1}:", strDescrA, strDescrB);
@@ -131,7 +131,7 @@ namespace PK.TestGetFiles
                     Dump(fragment);
                 }
 
-                if (seqBminusA.Count() > 0)
+                if (seqBminusA.Count > 0)
                 {
                     string strMsg = string.Format(CultureInfo.InvariantCulture,
                       "Several items NOT found by {0} but present in {1}:", strDescrA, strDescrB);

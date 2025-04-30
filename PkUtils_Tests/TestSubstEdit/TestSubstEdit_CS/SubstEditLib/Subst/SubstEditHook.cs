@@ -463,7 +463,7 @@ namespace PK.SubstEditLib.Subst
                 OpenUndoInfo();
             }
 
-            using (var user = new UsageCounterWrapper(_rLock))
+            using (var user = new UsageMonitor(_rLock))
             {
                 if (null != (lpPh = PhysData.InsertNewInfo(selInf.CaretChar, what)))
                 {

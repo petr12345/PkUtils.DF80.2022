@@ -453,7 +453,7 @@ namespace PK.TestSystemHooking
             }
             else
             { // to prevent hanging maintains a reentrancy lock 
-                using (var lockUser = new UsageCounterWrapper(_reentrancyLock))
+                using (var lockUser = new UsageMonitor(_reentrancyLock))
                 {
                     Win32.CWPRETSTRUCT msg = (Win32.CWPRETSTRUCT)Marshal.PtrToStructure(lParam, typeof(Win32.CWPRETSTRUCT));
                     string strMsg = string.Format(CultureInfo.InvariantCulture,

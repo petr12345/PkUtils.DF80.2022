@@ -114,7 +114,7 @@ namespace WinTester3
                 {
                     return;  // nothing to do
                 }
-                using (var usageWrapper = new UsageCounterWrapper(SettingEdgeLock))
+                using (var usageWrapper = new UsageMonitor(SettingEdgeLock))
                 {
                     rbCheck = RadioForEdge(edg);
                     this.Edge = edg;

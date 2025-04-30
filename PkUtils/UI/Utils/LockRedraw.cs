@@ -28,9 +28,9 @@ namespace PK.PkUtils.UI.Utils;
 ///    }
 ///    protected void SomeMyMethod()
 ///    {
-///        // Constructor of UsageCounterWrapper causes the call of _lockRedraw.StopRedrawing();
+///        // Constructor of UsageMonitor causes the call of _lockRedraw.StopRedrawing();
 ///        // unless it has already been called somewhere higher in the call stack.
-///        using (IDisposable _ = new UsageCounterWrapper(_lockRedraw))
+///        using (IDisposable _ = new UsageMonitor(_lockRedraw))
 ///        {
 ///            // Do some long operation here involving many changes to _treeView,
 ///            // while _lockRedraw prevents redrawing.
@@ -48,7 +48,7 @@ namespace PK.PkUtils.UI.Utils;
 /// <seealso href="http://stackoverflow.com/questions/192413/how-do-you-prevent-a-richtextbox-from-refreshing-its-display">
 /// Stackoverflow:  How do you prevent a RichTextBox from refreshing its display?</seealso>
 ///
-/// <seealso cref="UsageCounterWrapper"/>
+/// <seealso cref="UsageMonitor"/>
 [CLSCompliant(true)]
 public class LockRedraw : UsageCounter
 {

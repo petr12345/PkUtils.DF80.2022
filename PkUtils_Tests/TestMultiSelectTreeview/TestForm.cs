@@ -376,7 +376,7 @@ public partial class TestForm : FormWithLayoutPersistence, IDumper
 
     private void OnButtonDeleteNodes_Click(object sender, EventArgs e)
     {
-        using (IDisposable _ = new UsageCounterWrapper(_treeLockRedraw))
+        using (IDisposable _ = new UsageMonitor(_treeLockRedraw))
         {
             TreeNode root = _treeView.RootNode;
             List<TreeNode> notRoot = _treeView.GetAllNodes().Except(root.FromSingle()).ToList();
@@ -390,7 +390,7 @@ public partial class TestForm : FormWithLayoutPersistence, IDumper
 
     private void OnBtnInsertNodes_Click(object sender, EventArgs e)
     {
-        using (IDisposable _ = new UsageCounterWrapper(_treeLockRedraw))
+        using (IDisposable _ = new UsageMonitor(_treeLockRedraw))
         {
             InitializeAdditionalTreeNodes();
             AdjustAllNodesImages();
