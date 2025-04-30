@@ -1,15 +1,4 @@
-﻿/***************************************************************************************************************
-*
-* FILE NAME:   .\Extensions\TreeViewExtension.cs
-*
-* AUTHOR:      Petr Kodet
-*
-* DESCRIPTION:
-*   The file contains extension class TreeViewExtension.
-*
-**************************************************************************************************************/
-
-// Ignore Spelling: Utils, ctrl
+﻿// Ignore Spelling: Utils, ctrl
 //
 using System;
 using System.Collections.Generic;
@@ -101,7 +90,7 @@ public static class TreeViewExtensions
         return FindAll(tv.Nodes, match);
     }
 
-    /// <summary> A TreeView extension method that expands all nodes. </summary>
+    /// <summary>   A TreeView extension method that expands all nodes. </summary>
     /// <param name="tv"> A TreeView control whose nodes are retrieved. Can't be null. </param>
     public static void ExpandAllNodes(this TreeView tv)
     {
@@ -109,7 +98,7 @@ public static class TreeViewExtensions
         foreach (TreeNode node in tv.GetAllNodes()) { node.Expand(); }
     }
 
-    /// <summary> A TreeView extension method that collapses all nodes. </summary>
+    /// <summary>   A TreeView extension method that collapses all nodes. </summary>
     /// <param name="tv"> A TreeView control whose nodes are retrieved. Can't be null. </param>
     public static void CollapseAllNodes(this TreeView tv)
     {
@@ -125,7 +114,7 @@ public static class TreeViewExtensions
     /// </summary>
     /// <param name="tc">A collection of tree nodes. Could be null. </param>
     /// <returns>Enumerable collection of all nodes in the tree.</returns>
-    public static IEnumerable<TreeNode> GetAllNodes(TreeNodeCollection tc)
+    public static IEnumerable<TreeNode> GetAllNodes(this TreeNodeCollection tc)
     {
         if (tc == null)
             yield break;
@@ -174,6 +163,26 @@ public static class TreeViewExtensions
     #endregion // Extensions_of_TreeNodeCollection
 
     #region Extensions_of_TreeNode
+
+    /// <summary> A TreeNode extension method that query if 'tn' is root. </summary>
+    /// <exception cref="ArgumentNullException"> Thrown when <paramref name="tn"/> is null. </exception>
+    /// <param name="tn"> A tree node examined. Can't be null. </param>
+    /// <returns>   True if root, false if not. </returns>
+    public static bool IsRoot(this TreeNode tn)
+    {
+        ArgumentNullException.ThrowIfNull(tn);
+        return (tn.Parent is null);
+    }
+
+    /// <summary> A TreeNode extension method that query if 'tn' is root. </summary>
+    /// <exception cref="ArgumentNullException"> Thrown when <paramref name="tn"/> is null. </exception>
+    /// <param name="tn"> A tree node examined. Can't be null. </param>
+    /// <returns>   True if root, false if not. </returns>
+    public static bool IsLeaf(this TreeNode tn)
+    {
+        ArgumentNullException.ThrowIfNull(tn);
+        return (tn.Nodes.Count == 0);
+    }
 
     /// <summary>
     /// Finds all children, grand-children etc. that match the conditions defined by the specified predicate <paramref name="match"/>.

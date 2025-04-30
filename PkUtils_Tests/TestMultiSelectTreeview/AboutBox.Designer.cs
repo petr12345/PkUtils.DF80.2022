@@ -38,7 +38,7 @@ partial class AboutBox
         _labelAssemblyTitle.AutoSize = true;
         _labelAssemblyTitle.Location = new Point(12, 9);
         _labelAssemblyTitle.Name = "_labelAssemblyTitle";
-        _labelAssemblyTitle.Size = new Size(83, 15);
+        _labelAssemblyTitle.Size = new Size(105, 20);
         _labelAssemblyTitle.TabIndex = 0;
         _labelAssemblyTitle.Text = "Assembly Title";
         // 
@@ -47,7 +47,7 @@ partial class AboutBox
         _labelVersion.AutoSize = true;
         _labelVersion.Location = new Point(12, 35);
         _labelVersion.Name = "_labelVersion";
-        _labelVersion.Size = new Size(45, 15);
+        _labelVersion.Size = new Size(57, 20);
         _labelVersion.TabIndex = 1;
         _labelVersion.Text = "Version";
         // 
@@ -56,7 +56,7 @@ partial class AboutBox
         _labelCopyright.AutoSize = true;
         _labelCopyright.Location = new Point(12, 61);
         _labelCopyright.Name = "_labelCopyright";
-        _labelCopyright.Size = new Size(60, 15);
+        _labelCopyright.Size = new Size(74, 20);
         _labelCopyright.TabIndex = 2;
         _labelCopyright.Text = "Copyright";
         // 
@@ -65,7 +65,7 @@ partial class AboutBox
         _linkLabelWebsite.AutoSize = true;
         _linkLabelWebsite.Location = new Point(12, 87);
         _linkLabelWebsite.Name = "_linkLabelWebsite";
-        _linkLabelWebsite.Size = new Size(49, 15);
+        _linkLabelWebsite.Size = new Size(62, 20);
         _linkLabelWebsite.TabIndex = 3;
         _linkLabelWebsite.TabStop = true;
         _linkLabelWebsite.Text = "Website";
@@ -105,6 +105,7 @@ partial class AboutBox
         // 
         // AboutBox
         // 
+        CancelButton = _buttonOK;
         ClientSize = new Size(522, 593);
         Controls.Add(_buttonMore);
         Controls.Add(_buttonOK);
