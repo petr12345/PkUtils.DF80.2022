@@ -6,16 +6,16 @@ using PK.PkUtils.Utils;
 namespace PK.PkUtils.NUnitTests.UtilsTests;
 
 [TestFixture()]
-public class UsageCounterWrapperTests
+public class UsageMonitorTests
 {
     [Test()]
-    public void UsageCounterWrapper_Constructor_Test()
+    public void UsageMonitor_Constructor_Test()
     {
         // Arrange
         UsageCounter counter = new UsageCounter();
 
         // Act
-        UsageCounterWrapper usageWrapper = new UsageCounterWrapper(counter);
+        UsageMonitor usageWrapper = new UsageMonitor(counter);
 
         Assert.Multiple(() =>
         {
@@ -27,13 +27,13 @@ public class UsageCounterWrapperTests
     }
 
     [Test()]
-    public void UsageCounterWrapper_Dispose_Test()
+    public void UsageMonitor_Dispose_Test()
     {
         // Arrange
         var counter = new UsageCounter();
 
         // Act
-        using (UsageCounterWrapper usageWrapper = new UsageCounterWrapper(counter))
+        using (UsageMonitor usageWrapper = new UsageMonitor(counter))
         {
             // Assert
             Assert.That(counter.IsUsed, Is.True);

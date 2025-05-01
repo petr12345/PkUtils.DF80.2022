@@ -1,0 +1,35 @@
+Standard Right-Click Behavior in Windows Controls
+=========================================================
+
+In standard Windows controls like TreeView and ListView, 
+the default behavior when right-clicking on an item depends on a few factors. 
+Here’s a summary of the standard expected behavior based on the native Windows UI conventions:
+
+✅ Default Behavior (No Modifier Keys Pressed):
+--------------------------------------------------
+a/ If the right-clicked item is not selected:
+→ The item becomes selected (and other selections are cleared).
+→ The item receives focus.
+→ The context menu (if any) will typically apply to this single item.
+
+b/ If the right-clicked item is already selected:
+→ The selection does NOT change; that includes multi-selection.
+→ The context menu applies to the currently selected group.
+
+Note: Case (b) intentionally differs from left-click behavior, which typically alters selection.
+Note: This behavior aligns with standard Windows UI patterns, such as those in Windows Explorer.
+
+✅ With Ctrl Key Pressed:
+--------------------------------------------------
+The Ctrl key is generally used for multi-selection, 
+but Windows does NOT modify right-click behavior based on Ctrl in most cases.
+Right-clicking while Ctrl is held typically behaves the same as right-clicking without it:
+
+- If you right-click an unselected item, it becomes the only selected item, regardless of Ctrl.
+- If you right-click a selected item, selection stays unchanged.
+
+❌ Deselecting Items on Right-Click:
+--------------------------------------------------
+Right-click should not deselect items directly.
+Deselecting usually only occurs as a side-effect when right-clicking on a new, 
+unselected item, because the selection switches.
