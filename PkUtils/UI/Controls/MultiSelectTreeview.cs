@@ -22,12 +22,7 @@ public partial class MultiSelectTreeView : TreeView
 {
     #region Typedefs
 
-    /// <summary>
-    /// Additional information for TreeView selection change events.
-    /// </summary>
-    /// <remarks>
-    /// Initializes a new instance of the <see cref="TreeViewSelChangeArgs"/> struct with custom selection.
-    /// </remarks>
+    /// <summary> Contains information for TreeView selection change events. </summary>
     /// <param name="treeview">The TreeView control. Must not be null.</param>
     /// <param name="selectedNodes">The selected nodes. Must not be null.</param>
     /// <exception cref="ArgumentNullException">Thrown when any parameter is null.</exception>
@@ -39,7 +34,7 @@ public partial class MultiSelectTreeView : TreeView
         /// <summary> The collection of selected nodes. </summary>
         public IReadOnlyCollection<TreeNode> SelectedNodes { get; } = selectedNodes ?? throw new ArgumentNullException(nameof(selectedNodes));
 
-        /// <summary> The stack trace when this object was created. </summary>
+        /// <summary>Stack trace at the time of creation (skips constructor frames).</summary>
         public StackTrace StackTrace { get; } = new StackTrace(skipFrames: 2);
 
         /// <summary>
@@ -327,11 +322,12 @@ public partial class MultiSelectTreeView : TreeView
     /// <returns>The number of nodes removed from selection.</returns>
     protected virtual int RemoveDescendantsFromSelection(TreeNode node, bool includeNode)
     {
-        using IDisposable deferred = DeferSelectionChange();
         int removedCount = 0;
 
         if (node is not null && SelectedNodes.Count > 0)
         {
+            using IDisposable deferred = DeferSelectionChange();
+
             // Use a stack for depth-first traversal to avoid recursion; start either from the root or child nodes
             for (var stack = new Stack<TreeNode>(includeNode ? [node] : node.Nodes.Cast<TreeNode>()); stack.Count > 0;)
             {
@@ -349,6 +345,22 @@ public partial class MultiSelectTreeView : TreeView
 
         return removedCount;
     }
+
+    /// <summary>
+    /// Checks if the click location is within the horizontal bounds of the tree node.
+    /// </summary>
+    /// <param name="clickLocation">The point of the mouse click.</param>
+    /// <param name="tn">The tree node to test. Can't be  null. </param>
+    /// <returns><c>true</c> if the point is within bounds; otherwise, <c>false</c>.</returns>
+    protected virtual bool IsWithinClickAbleBounds(Point clickLocation, TreeNode tn)
+    {
+        ArgumentNullException.ThrowIfNull(tn);
+
+        int leftBound = tn.Bounds.X;  // -20; // Allow user to click on image
+        int rightBound = tn.Bounds.Right + 10; // Give a little extra room
+        return (clickLocation.X > leftBound) && (clickLocation.X < rightBound);
+    }
+
     #endregion // Selection_change_related
 
     #region Error_handling_related
@@ -365,7 +377,6 @@ public partial class MultiSelectTreeView : TreeView
         MessageBox.Show($"{ex.GetType().Name} has occurred: {ex.Message}.");
     }
     #endregion // Error_handling_related
-    #endregion // Protected Methods
 
     #region Protected Overridden Events
 
@@ -396,24 +407,22 @@ public partial class MultiSelectTreeView : TreeView
     }
 
     /// <inheritdoc/>
-    protected override void OnGotFocus(EventArgs e)
+    protected override void OnGotFocus(EventArgs args)
     {
         InitSelection();
-        base.OnGotFocus(e);
+        base.OnGotFocus(args);
     }
 
     /// <inheritdoc/>
-    protected override void OnMouseDown(MouseEventArgs e)
+    protected override void OnMouseDown(MouseEventArgs args)
     {
         try
         {
             base.SelectedNode = null;
-            TreeNode node = GetNodeAt(e.Location);
-            if (node == null) return;
+            TreeNode node = GetNodeAt(args.Location);
 
-            int leftBound = node.Bounds.X;
-            int rightBound = node.Bounds.Right + 10;
-            if (e.Location.X < leftBound || e.Location.X > rightBound) return;
+            if (node == null) return;
+            if (!IsWithinClickAbleBounds(args.Location, node)) return;
 
             using IDisposable deferred = DeferSelectionChange();
             if (ModifierKeys == Keys.None && IsSelected(node))
@@ -425,7 +434,7 @@ public partial class MultiSelectTreeView : TreeView
                 SelectNode(node);
             }
 
-            base.OnMouseDown(e);
+            base.OnMouseDown(args);
         }
         catch (Exception ex)
         {
@@ -434,32 +443,45 @@ public partial class MultiSelectTreeView : TreeView
     }
 
     /// <inheritdoc/>
-    protected override void OnMouseUp(MouseEventArgs e)
+    protected override void OnMouseUp(MouseEventArgs args)
     {
-        // If the clicked on a node that WAS previously 
-        // selected then, reselect it now. This will clear
-        // any other selected nodes. e.g. A B C D are selected
-        // the user clicks on B, now A C & D are no longer selected.
+        // I/ In case of the left click:
+        // If the user clicks a node that WAS already selected,
+        // reselect it to clear all other selections.
+        // For example: A, B, C, D are selected, the user clicks B — now only B remains selected.
+        // 
+        // II/ In case of the right click:
+        // Do NOT modify that behavior based on Ctrl.
+        // Do NOT modify selection if node was already selected. That includes possible multi-selection.
+        // If it was NOT selected, the clicked node becomes the only selected one.
+        // This mimics the default behavior of the TreeView control.
+
+        TreeNode node = this.GetNodeAt(args.Location);
+        bool wasSelected = IsSelected(node);
+        bool leftClick = (args.Button == MouseButtons.Left);
+        bool rightClick = (args.Button == MouseButtons.Right);
+
         try
         {
             BeginSelectionChange();
 
-            // Check to see if a node was clicked on 
-            TreeNode node = this.GetNodeAt(e.Location);
-            if (node != null)
+            if ((node != null) && (leftClick || rightClick))
             {
-                if (ModifierKeys == Keys.None && IsSelected(node))
+                if (leftClick)
                 {
-                    int leftBound = node.Bounds.X; // -20; // Allow user to click on image
-                    int rightBound = node.Bounds.Right + 10; // Give a little extra room
-                    if (e.Location.X > leftBound && e.Location.X < rightBound)
+                    if (ModifierKeys == Keys.None && wasSelected)
                     {
-                        SelectNode(node);
+                        if (IsWithinClickAbleBounds(args.Location, node))
+                        {
+                            SelectNode(node);
+                        }
                     }
                 }
+                else if (!wasSelected && IsWithinClickAbleBounds(args.Location, node))
+                {
+                    SelectNode(node);
+                }
             }
-
-            base.OnMouseUp(e);
         }
         catch (Exception ex)
         {
@@ -467,12 +489,13 @@ public partial class MultiSelectTreeView : TreeView
         }
         finally
         {
+            base.OnMouseUp(args);
             EndSelectionChange();
         }
     }
 
     /// <inheritdoc/>
-    protected override void OnItemDrag(ItemDragEventArgs e)
+    protected override void OnItemDrag(ItemDragEventArgs args)
     {
         // If the user drags a node and the node being dragged is NOT selected,
         // then clear the active selection, select the node being dragged and drag it.
@@ -482,7 +505,7 @@ public partial class MultiSelectTreeView : TreeView
         {
             BeginSelectionChange();
 
-            if (e.Item is TreeNode node)
+            if (args.Item is TreeNode node)
             {
                 if (!IsSelected(node))
                 {
@@ -491,7 +514,7 @@ public partial class MultiSelectTreeView : TreeView
                 }
             }
 
-            base.OnItemDrag(e);
+            base.OnItemDrag(args);
         }
         catch (Exception ex)
         {
@@ -504,15 +527,15 @@ public partial class MultiSelectTreeView : TreeView
     }
 
     /// <inheritdoc/>
-    protected override void OnBeforeSelect(TreeViewCancelEventArgs e)
+    protected override void OnBeforeSelect(TreeViewCancelEventArgs args)
     {
         // Never allow base.SelectedNode to be set!
         try
         {
             base.SelectedNode = null;
-            e.Cancel = true;
+            args.Cancel = true;
 
-            base.OnBeforeSelect(e);
+            base.OnBeforeSelect(args);
         }
         catch (Exception ex)
         {
@@ -521,12 +544,12 @@ public partial class MultiSelectTreeView : TreeView
     }
 
     /// <inheritdoc/>
-    protected override void OnAfterSelect(TreeViewEventArgs e)
+    protected override void OnAfterSelect(TreeViewEventArgs args)
     {
         // Never allow base.SelectedNode to be set!
         try
         {
-            base.OnAfterSelect(e);
+            base.OnAfterSelect(args);
             base.SelectedNode = null;
         }
         catch (Exception ex)
@@ -536,13 +559,13 @@ public partial class MultiSelectTreeView : TreeView
     }
 
     /// <inheritdoc/>
-    protected override void OnKeyDown(KeyEventArgs e)
+    protected override void OnKeyDown(KeyEventArgs args)
     {
         // Handle keyboard navigation and selection for the control.
-        base.OnKeyDown(e);
+        base.OnKeyDown(args);
 
         // PetrK 2025/04/02: added missed return for Keys.ControlKey
-        if (e.KeyCode == Keys.ShiftKey || e.KeyCode == Keys.ControlKey) return;
+        if (args.KeyCode == Keys.ShiftKey || args.KeyCode == Keys.ControlKey) return;
 
         // Start updating the tree view to optimize UI performance
         BeginUpdate();
@@ -562,7 +585,7 @@ public partial class MultiSelectTreeView : TreeView
 
             if (SelectedNode == null) return;
 
-            switch (e.KeyCode)
+            switch (args.KeyCode)
             {
                 case Keys.Left:
                     HandleLeftArrowKey();
@@ -597,7 +620,7 @@ public partial class MultiSelectTreeView : TreeView
                     break;
 
                 default:
-                    HandleCharacterSearch(e);
+                    HandleCharacterSearch(args);
                     break;
             }
         }
@@ -612,6 +635,7 @@ public partial class MultiSelectTreeView : TreeView
         }
     }
     #endregion // Protected Overridden Events
+    #endregion // Protected Methods
 
     #region Private_utilities_called_by_OnKeyDown
 
