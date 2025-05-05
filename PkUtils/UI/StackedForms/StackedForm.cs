@@ -174,10 +174,7 @@ public partial class StackedForm : Form, IStackedForm
     /// <param name="args">Argument containing characteristic data for event that is raised when the FormStack item is closed.</param>
     protected void FireEventStackItemClosed(EventFormStackItemClosedArgs args)
     {
-        if (null != _evStackItemClosed)
-        {
-            _evStackItemClosed(this, args);
-        }
+        _evStackItemClosed?.Invoke(this, args);
     }
 
     /// <summary>
@@ -354,7 +351,7 @@ public partial class StackedForm : Form, IStackedForm
     /// <inheritdoc/>
     public virtual DialogResult StackedShowModal()
     {
-        DialogResult result = DialogResult.None;
+        DialogResult result;
 
         Debug.Assert(!IsModalState);
         _bModal = true;

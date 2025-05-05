@@ -179,8 +179,7 @@ public class SerialPortSettings : SerialPortSettingsBase, IEquatable<SerialPortS
     /// <param name="propertyName">Name of changed property</param>
     protected void SendPropertyChangedEvent(string propertyName)
     {
-        if (PropertyChanged != null)
-            PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
+        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
     }
     #endregion // Methods
 

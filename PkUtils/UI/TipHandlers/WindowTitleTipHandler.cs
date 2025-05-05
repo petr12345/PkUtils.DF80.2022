@@ -1,4 +1,4 @@
-// Ignore Spelling: Meth, Msec, mss, Utils, tooltip
+// Ignore Spelling: Meth, Msec, mss, popup, Utils, tooltip
 //
 using System;
 using System.Diagnostics;
@@ -94,8 +94,8 @@ namespace PK.PkUtils.UI.TipHandlers
         /// </summary>
         private const int _biggerTipTimeMs = 960;
 
-        private const int _hideIfMouseMovingAndDisplyedFor2200ms = 2200;
-        private const int _moveIfMouseMovingAndDisplyedFor500ms = 500;
+        private const int _hideIfMouseMovingAndDisplayedFor2200ms = 2200;
+        private const int _moveIfMouseMovingAndDisplayedFor500ms = 500;
         #endregion // Fields
 
         #region Constructor(s)
@@ -353,7 +353,6 @@ namespace PK.PkUtils.UI.TipHandlers
             }
 
             // Get text and text rectangle for item under mouse
-            string sText;
             Rectangle rcText = Rectangle.Empty; // item text rectangle
             uint nSubItem = (uint)SubItemNumber.cNoSubItem;
             uint nItem = (uint)ItemNumber.cNoItem;
@@ -379,7 +378,7 @@ namespace PK.PkUtils.UI.TipHandlers
                         (hControl == User32.GetParent(this.HookedHWND)))
                     {
                         // Get text and text rectangle for item under mouse, font in control = true
-                        nItem = OnGetItemInfo(ptClient, true, out nSubItem, out rcText, out sText);
+                        nItem = OnGetItemInfo(ptClient, true, out _, out rcText, out _);
                     }
                 }
             }
@@ -398,7 +397,7 @@ namespace PK.PkUtils.UI.TipHandlers
                 {
                     // It's new item, and not wholly visible: prepare popup tip
                     // 
-                    OnGetItemInfo(ptClient, false, out nSubItem, out Rectangle rc, out sText);  // item text rectangle in popup tip
+                    OnGetItemInfo(ptClient, false, out nSubItem, out Rectangle rc, out string sText);  // item text rectangle in popup tip
                     int msDelay = (int)TipTimeDelayMsec;
                     Size sz = rc.Size + TipWindow.Margins;
                     Size offset = fixedOffset + new Size(0, -sz.Height);
@@ -418,11 +417,11 @@ namespace PK.PkUtils.UI.TipHandlers
             }
             else if (IsTipWindowVisible() || _sinceDisplayed.HasValue)
             {
-                if (ForHowLongDisplayed >= _hideIfMouseMovingAndDisplyedFor2200ms)
+                if (ForHowLongDisplayed >= _hideIfMouseMovingAndDisplayedFor2200ms)
                 {
                     CancelTipWindow();
                 }
-                else if (ForHowLongDisplayed >= _moveIfMouseMovingAndDisplyedFor500ms)
+                else if (ForHowLongDisplayed >= _moveIfMouseMovingAndDisplayedFor500ms)
                 {
                     TipWindow.MoveToScreen(ptInScreen + _offsetDisplayed.Value);
                 }

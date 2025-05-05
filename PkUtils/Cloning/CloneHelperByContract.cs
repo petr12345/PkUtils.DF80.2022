@@ -1,15 +1,4 @@
-﻿/***************************************************************************************************************
-*
-* FILE NAME:   .\Cloning\CloneHelperByContract.cs
-*
-* AUTHOR:      Petr Kodet
-*
-* DESCRIPTION:  Contains the class CloneHelperByContract
-*
-**************************************************************************************************************/
-
-
-// Ignore Spelling: Utils
+﻿// Ignore Spelling: Utils
 //
 using System;
 using System.IO;

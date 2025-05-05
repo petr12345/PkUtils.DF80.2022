@@ -1,4 +1,4 @@
-// Ignore Spelling: Utils, Msec
+// Ignore Spelling: listbox, Msec, popup, preprocess, tooltip, tooltips, Utils
 //
 using System;
 using System.Diagnostics;
@@ -10,9 +10,7 @@ using PK.PkUtils.WinApi;
 
 namespace PK.PkUtils.UI.TipHandlers;
 
-/// <summary>
-/// Supports tooltips for ComboBoxes
-/// </summary>
+/// <summary>   Supports tooltips for ComboBoxes. </summary>
 [CLSCompliant(false)]
 public class ComboBoxTipHandler : TipHandler
 {
@@ -480,10 +478,8 @@ public class ComboBoxTipHandler : TipHandler
             ComboBox pComboBox = GetComboBox();
             Point ptClient = pComboBox.PointToClient(ptInScreen);
 
-            // Get text and text rectangle for item under mouse
-            // item text
+            // Get text and text rectangle for item under mouse item text
             Rectangle rcText = Rectangle.Empty; // item text rectangle in combo
-            uint nSubItem = (uint)SubItemNumber.cNoSubItem;
             uint nItem = (uint)ItemNumber.cNoItem;
             IntPtr hListBx = GetListBoxPartHandle();
             bool bTipWasVisible = TipWindow.IsVisible;
@@ -501,7 +497,7 @@ public class ComboBoxTipHandler : TipHandler
             */
             if ((hFromPoint == hListBx) || (hFromPoint == hHooked))
             {   // Get text and text rectangle for item under mouse
-                nItem = OnGetItemInfo(ptClient, true, out nSubItem, out rcText, out _);
+                nItem = OnGetItemInfo(ptClient, true, out _, out rcText, out _);
             }
             // and for another WndFromPoint don't display anything ...
 
@@ -552,7 +548,7 @@ public class ComboBoxTipHandler : TipHandler
                     Point ptLocation;
 
                     // new item, and not entirely visible: prepare popup tip
-                    OnGetItemInfo(ptClient, false, out nSubItem, out Rectangle rcTipText, out string sText);
+                    OnGetItemInfo(ptClient, false, out _, out Rectangle rcTipText, out string sText);
                     // set tip text to that of item
                     TipWindow.Text = sText;
 

@@ -1,3 +1,5 @@
+// Ignore Spelling: Unselect
+//
 using System.Collections.Generic;
 using System.Drawing;
 using System.Windows.Forms;
@@ -49,10 +51,20 @@ partial class TestForm
         _btnClearLog = new Button();
         _btnDeleteNodes = new Button();
         _btnInsertNodes = new Button();
+        _contextMenuWholeTreeStrip = new ContextMenuStrip(components);
+        _menuItemExpandAllNodes = new ToolStripMenuItem();
+        _menuItemCollapseNodes = new ToolStripMenuItem();
+        _contextMenuSingleNodeChoices = new ContextMenuStrip(components);
+        _contextMenuMultipleNodesChoices = new ContextMenuStrip(components);
+        _menuItemOpenTheNode = new ToolStripMenuItem();
+        _menuItemUnselectAllNodes = new ToolStripMenuItem();
         ((System.ComponentModel.ISupportInitialize)_splitContainer).BeginInit();
         _splitContainer.Panel1.SuspendLayout();
         _splitContainer.Panel2.SuspendLayout();
         _splitContainer.SuspendLayout();
+        _contextMenuWholeTreeStrip.SuspendLayout();
+        _contextMenuSingleNodeChoices.SuspendLayout();
+        _contextMenuMultipleNodesChoices.SuspendLayout();
         SuspendLayout();
         // 
         // _treeView
@@ -63,15 +75,17 @@ partial class TestForm
         _treeView.Location = new Point(0, 0);
         _treeView.Margin = new Padding(4);
         _treeView.Name = "_treeView";
-        treeNode1.BackColor = SystemColors.Highlight;
-        treeNode1.ForeColor = SystemColors.HighlightText;
+        treeNode1.BackColor = Color.White;
+        treeNode1.ForeColor = Color.Black;
         treeNode1.Name = "Node0";
         treeNode1.Text = "Node0";
         _treeView.Nodes.AddRange(new TreeNode[] { treeNode1 });
         _treeView.SelectedImageIndex = 0;
+        _treeView.SelectedNodes = (IReadOnlyCollection<TreeNode>)resources.GetObject("_treeView.SelectedNodes");
         _treeView.Size = new Size(374, 236);
         _treeView.TabIndex = 0;
         _treeView.SelectionChanged += OnMultiSelectTreeView_SelectionChanged;
+        _treeView.TreeRightClick += OnMultiSelectTreeView_RightClick;
         // 
         // _treeImageList
         // 
@@ -231,6 +245,53 @@ partial class TestForm
         _btnInsertNodes.UseVisualStyleBackColor = true;
         _btnInsertNodes.Click += OnBtnInsertNodes_Click;
         // 
+        // _contextMenuWholeTreeStrip
+        // 
+        _contextMenuWholeTreeStrip.Items.AddRange(new ToolStripItem[] { _menuItemExpandAllNodes, _menuItemCollapseNodes });
+        _contextMenuWholeTreeStrip.Name = "contextMenuStrip1";
+        _contextMenuWholeTreeStrip.Size = new Size(164, 48);
+        // 
+        // _menuItemExpandAllNodes
+        // 
+        _menuItemExpandAllNodes.Name = "_menuItemExpandAllNodes";
+        _menuItemExpandAllNodes.Size = new Size(163, 22);
+        _menuItemExpandAllNodes.Text = "Expand all nodes";
+        _menuItemExpandAllNodes.Click += OnMenuItemExpandAllNodes_Click;
+        // 
+        // _menuItemCollapseNodes
+        // 
+        _menuItemCollapseNodes.Name = "_menuItemCollapseNodes";
+        _menuItemCollapseNodes.Size = new Size(163, 22);
+        _menuItemCollapseNodes.Text = "Collapse nodes";
+        _menuItemCollapseNodes.Click += OnMenuItemCollapseNodes_Click;
+        // 
+        // _contextMenuSingleNodeChoices
+        // 
+        _contextMenuSingleNodeChoices.Items.AddRange(new ToolStripItem[] { _menuItemOpenTheNode });
+        _contextMenuSingleNodeChoices.Name = "_contextMenuSingleNodeChoices";
+        _contextMenuSingleNodeChoices.Size = new Size(154, 26);
+        // 
+        // _contextMenuMultipleNodesChoices
+        // 
+        _contextMenuMultipleNodesChoices.Items.AddRange(new ToolStripItem[] { _menuItemUnselectAllNodes });
+        _contextMenuMultipleNodesChoices.Name = "contextMenuStrip1";
+        _contextMenuMultipleNodesChoices.Size = new Size(181, 48);
+        // 
+        // _menuItemOpenTheNode
+        // 
+        _menuItemOpenTheNode.Name = "_menuItemOpenTheNode";
+        _menuItemOpenTheNode.Size = new Size(153, 22);
+        _menuItemOpenTheNode.Text = "Open the node";
+        _menuItemOpenTheNode.Click += OnMenuItemOpenTheNode_Click;  
+
+        // 
+        // _menuItemUnselectAllNodes
+        // 
+        _menuItemUnselectAllNodes.Name = "_menuItemUnselectAllNodes";
+        _menuItemUnselectAllNodes.Size = new Size(180, 22);
+        _menuItemUnselectAllNodes.Text = "Unselect all nodes";
+        _menuItemUnselectAllNodes.Click += OnMenuItemUnselectAllNodes_Click;
+        // 
         // TestForm
         // 
         AutoScaleDimensions = new SizeF(7F, 15F);
@@ -259,24 +320,38 @@ partial class TestForm
         _splitContainer.Panel2.PerformLayout();
         ((System.ComponentModel.ISupportInitialize)_splitContainer).EndInit();
         _splitContainer.ResumeLayout(false);
+        _contextMenuWholeTreeStrip.ResumeLayout(false);
+        _contextMenuSingleNodeChoices.ResumeLayout(false);
+        _contextMenuMultipleNodesChoices.ResumeLayout(false);
         ResumeLayout(false);
         PerformLayout();
     }
-
     #endregion
 
     private MultiSelectTreeView _treeView;
-    private System.Windows.Forms.Button _btnSelectNodes;
-    private System.Windows.Forms.Button _btnClearSelection;
-    private System.Windows.Forms.Button _btnExit;
-    private System.Windows.Forms.CheckBox _checkBoxShowLog;
-    private System.Windows.Forms.CheckBox _checkBoxCustomColors;
-    private System.Windows.Forms.CheckBox _checkBoxUseImages;
-    private System.Windows.Forms.ImageList _treeImageList;
-    private System.Windows.Forms.SplitContainer _splitContainer;
-    private System.Windows.Forms.TextBox _dumpTextBox;
+    private SplitContainer _splitContainer;
+    private TextBox _dumpTextBox;
+    private ImageList _treeImageList;
+
+    private CheckBox _checkBoxShowLog;
+    private CheckBox _checkBoxCustomColors;
+    private CheckBox _checkBoxUseImages;
+
     private Button _btnClearLog;
     private Button _btnDeleteNodes;
     private Button _btnInsertNodes;
+    private Button _btnSelectNodes;
+    private Button _btnClearSelection;
+    private Button _btnExit;
+
+    private ContextMenuStrip _contextMenuWholeTreeStrip;
+    private ToolStripMenuItem _menuItemExpandAllNodes;
+    private ToolStripMenuItem _menuItemCollapseNodes;
+
+    private ContextMenuStrip  _contextMenuSingleNodeChoices;
+    private ToolStripMenuItem _menuItemOpenTheNode;
+
+    private ContextMenuStrip _contextMenuMultipleNodesChoices;
+    private ToolStripMenuItem _menuItemUnselectAllNodes;
 }
 

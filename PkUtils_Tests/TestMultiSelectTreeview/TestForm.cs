@@ -334,6 +334,7 @@ public partial class TestForm : FormWithLayoutPersistence, IDumper
     #endregion // Methods
 
     #region Event_handlers
+    #region Form_Events
 
     private void TestForm_Load(object sender, EventArgs args)
     {
@@ -352,6 +353,75 @@ public partial class TestForm : FormWithLayoutPersistence, IDumper
             e.Handled = true;
         }
     }
+    private void TestForm_FormClosing(object sender, FormClosingEventArgs e)
+    {
+        SaveSettings();
+    }
+    #endregion // Form_Events
+
+    #region Tree_Events
+    private void OnMultiSelectTreeView_SelectionChanged(object sender, TreeViewSelChangeArgs args)
+    {
+        DumpTreeSelectionInfo(args.SelectedNodes, null, args.StackTrace);
+        UpdateClearSelectionButton();
+    }
+
+    private void OnMultiSelectTreeView_RightClick(object sender, TreeViewRightClickArgs args)
+    {
+        if (sender is Control treeView)
+        {
+            TreeNode clickedNode = args.ClickedNode;
+            IReadOnlyCollection<TreeNode> selectedNodes = _treeView.SelectedNodes;
+            // Convert point from treeView-relative to screen coordinates, then form-relative coordinates
+            Point formPoint = PointToClient(treeView.PointToScreen(args.Location));
+
+            if (clickedNode is null)
+            {    // No node was clicked, so show the context menu for the whole tree
+                _contextMenuWholeTreeStrip.Show(this, formPoint);
+            }
+            else if (!selectedNodes.Contains(clickedNode))
+            {    // A node was clicked, but it is not selected, nothing like 
+                string infoSelected = (selectedNodes.Count == 0) ? "none" : $" ({selectedNodes.Join(", ", x => x.Name.NullIfEmpty() ?? x.Text)})";
+                string errorMessage = $"A node '{clickedNode.Text}' was clicked, but it is not in selected nodes: {infoSelected}";
+                MessageBox.Show(errorMessage, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+            else if (selectedNodes.Count == 1)
+            {    // A node was clicked, and it is single node selected, so show the context menu for that node
+                _contextMenuSingleNodeChoices.Show(this, formPoint);
+            }
+            else
+            {
+                // A single node from multiple nodes so show the context menu for that node
+                _contextMenuMultipleNodesChoices.Show(this, formPoint);
+            }
+        }
+    }
+    #endregion // Tree_Events
+
+    #region Context_Menu_Events
+
+    private void OnMenuItemExpandAllNodes_Click(object sender, EventArgs e)
+    {
+        _treeView.ExpandAllNodes();
+    }
+
+    private void OnMenuItemCollapseNodes_Click(object sender, EventArgs e)
+    {
+        _treeView.CollapseAllNodes();
+    }
+
+    private void OnMenuItemOpenTheNode_Click(object sender, EventArgs e)
+    {
+        MessageBox.Show("Implement 'Open the node'", "Info", MessageBoxButtons.OK, MessageBoxIcon.Information);
+    }
+
+    private void OnMenuItemUnselectAllNodes_Click(object sender, EventArgs e)
+    {
+        _treeView.SelectedNodes = [];
+    }
+    #endregion // Context_Menu_Events
+
+    #region Buttons_Events
 
     private void OnButton_SelectNodes(object sender, EventArgs args)
     {
@@ -420,21 +490,11 @@ public partial class TestForm : FormWithLayoutPersistence, IDumper
         AdjustAllNodesImages();
     }
 
-    private void OnMultiSelectTreeView_SelectionChanged(object sender, TreeViewSelChangeArgs args)
-    {
-        DumpTreeSelectionInfo(args.SelectedNodes, null, args.StackTrace);
-        UpdateClearSelectionButton();
-    }
-
-    private void TestForm_FormClosing(object sender, FormClosingEventArgs e)
-    {
-        SaveSettings();
-    }
-
     private void OnButton_Exit_Click(object sender, EventArgs args)
     {
         Close();
     }
+    #endregion // Buttons_Events
     #endregion // Event_handlers
 }
 

@@ -196,8 +196,7 @@ public static class cTaskDialog
       int DefaultIndex)
     {
         DialogResult result;
-        if (OnTaskDialogShown != null)
-            OnTaskDialogShown(null, EventArgs.Empty);
+        OnTaskDialogShown?.Invoke(null, EventArgs.Empty);
 
         if (VistaTaskDialog.IsAvailableOnThisOS && !ForceEmulationMode)
         {
@@ -262,31 +261,16 @@ public static class cTaskDialog
                     vtd.DefaultButton = DefaultIndex;
             }
 
-            switch (Buttons)
+            vtd.CommonButtons = Buttons switch
             {
-                case eTaskDialogButtons.YesNo:
-                    vtd.CommonButtons = VistaTaskDialogCommonButtons.Yes | VistaTaskDialogCommonButtons.No;
-                    break;
-                case eTaskDialogButtons.YesNoCancel:
-                    vtd.CommonButtons = VistaTaskDialogCommonButtons.Yes | VistaTaskDialogCommonButtons.No | VistaTaskDialogCommonButtons.Cancel;
-                    break;
-                case eTaskDialogButtons.OKCancel:
-                    vtd.CommonButtons = VistaTaskDialogCommonButtons.Ok | VistaTaskDialogCommonButtons.Cancel;
-                    break;
-                case eTaskDialogButtons.OK:
-                    vtd.CommonButtons = VistaTaskDialogCommonButtons.Ok;
-                    break;
-                case eTaskDialogButtons.Close:
-                    vtd.CommonButtons = VistaTaskDialogCommonButtons.Close;
-                    break;
-                case eTaskDialogButtons.Cancel:
-                    vtd.CommonButtons = VistaTaskDialogCommonButtons.Cancel;
-                    break;
-                default:
-                    vtd.CommonButtons = 0;
-                    break;
-            }
-
+                eTaskDialogButtons.YesNo => VistaTaskDialogCommonButtons.Yes | VistaTaskDialogCommonButtons.No,
+                eTaskDialogButtons.YesNoCancel => VistaTaskDialogCommonButtons.Yes | VistaTaskDialogCommonButtons.No | VistaTaskDialogCommonButtons.Cancel,
+                eTaskDialogButtons.OKCancel => VistaTaskDialogCommonButtons.Ok | VistaTaskDialogCommonButtons.Cancel,
+                eTaskDialogButtons.OK => VistaTaskDialogCommonButtons.Ok,
+                eTaskDialogButtons.Close => VistaTaskDialogCommonButtons.Close,
+                eTaskDialogButtons.Cancel => VistaTaskDialogCommonButtons.Cancel,
+                _ => 0,
+            };
             switch (MainIcon)
             {
                 case eSysIcons.Information: vtd.MainIcon = VistaTaskDialogIcon.Information; break;

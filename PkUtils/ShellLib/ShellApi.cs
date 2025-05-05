@@ -25,7 +25,7 @@
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
-// Ignore Spelling: Api, App, Buf, interop, pidl, ppidl, pbc, ppv, psfgao, ppshf, pstr, lbpi, lpfn, Malloc, sfgao, riid, Ret, Utils, APPBARDATA, BROWSEINFO, CSIDL, SHGNO, SHGFP, SHCONTF, SHCIDS, SFGAO, SHGFP_TYPE, SHFILEOPSTRUCT, SHELLEXECUTEINFO, STRRET
+// Ignore Spelling: Api, App, appbar, Buf, interop, pidl, ppidl, pbc, ppv, psfgao, ppshf, pstr, lbpi, lpfn, Malloc, sfgao, riid, Ret, Utils, APPBARDATA, BROWSEINFO, CSIDL, SHGNO, SHGFP, SHCONTF, SHCIDS, SFGAO, SHGFP_TYPE, SHFILEOPSTRUCT, SHELLEXECUTEINFO, STRRET
 //
 using System;
 using System.Runtime.InteropServices;
