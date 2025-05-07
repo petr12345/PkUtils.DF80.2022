@@ -14,6 +14,8 @@ using PK.PkUtils.WinApi;
 
 namespace PK.PkUtils.UI.General;
 
+#pragma warning disable IDE0290     // Use primary constructor
+
 
 /// <summary> Represents a TreeView control that supports multiple selection of nodes. </summary>
 /// <seealso href="https://www.codeproject.com/Articles/20581/Multiselect-TreeView-Implementation/">
@@ -27,15 +29,6 @@ public partial class MultiSelectTreeView : TreeView
     /// </summary>
     public sealed class TreeViewSelChangeArgs
     {
-        /// <summary> The TreeView instance. </summary>
-        public MultiSelectTreeView TreeView { get; }
-
-        /// <summary> The collection of selected nodes. </summary>
-        public IReadOnlyCollection<TreeNode> SelectedNodes { get; }
-
-        /// <summary> Stack trace at the time of creation (skips constructor frames). </summary>
-        public StackTrace StackTrace { get; }
-
         /// <summary>
         /// Initializes a new instance of the <see cref="TreeViewSelChangeArgs"/> class.
         /// </summary>
@@ -57,22 +50,34 @@ public partial class MultiSelectTreeView : TreeView
         public TreeViewSelChangeArgs(MultiSelectTreeView treeview)
             : this(treeview, treeview?.SelectedNodes ?? throw new ArgumentNullException(nameof(treeview)))
         { }
+
+        /// <summary> The TreeView instance. </summary>
+        public MultiSelectTreeView TreeView { get; }
+
+        /// <summary> The collection of selected nodes. </summary>
+        public IReadOnlyCollection<TreeNode> SelectedNodes { get; }
+
+        /// <summary> Stack trace at the time of creation (skips constructor frames). </summary>
+        public StackTrace StackTrace { get; }
+
+        /// <summary> Gets selected nodes information, as output string. </summary>
+        /// <returns>  The selected nodes information. </returns>
+        public string GetSelectedNodesInfo() => MultiSelectTreeView.GetSelectedNodesInfo(SelectedNodes);
+
+        /// <summary>   Returns a string that represents the current object. </summary>
+        /// <returns>   A string that represents the current object. </returns>
+        public override string ToString()
+        {
+            string[] items = [$"TreeView.Name: {TreeView.Name}", $"{GetSelectedNodesInfo()}"];
+            return $"{GetType().Name}({items.Join()})";
+        }
     }
 
     /// <summary>
     /// Provides data for a TreeView right-click event.
     /// </summary>
-    public class TreeViewRightClickArgs : EventArgs
+    public sealed class TreeViewRightClickArgs : EventArgs
     {
-        /// <summary> The TreeView control where the click occurred. </summary>
-        public MultiSelectTreeView TreeView { get; }
-
-        /// <summary> The node that was right-clicked, or <c>null</c> if none. </summary>
-        public TreeNode ClickedNode { get; }
-
-        /// <summary> The location of the mouse click in client coordinates. </summary>
-        public Point Location { get; }
-
         /// <summary> Initializes a new instance of the <see cref="TreeViewRightClickArgs"/> class. </summary>
         /// <param name="treeView">The TreeView that was clicked. Must not be null.</param>
         /// <param name="clickedNode">The node that was clicked, or null if none.</param>
@@ -82,6 +87,32 @@ public partial class MultiSelectTreeView : TreeView
             TreeView = treeView ?? throw new ArgumentNullException(nameof(treeView));
             ClickedNode = clickedNode;
             Location = location;
+        }
+
+        /// <summary> The TreeView control where the click occurred. </summary>
+        public MultiSelectTreeView TreeView { get; }
+
+        /// <summary> The node that was right-clicked, or <c>null</c> if none. </summary>
+        public TreeNode ClickedNode { get; }
+
+        /// <summary> The location of the mouse click in client coordinates. </summary>
+        public Point Location { get; }
+
+        /// <summary>   Returns a string that represents the current object. </summary>
+        /// <returns>   A string that represents the current object. </returns>
+        public override string ToString()
+        {
+            string clickedNodeInfo = (ClickedNode is null)
+                ? "ClickedNode is null"
+                : $"{ClickedNode.Text.AsNameValue()}, {ClickedNode.Name.AsNameValue()}";
+
+            string[] items = [
+                $"{TreeView.Name.AsNameValue()}",
+                clickedNodeInfo,
+                $"{Location.AsNameValue()}"
+            ];
+
+            return $"{GetType().Name}({items.Join()})";
         }
     }
     #endregion // Typedefs
@@ -188,6 +219,19 @@ public partial class MultiSelectTreeView : TreeView
 
     #region Public Methods
 
+    /// <summary> Gets selected nodes information, as output string. </summary>
+    /// <param name="selectedNodes"> The selected nodes. Must not be null. </param>
+    /// <returns>   The selected nodes information. </returns>
+    public static string GetSelectedNodesInfo(IReadOnlyCollection<TreeNode> selectedNodes)
+    {
+        ArgumentNullException.ThrowIfNull(selectedNodes);
+
+        int count = selectedNodes.Count;
+        string countInfo = $" {count} tree node(s) selected";
+        string detailsInfo = (count == 0) ? string.Empty : $" ({selectedNodes.Join(", ", x => x.Name.NullIfEmpty() ?? x.Text)})";
+        return countInfo + detailsInfo;
+    }
+
     /// <summary> Query if <paramref name="node"/> is one of selected nodes. </summary>
     /// <param name="node"> The <see cref="TreeNode"/> to be examined. It can be null. </param>
     /// <returns> True if <paramref name="node"/> is part of selection, false if not. </returns>
@@ -279,7 +323,10 @@ public partial class MultiSelectTreeView : TreeView
     {
         if (_selectionChangeDepth <= 0)
         {
-            throw new InvalidOperationException($"Unbalanced {nameof(EndSelectionChange)} call, {_selectionChangeDepth.AsNameValue()}.");
+            string[] messages = [
+                $"Unbalanced {nameof(EndSelectionChange)} call, {_selectionChangeDepth.AsNameValue()}.",
+                $"{nameof(EndSelectionChange)} should not be invoked when the selection change depth is zero or negative."];
+            throw new InvalidOperationException(messages.Join(" "));
         }
         if ((--_selectionChangeDepth == 0) && IsSelectionChangedPending)
         {
@@ -318,7 +365,10 @@ public partial class MultiSelectTreeView : TreeView
     {
         if (_selectionChangeDepth > 0)
         {
-            throw new InvalidOperationException($"Event should not be raised with this value being positive, {_selectionChangeDepth.AsNameValue()}.");
+            string[] messages = [
+                $"Unbalanced {nameof(OnSelectionChanged)} call, {_selectionChangeDepth.AsNameValue()}.",
+                $"Event {nameof(SelectionChanged)} should not be raised with this value being positive"];
+            throw new InvalidOperationException(messages.Join(" "));
         }
         SelectionChanged?.Invoke(this, new TreeViewSelChangeArgs(this));
     }
@@ -394,20 +444,27 @@ public partial class MultiSelectTreeView : TreeView
     }
 
     /// <summary>
-    /// Checks if the click location is within the horizontal bounds of the tree node.
+    /// Performs a hit test on the TreeView at the specified point and returns the associated TreeNode if the hit
+    /// location matches the provided criteria.
     /// </summary>
-    /// <param name="clickLocation">The point of the mouse click.</param>
-    /// <param name="tn">The tree node to test. Can't be  null. </param>
-    /// <returns><c>true</c> if the point is within bounds; otherwise, <c>false</c>.</returns>
-    protected virtual bool IsWithinClickAbleBounds(Point clickLocation, TreeNode tn)
+    /// <param name="point"> The point to perform the hit test at, in client coordinates. </param>
+    /// <param name="locations"> (Optional)
+    /// Optional collection of <see cref="TreeViewHitTestLocations"/> values to match against. 
+    /// If null, only <see cref="TreeViewHitTestLocations.Label"/> is considered a match. </param>
+    /// <returns>
+    /// The <see cref="TreeNode"/> at the specified point if the hit location matches; otherwise, null.
+    /// </returns>
+    protected virtual TreeNode NodeHitTest(Point point, IEnumerable<TreeViewHitTestLocations> locations = null)
     {
-        ArgumentNullException.ThrowIfNull(tn);
+        TreeViewHitTestInfo hitTest = HitTest(point);
+        bool isMatch = (locations == null)
+            ? (hitTest.Location == TreeViewHitTestLocations.Label)
+            : locations.Contains(hitTest.Location);
+        TreeNode candidate = hitTest.Node;
+        TreeNode node = (candidate != null && isMatch) ? candidate : null;
 
-        int leftBound = tn.Bounds.X;  // -20; // Allow user to click on image
-        int rightBound = tn.Bounds.Right + 10; // Give a little extra room
-        return (clickLocation.X > leftBound) && (clickLocation.X < rightBound);
+        return node;
     }
-
     #endregion // Selection_change_related
 
     #region Error_handling_related
@@ -427,10 +484,10 @@ public partial class MultiSelectTreeView : TreeView
 
     #region Protected Overridden Events
 
-    /// <summary>
-    /// Overrides <see cref="M:System.Windows.Forms.Control.WndProc(System.Windows.Forms.Message@)" />.
+    /// <summary> 
+    /// Handles window messages to ensure proper initialization of selection and reaction to system theme changes.
     /// </summary>
-    /// <param name="m"> [in,out] The Windows <see cref="T:System.Windows.Forms.Message" /> to process. </param>
+    /// <param name="m"> [in,out] The message to process. </param>
     protected override void WndProc(ref Message m)
     {
         switch (m.Msg)
@@ -466,19 +523,19 @@ public partial class MultiSelectTreeView : TreeView
         try
         {
             base.SelectedNode = null;
-            TreeNode node = GetNodeAt(args.Location);
+            TreeNode node = NodeHitTest(args.Location);
 
-            if (node == null) return;
-            if (!IsWithinClickAbleBounds(args.Location, node)) return;
-
-            using IDisposable deferred = DeferSelectionChange();
-            if (ModifierKeys == Keys.None && IsSelected(node))
+            if (node != null)
             {
-                // Potential drag operation, selection on MouseUp
-            }
-            else
-            {
-                SelectNode(node);
+                using IDisposable deferred = DeferSelectionChange();
+                if (ModifierKeys == Keys.None && IsSelected(node))
+                {
+                    // Potential drag operation, selection on MouseUp
+                }
+                else
+                {
+                    SelectNode(node);
+                }
             }
 
             base.OnMouseDown(args);
@@ -503,28 +560,31 @@ public partial class MultiSelectTreeView : TreeView
         // If it was NOT selected, the clicked node becomes the only selected one.
         // This mimics the default behavior of the TreeView control.
 
-        TreeNode node = this.GetNodeAt(args.Location);
+
+        // Note: For following computation, one should NOT use TreeView.GetNodeAt.
+        // TreeView.GetNodeAt(Point) in Windows Forms returns the nearest node, even if you click on the whitespace 
+        // to the far right of a node, outside the actual visible text or icon.
+        // This behavior can be misleading if you're trying to only react to true clicks on the node content.
+        //
+        TreeNode node = NodeHitTest(args.Location);
         bool wasSelected = IsSelected(node);
         bool leftClick = (args.Button == MouseButtons.Left);
         bool rightClick = (args.Button == MouseButtons.Right);
+        bool selectionChangeStarted = false;
 
         try
         {
-            BeginSelectionChange();
-
-            if ((node != null) && (leftClick || rightClick))
+            if (selectionChangeStarted = ((node != null) && (leftClick || rightClick)))
             {
+                BeginSelectionChange();
                 if (leftClick)
                 {
                     if (ModifierKeys == Keys.None && wasSelected)
                     {
-                        if (IsWithinClickAbleBounds(args.Location, node))
-                        {
-                            SelectNode(node);
-                        }
+                        SelectNode(node);
                     }
                 }
-                else if (!wasSelected && IsWithinClickAbleBounds(args.Location, node))
+                else if (!wasSelected)
                 {
                     SelectNode(node);
                 }
@@ -537,7 +597,7 @@ public partial class MultiSelectTreeView : TreeView
         finally
         {
             base.OnMouseUp(args);
-            EndSelectionChange();
+            if (selectionChangeStarted) { EndSelectionChange(); }
             if (rightClick)
             {
                 // Raise the right-click event asynchronously to allow any events from EndSelectionChange
@@ -1046,3 +1106,4 @@ public partial class MultiSelectTreeView : TreeView
     #endregion // Other_Private_Helper_Methods
     #endregion // Methods
 }
+#pragma warning restore IDE0290     // Use primary constructor
