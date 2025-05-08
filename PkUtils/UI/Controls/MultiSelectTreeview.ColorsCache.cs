@@ -1,4 +1,4 @@
-// Ignore Spelling: Ctrl, TreeView, treeview, unselects, Bg, Fg
+// Ignore Spelling: Ctrl, TreeView, treeview, Multiselect, unselects, Bg, Fg
 //
 using System;
 using System.Drawing;
@@ -8,6 +8,9 @@ using PK.PkUtils.Extensions;
 
 namespace PK.PkUtils.UI.General;
 
+/// <summary> Represents a TreeView control that supports multiple selection of nodes. </summary>
+/// <seealso href="https://www.codeproject.com/Articles/20581/Multiselect-TreeView-Implementation/">
+/// Multiselect TreeView Implementation.</seealso>
 public partial class MultiSelectTreeView : TreeView
 {
     #region Typedefs

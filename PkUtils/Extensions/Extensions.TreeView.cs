@@ -5,8 +5,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Windows.Forms;
 
-
 namespace PK.PkUtils.Extensions;
+
 
 /// <summary>
 /// Extension methods for TreeView, TreeNodeCollection and TreeNode
@@ -28,6 +28,22 @@ public static class TreeViewExtensions
     }
 
     /// <summary>
+    /// Retrieves all the TreeNode(s) that match the conditions defined by the specified predicate <paramref name="match"/>.
+    /// </summary>
+    /// <exception cref="ArgumentNullException"> Thrown when any of input arguments is null. </exception>
+    /// <param name="tv"> A TreeView control whose nodes are examined. Must not be null. </param>
+    /// <param name="match"> A predicate that specifies matching condition for nodes. Must not be null. </param>
+    /// <returns> Resulting sequence of nodes that can be iterated. </returns>
+    public static IEnumerable<TreeNode> FindMatchingNodes(
+        this TreeView tv,
+        Predicate<TreeNode> match)
+    {
+        ArgumentNullException.ThrowIfNull(tv);
+        ArgumentNullException.ThrowIfNull(match);
+        return FindMatchingNodes(tv.Nodes, match);
+    }
+
+    /// <summary>
     /// Finds recursively the first node, that match the conditions defined by the specified predicate; returns null if there
     /// is no such node.
     /// </summary>
@@ -40,18 +56,30 @@ public static class TreeViewExtensions
         ArgumentNullException.ThrowIfNull(tv);
         ArgumentNullException.ThrowIfNull(match);
 
-        return FindAll(tv.Nodes, match).FirstOrDefault();
+        return FindMatchingNodes(tv.Nodes, match).FirstOrDefault();
     }
 
     /// <summary>
-    /// Finds a node, given the node full path. Returns null if there is no such node.
+    /// Finds a node, given the node full path. Returns <c>null</c> if there is no such node,
+    /// or the closest existing parent node if <paramref name="allowClosestParent"/> is <c>true</c>.
     /// </summary>
-    /// <exception cref="ArgumentNullException"> Thrown when the <paramref name="tv"/> argument is null. </exception>
-    /// <param name="tv"> A TreeView control whose nodes are examined. Must not be null. </param>
-    /// <param name="fullPath"> A sequence of tree nodes (node names)
-    /// that form a tree hierarchy, with nodes separated by TreeView.PathSeparator character. </param>
-    /// <returns> Found TreeNode, or null if matching node is not found. </returns>
-    public static TreeNode FindNode(this TreeView tv, string fullPath)
+    /// <exception cref="ArgumentNullException">
+    /// Thrown when the <paramref name="tv"/> argument is <c>null</c>.
+    /// </exception>
+    /// <param name="tv">A <see cref="TreeView"/> control whose nodes are examined. Must not be <c>null</c>.</param>
+    /// <param name="fullPath">
+    /// A sequence of tree node texts (node names) that form a hierarchy,
+    /// separated by the <see cref="TreeView.PathSeparator"/> character.
+    /// </param>
+    /// <param name="allowClosestParent">
+    /// If true, and if the exact match is not found, returns the closest existing parent node.
+    /// Otherwise returns null on failure to match exactly. Default is false.
+    /// </param>
+    /// <returns>
+    /// A matching <see cref="TreeNode"/> if found; the closest parent node if
+    /// <paramref name="allowClosestParent"/> is <c>true</c>; otherwise <c>null</c>.
+    /// </returns>
+    public static TreeNode FindNode(this TreeView tv, string fullPath, bool allowClosestParent = false)
     {
         ArgumentNullException.ThrowIfNull(tv);
         if (string.IsNullOrEmpty(fullPath))
@@ -63,32 +91,17 @@ public static class TreeViewExtensions
 
         foreach (string segment in pathSegments)
         {
-            currentNode = currentNodes?.OfType<TreeNode>()
-                                     .FirstOrDefault(node => node.Text == segment);
-            if (currentNode == null)
-                return null;
+            TreeNode nextNode = currentNodes?.OfType<TreeNode>().FirstOrDefault(node => node.Text == segment);
+            if (nextNode == null)
+                return allowClosestParent ? currentNode : null;
 
+            currentNode = nextNode;
             currentNodes = currentNode.Nodes;
         }
 
         return currentNode;
     }
 
-    /// <summary>
-    /// Retrieves all the TreeNode(s) that match the conditions defined by the specified predicate <paramref name="match"/>.
-    /// </summary>
-    /// <exception cref="ArgumentNullException"> Thrown when any of input arguments is null. </exception>
-    /// <param name="tv"> A TreeView control whose nodes are examined. Must not be null. </param>
-    /// <param name="match"> A predicate that specifies matching condition for nodes. Must not be null. </param>
-    /// <returns> Resulting sequence of nodes that can be iterated. </returns>
-    public static IEnumerable<TreeNode> FindAll(
-        this TreeView tv,
-        Predicate<TreeNode> match)
-    {
-        ArgumentNullException.ThrowIfNull(tv);
-        ArgumentNullException.ThrowIfNull(match);
-        return FindAll(tv.Nodes, match);
-    }
 
     /// <summary>   A TreeView extension method that expands all nodes. </summary>
     /// <param name="tv"> A TreeView control whose nodes are retrieved. Can't be null. </param>
@@ -104,6 +117,50 @@ public static class TreeViewExtensions
     {
         ArgumentNullException.ThrowIfNull(tv);
         foreach (TreeNode node in tv.GetAllNodes()) { node.Collapse(); }
+    }
+
+    /// <summary>   Gets the full path of the top node in the <see cref="TreeView"/>, if one exists. </summary>
+    /// <param name="tv"> The TreeView control from which to retrieve the top node path. </param>
+    /// <returns>   The full path of the top node if it exists; otherwise, <c>null</c>. </returns>
+    /// <exception cref="ArgumentNullException"> Thrown if <paramref name="tv"/> is <c>null</c>. </exception>/// 
+    /// <seealso cref="RestoreTopNode"/>
+    public static string GetTopNodePath(this TreeView tv)
+    {
+        ArgumentNullException.ThrowIfNull(tv);
+        return tv.TopNode?.FullPath;
+    }
+
+    /// <summary>
+    /// Attempts to restore the top node of the <see cref="TreeView"/> by using the specified full path.
+    /// </summary>
+    /// <param name="tv">The <see cref="TreeView"/> control on which to restore the top node.</param>
+    /// <param name="topNodePath">
+    /// The full path of the node to restore as the top node. The path is a sequence of node texts separated
+    /// by the <see cref="TreeView.PathSeparator"/> character.
+    /// </param>
+    /// <param name="allowClosestParent">
+    /// If true and an exact match for <paramref name="topNodePath"/> is not found, the method will
+    /// attempt to restore the closest existing parent node instead. If false, only an exact match is accepted.
+    /// </param>
+    /// <returns>
+    /// true if a node matching <paramref name="topNodePath"/> (or its closest parent, if allowed)
+    /// was found and restored as the top node; otherwise, false.
+    /// </returns>
+    /// <exception cref="ArgumentNullException">Thrown if <paramref name="tv"/> is null.</exception>
+    /// <seealso cref="GetTopNodePath"/>
+    /// <seealso cref="FindNode(TreeView, string, bool)"/>
+    public static bool RestoreTopNode(this TreeView tv, string topNodePath, bool allowClosestParent = false)
+    {
+        ArgumentNullException.ThrowIfNull(tv);
+        bool result = false;
+
+        if (!string.IsNullOrEmpty(topNodePath))
+        {
+            TreeNode node = tv.FindNode(topNodePath, allowClosestParent);
+            if (result = (node is not null))
+                tv.TopNode = node;
+        }
+        return result;
     }
     #endregion // Extensions_of_TreeView
 
@@ -138,7 +195,7 @@ public static class TreeViewExtensions
     /// <param name="tc"> A collection of tree nodes, usually retrieved through TreeView.Nodes property. Could be null.  </param>
     /// <param name="match"> A predicate that specifies matching condition for nodes. Must not be null. </param>
     /// <returns> Resulting sequence of nodes that can be iterated. </returns>
-    public static IEnumerable<TreeNode> FindAll(
+    public static IEnumerable<TreeNode> FindMatchingNodes(
         TreeNodeCollection tc,
         Predicate<TreeNode> match)
     {
@@ -154,7 +211,7 @@ public static class TreeViewExtensions
                 yield return tn;
             }
 
-            foreach (TreeNode tcn in FindAll(tn.Nodes, match))
+            foreach (TreeNode tcn in FindMatchingNodes(tn.Nodes, match))
             {
                 yield return tcn;
             }
@@ -198,7 +255,7 @@ public static class TreeViewExtensions
         Predicate<TreeNode> match)
     {
         ArgumentNullException.ThrowIfNull(tn);
-        return FindAll(tn.Nodes, match);
+        return FindMatchingNodes(tn.Nodes, match);
     }
 
     /// <summary>
@@ -224,7 +281,7 @@ public static class TreeViewExtensions
     /// character ( which is usually backslash by default).
     /// <exception cref="ArgumentNullException"> Thrown when the <paramref name="tnChild"/> argument is null. </exception>
     /// </returns>
-    /// <seealso cref="FindNode(TreeView, string)"/>
+    /// <seealso cref="FindNode(TreeView, string, bool)"/>
     public static IReadOnlyList<TreeNode> NodePath(this TreeNode tnChild)
     {
         return tnChild.NodePath(null);

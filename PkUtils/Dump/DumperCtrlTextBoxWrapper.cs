@@ -18,6 +18,7 @@ using PK.PkUtils.UI.Utils;
 
 namespace PK.PkUtils.Dump;
 
+
 /// <summary>
 /// The wrapper around a TextBox control, providing the IDumper-behavior to it.
 /// Derives from DumperCtrlWrapper, but overwrites the method AddText,
@@ -32,8 +33,7 @@ public class DumperCtrlTextBoxWrapper : DumperCtrlWrapper<TextBoxBase>
     /// <param name="ctrl"> The wrapped WinForms control. </param>
     public DumperCtrlTextBoxWrapper(TextBoxBase ctrl)
       : this(ctrl, _defaultMsgHistoryItems)
-    {
-    }
+    { }
 
     /// <summary> Constructor getting two input arguments. </summary>
     ///
@@ -41,8 +41,7 @@ public class DumperCtrlTextBoxWrapper : DumperCtrlWrapper<TextBoxBase>
     /// <param name="maxMsgHistoryItems"> The maximum length of internal  queue of recently added text items. </param>
     public DumperCtrlTextBoxWrapper(TextBoxBase ctrl, int maxMsgHistoryItems)
       : this(ctrl, maxMsgHistoryItems, _defaultShouldPreprocessItems)
-    {
-    }
+    { }
 
     /// <summary> Constructor getting three input arguments. </summary>
     ///
@@ -56,9 +55,6 @@ public class DumperCtrlTextBoxWrapper : DumperCtrlWrapper<TextBoxBase>
         WrappedControl.VisibleChanged += new EventHandler(WrappedTextBox_VisibleChanged);
     }
     #endregion // Constructor(s)
-
-    #region Properties
-    #endregion // Properties
 
     #region Methods
 
@@ -86,13 +82,17 @@ public class DumperCtrlTextBoxWrapper : DumperCtrlWrapper<TextBoxBase>
 
         if (AddTextResult.AddNone != (result = base.AddText(strAdd)))
         {
-            if (null != selInfo)
+            if (selInfo != null)
             {
-                txtBx.Select(txtBx.Text.Length, 0);
-                txtBx.ScrollToCaret();
-
-                if ((AddTextResult.AppendedOnly == result) && selInfo.IsSel)
+                if (!selInfo.IsSel)
                 {
+                    // Scroll to end only if there was no selection.
+                    txtBx.Select(txtBx.Text.Length, 0);
+                    txtBx.ScrollToCaret();
+                }
+                else if (result == AddTextResult.AppendedOnly)
+                {
+                    // Restore selection if applicable.
                     txtBx.SetSelInfo(selInfo);
                 }
             }

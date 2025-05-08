@@ -323,10 +323,9 @@ public partial class MultiSelectTreeView : TreeView
     {
         if (_selectionChangeDepth <= 0)
         {
-            string[] messages = [
-                $"Unbalanced {nameof(EndSelectionChange)} call, {_selectionChangeDepth.AsNameValue()}.",
-                $"{nameof(EndSelectionChange)} should not be invoked when the selection change depth is zero or negative."];
-            throw new InvalidOperationException(messages.Join(" "));
+            string sentence1st = $"Unbalanced {nameof(EndSelectionChange)} call, {_selectionChangeDepth.AsNameValue()}.";
+            string sentence2nd = $" {nameof(EndSelectionChange)} should not be invoked when the selection change depth is zero or negative.";
+            throw new InvalidOperationException(sentence1st + sentence2nd);
         }
         if ((--_selectionChangeDepth == 0) && IsSelectionChangedPending)
         {
@@ -365,10 +364,9 @@ public partial class MultiSelectTreeView : TreeView
     {
         if (_selectionChangeDepth > 0)
         {
-            string[] messages = [
-                $"Unbalanced {nameof(OnSelectionChanged)} call, {_selectionChangeDepth.AsNameValue()}.",
-                $"Event {nameof(SelectionChanged)} should not be raised with this value being positive"];
-            throw new InvalidOperationException(messages.Join(" "));
+            string sentence1st = $"Unbalanced {nameof(OnSelectionChanged)} call, {_selectionChangeDepth.AsNameValue()}.";
+            string sentence2nd = $" Event {nameof(SelectionChanged)} should not be raised with this value being positive";
+            throw new InvalidOperationException(sentence1st + sentence2nd);
         }
         SelectionChanged?.Invoke(this, new TreeViewSelChangeArgs(this));
     }
@@ -451,17 +449,14 @@ public partial class MultiSelectTreeView : TreeView
     /// <param name="locations"> (Optional)
     /// Optional collection of <see cref="TreeViewHitTestLocations"/> values to match against. 
     /// If null, only <see cref="TreeViewHitTestLocations.Label"/> is considered a match. </param>
-    /// <returns>
-    /// The <see cref="TreeNode"/> at the specified point if the hit location matches; otherwise, null.
-    /// </returns>
-    protected virtual TreeNode NodeHitTest(Point point, IEnumerable<TreeViewHitTestLocations> locations = null)
+    /// <returns> The TreeNode at the specified point if the hit location matches; otherwise, null. </returns>
+    protected virtual TreeNode GetNodeHit(Point point, IEnumerable<TreeViewHitTestLocations> locations = null)
     {
         TreeViewHitTestInfo hitTest = HitTest(point);
         bool isMatch = (locations == null)
             ? (hitTest.Location == TreeViewHitTestLocations.Label)
             : locations.Contains(hitTest.Location);
-        TreeNode candidate = hitTest.Node;
-        TreeNode node = (candidate != null && isMatch) ? candidate : null;
+        TreeNode node = isMatch ? hitTest.Node : null;
 
         return node;
     }
@@ -523,7 +518,7 @@ public partial class MultiSelectTreeView : TreeView
         try
         {
             base.SelectedNode = null;
-            TreeNode node = NodeHitTest(args.Location);
+            TreeNode node = GetNodeHit(args.Location);
 
             if (node != null)
             {
@@ -566,7 +561,7 @@ public partial class MultiSelectTreeView : TreeView
         // to the far right of a node, outside the actual visible text or icon.
         // This behavior can be misleading if you're trying to only react to true clicks on the node content.
         //
-        TreeNode node = NodeHitTest(args.Location);
+        TreeNode node = GetNodeHit(args.Location);
         bool wasSelected = IsSelected(node);
         bool leftClick = (args.Button == MouseButtons.Left);
         bool rightClick = (args.Button == MouseButtons.Right);

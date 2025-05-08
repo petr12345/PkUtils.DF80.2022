@@ -20,6 +20,7 @@ using PK.PkUtils.Interfaces;
 
 namespace PK.PkUtils.Dump;
 
+
 /// <summary> The wrapper around a general WinForms control, providing the IDumper-behavior for that control.
 /// Internally, it keeps the buffer ( Queue ) of recently added items, so the control could display
 /// a recent history. The queue maximum length is provided as an input argument of constructor. </summary>
@@ -380,7 +381,7 @@ public class DumperCtrlWrapper<CTRL> : IDumperEx, IDisposableEx where CTRL : Sys
     }
 
     /// <inheritdoc/>
-    public bool DumpError(string text)
+    public virtual bool DumpError(string text)
     {
         return DumpText(text);
     }
