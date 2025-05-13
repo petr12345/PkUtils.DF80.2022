@@ -1329,7 +1329,7 @@ namespace PK.SubstEditLib.Subst
         private LRESULT MyOnWmLButtonDown(WPARAM wParam, LPARAM lParam)
         {
             /* uint fwKeys = wParam; */
-            Point pt = new(Win32.LOWORD(lParam.ToInt32()), Win32.HIWORD(lParam.ToInt32()));
+            Point pt = Win32.GetPointFromLParam(lParam.ToInt32());
             int iround;
             Point pttmp;
             int nAllLength = PhysData.GetPhysStr.Length;

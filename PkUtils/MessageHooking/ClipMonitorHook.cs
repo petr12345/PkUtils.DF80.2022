@@ -1,14 +1,4 @@
-﻿/***************************************************************************************************************
-*
-* FILE NAME:   .\MessageHooking\ClipMonitorHook.cs
-*
-* AUTHOR:      Petr Kodet
-*
-* DESCRIPTION: Contains the class ClipMonitorHook
-*
-**************************************************************************************************************/
-
-// Ignore Spelling: Utils, ctrl
+﻿// Ignore Spelling: Utils, ctrl
 //
 using System;
 using System.Diagnostics;

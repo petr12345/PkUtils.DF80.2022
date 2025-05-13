@@ -1,13 +1,4 @@
-﻿/***************************************************************************************************************
-*
-* FILE NAME:   .\MessageHooking\WindowMessageHook.cs
-*
-* AUTHOR:      Petr Kodet
-*
-* DESCRIPTION: Contains the class WindowMessageHook
-*
-**************************************************************************************************************/
-///////////////////////////////////////////////////////////////////////////////////////////////////////////////
+﻿///////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //
 // MSJ Copyright notice
 // 
@@ -19,7 +10,7 @@
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
-// Ignore Spelling: Utils, Coord
+// Ignore Spelling: Coord, Subclassing, Utils
 //
 using System;
 using System.Diagnostics;
@@ -37,8 +28,8 @@ namespace PK.PkUtils.MessageHooking;
 /// </para>
 /// <para>
 /// This functionality is useful particularly in situations when you don't have the source code of
-/// the control that you need to hookup, or you don't want or cannot extend the class hierarchy (
-/// for instance when multiple inheritance would be necessary, but is not supported by the language).
+/// the control that you need to hookup, or you don't want or cannot extend the class hierarchy
+/// (for instance when multiple inheritance would be necessary, but is not supported by the language).
 /// </para>
 /// <para>
 /// The original idea for the design came from the article in Microsoft Systems Journal March 1997
@@ -46,7 +37,7 @@ namespace PK.PkUtils.MessageHooking;
 /// particularly the paragraph CMsgHook - Windows Subclassing. <br/>
 /// 
 /// The code transferred to C#/.NET is using for implementation the 
-/// <a href="https://docs.microsoft.com/en-us/dotnet/api/system.windows.forms.nativewindow?view=netframework-4.8">
+/// <a href="https://learn.microsoft.com/en-us/dotnet/api/system.windows.forms.nativewindow">
 /// NativeWindow</a> from Framework Class Library
 /// </para>
 /// <para>
@@ -59,23 +50,22 @@ namespace PK.PkUtils.MessageHooking;
 /// </para>
 /// <para>
 /// The hook is initialized by public virtual bool HookWindow(IntPtr hwnd), where hwnd is the
-/// window handle (of the control or anything that is Win32 window). In your code, you will derive
-/// from WindowMessageHook, and overwrite its  
+/// where hwnd is the window handle (of the control or anything that is Win32 window).
+/// In your code, you will derive from WindowMessageHook, and overwrite its
 /// <code>
 ///    protected virtual void HookWindowProc(ref Message m)
 ///  </code>
 ///  to change the processing of messages of your choice.
 /// </para> </summary>
-[CLSCompliant(true)]
 public class WindowMessageHook : IDisposableEx
 {
     #region Fields
     /// <summary> the window hooked </summary>
-    protected IntPtr _hookedHwnd;
+    private IntPtr _hookedHwnd;
     /// <summary> the next hook in the chain </summary>
-    internal WindowMessageHook _nextHook;
+    private WindowMessageHook _nextHook;
     /// <summary> the actual native hook doing the job </summary>
-    internal ChainedNativeWindow _pRealHook;
+    private ChainedNativeWindow _realHook;
     /// <summary> Track whether Dispose has been called. </summary>
     private bool _disposed;
     #endregion // Fields
@@ -173,10 +163,8 @@ public class WindowMessageHook : IDisposableEx
     public static void ClientToScreen(IntPtr hwnd, ref Point pt)
     {
         Debug.Assert(hwnd != IntPtr.Zero);
-        User32.POINT ptapi;
+        User32.POINT ptapi = new(pt.X, pt.Y);
 
-        ptapi.x = pt.X;
-        ptapi.y = pt.Y;
         User32.ClientToScreen(hwnd, ref ptapi);
         pt.X = ptapi.x;
         pt.Y = ptapi.y;
@@ -191,10 +179,8 @@ public class WindowMessageHook : IDisposableEx
     public static void ScreenToClient(IntPtr hwnd, ref Point pt)
     {
         Debug.Assert(hwnd != IntPtr.Zero);
-        User32.POINT ptapi;
+        User32.POINT ptapi = new(pt.X, pt.Y);
 
-        ptapi.x = pt.X;
-        ptapi.y = pt.Y;
         User32.ScreenToClient(hwnd, ref ptapi);
         pt.X = ptapi.x;
         pt.Y = ptapi.y;
@@ -256,7 +242,7 @@ public class WindowMessageHook : IDisposableEx
     /// <returns>Specifies the value that is returned to Windows in response to handling the message. </returns>
     protected virtual IntPtr CallOrigProc(ref Message m)
     {
-        this._pRealHook.DefWndProc(ref m);
+        this._realHook.DefWndProc(ref m);
         return m.Result;
     }
 
@@ -275,8 +261,7 @@ public class WindowMessageHook : IDisposableEx
     /// <param name="pExtraInfo"> The object providing additional information; possibly provided by the
     /// derived class in case it overrides the caller <see cref="HookWindow(IntPtr)"/> </param>
     protected virtual void OnHookup(object pExtraInfo)
-    {
-    }
+    { }
 
     /// <summary>
     /// Auxiliary helper called from HookWindow. 
@@ -285,8 +270,7 @@ public class WindowMessageHook : IDisposableEx
     /// <param name="pExtraInfo"> The object providing additional information; possibly provided by the
     /// derived class in case it overrides the caller <see cref="HookWindow(IntPtr)"/> </param>
     protected virtual void OnUnhook(object pExtraInfo)
-    {
-    }
+    { }
 
     /// <summary>
     /// The virtual method, usually overwritten by the derived class 
@@ -303,7 +287,7 @@ public class WindowMessageHook : IDisposableEx
         if (_nextHook != null)
             _nextHook.HookWindowProc(ref m);
         else
-            this._pRealHook.DefWndProc(ref m);
+            this._realHook.DefWndProc(ref m);
     }
     #endregion // Protected methods
 
@@ -336,7 +320,7 @@ public class WindowMessageHook : IDisposableEx
         if (!IsHooked)
         {   // do the hookup, setup hookedWnd and _nextHook
             this._hookedHwnd = hwnd;
-            this._pRealHook = pNativeHook;
+            this._realHook = pNativeHook;
             Debug.Assert(this._nextHook == null);
             pNativeHook.AssignHandle(hwnd);
             pNativeHook.FirstMsgHook = this;
@@ -363,7 +347,7 @@ public class WindowMessageHook : IDisposableEx
         if (!IsHooked)
         {
             this._hookedHwnd = hwnd;
-            this._pRealHook = pNative;
+            this._realHook = pNative;
             this._nextHook = pNative.FirstMsgHook;
             pNative.FirstMsgHook = this;
             result = true;
@@ -382,7 +366,7 @@ public class WindowMessageHook : IDisposableEx
         if (IsHooked)
         {
             this._hookedHwnd = IntPtr.Zero;
-            this._pRealHook = null;
+            this._realHook = null;
             this._nextHook = null;
             result = true;
         }
@@ -400,9 +384,9 @@ public class WindowMessageHook : IDisposableEx
         Debug.Assert(IsHooked);
         if (IsHooked)
         {
-            if (!_pRealHook.PreserveHandle)
+            if (!_realHook.PreserveHandle)
             {
-                _pRealHook.ReleaseHandle();
+                _realHook.ReleaseHandle();
             }
             UnChainHook();
             result = true;
@@ -445,7 +429,6 @@ public class WindowMessageHook : IDisposableEx
             // If disposing equals true, dispose both managed and unmanaged resources.
             if (disposing)
             {
-                // Set the indication flag _bDisposing 
                 // Dispose managed resources here ( if there are any )
                 if (IsHooked)
                 {   // unhook window
@@ -469,11 +452,9 @@ public class WindowMessageHook : IDisposableEx
 
     /// <summary>
     /// Implements <see cref="IDisposableEx.IsDisposed"/>
-    ///  Returns true in case the object has been disposed and no longer should be used.
+    /// Returns true in case the object has been disposed and no longer should be used.
     /// </summary>
-    public bool IsDisposed
-    {
-        get { return _disposed; }
-    }
+    public bool IsDisposed { get => _disposed; }
+
     #endregion // IDisposableEx members
 }

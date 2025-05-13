@@ -76,8 +76,8 @@ internal sealed class ChainedNativeWindow : NativeWindow
     protected override void WndProc(ref Message m)
     {
         if (FirstMsgHook == null)
-        { // if _pFirstMsgHook is null, the object is not quite hooked yet
-          // ( or already not hooked )
+        {
+            // If first hook is null, the object is not quite hooked yet, or already not hooked
             base.WndProc(ref m);
         }
         else

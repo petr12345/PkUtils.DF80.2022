@@ -3,7 +3,6 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Diagnostics;
 using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
@@ -11,112 +10,15 @@ using PK.PkUtils.DataStructures;
 using PK.PkUtils.Extensions;
 using PK.PkUtils.WinApi;
 
-
 namespace PK.PkUtils.UI.General;
 
 #pragma warning disable IDE0290     // Use primary constructor
-
 
 /// <summary> Represents a TreeView control that supports multiple selection of nodes. </summary>
 /// <seealso href="https://www.codeproject.com/Articles/20581/Multiselect-TreeView-Implementation/">
 /// Multiselect TreeView Implementation.</seealso>
 public partial class MultiSelectTreeView : TreeView
 {
-    #region Typedefs
-
-    /// <summary> 
-    /// Contains information for TreeView selection change events. 
-    /// </summary>
-    public sealed class TreeViewSelChangeArgs
-    {
-        /// <summary>
-        /// Initializes a new instance of the <see cref="TreeViewSelChangeArgs"/> class.
-        /// </summary>
-        /// <param name="treeview">The TreeView control. Must not be null.</param>
-        /// <param name="selectedNodes">The selected nodes. Must not be null.</param>
-        /// <exception cref="ArgumentNullException">Thrown when any parameter is null.</exception>
-        public TreeViewSelChangeArgs(MultiSelectTreeView treeview, IReadOnlyCollection<TreeNode> selectedNodes)
-        {
-            TreeView = treeview ?? throw new ArgumentNullException(nameof(treeview));
-            SelectedNodes = selectedNodes ?? throw new ArgumentNullException(nameof(selectedNodes));
-            StackTrace = new StackTrace(skipFrames: 2);
-        }
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="TreeViewSelChangeArgs"/> class.
-        /// </summary>
-        /// <param name="treeview">The TreeView control. Must not be null.</param>
-        /// <exception cref="ArgumentNullException">Thrown when <paramref name="treeview"/> is null.</exception>
-        public TreeViewSelChangeArgs(MultiSelectTreeView treeview)
-            : this(treeview, treeview?.SelectedNodes ?? throw new ArgumentNullException(nameof(treeview)))
-        { }
-
-        /// <summary> The TreeView instance. </summary>
-        public MultiSelectTreeView TreeView { get; }
-
-        /// <summary> The collection of selected nodes. </summary>
-        public IReadOnlyCollection<TreeNode> SelectedNodes { get; }
-
-        /// <summary> Stack trace at the time of creation (skips constructor frames). </summary>
-        public StackTrace StackTrace { get; }
-
-        /// <summary> Gets selected nodes information, as output string. </summary>
-        /// <returns>  The selected nodes information. </returns>
-        public string GetSelectedNodesInfo() => MultiSelectTreeView.GetSelectedNodesInfo(SelectedNodes);
-
-        /// <summary>   Returns a string that represents the current object. </summary>
-        /// <returns>   A string that represents the current object. </returns>
-        public override string ToString()
-        {
-            string[] items = [$"TreeView.Name: {TreeView.Name}", $"{GetSelectedNodesInfo()}"];
-            return $"{GetType().Name}({items.Join()})";
-        }
-    }
-
-    /// <summary>
-    /// Provides data for a TreeView right-click event.
-    /// </summary>
-    public sealed class TreeViewRightClickArgs : EventArgs
-    {
-        /// <summary> Initializes a new instance of the <see cref="TreeViewRightClickArgs"/> class. </summary>
-        /// <param name="treeView">The TreeView that was clicked. Must not be null.</param>
-        /// <param name="clickedNode">The node that was clicked, or null if none.</param>
-        /// <param name="location">The location of the click.</param>
-        public TreeViewRightClickArgs(MultiSelectTreeView treeView, TreeNode clickedNode, Point location)
-        {
-            TreeView = treeView ?? throw new ArgumentNullException(nameof(treeView));
-            ClickedNode = clickedNode;
-            Location = location;
-        }
-
-        /// <summary> The TreeView control where the click occurred. </summary>
-        public MultiSelectTreeView TreeView { get; }
-
-        /// <summary> The node that was right-clicked, or <c>null</c> if none. </summary>
-        public TreeNode ClickedNode { get; }
-
-        /// <summary> The location of the mouse click in client coordinates. </summary>
-        public Point Location { get; }
-
-        /// <summary>   Returns a string that represents the current object. </summary>
-        /// <returns>   A string that represents the current object. </returns>
-        public override string ToString()
-        {
-            string clickedNodeInfo = (ClickedNode is null)
-                ? "ClickedNode is null"
-                : $"{ClickedNode.Text.AsNameValue()}, {ClickedNode.Name.AsNameValue()}";
-
-            string[] items = [
-                $"{TreeView.Name.AsNameValue()}",
-                clickedNodeInfo,
-                $"{Location.AsNameValue()}"
-            ];
-
-            return $"{GetType().Name}({items.Join()})";
-        }
-    }
-    #endregion // Typedefs
-
     #region Fields
 
     private ColorsCache _colorsCache;
@@ -124,6 +26,7 @@ public partial class MultiSelectTreeView : TreeView
     private bool _selectionChangedPending;
     private TreeNode _selectedNode;
     private bool _selectionInitialized;
+    private bool _suppressHotTracking = true;
     private readonly HashSet<TreeNode> _selectedNodes = [];
     #endregion // Fields
 
@@ -162,6 +65,16 @@ public partial class MultiSelectTreeView : TreeView
                 }
             }
         }
+    }
+
+    /// <summary>  Gets or sets a value indicating whether the suppress hot tracking. </summary>
+    [Browsable(true)]
+    [Category("Configuration")]
+    [Description("Suppress the annoying node highlight of unselected node on the same vertical level of mouse click")]
+    public bool SuppressHotTracking
+    {
+        get => _suppressHotTracking;
+        set => _suppressHotTracking = value;
     }
 
     /// <summary> Gets or sets the selected node. </summary>
@@ -494,6 +407,37 @@ public partial class MultiSelectTreeView : TreeView
                 }
                 break;
 
+            case (int)Win32.WM.WM_RBUTTONDOWN:
+                if (SuppressHotTracking)
+                {
+                    Point point = Win32.GetPointFromLParam(m.LParam.ToInt32());
+                    TreeNode nodeAtLine = GetNodeAt(point);
+                    TreeNode nodeAtHit = GetNodeHit(point);
+
+                    if ((nodeAtLine is not null) && (nodeAtHit is null))
+                    {
+                        // The click is NOT inside the actual node text bounds. 
+                        // We should suppress the default behavior, thus preventing visual node highlight.
+                        //
+                        // However, just returning from here and simply skipping the default WndProc
+                        // (which would actually prevent the node from being visually highlighted)
+                        // would also prevent the subsequent OnMouseUp call,
+                        // thus preventing the event TreeRightClick from ever being triggered.
+                        //
+                        // Fortunately, the control can be easily "tricked" by pretending that the click 
+                        // was somewhere else entirely.
+                        // 
+                        m.LParam = Win32.MAKELPARAM(0xffff, 0xffff);
+                        base.WndProc(ref m);
+                        return;
+                    }
+                }
+                break;
+
+            // Not needed now. May be needed if the WM_RBUTTONDOWN handler assigns some helper fields
+            // case (int)Win32.WM.WM_RBUTTONUP:
+            //    break;
+
             // System colors or visual styles have changed. Reset any cached colors, and request a repaint
             case (int)Win32.WM.WM_SYSCOLORCHANGE:
             case (int)Win32.WM.WM_THEMECHANGED:
@@ -531,9 +475,13 @@ public partial class MultiSelectTreeView : TreeView
                 {
                     SelectNode(node);
                 }
+                base.OnMouseDown(args);
             }
-
-            base.OnMouseDown(args);
+            else if (!SuppressHotTracking)
+            {
+                // if SuppressHotTracking is true, and no node selected, should not pass to base call
+                base.OnMouseDown(args);
+            }
         }
         catch (Exception ex)
         {

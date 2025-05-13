@@ -23,9 +23,8 @@ namespace PK.PkUtils.WinApi;
 #pragma warning disable CA1401      // P/Invoke method should not be visible
 #pragma warning disable SYSLIB1054  // Use 'LibraryImportAttribute' instead of 'DllImportAttribute' to generate P/Invoke marshalling code at compile time
 
-/// <summary>
-/// Basic Win32 definitions
-/// </summary>
+/// <summary> Basic Win32 definitions. </summary>
+[CLSCompliant(false)]
 public static class Win32
 {
     #region Constants
@@ -156,6 +155,7 @@ public static class Win32
     /// <summary> Windows Dialog Class Name. </summary>
     public const string MessageBoxClass = "#32770";
     public const string ButtonClass = "Button";
+    public const string ListViewClassName = "SysListView32";
     #endregion // Constants
 
     #region Nested types
@@ -3815,7 +3815,7 @@ public static class Win32
     /// <returns> true if it succeeds, false if it fails. </returns>
     [DllImport("shlwapi.dll", CharSet = CharSet.Unicode, SetLastError = true)]
     [return: MarshalAs(UnmanagedType.Bool)]
-    internal static extern bool PathCompactPathEx(
+    public static extern bool PathCompactPathEx(
       [MarshalAs(UnmanagedType.LPWStr)][Out] StringBuilder pszOut,
       string szPath,
       int cchMax,
@@ -3852,15 +3852,43 @@ public static class Win32
     /// <returns> The return value is the high-order word of the specified value. </returns>
     public static ushort HIWORD(int l) { return HIWORD((uint)(l)); }
 
-    /// <summary> Retrieves the unsigned x-coordinate from the specified LPARAM value.</summary>
-    /// <param name="lp" type="int"> The value to be converted. </param>
-    /// <returns> The return value is the low-order ushort of the specified value.</returns>
-    public static ushort GET_X_LPARAM(int lp) { return LOWORD(lp); }
+
+    /// <summary>  Retrieves the unsigned x-coordinate from the specified LPARAM value. </summary>
+    /// <remarks>
+    /// Do NOT use the LOWORD or HIWORD macros to extract the x- and y- coordinates of the cursor position
+    /// because these macros return incorrect results on systems with multiple monitors.
+    /// Systems with multiple monitors can have negative x- and y- coordinates,
+    /// and LOWORD and HIWORD treat the coordinates as unsigned quantities.
+    /// </remarks>
+    /// 
+    /// <param name="lParam"> The value to be converted, usually Message.LParam. </param>
+    /// <returns>   The return value is the low-order ushort of the specified value. </returns>
+    public static short GET_X_LPARAM(int lParam) { return (short)((lParam) & 0xFFFF); }
+
+    /// <summary>  Get Point coordinates from l-parameter. </summary>
+    /// <param name="lParam"> The value to be converted, usually Message.LParam. </param>
+    /// <returns>   A POINT. </returns>
+    public static User32.POINT PointFromLParam(int lParam)
+    {
+        return new User32.POINT(GET_X_LPARAM(lParam), GET_Y_LPARAM(lParam));
+    }
+
+    /// <summary>   Gets point from l-parameter. </summary>
+    /// <param name="lParam"> The value to be converted, usually Message.LParam. </param>
+    /// <returns>   The point from l-parameter. </returns>
+    public static System.Drawing.Point GetPointFromLParam(int lParam)
+    {
+        return new System.Drawing.Point(GET_X_LPARAM(lParam), GET_Y_LPARAM(lParam));
+    }
 
     /// <summary> Retrieves the unsigned y-coordinate from the specified LPARAM value.</summary>
-    /// <param name="lp" type="int"> The value to be converted. </param>
+    /// <remarks> 
+    /// Do NOT use the LOWORD or HIWORD macros to extract the x- and y- coordinates of the cursor position. 
+    /// </remarks>
+    /// 
+    /// <param name="lParam"> The value to be converted, usually Message.LParam. </param>
     /// <returns> The return value is the high-order ushort of the specified value.</returns>
-    public static ushort GET_Y_LPARAM(int lp) { return HIWORD(lp); }
+    public static short GET_Y_LPARAM(int lParam) { return (short)(((lParam) >> 16) & 0xFFFF); }
 
     /// <summary> Creates an unsigned 32-bit value by concatenating two given 16-bit values. </summary>
     /// <param name="l" type="ushort"> Specifies the low-order word of the new value. </param>

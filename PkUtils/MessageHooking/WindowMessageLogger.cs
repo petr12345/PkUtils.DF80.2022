@@ -8,7 +8,7 @@ using PK.PkUtils.Extensions;
 namespace PK.PkUtils.MessageHooking;
 
 /// <summary>
-/// Logs incoming Win32 messages on hooked window into a log file.
+/// Helps logging incoming Win32 messages on hooked window into a log file.
 /// </summary>
 public class WindowMessageLogger : WindowMessageHook
 {
