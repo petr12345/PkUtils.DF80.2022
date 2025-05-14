@@ -3852,8 +3852,7 @@ public static class Win32
     /// <returns> The return value is the high-order word of the specified value. </returns>
     public static ushort HIWORD(int l) { return HIWORD((uint)(l)); }
 
-
-    /// <summary>  Retrieves the unsigned x-coordinate from the specified LPARAM value. </summary>
+    /// <summary> Retrieves the x-coordinate from the specified LPARAM value. </summary>
     /// <remarks>
     /// Do NOT use the LOWORD or HIWORD macros to extract the x- and y- coordinates of the cursor position
     /// because these macros return incorrect results on systems with multiple monitors.
@@ -3865,6 +3864,15 @@ public static class Win32
     /// <returns>   The return value is the low-order ushort of the specified value. </returns>
     public static short GET_X_LPARAM(int lParam) { return (short)((lParam) & 0xFFFF); }
 
+    /// <summary> Retrieves the y-coordinate from the specified LPARAM value.</summary>
+    /// <remarks> 
+    /// Do NOT use the LOWORD or HIWORD macros to extract the x- and y- coordinates of the cursor position. 
+    /// </remarks>
+    /// 
+    /// <param name="lParam"> The value to be converted, usually Message.LParam. </param>
+    /// <returns> The return value is the high-order ushort of the specified value.</returns>
+    public static short GET_Y_LPARAM(int lParam) { return (short)(((lParam) >> 16) & 0xFFFF); }
+
     /// <summary>  Get Point coordinates from l-parameter. </summary>
     /// <param name="lParam"> The value to be converted, usually Message.LParam. </param>
     /// <returns>   A POINT. </returns>
@@ -3873,22 +3881,13 @@ public static class Win32
         return new User32.POINT(GET_X_LPARAM(lParam), GET_Y_LPARAM(lParam));
     }
 
-    /// <summary>   Gets point from l-parameter. </summary>
+    /// <summary> Gets point from l-parameter. </summary>
     /// <param name="lParam"> The value to be converted, usually Message.LParam. </param>
     /// <returns>   The point from l-parameter. </returns>
     public static System.Drawing.Point GetPointFromLParam(int lParam)
     {
         return new System.Drawing.Point(GET_X_LPARAM(lParam), GET_Y_LPARAM(lParam));
     }
-
-    /// <summary> Retrieves the unsigned y-coordinate from the specified LPARAM value.</summary>
-    /// <remarks> 
-    /// Do NOT use the LOWORD or HIWORD macros to extract the x- and y- coordinates of the cursor position. 
-    /// </remarks>
-    /// 
-    /// <param name="lParam"> The value to be converted, usually Message.LParam. </param>
-    /// <returns> The return value is the high-order ushort of the specified value.</returns>
-    public static short GET_Y_LPARAM(int lParam) { return (short)(((lParam) >> 16) & 0xFFFF); }
 
     /// <summary> Creates an unsigned 32-bit value by concatenating two given 16-bit values. </summary>
     /// <param name="l" type="ushort"> Specifies the low-order word of the new value. </param>

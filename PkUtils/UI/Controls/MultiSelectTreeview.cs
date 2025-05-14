@@ -26,7 +26,7 @@ public partial class MultiSelectTreeView : TreeView
     private bool _selectionChangedPending;
     private TreeNode _selectedNode;
     private bool _selectionInitialized;
-    private bool _suppressHotTracking = true;
+    private bool _suppressRightClickHighlight = true;
     private readonly HashSet<TreeNode> _selectedNodes = [];
     #endregion // Fields
 
@@ -67,19 +67,19 @@ public partial class MultiSelectTreeView : TreeView
         }
     }
 
-    /// <summary>  Gets or sets a value indicating whether the suppress hot tracking. </summary>
+    /// <summary>  Gets or sets a value indicating whether the suppress temporary highlight ( see more in description ). </summary>
     [Browsable(true)]
     [Category("Configuration")]
-    [Description("Suppress the annoying node highlight of unselected node on the same vertical level of mouse click")]
-    public bool SuppressHotTracking
+    [Description("Suppress annoying temporary highlighting of unselected node at same vertical level after right-click")]
+    [DefaultValue(true)]
+    public bool SuppressRightClickHighlight
     {
-        get => _suppressHotTracking;
-        set => _suppressHotTracking = value;
+        get => _suppressRightClickHighlight;
+        set => _suppressRightClickHighlight = value;
     }
 
     /// <summary> Gets or sets the selected node. </summary>
     /// <remarks> Note: This property hides the native TreeView's SelectedNode property. </remarks>
-    /// <value> The selected node. </value>
     public new TreeNode SelectedNode
     {
         get => _selectedNode;
@@ -408,7 +408,7 @@ public partial class MultiSelectTreeView : TreeView
                 break;
 
             case (int)Win32.WM.WM_RBUTTONDOWN:
-                if (SuppressHotTracking)
+                if (SuppressRightClickHighlight)
                 {
                     Point point = Win32.GetPointFromLParam(m.LParam.ToInt32());
                     TreeNode nodeAtLine = GetNodeAt(point);
@@ -428,8 +428,6 @@ public partial class MultiSelectTreeView : TreeView
                         // was somewhere else entirely.
                         // 
                         m.LParam = Win32.MAKELPARAM(0xffff, 0xffff);
-                        base.WndProc(ref m);
-                        return;
                     }
                 }
                 break;
@@ -477,7 +475,7 @@ public partial class MultiSelectTreeView : TreeView
                 }
                 base.OnMouseDown(args);
             }
-            else if (!SuppressHotTracking)
+            else if (!SuppressRightClickHighlight)
             {
                 // if SuppressHotTracking is true, and no node selected, should not pass to base call
                 base.OnMouseDown(args);
