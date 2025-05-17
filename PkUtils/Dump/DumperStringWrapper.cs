@@ -62,6 +62,12 @@ public class DumperStringWrapper : IDumper
     }
 
     /// <inheritdoc/>
+    public bool DumpWarning(string text)
+    {
+        return DumpText(text);
+    }
+
+    /// <inheritdoc/>
     public bool DumpError(string text)
     {
         return DumpText(text);

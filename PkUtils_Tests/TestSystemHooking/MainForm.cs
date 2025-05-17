@@ -127,6 +127,11 @@ namespace PK.TestSystemHooking
             return _wrapper.DumpText(text);
         }
 
+        public bool DumpWarning(string text)
+        {
+            return _wrapper.DumpWarning(text);
+        }
+
         public bool DumpError(string text)
         {
             return _wrapper.DumpError(text);

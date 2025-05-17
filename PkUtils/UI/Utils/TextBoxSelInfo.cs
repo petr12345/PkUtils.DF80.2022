@@ -1,469 +1,171 @@
-﻿// Ignore Spelling: rhs, Sel, Utils
+﻿// Ignore Spelling: CCA, rhs, Sel, Stackoverflow, Utils
 //
 using System;
 using System.Diagnostics;
-using System.Drawing;
 using System.Globalization;
-using System.Windows.Forms;
-using PK.PkUtils.Extensions;
-using PK.PkUtils.WinApi;
-using tPhysPos = System.Int32;
-
 
 namespace PK.PkUtils.UI.Utils;
 
-/// <summary> TextBoxSelInfo is a text box selection info. It keeps the selection start position, selection
-/// end position and the information whether the caret is at the end of selection. </summary>
-///
-/// <remarks> If the StartChar is 0 and the EndChar is –1 and IsCaretLast is true, all the text in the edit
-/// control is selected. <br/> </remarks>
-///
-/// <seealso href="http://msdn.microsoft.com/en-us/library/windows/desktop/bb761661(v=vs.85).aspx"> EM_SETSEL message</seealso>
-[CLSCompliant(true)]
-public class TextBoxSelInfo : IEquatable<TextBoxSelInfo>
+
+/// <summary>
+/// Represents information about the selection or caret position in a text box, 
+/// in an immutable way.
+/// </summary>
+/// 
+/// <remarks>
+/// If the StartChar is 0 and the EndChar is –1 and IsCaretLast is true, 
+/// all the text in the edit control is selected. <br/>
+/// </remarks>
+/// <seealso href="http://msdn.microsoft.com/en-us/library/windows/desktop/bb761661(v=vs.85).aspx">EM_SETSEL message</seealso>
+public sealed class TextBoxSelInfo : IEquatable<TextBoxSelInfo>
 {
     #region Fields
-    /// <summary>
-    /// selection start position
-    /// </summary>
-    protected tPhysPos _nStartChar;
-
-    /// <summary>
-    /// selection end position
-    /// </summary>
-    protected tPhysPos _nEndChar;
-
-    /// <summary>
-    /// is the caret is at the end of selection
-    /// </summary>
-    protected bool _bIsCaretLast;
-
-    #endregion // Fields
+    // No backing fields — using immutable auto-properties.
+    #endregion
 
     #region Constructors
 
     /// <summary>
-    /// Default argument-less constructor.
+    /// Initializes a new instance of the <see cref="TextBoxSelInfo"/> class 
+    /// with specified start and end positions and caret direction.
     /// </summary>
-    public TextBoxSelInfo()
+    /// <param name="nStart">The start character index.</param>
+    /// <param name="nEnd">The end character index.</param>
+    /// <param name="isCaretLast">True if the caret is logically after the selection; otherwise, false.</param>
+    public TextBoxSelInfo(int nStart, int nEnd, bool isCaretLast)
     {
-    }
-
-    /// <summary>
-    /// Constructor with one argument - the caret position. The beginning and the end of selection have the same value.
-    /// </summary>
-    /// <param name="nPos">The common value of the beginning and the end position.</param>
-    public TextBoxSelInfo(int nPos)
-      : this(nPos, nPos)
-    {
-    }
-
-    /// <summary>
-    /// Constructor with the selection start and selection end arguments. 
-    /// It is assumed the caret is at the start ( not at the end ) of selection.
-    /// </summary>
-    /// <param name="nStart">The selection start index.</param>
-    /// <param name="nEnd">The selection end index.</param>
-    public TextBoxSelInfo(int nStart, int nEnd)
-      : this(nStart, nEnd, false)
-    {
-    }
-
-    /// <summary>
-    /// Constructor with the selection start, selection end and the information whether the caret is at the end of selection.
-    /// </summary>
-    /// <param name="nStart">The selection start index.</param>
-    /// <param name="nEnd">The selection end index.</param>
-    /// <param name="bLast">True if the caret is at the end of selection; false otherwise.</param>
-    public TextBoxSelInfo(int nStart, int nEnd, bool bLast)
-    {
-        _nStartChar = nStart;
-        _nEndChar = nEnd;
-        _bIsCaretLast = bLast;
-
+        StartChar = nStart;
+        EndChar = nEnd;
+        IsCaretLast = isCaretLast;
         ValidateMe();
     }
 
     /// <summary>
-    /// A copy constructor.
+    /// Initializes a new instance of the <see cref="TextBoxSelInfo"/> class 
+    /// representing a caret position at a specific character without selection.
     /// </summary>
-    /// <param name="rhs">The original object from which the data are being copied.</param>
+    /// <param name="nPos">The caret character index.</param>
+    public TextBoxSelInfo(int nPos) : this(nPos, nPos, false) { }
+
+    /// <summary>
+    /// Initializes a new instance of the <see cref="TextBoxSelInfo"/> class by copying another instance.
+    /// </summary>
+    /// <param name="rhs">The instance to copy.</param>
+    /// <exception cref="ArgumentNullException">Thrown if <paramref name="rhs"/> is null.</exception>
     public TextBoxSelInfo(TextBoxSelInfo rhs)
     {
         ArgumentNullException.ThrowIfNull(rhs);
-
-        _nStartChar = rhs.StartChar;
-        _nEndChar = rhs.EndChar;
-        _bIsCaretLast = rhs.IsCaretLast;
-
+        StartChar = rhs.StartChar;
+        EndChar = rhs.EndChar;
+        IsCaretLast = rhs.IsCaretLast;
         ValidateMe();
     }
+
     #endregion // Constructors
 
     #region Properties
 
     /// <summary>
-    /// The index of beginning character of selection.
+    /// Gets the zero-based index of the selection start character.
     /// </summary>
-    public tPhysPos StartChar
-    {
-        get { return _nStartChar; }
-        protected internal set { _nStartChar = value; }
-    }
+    public int StartChar { get; }
 
     /// <summary>
-    /// The index of ending character of selection.
+    /// Gets the zero-based index of the selection end character.
     /// </summary>
-    public tPhysPos EndChar
-    {
-        get { return _nEndChar; }
-        protected internal set { _nEndChar = value; }
-    }
+    public int EndChar { get; }
 
     /// <summary>
-    /// True if the caret position is at the end of selection; false otherwise.
+    /// Gets a value indicating whether the caret is logically positioned after the selection.
     /// </summary>
-    public bool IsCaretLast
-    {
-        get { return _bIsCaretLast; }
-        protected internal set { _bIsCaretLast = value; }
-    }
-
-    /// <summary> Returns true if there is any selection; i.e. if the values of <see cref="StartChar"/> and
-    /// <see cref="EndChar"/> are different. </summary>
-    /// <value> true if there is any selection, false if not. </value>
-    public bool IsSel
-    {
-        get { return (StartChar != EndChar); }
-    }
+    public bool IsCaretLast { get; }
 
     /// <summary>
-    /// The position of caret.
+    /// Gets a value indicating whether any text is selected.
     /// </summary>
-    public int CaretChar
-    {
-        get { return (!IsCaretLast ? StartChar : EndChar); }
-    }
+    public bool IsSel { get => StartChar != EndChar; }
 
     /// <summary>
-    /// True if this selection info specifies that all the text in the related control is selected; false otherwise.
+    /// Gets the index of the character where the caret is logically placed.
     /// </summary>
-    public bool IsAllSelection
-    {
-        get { return (StartChar == 0 && EndChar == -1 && IsCaretLast); }
-    }
+    public int CaretChar { get => IsCaretLast ? EndChar : StartChar; }
 
     /// <summary>
-    /// Returns a new instance of TextBoxSelInfo, which specifies that all the text in the related control is selected.
+    /// Gets a value indicating whether the selection spans the entire content.
     /// </summary>
-    public static TextBoxSelInfo AllSelection
-    {
-        get { return new TextBoxSelInfo(0, -1, true); }
-    }
+    public bool IsAllSelection { get => StartChar == 0 && EndChar == -1 && IsCaretLast; }
+
+    /// <summary>
+    /// Returns a special instance representing a selection of the entire text content.
+    /// </summary>
+    public static TextBoxSelInfo AllSelection { get => new(0, -1, true); }
+
     #endregion // Properties
 
     #region Methods
 
     /// <summary>
-    /// Sets the value of <see cref="IsCaretLast"/> property.
+    /// Returns a new <see cref="TextBoxSelInfo"/> with the selection or caret offset by a specified amount.
     /// </summary>
-    /// <param name="bLast">True if the caret is at the end of selection; false otherwise.</param>
-    public void SetCaretLast(bool bLast)
+    /// <param name="delta">The offset to apply (can be negative).</param>
+    /// <returns>A new adjusted <see cref="TextBoxSelInfo"/> instance.</returns>
+    public TextBoxSelInfo WithOffset(int delta)
     {
-        _bIsCaretLast = bLast;
-        AssertValid();
+        int newStart = Math.Max(0, StartChar + delta);
+        int newEnd = Math.Max(0, EndChar + delta);
+        return new TextBoxSelInfo(newStart, newEnd, IsCaretLast);
     }
 
     /// <summary>
-    /// Modify this TextBoxSelInfo to make it specify that all the text in the related control is selected.
+    /// Returns a new <see cref="TextBoxSelInfo"/> instance with the same selection bounds
+    /// but with the specified caret position logic.
     /// </summary>
-    public void MakeAllSelection()
+    /// <param name="caretLast">True if the caret should be logically after the selection; otherwise, false.</param>
+    /// <returns>A new <see cref="TextBoxSelInfo"/> instance with the updated caret direction.</returns>
+    public TextBoxSelInfo WithCaretLast(bool caretLast)
     {
-        _nStartChar = 0; _nEndChar = -1; _bIsCaretLast = true;
-        AssertValid();
+        return new TextBoxSelInfo(StartChar, EndChar, caretLast);
     }
-
-    /// <summary> Overrides the virtual method of the base class. The GetHashCode method is suitable for use in
-    /// hashing algorithms and data structures such as a hash table. </summary>
-    ///
-    /// <returns> A hash code for this object. </returns>
-    public override int GetHashCode()
-    {
-        return (_nStartChar.GetHashCode() ^ _nEndChar.GetHashCode() ^ _bIsCaretLast.GetHashCode());
-    }
-
-    /// <summary>
-    /// Overrides the virtual method of the base class. Determines whether the specified Object is equal to the current Object.
-    /// </summary>
-    /// <param name="obj">The object being compared with the current object</param>
-    /// <returns>True if this and compared objects are equal, false otherwise.</returns>
-    public override bool Equals(object obj)
-    {
-        return Equals(obj as TextBoxSelInfo);
-    }
-
-    /// <summary>
-    /// Moves the selection start and selection end by the specified offset <paramref name="nDelta"/>.
-    /// </summary>
-    /// <param name="nDelta">The offset which is added to selection start position and selection end position.</param>
-    public void Offset(int nDelta)
-    {
-        _nStartChar += nDelta;
-        _nEndChar += nDelta;
-    }
-
-    /// <summary>
-    /// Validates the current object.
-    /// </summary>
-    [Conditional("DEBUG")]
-    public virtual void AssertValid()
-    {
-        ValidateMe();
-    }
-
-    /// <summary>
-    /// Non-virtual method validating an instance of this type. 
-    /// The reason of existence of this method is to avoid calling virtual method from constructor.
-    /// </summary>
-    [Conditional("DEBUG")]
-    protected void ValidateMe()
-    {
-        Debug.Assert(IsAllSelection || (StartChar <= EndChar));
-    }
-
-#if DEBUG
-    /// <summary>
-    /// Returns a string describing all values of fields of this instance.
-    /// </summary>
-    public virtual string Say
-    {
-        get
-        {
-            return string.Format(
-                CultureInfo.InvariantCulture,
-                "TextBoxSelInfo: (_nStartChar={0}, _nEndChar={1}, _bIsCaretLast={2})",
-                _nStartChar, _nEndChar, _bIsCaretLast);
-        }
-    }
-#endif
-    #endregion // Methods
-
-    #region IEquatable<TextBoxSelInfo> Members
 
     /// <inheritdoc/>
-    public virtual bool Equals(TextBoxSelInfo other)
-    {
-        bool result = false;
+    public override bool Equals(object obj) => Equals(obj as TextBoxSelInfo);
 
-        if (other == null)
-        {
-            /* result = false; already is */
-        }
-        else if (object.ReferenceEquals(this, other))
-        {
-            result = true;
-        }
-        else if (object.ReferenceEquals(other.GetType(), typeof(TextBoxSelInfo)))
-        {
-            result = ((this.StartChar == other.StartChar)
-              && (this.EndChar == other.EndChar)
-              && (this.IsCaretLast == other.IsCaretLast));
-        }
-        else
-        {   // the other object is somehow derived, let him decide
-            result = other.Equals((object)this);
-        }
-
-        return result;
-    }
-    #endregion // IEquatable<TextBoxSelInfo> Members
-};
-
-/// <summary>
-/// A helper class containing several extension methods of TextBoxBase.
-/// </summary>
-[CLSCompliant(true)]
-public static class TextBoxHelper
-{
     /// <summary>
-    /// Getting the selection info of the given TextBoxBase 
+    /// Determines whether the specified <see cref="TextBoxSelInfo"/> is equal to the current instance.
     /// </summary>
-    /// <param name="textBx">The TextBox this is all about.</param>
-    /// <returns> A new <see cref="TextBoxSelInfo"/> object.</returns>
-    public static TextBoxSelInfo GetSelInfo(this TextBoxBase textBx)
+    /// <param name="other">The instance to compare with.</param>
+    /// <returns>True if the instances are equal; otherwise, false.</returns>
+    public bool Equals(TextBoxSelInfo other)
     {
-        int nStartChar, nEndChar;
-        TextBoxSelInfo result;
+        if (other is null) return false;
+        if (ReferenceEquals(this, other)) return true;
+        return StartChar == other.StartChar &&
+               EndChar == other.EndChar &&
+               IsCaretLast == other.IsCaretLast;
+    }
 
-        textBx.CheckNotDisposed(nameof(textBx));
+    /// <inheritdoc/>
+    public override int GetHashCode() => HashCode.Combine(StartChar, EndChar, IsCaretLast);
 
-        unsafe
-        {
-            User32.SendMessage(textBx.Handle, (int)Win32.EM.EM_GETSEL, new IntPtr(&nStartChar), new IntPtr(&nEndChar));
-            /* this.CallOrigProc(Win32.EM_GETSEL, new IntPtr(&nStartChar), new IntPtr(&nEndChar)); */
-        }
-        result = new TextBoxSelInfo(nStartChar, nEndChar);
-
-        if (nStartChar != nEndChar)
-        {   // determine whether caret is last
-            Point pcaret = new();
-            Point pstart = GetPositionFromCharIndexFix(textBx, nStartChar);
-            Point pend = GetPositionFromCharIndexFix(textBx, nEndChar);
-
-            User32.GetCaretPos(ref pcaret);
-
-            if (pend.X < 0)   // "overflow"
-            {
-                result.IsCaretLast = (pstart.X != pcaret.X);
-            }
-            else if (pcaret.X == pend.X)
-            {
-                result.IsCaretLast = true;
-            }
-            else if (pcaret.X == pstart.X)
-            {
-                /* result.IsCaretLast = false; already is */
-            }
-            else
-            {
-                result.IsCaretLast = ((pend.X - pcaret.X) < (pcaret.X - pstart.X));
-            }
-        }
-
-        return result;
+    /// <summary>
+    /// Returns a string that represents the current object.
+    /// </summary>
+    /// <returns>A string with selection/caret details.</returns>
+    public override string ToString()
+    {
+        return string.Format(CultureInfo.InvariantCulture,
+            "TextBoxSelInfo(StartChar={0}, EndChar={1}, IsCaretLast={2})",
+            StartChar, EndChar, IsCaretLast);
     }
 
     /// <summary>
-    /// Replacement ( fixup ) of original TextBoxBase.GetPositionFromCharIndex method,
-    /// which does work quite reliably.
+    /// Performs consistency checks in debug builds.
     /// </summary>
-    /// <param name="textBx">The TextBox this is all about.</param>
-    /// <param name="index">The index of the character for which to retrieve the location. </param>
-    /// <returns>Retrieves the location within the control at the specified character index.</returns>
-    /// <remarks>
-    /// The original method <see cref="TextBoxBase.GetPositionFromCharIndex "/>produces bug in two scenarios: <br/>
-    /// a/ the case when index == textBx.TextLength, 
-    ///   which means the position at the end of string (beyond the last character).
-    ///   The returned position does not match what it should be.<br/>
-    /// b/ wrong result when the correct character position ( its vertical coordinate) 
-    ///   is negative because the position is on the line scrolled-out of view.
-    ///   In the case, the returned vertical coordinate from GetPositionFromCharIndex 
-    ///   is (wrong) very big positive number. <br/>
-    /// </remarks>
-    /// 
-    /// <seealso cref="GetCharIndexFromPositionFix"/>
-    /// 
-    /// <seealso href="http://social.msdn.microsoft.com/Forums/en/vbgeneral/thread/5f8a35ef-dd21-41f7-a7e9-8f631b6f5045">
-    /// Nasty bug with GetPositionFromCharIndex ? </seealso>
-    /// 
-    /// <seealso href="http://stackoverflow.com/questions/913735/how-to-move-insert-caret-on-textbox-when-accepting-a-drop">
-    /// Stackoverflow: How to move insert caret on textbox when accepting a Drop</seealso>
-    ///
-    public static Point GetPositionFromCharIndexFix(this TextBoxBase textBx, int index)
+    [Conditional("DEBUG")]
+    private void ValidateMe()
     {
-        textBx.CheckNotDisposed(nameof(textBx));
-
-        bool bFixA = false;
-        Point ptRes = textBx.GetPositionFromCharIndex(index);
-        // fixup of the problem /b, to make it negative if the value is wrong very big positive
-        ptRes = new Point((short)ptRes.X, (short)ptRes.Y);
-
-        if (ptRes.X < 0)
-        {
-            bFixA = true; // the fix of problem a/ is needed
-        }
-        else if ((index > 0) && (index == textBx.TextLength))
-        {
-            bFixA = true; // the fix of problem a/ is needed
-        }
-
-        if (bFixA)
-        {
-            if (index > 0)
-            {
-                ptRes = new Point(0, 0);
-                int nLen = textBx.TextLength;
-
-                Debug.Assert(nLen <= index);
-                if (nLen > 0)
-                {
-                    string strText = textBx.Text;
-                    string strTmp = strText[nLen - 1].ToString();
-
-                    ptRes = GetPositionFromCharIndexFix(textBx, nLen - 1);
-                    using Graphics g = textBx.CreateGraphics();
-
-                    /* the TextRenderer provides more exact results
-                    SizeF sizeF = g.MeasureString(strTmp, textBx.Font);
-                    ptRes.X += (int)sizeF.Width;
-                    */
-                    ptRes.X += TextRenderer.MeasureText(g, strTmp, textBx.Font).Width;
-                }
-            }
-            else
-            {
-                ptRes = new Point(0, ptRes.Y);
-            }
-        }
-        else if (ptRes.Y >= 0)
-        {
-            while (GetCharIndexFromPositionFix(textBx, ptRes) > index)
-            {
-                ptRes.X--;
-            }
-        }
-
-        return ptRes;
+        Debug.Assert(IsAllSelection || StartChar <= EndChar);
     }
 
-    /// <summary>
-    /// Replacement ( fixup ) of original <see cref="TextBoxBase.GetCharIndexFromPosition"/>.
-    /// We must do that because of wrong behavior of GetCharIndexFromPosition, 
-    /// which is missing (ignoring) the position at the end of string (beyond the last character).
-    /// </summary>
-    /// <param name="textBx">The TextBox this is all about.</param>
-    /// <param name="pt">point in client area coordinates</param>
-    /// <returns>Retrieves the index of the character nearest to the specified location.</returns>
-    ///
-    /// <seealso cref="GetPositionFromCharIndexFix"/>
-    /// 
-    /// <seealso href="http://stackoverflow.com/questions/913735/how-to-move-insert-caret-on-textbox-when-accepting-a-drop">
-    /// Stackoverflow: How to move insert caret on textbox when accepting a Drop</seealso>
-    public static int GetCharIndexFromPositionFix(this TextBoxBase textBx, Point pt)
-    {
-        textBx.CheckNotDisposed(nameof(textBx));
-
-        int nLastCharIndex = textBx.TextLength - 1;
-        int nRes = textBx.GetCharIndexFromPosition(pt);
-
-        if ((nLastCharIndex >= 0) && (nRes == nLastCharIndex))
-        {
-            Point temp = textBx.GetPositionFromCharIndex(nRes);
-            if (pt.X > temp.X)
-            {
-                nRes++;
-            }
-        }
-        return nRes;
-    }
-
-    /// <summary>
-    /// Setting the selection
-    /// </summary>
-    /// <param name="textBx">The TextBox this is all about.</param>
-    /// <param name="info">An applied selection info object.</param>
-    public static void SetSelInfo(this TextBoxBase textBx, TextBoxSelInfo info)
-    {
-        ArgumentNullException.ThrowIfNull(textBx);
-        ArgumentNullException.ThrowIfNull(info);
-
-        if (info.IsAllSelection || !info.IsCaretLast)
-        {
-            User32.SendMessage(textBx.Handle, (int)Win32.EM.EM_SETSEL, new IntPtr(info.StartChar), new IntPtr(info.EndChar));
-        }
-        else
-        {
-            User32.SendMessage(textBx.Handle, (int)Win32.EM.EM_SETSEL, new IntPtr(info.EndChar), new IntPtr(info.StartChar));
-        }
-    }
+    #endregion // Methods
 }

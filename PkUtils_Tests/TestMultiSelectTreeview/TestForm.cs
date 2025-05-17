@@ -68,6 +68,8 @@ public partial class TestForm : FormWithLayoutPersistence, IDumper
 
     public bool DumpText(string text) => Dumper.DumpText(text);
 
+    public bool DumpWarning(string text) => Dumper.DumpWarning(text);
+
     public bool DumpError(string text) => Dumper.DumpError(text);
 
     public bool Reset() => Dumper.Reset();

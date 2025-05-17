@@ -1,14 +1,4 @@
-﻿/***************************************************************************************************************
-*
-* FILE NAME:   .\Dump\ObjectDumper.cs
-*
-* AUTHOR:      Petr Kodet
-*
-* DESCRIPTION: Contains code of the class ObjectDumper
-*
-**************************************************************************************************************/
-
-///////////////////////////////////////////////////////////////////////////////////////////////////////////////
+﻿///////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //
 // MSDN license agreement notice
 // 
@@ -32,6 +22,7 @@ using PK.PkUtils.Extensions;
 
 #pragma warning disable IDE0083 // Use pattern matching
 
+//the namespace need to be different from RapidLaunch to avoid ambiguous calls
 namespace PK.PkUtils.Dump;
 
 /// <summary>

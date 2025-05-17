@@ -1,5 +1,5 @@
-﻿// Ignore Spelling: Utils, fg, bg
-//
+﻿// Ignore Spelling: fg, bg
+// 
 using System;
 using System.Runtime.CompilerServices;
 using System.Threading;
@@ -122,6 +122,13 @@ public class ConsoleDisplay : IConsoleDisplay
     public bool DumpText(string text)
     {
         WriteText(text, newLine: true);
+        return true;
+    }
+
+    /// <inheritdoc/>
+    public bool DumpWarning(string text)
+    {
+        WriteWarning(text, newLine: true);
         return true;
     }
 

@@ -1,15 +1,6 @@
-﻿/***************************************************************************************************************
-*
-* FILE NAME:   .\Dump\DumperCtrlWrapper.cs
-*
-* AUTHOR:      Petr Kodet
-*
-* DESCRIPTION: The file contains implementation of DumperCtrlWrapper
-*
-**************************************************************************************************************/
-
-// Ignore Spelling: Utils, Ctrl, Preprocess
+﻿// Ignore Spelling: CCA, CTRL, Preprocess, Utils
 //
+
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -20,7 +11,6 @@ using PK.PkUtils.Interfaces;
 
 namespace PK.PkUtils.Dump;
 
-
 /// <summary> The wrapper around a general WinForms control, providing the IDumper-behavior for that control.
 /// Internally, it keeps the buffer ( Queue ) of recently added items, so the control could display
 /// a recent history. The queue maximum length is provided as an input argument of constructor. </summary>
@@ -30,6 +20,15 @@ namespace PK.PkUtils.Dump;
 public class DumperCtrlWrapper<CTRL> : IDumperEx, IDisposableEx where CTRL : System.Windows.Forms.Control
 {
     #region Typedefs
+
+    /// <summary>   Argument-less delegate that is used in implementation of <see cref="Reset"/>. </summary>
+    /// <returns>   true if it succeeds, false if it fails. </returns>
+    protected delegate bool ResetMethodInvoker();
+
+    /// <summary>	A delegate  that is used in implementation of <see cref="DumpText"/>. </summary>
+    /// <param name="strAdd">	The new added text item. </param>
+    /// <returns>	true if it succeeds, false if it fails. </returns>
+    protected delegate bool MethodAddStringInvoker(string strAdd);
 
     /// <summary>
     /// The enum indicating what type of change has been done in virtual bool AddText(string strAdd)
@@ -52,16 +51,38 @@ public class DumperCtrlWrapper<CTRL> : IDumperEx, IDisposableEx where CTRL : Sys
         RemovedAndAppended = 2,
     }
 
-    /// <summary>
-    /// Argument-less delegate that is used in implementation of <see cref="Reset"/>.
-    /// </summary>
-    /// <returns>	true if it succeeds, false if it fails. </returns>
-    protected delegate bool ResetMethodInvoker();
+    /// <summary>   Values that represent message levels. </summary>
+    protected enum MessageLevel
+    {
+        /// <summary> An enum constant representing the Information option. </summary>
+        Info,
+        /// <summary> An enum constant representing the warning option. </summary>
+        Warning,
+        /// <summary> An enum constant representing the error option. </summary>
+        Error
+    }
 
-    /// <summary>	A delegate  that is used in implementation of <see cref="DumpText"/>. </summary>
-    /// <param name="strAdd">	The new added text item. </param>
-    /// <returns>	true if it succeeds, false if it fails. </returns>
-    protected delegate bool MethodAddStringInvoker(string strAdd);
+    /// <summary>   (Immutable) record representing log message. </summary>
+    protected record LogEntry
+    {
+        /// <summary>   Gets the textual content of the log entry. </summary>
+        public string Text { get; }
+
+        /// <summary>   Gets the severity level of the log message. </summary>
+        public MessageLevel Level { get; }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="LogEntry"/> record with the specified text and message level.
+        /// </summary>
+        /// <param name="text">The textual content of the log entry. Cannot be <c>null</c>.</param>
+        /// <param name="level">The severity level of the log message.</param>
+        /// <exception cref="ArgumentNullException">Thrown when <paramref name="text"/> is <c>null</c>.</exception>
+        public LogEntry(string text, MessageLevel level)
+        {
+            this.Text = text ?? throw new ArgumentNullException(nameof(text));
+            this.Level = level;
+        }
+    }
     #endregion // Typedefs
 
     #region Fields
@@ -73,7 +94,7 @@ public class DumperCtrlWrapper<CTRL> : IDumperEx, IDisposableEx where CTRL : Sys
     protected const bool _defaultShouldPreprocessItems = true;
 
     /// <summary> A queue of inserted text items</summary>
-    private Queue<string> _msgHistory = new();
+    protected Queue<LogEntry> _msgHistory = new();
 
     /// <summary> The lock around queue</summary>
     private readonly object _lockHistory = new();
@@ -90,31 +111,32 @@ public class DumperCtrlWrapper<CTRL> : IDumperEx, IDisposableEx where CTRL : Sys
 
     #region Constructor(s)
 
-    /// <summary> Constructor getting as a single input argument the wrapped control. </summary>
+    /// <summary> Constructor accepting as a single input argument the wrapped control. </summary>
     ///
     /// <param name="ctrl"> The wrapped WinForms control. </param>
     public DumperCtrlWrapper(CTRL ctrl)
       : this(ctrl, _defaultMsgHistoryItems)
-    {
-    }
+    { }
 
-    /// <summary> Constructor getting two input arguments. </summary>
+    /// <summary> Constructor accepting two input arguments. </summary>
     ///
     /// <param name="ctrl">  The wrapped WinForms control. </param>
-    /// <param name="maxMsgHistoryItems"> The maximum length of internal  queue of recently added text items. </param>
+    /// <param name="maxMsgHistoryItems"> The maximum length of internal queue of recently added text items. </param>
     public DumperCtrlWrapper(CTRL ctrl, int maxMsgHistoryItems)
       : this(ctrl, maxMsgHistoryItems, _defaultShouldPreprocessItems)
     { }
 
-    /// <summary> Constructor getting three input arguments. </summary>
+    /// <summary> Constructor accepting three input arguments. </summary>
     ///
     /// <param name="ctrl">                  The wrapped WinForms control. </param>
-    /// <param name="maxMsgHistoryItems">    The maximum length of internal  queue of recently added text items. </param>
+    /// <param name="maxMsgHistoryItems">    The maximum length of internal queue of recently added text items. </param>
     /// <param name="shouldPreprocessItems"> Initializes the value of property ShouldPreprocessItems.  
     /// If true,  the method <see cref="PreprocessAddedText "/>will be called upon adding the new text item. </param>
     public DumperCtrlWrapper(CTRL ctrl, int maxMsgHistoryItems, bool shouldPreprocessItems)
     {
         ctrl.CheckNotDisposed(nameof(ctrl));
+        ArgumentOutOfRangeException.ThrowIfLessThanOrEqual(maxMsgHistoryItems, 0);
+
         _targetReference = new WeakReference(ctrl);
         _maxMsgHistoryItems = maxMsgHistoryItems;
         _shouldPreprocessItems = shouldPreprocessItems;
@@ -163,25 +185,16 @@ public class DumperCtrlWrapper<CTRL> : IDumperEx, IDisposableEx where CTRL : Sys
         }
     }
 
-    /// <summary>
-    /// Returns the WeakReference created by the constructor. 
-    /// <remarks>
-    /// Will be null if this DumperCtrlWrapper has been disposed.
-    /// </remarks>
-    /// </summary>
-    protected WeakReference TargetReference
-    {
-        get { return _targetReference; }
-    }
+    /// <summary>   Returns the WeakReference created by the constructor. </summary>
+    /// <remarks>   Will be null if this DumperCtrlWrapper has been disposed. </remarks>
+    protected WeakReference TargetReference { get => _targetReference; }
 
     /// <summary>
     /// Getter for the value of the boolean flag _shouldPreprocessItems.
     /// If true,  the method PreprocessAddedText will be called upon adding the new item.
     /// </summary>
-    protected bool ShouldPreprocessItems
-    {
-        get { return _shouldPreprocessItems; }
-    }
+    protected bool ShouldPreprocessItems { get => _shouldPreprocessItems; }
+
     #endregion // Properties
 
     #region Methods
@@ -219,16 +232,23 @@ public class DumperCtrlWrapper<CTRL> : IDumperEx, IDisposableEx where CTRL : Sys
     /// and to the wrapped control ( if there is any ).
     /// </summary>
     /// <remarks>
-    /// If the history contains less than <see cref="HistoryLimit"/>items,
-    /// simply adds a new string to control text.
-    /// Otherwise, remove the first string from history list, add a new string to queue, 
-    /// and construct a new text from history queue.
+    /// If the history contains less than <see cref="HistoryLimit"/>items, simply adds a new string to control
+    /// text. Otherwise, remove the first string from history list, add a new string to queue, and construct a
+    /// new text from history queue.
     /// </remarks>
-    /// <param name="strAdd"> The new added text item. </param>
-    /// <returns> An enum <see cref="AddTextResult  "/> value indicating what type of change has been done . </returns>
-    protected virtual AddTextResult AddText(string strAdd)
+    /// <param name="entry"> The log entry containing the text and severity level. </param>
+    /// <returns>
+    /// An enum <see cref="AddTextResult  "/> value indicating what type of change has been done .
+    /// </returns>
+    protected virtual AddTextResult AddText(LogEntry entry)
     {
-        string strAddText = ShouldPreprocessItems ? PreprocessAddedText(strAdd) : strAdd;
+        ArgumentNullException.ThrowIfNull(entry);
+
+        if (ShouldPreprocessItems)
+        {
+            entry = new LogEntry(PreprocessAddedText(entry.Text), entry.Level);
+        }
+        string strAdd = entry.Text;
         StringBuilder sbCompletelyNewContents = null;
         CTRL ctrl = WrappedControl;
         bool isControlOk = (null != ctrl);
@@ -243,19 +263,19 @@ public class DumperCtrlWrapper<CTRL> : IDumperEx, IDisposableEx where CTRL : Sys
 
             if (_msgHistory.Count < this.HistoryLimit)
             {
-                _msgHistory.Enqueue(strAddText);
+                _msgHistory.Enqueue(entry);
             }
             else
             {
                 _msgHistory.Dequeue();
-                _msgHistory.Enqueue(strAddText);
+                _msgHistory.Enqueue(entry);
 
                 if (isControlOk)
                 {
                     sbCompletelyNewContents = new StringBuilder();
-                    foreach (var strItem in _msgHistory)
+                    foreach (LogEntry item in _msgHistory)
                     {
-                        sbCompletelyNewContents.Append(strItem);
+                        sbCompletelyNewContents.Append(item.Text);
                     }
                 }
             }
@@ -265,7 +285,7 @@ public class DumperCtrlWrapper<CTRL> : IDumperEx, IDisposableEx where CTRL : Sys
         {
             if (null == sbCompletelyNewContents)
             {
-                ctrl.Text += strAddText;
+                ctrl.Text += strAdd;
                 res = AddTextResult.AppendedOnly;
             }
             else
@@ -274,6 +294,7 @@ public class DumperCtrlWrapper<CTRL> : IDumperEx, IDisposableEx where CTRL : Sys
                 res = AddTextResult.RemovedAndAppended;
             }
         }
+
         return res;
     }
 
@@ -294,6 +315,37 @@ public class DumperCtrlWrapper<CTRL> : IDumperEx, IDisposableEx where CTRL : Sys
         {
             ctrl.Text = string.Empty;
         }
+    }
+
+    /// <summary>
+    /// Writes the specified <see cref="LogEntry"/> to the underlying control,
+    /// either directly or via thread invocation, depending on context.
+    /// </summary>
+    /// <param name="entry">The log entry containing the text and severity level.</param>
+    /// <returns><c>true</c> if the entry was successfully added; otherwise, <c>false</c>.</returns>
+    /// <exception cref="ArgumentNullException">Thrown if <paramref name="entry"/> is <c>null</c>.</exception>
+    protected virtual bool DumpEntry(LogEntry entry)
+    {
+        ArgumentNullException.ThrowIfNull(entry);
+
+        bool bRes = false;
+        CTRL ctrl = WrappedControl;
+
+        if (null != ctrl)
+        {
+            if (ctrl.InvokeRequired)
+            {
+                ctrl.BeginInvoke(DumpEntry, entry);
+                bRes = true;
+            }
+            else
+            {
+                AddTextResult addRes = this.AddText(entry);
+                bRes = (addRes != AddTextResult.AddNone);
+            }
+        }
+
+        return bRes;
     }
     #endregion // Methods
 
@@ -343,47 +395,34 @@ public class DumperCtrlWrapper<CTRL> : IDumperEx, IDisposableEx where CTRL : Sys
     /// <summary>
     /// Returns true in case the object has been disposed and no longer should be used.
     /// </summary>
-    public bool IsDisposed
-    {
-        get { return (null == TargetReference); }
-    }
+    public bool IsDisposed { get => (null == TargetReference); }
+
     #endregion // IDisposableEx Members
 
     #region IDumperEx Members
     #region IDumper Members
+
     /// <summary>	Implementation of IDumper.DumpText. </summary>
     /// <param name="text">	The dumped text. </param>
     /// <returns>	true if it succeeds, false if it fails. </returns>
-    public bool DumpText(string text)
+    public virtual bool DumpText(string text)
     {
-        CTRL ctrl;
-        bool bRes;
-
         this.CheckNotDisposed();
-        if (bRes = ((null != (ctrl = WrappedControl)) && ctrl.IsHandleCreated))
-        {
-            if (ctrl.InvokeRequired)
-            {
-                // Invoke on the control's thread. 
-                // Should use the BeginInvoke, as in that case the calling thread does not wait for completion. 
-                // You should usually use BeginInvoke. That way you don't need to worry about deadlock, for example.
-                // See more on http://stackoverflow.com/questions/229554/whats-the-difference-between-invoke-and-begininvoke
-                ctrl.BeginInvoke(new MethodAddStringInvoker((this as IDumper).DumpText), text);
-            }
-            else
-            {
-                var addRes = this.AddText(text);
-                bRes = (addRes != AddTextResult.AddNone);
-            }
-        }
+        return DumpEntry(new LogEntry(text, MessageLevel.Info));
+    }
 
-        return bRes;
+    /// <inheritdoc/>
+    public virtual bool DumpWarning(string text)
+    {
+        this.CheckNotDisposed();
+        return DumpEntry(new LogEntry(text, MessageLevel.Warning));
     }
 
     /// <inheritdoc/>
     public virtual bool DumpError(string text)
     {
-        return DumpText(text);
+        this.CheckNotDisposed();
+        return DumpEntry(new LogEntry(text, MessageLevel.Error));
     }
 
     /// <summary>	Implementation of IDumper.Reset.  Cleans any previously dumped contents. </summary>

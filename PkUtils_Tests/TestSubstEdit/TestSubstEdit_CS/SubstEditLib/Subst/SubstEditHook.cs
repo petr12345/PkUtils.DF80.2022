@@ -89,7 +89,7 @@ namespace PK.SubstEditLib.Subst
                 {
                     return string.Format(CultureInfo.InvariantCulture,
                         "StatusRecord: (_selInfo={0}, _logData={1})",
-                        (_selInfo == null) ? "null" : _selInfo.Say,
+                        (_selInfo == null) ? "null" : _selInfo.ToString(),
                         (_logData == null) ? "null" : _logData.Say);
                 }
             }
@@ -322,7 +322,7 @@ namespace PK.SubstEditLib.Subst
         /// <returns></returns>
         public TextBoxSelInfo GetSelInfo()
         {
-            return TextBoxHelper.GetSelInfo(_textBx);
+            return TextBoxExtensions.GetSelInfo(_textBx);
         }
 
         /// <summary>
@@ -1469,7 +1469,7 @@ namespace PK.SubstEditLib.Subst
                     currentSel = GetSelInfo();
                     Debug.Assert(!currentSel.IsSel);
                 }
-                currentSel.Offset(PhysData.InsertData(currentSel.StartChar, tempData));
+                currentSel = currentSel.WithOffset(PhysData.InsertData(currentSel.StartChar, tempData));
                 InitializeText();
                 SetSelInfo(currentSel);
                 EmptyEditCtrlUndoBuffer();

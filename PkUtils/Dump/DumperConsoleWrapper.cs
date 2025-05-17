@@ -18,7 +18,7 @@ using PK.PkUtils.WinApi;
 namespace PK.PkUtils.Dump;
 
 /// <summary>
-/// The class implementing   <see cref="PK.PkUtils.Interfaces.IDumper"/> interface by writing to the console.<br/>
+/// The class implementing <see cref="PK.PkUtils.Interfaces.IDumper"/> interface by writing to the console.<br/>
 /// 
 /// For more info about this subject, see for instance
 /// <a href="http://www.csharp411.com/console-output-from-winforms-application/">”C# 411 : Console
@@ -140,6 +140,12 @@ public class DumperConsoleWrapper : IDumper
     {
         Console.Write(text);
         return true;
+    }
+
+    /// <inheritdoc/>
+    public bool DumpWarning(string text)
+    {
+        return DumpText(text);
     }
 
     /// <inheritdoc/>
