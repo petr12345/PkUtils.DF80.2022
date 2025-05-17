@@ -4,8 +4,10 @@
 // 
 // This software is a Derivative Work based upon a MSJ article
 // "More Fun With MFC: DIBs, Palettes, Subclassing and a Gamut of Goodies, Part II"
-// from the March 1997 issue of Microsoft Systems Journal, by Paul DiLascia
-// http://www.microsoft.com/msj/0397/mfcp2/mfcp2.aspx
+// from the March 1997 issue of Microsoft Systems Journal
+// https://web.archive.org/web/20040614000754/http://www.microsoft.com/msj/0397/mfcp2/mfcp2.aspx
+// by Paul DiLascia
+// https://en.wikipedia.org/wiki/Paul_DiLascia
 //
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
 

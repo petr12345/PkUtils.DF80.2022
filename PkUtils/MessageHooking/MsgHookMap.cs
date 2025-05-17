@@ -4,8 +4,10 @@
 // 
 // This software is a Derivative Work based upon a MSJ article
 // "More Fun With MFC: DIBs, Palettes, Subclassing and a Gamut of Goodies, Part II"
-// from the March 1997 issue of Microsoft Systems Journal, by Paul DiLascia
-// http://www.microsoft.com/msj/0397/mfcp2/mfcp2.aspx
+// from the March 1997 issue of Microsoft Systems Journal
+// https://web.archive.org/web/20040614000754/http://www.microsoft.com/msj/0397/mfcp2/mfcp2.aspx
+// by Paul DiLascia
+// https://en.wikipedia.org/wiki/Paul_DiLascia
 //
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -55,20 +57,20 @@ internal sealed class MsgHookMap : Singleton<MsgHookMap>
         Debug.Assert(User32.IsWindow(hwnd));
         Debug.Assert(pMsgHook != null);
         // find out if the window hooked yet or not
-        ChainedNativeWindow pNative = LookupNativeHook(hwnd);
+        ChainedNativeWindow nativeWindow = LookupNativeHook(hwnd);
 
-        if (pNative == null)
+        if (nativeWindow == null)
         {
             // Not hooked yet. Since this is the first hook added, 
             // must create native hook, and subclass the window
             // 
-            pNative = new ChainedNativeWindow();
-            _mapHwndToHook[hwnd] = pNative;
-            pMsgHook.SubclassWindow(hwnd, pNative);
+            nativeWindow = new ChainedNativeWindow();
+            _mapHwndToHook[hwnd] = nativeWindow;
+            pMsgHook.SubclassWindow(hwnd, nativeWindow);
         }
         else
         {   // window is hooked already, just add another hook to the chain
-            pMsgHook.ChainHook(hwnd, pNative);
+            pMsgHook.ChainHook(hwnd, nativeWindow);
         }
     }
 
@@ -81,31 +83,31 @@ internal sealed class MsgHookMap : Singleton<MsgHookMap>
     {
         Debug.Assert(pMsgHook != null);
         IntPtr hwnd = pMsgHook.HookedHWND;
-        ChainedNativeWindow pNative;
+        ChainedNativeWindow nativeWindow;
         /* Don't! Actually, the original window *might* be destroyed already
          * Debug.Assert(User32.IsWindow(hwnd));
          */
-        if (null != (pNative = LookupNativeHook(hwnd)))
+        if (null != (nativeWindow = LookupNativeHook(hwnd)))
         {
-            Debug.Assert(pNative.FirstMsgHook != null);
-            if (pNative.FirstMsgHook == pMsgHook)
+            Debug.Assert(nativeWindow.FirstMsgHook != null);
+            if (nativeWindow.FirstMsgHook == pMsgHook)
             {   // hook is the first one: replace w/next
                 if (pMsgHook.NextHook != null)
                 {   // But was not quite the last one hook
-                    pNative.FirstMsgHook = pMsgHook.NextHook;
+                    nativeWindow.FirstMsgHook = pMsgHook.NextHook;
                     pMsgHook.UnChainHook();
                 }
                 else
                 {   // This was the last hook for this window: 
                     // restore the window-proc and remove list from map
-                    pNative.FirstMsgHook = null;
+                    nativeWindow.FirstMsgHook = null;
                     pMsgHook.UnSubclassWindow();
                     _mapHwndToHook.Remove(hwnd);
                 }
             }
             else
             {   // Hook to remove is in the middle: just remove from linked list
-                WindowMessageHook tempHook = pNative.FirstMsgHook;
+                WindowMessageHook tempHook = nativeWindow.FirstMsgHook;
 
                 while ((tempHook != null) && (tempHook.NextHook != pMsgHook))
                 {
@@ -146,20 +148,20 @@ internal sealed class MsgHookMap : Singleton<MsgHookMap>
     }
 
     /// <summary> Find first hook associated with window. </summary>
-    /// <param name="hwnd"> The handle of te window. </param>
+    /// <param name="hwnd"> The handle of window. </param>
     /// <returns>  A WindowMessageHook, mapped to given <paramref name="hwnd"/>. Will be null if none found. </returns>
     internal WindowMessageHook Lookup(IntPtr hwnd)
     {
-        ChainedNativeWindow pNative;
-        WindowMessageHook pResult = null;
+        ChainedNativeWindow nativeWindow;
+        WindowMessageHook msgHook = null;
 
-        if (null != (pNative = LookupNativeHook(hwnd)))
+        if (null != (nativeWindow = LookupNativeHook(hwnd)))
         {
-            pResult = pNative.FirstMsgHook;
-            Debug.Assert(pResult != null);
+            msgHook = nativeWindow.FirstMsgHook;
+            Debug.Assert(msgHook != null);
         }
 
-        return pResult;
+        return msgHook;
     }
     #endregion // Methods
 }

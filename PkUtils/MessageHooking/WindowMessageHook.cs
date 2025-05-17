@@ -4,8 +4,10 @@
 // 
 // This software is a Derivative Work based upon a MSJ article
 // "More Fun With MFC: DIBs, Palettes, Subclassing and a Gamut of Goodies, Part II"
-// from the March 1997 issue of Microsoft Systems Journal, by Paul DiLascia
-// http://www.microsoft.com/msj/0397/mfcp2/mfcp2.aspx
+// from the March 1997 issue of Microsoft Systems Journal
+// https://web.archive.org/web/20040614000754/http://www.microsoft.com/msj/0397/mfcp2/mfcp2.aspx
+// by Paul DiLascia
+// https://en.wikipedia.org/wiki/Paul_DiLascia
 //
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -49,7 +51,7 @@ namespace PK.PkUtils.MessageHooking;
 /// ( derived from NativeWindow ), and more hooks hooked to the same window (Win32 HWND) are linked in the list.
 /// </para>
 /// <para>
-/// The hook is initialized by public virtual bool HookWindow(IntPtr hwnd), where hwnd is the
+/// The hook is initialized by public virtual bool HookWindow(IntPtr hwnd),
 /// where hwnd is the window handle (of the control or anything that is Win32 window).
 /// In your code, you will derive from WindowMessageHook, and overwrite its
 /// <code>
@@ -79,29 +81,14 @@ public class WindowMessageHook : IDisposableEx
 
     #region Properties
 
-    /// <summary>
-    /// Returns the hooked window (if any), or null.
-    /// </summary>
-    public IntPtr HookedHWND
-    {
-        get { return _hookedHwnd; }
-    }
+    /// <summary> Returns the hooked window (if any), or null. </summary>
+    public IntPtr HookedHWND { get => _hookedHwnd; }
 
-    /// <summary>
-    ///  Returns true if hooked to window, false otherwise
-    /// </summary>
-    public bool IsHooked
-    {
-        get { return (IntPtr.Zero != HookedHWND); }
-    }
+    /// <summary> Returns true if hooked to window, false otherwise. </summary>
+    public bool IsHooked { get => (IntPtr.Zero != HookedHWND); }
 
-    /// <summary>
-    /// Get the next hook in the chain
-    /// </summary>
-    protected internal WindowMessageHook NextHook
-    {
-        get { return _nextHook; }
-    }
+    /// <summary> Get the next hook in the chain </summary>
+    protected internal WindowMessageHook NextHook { get => _nextHook; }
     #endregion // Properties
 
     #region Public Methods
@@ -144,7 +131,7 @@ public class WindowMessageHook : IDisposableEx
 
     /// <summary>
     /// Convert the client-area coordinates of a specified point to screen coordinates. <br/>
-    /// The client-area in this context is understood  the  client part of <see cref="HookedHWND"/>.
+    /// The client-area in this context is understood as the client part of <see cref="HookedHWND"/>.
     /// </summary>
     /// <param name="pt">Input/output argument  containing in-out coordinates</param>
     /// <remarks>Auxiliary helper; can be used by the derived class.</remarks>
@@ -155,9 +142,9 @@ public class WindowMessageHook : IDisposableEx
 
     /// <summary>
     /// Convert the client-area coordinates of a specified point to screen coordinates. <br/>
-    /// The client-area in this context is understood  the  client part of window <paramref name="hwnd"/>
+    /// The client-area in this context is understood as the client part of <see cref="HookedHWND"/>.
     /// </summary>
-    /// <param name="hwnd">The control whose client area </param>
+    /// <param name="hwnd">The control whose client area is being referenced.</param>
     /// <param name="pt">Input/output argument  containing in-out coordinates</param>
     /// <remarks>Auxiliary helper; can be used by the derived class.</remarks>
     public static void ClientToScreen(IntPtr hwnd, ref Point pt)
@@ -172,9 +159,9 @@ public class WindowMessageHook : IDisposableEx
 
     /// <summary>
     /// Convert the screen coordinates of a specified point to client-area coordinates. <br/>
-    /// The client-area in this context is understood  the  client part of window <paramref name="hwnd"/>
+    /// The client-area in this context is understood as the client part of <see cref="HookedHWND"/>.
     /// </summary>
-    /// <param name="hwnd">The control whose client area </param>
+    /// <param name="hwnd">The control whose client area is being referenced.</param>
     /// <param name="pt">Input/output argument  containing in-out coordinates</param>
     public static void ScreenToClient(IntPtr hwnd, ref Point pt)
     {

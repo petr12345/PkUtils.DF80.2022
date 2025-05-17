@@ -4,8 +4,10 @@
 // 
 // This software is a Derivative Work based upon a MSJ article
 // "More Fun With MFC: DIBs, Palettes, Subclassing and a Gamut of Goodies, Part II"
-// from the March 1997 issue of Microsoft Systems Journal, by Paul DiLascia
-// http://www.microsoft.com/msj/0397/mfcp2/mfcp2.aspx
+// from the March 1997 issue of Microsoft Systems Journal
+// https://web.archive.org/web/20040614000754/http://www.microsoft.com/msj/0397/mfcp2/mfcp2.aspx
+// by Paul DiLascia
+// https://en.wikipedia.org/wiki/Paul_DiLascia
 //
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -57,13 +59,8 @@ public class ControlMessageHook : WindowMessageHook
 
     #region Properties
 
-    /// <summary>
-    /// The 'watched' (hooked) control.
-    /// </summary>
-    protected Control ControlHooked
-    {
-        get { return _ctrlHooked; }
-    }
+    /// <summary> The 'watched' (hooked) control. </summary>
+    protected Control ControlHooked { get => _ctrlHooked; }
     #endregion // Properties
 
     #region Public Methods
@@ -100,9 +97,7 @@ public class ControlMessageHook : WindowMessageHook
         HookWindow(ControlHooked.Handle);
     }
 
-    /// <summary>
-    /// Cleanup any resources being used.
-    /// </summary>
+    /// <summary> Cleanup any resources being used. </summary>
     /// <param name="disposing"> If true, is called by IDisposable.Dispose. 
     /// Otherwise it is called by finalizer.</param>
     protected override void Dispose(bool disposing)
@@ -118,9 +113,8 @@ public class ControlMessageHook : WindowMessageHook
     /// Handler of the event HandleCreated.
     /// For case when the control has 'silently' destroyed its window handle 
     /// and recreates it again with the new handler value, it hooks that window again.
-    /// Note: Fortunately, one does not need to care about calling Unhook
-    /// for the previously destroyed window handle - it is automatically cared about by 
-    /// the base class WindowMessageHook upon encountering WM_NCDESTROY.
+    /// Note: If the control's handle is destroyed and recreated, the base class handles cleanup
+    /// on WM_NCDESTROY. Therefore, explicit Unhook() is not needed before re-hooking.
     /// </summary>
     /// <param name="sender">The source of the original Control.HandleCreated Event </param>
     /// <param name="args"> The event arguments of the original Control.HandleCreated Event </param>

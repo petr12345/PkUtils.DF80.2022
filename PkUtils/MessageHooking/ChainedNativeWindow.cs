@@ -4,8 +4,10 @@
 // 
 // This software is a Derivative Work based upon a MSJ article
 // "More Fun With MFC: DIBs, Palettes, Subclassing and a Gamut of Goodies, Part II"
-// from the March 1997 issue of Microsoft Systems Journal, by Paul DiLascia
-// http://www.microsoft.com/msj/0397/mfcp2/mfcp2.aspx
+// from the March 1997 issue of Microsoft Systems Journal
+// https://web.archive.org/web/20040614000754/http://www.microsoft.com/msj/0397/mfcp2/mfcp2.aspx
+// by Paul DiLascia
+// https://en.wikipedia.org/wiki/Paul_DiLascia
 //
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -22,6 +24,53 @@ namespace PK.PkUtils.MessageHooking;
 /// but extends that functionality to permit calling multiple hooks in the chain.
 /// The variable <see cref="_firstMsgHook"/> is used for that purpose inside <see cref="ChainedNativeWindow.WndProc"/>.
 /// </summary>
+/// 
+/// <remarks>
+/// The message hook chain is built using the following components:
+///
+/// <![CDATA[
+/// +-------------------------+
+/// |  WindowMessageHook      |   <-- Represents one hook object
+/// |-------------------------|
+/// | - HookWindowProc(ref m) |   <-- Processes a message
+/// | - Next                  |   <-- Points to next hook (if any)
+/// +----------+--------------+
+///            ^
+///            | called by
+/// +------------------------+
+/// | ChainedNativeWindow    |
+/// |------------------------|
+/// | - hwnd                 |
+/// | - FirstMsgHook (only)  |
+/// | - previous WndProc     |
+/// |                        |
+/// | + WndProc handler      | --> FirstMsgHook.CallHookWindowProc(ref m)
+/// +------------------------+
+/// ]]>
+///
+/// Correct flow of message handling:
+/// 
+/// <list type="number">
+///   <item>
+///     <description>
+///       <c>ChainedNativeWindow</c> subclasses the window handle and intercepts all window messages.
+///     </description>
+///   </item>
+///   <item>
+///     <description>
+///       For each incoming message, it forwards it only to the <c>FirstMsgHook</c>.
+///     </description>
+///   </item>
+///   <item>
+///     <description>
+///       <c>FirstMsgHook</c> is responsible for calling <c>HookWindowProc</c> on the next hook, and so on down the chain.
+///     </description>
+///   </item>
+/// </list>
+///
+/// This design gives each hook full control over message processing and propagation.
+/// A hook may inspect, modify, or completely block the message by not calling the next one.
+/// </remarks>
 internal sealed class ChainedNativeWindow : NativeWindow
 {
     #region Fields
@@ -37,9 +86,7 @@ internal sealed class ChainedNativeWindow : NativeWindow
 
     #region Constructor(s)
 
-    /// <summary>
-    /// Argument-less constructor.
-    /// </summary>
+    /// <summary> Argument-less constructor. </summary>
     internal ChainedNativeWindow()
     {
     }
