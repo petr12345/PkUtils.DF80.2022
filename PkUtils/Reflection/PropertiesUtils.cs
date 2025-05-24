@@ -16,7 +16,7 @@ using System.Linq;
 using System.Reflection;
 
 #nullable enable
-
+#pragma warning disable IDE0305 // Collection initialization can be simplified
 
 namespace PK.PkUtils.Reflection;
 
@@ -44,12 +44,13 @@ public static class PropertiesUtils
 
     #region Public Methods
 
-    #region Accessing_static_properties_limited
+    #region Accessing_static_properties_Shallow_Scope
+
     /// <summary> Get the value of static property in given class of type <paramref name="t"/>.</summary>
     ///
     /// <remarks>This method does not access any properties declared in a base class. To achieve that, use the
     /// overloaded
-    /// <see cref="GetStaticPropertyValue(System.Type, string, bool)"/> extension method.</remarks>
+    /// <see cref="GetStaticPropertyValue(Type, string, bool)"/> extension method.</remarks>
     ///
     /// <exception cref="ArgumentNullException"> Thrown when one or more required arguments are null. </exception>
     ///
@@ -68,7 +69,7 @@ public static class PropertiesUtils
     /// <remarks>Depending on the argument <paramref name="flattenHierarchy"/> value, the method may access non-
     /// private properties of the base type. Note this will NEVER return private properties declared in the base
     /// class. To achieve that, one must to use the
-    /// <see cref="GetAllProperties(System.Type, System.Reflection.BindingFlags)"/> extension method.<br/></remarks>
+    /// <see cref="GetAllProperties(Type, System.Reflection.BindingFlags)"/> extension method.<br/></remarks>
     ///
     /// <exception cref="ArgumentNullException"> Thrown when one or more required arguments are null. </exception>
     ///
@@ -98,7 +99,7 @@ public static class PropertiesUtils
     ///
     /// <remarks>This method does not access any properties declared in a base class. To achieve that, use the
     /// overloaded
-    /// <see cref="SetStaticPropertyValue(System.Type, object, string, bool)"/> extension method.</remarks>
+    /// <see cref="SetStaticPropertyValue(Type, object, string, bool)"/> extension method.</remarks>
     ///
     /// <exception cref="ArgumentNullException"> Thrown when either the <paramref name="t"/>
     /// or the <paramref name="propertyName"/> parameter is null. </exception>
@@ -119,7 +120,7 @@ public static class PropertiesUtils
     /// <remarks>Depending on the argument <paramref name="flattenHierarchy"/> value, the method may access non-
     /// private properties of the base type. Note this will NEVER access private properties declared in the base
     /// class. To achieve that, one must to use the
-    /// <see cref="GetAllProperties(System.Type, System.Reflection.BindingFlags)"/> extension method.<br/></remarks>
+    /// <see cref="GetAllProperties(Type, System.Reflection.BindingFlags)"/> extension method.<br/></remarks>
     ///
     /// <exception cref="ArgumentNullException"> Thrown when either the <paramref name="t"/>
     /// or the <paramref name="propertyName"/> parameter is null. </exception>
@@ -149,17 +150,17 @@ public static class PropertiesUtils
 
         return SetPropertyValue(t, null, value, propertyName, eFlags);
     }
-    #endregion // Accessing_static_properties_limited
+    #endregion // Accessing_static_properties_Shallow_Scope
 
-    #region Accessing_instance_property_value_limited
+    #region Accessing_instance_property_value_Shallow_Scope
     /// <summary> Get the value of property in given object <paramref name="obj"/>.</summary>
     ///
-    /// <remarks>Unlike with the analogical method <see cref="GetStaticPropertyValue(System.Type, string)"/>, this
+    /// <remarks>Unlike with the analogical method <see cref="GetStaticPropertyValue(Type, string)"/>, this
     /// method can access public and protected properties declared in a base class, and there is no need
     /// specifying BindingFlags.FlattenHierarchy. <br/>
     /// 
     /// Note this will NOT return private properties declared in the base class, and one must to use the
-    /// <see cref="GetAllProperties(System.Type, System.Reflection.BindingFlags)"/> extension method to do
+    /// <see cref="GetAllProperties(Type, System.Reflection.BindingFlags)"/> extension method to do
     /// that.<br/></remarks>
     ///
     /// <exception cref="ArgumentNullException"> Thrown when either the <paramref name="obj"/>
@@ -180,7 +181,7 @@ public static class PropertiesUtils
     /// <summary> Sets the value of property in given object <paramref name="obj"/>.</summary>
     ///
     /// <remarks>Unlike with the analogical method
-    /// <see cref="SetStaticPropertyValue(System.Type, object, string)"/>, this method can access public and
+    /// <see cref="SetStaticPropertyValue(Type, object, string)"/>, this method can access public and
     /// protected properties declared in a base class, and there is no need specifying
     /// BindingFlags.FlattenHierarchy. The reason for that is that static and non-static properties are handled
     /// differently by the
@@ -188,7 +189,7 @@ public static class PropertiesUtils
     /// Type.GetProperty Method</a> <br/>
     /// 
     /// Note this will NOT access private properties declared in the base class, and one must to use the
-    /// <see cref="GetAllProperties(System.Type, System.Reflection.BindingFlags)"/>
+    /// <see cref="GetAllProperties(Type, System.Reflection.BindingFlags)"/>
     /// extension method to do that.<br/></remarks>
     ///
     /// <exception cref="ArgumentNullException"> Thrown when one or more required arguments are null. </exception>
@@ -205,9 +206,9 @@ public static class PropertiesUtils
 
         return SetPropertyValue(obj.GetType(), obj, value, propertyName, AnyInstance);
     }
-    #endregion // Accessing_instance_property_value_limited
+    #endregion // Accessing_instance_property_value_Shallow_Scope
 
-    #region Accessing_instance_property_value_whole_depth
+    #region Accessing_instance_property_value_Full_Scope
     /// <summary>Get the value of property in given object obj, specified by property name. Is searching all
     /// properties including the object type predecessors, and including their private properties. Throws
     /// InvalidOperationException if there is no such property, or if there are more than one such properties.</summary>
@@ -248,9 +249,9 @@ public static class PropertiesUtils
         PropertyInfo info = GetInstancePropertyEx<T>(obj.GetType(), propertyName);
         info.SetValue(obj, value, null);
     }
-    #endregion // Accessing_instance_property_value_whole_depth
+    #endregion // Accessing_instance_property_value_Full_Scope
 
-    #region Accessing_PropertyInfo_whole_depth
+    #region Accessing_PropertyInfo_Full_Scope
 
     /// <summary>Get all properties of a given type, including type predecessors, and including their private
     /// properties.</summary>
@@ -278,13 +279,14 @@ public static class PropertiesUtils
         else
         {
             result = t!.BaseType!.GetAllProperties(flags).ToList();
-            // in order to avoid duplicates, force BindingFlags.DeclaredOnly         
+
+            // To avoid duplicate properties from base types, 
+            // restrict to those declared only on this type using BindingFlags.DeclaredOnly
             result.AddRange(t.GetProperties(flags | BindingFlags.DeclaredOnly));
         }
 
         return result;
     }
-
 
     /// <summary>Get all properties of a given type, given a property name propertyName, include type predecessors,
     /// and including their private properties, that have the given property name.</summary>
@@ -359,7 +361,6 @@ public static class PropertiesUtils
         return GetAllInstanceProperties(t, propertyName).Single();
     }
 
-
     /// <summary>Returns a single property of a given type, include type predecessors, and including their private
     /// properties, that has the given property name, and the type of the property is either equal to type
     /// specified by <typeparamref name="T"/>, or is derived from it. Throws InvalidOperationException if there
@@ -374,7 +375,7 @@ public static class PropertiesUtils
     {
         return GetAllInstancePropertiesEx<T>(t, propertyName).Single();
     }
-    #endregion // Accessing_PropertyInfo_whole_depth
+    #endregion // Accessing_PropertyInfo_Full_Scope
     #endregion // Public Methods
 
     #region Private Methods
@@ -438,3 +439,4 @@ public static class PropertiesUtils
     }
     #endregion // Private Methods
 }
+#pragma warning restore IDE0305

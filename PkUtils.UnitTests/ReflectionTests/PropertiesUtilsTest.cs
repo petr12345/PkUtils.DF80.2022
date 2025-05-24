@@ -183,7 +183,7 @@ namespace PK.PkUtils.UnitTests.ReflectionTests
         }
         #endregion // Auxiliary_code_for_tests
 
-        #region Accessing_static_property_value_limited_tests
+        #region Accessing_static_property_value_Shallow_Scope_tests
 
         /// <summary>
         /// A test for GetStaticPropertyValue
@@ -310,9 +310,9 @@ namespace PK.PkUtils.UnitTests.ReflectionTests
             Assert.IsTrue(res_private);
             Assert.AreEqual("that can be set", b_private);
         }
-        #endregion // Accessing_static_property_value_limited_tests
+        #endregion // Accessing_static_property_value_Shallow_Scope_tests
 
-        #region Accessing_instance_property_value_limited_tests
+        #region Accessing_instance_property_value_Shallow_Scope_tests
 
         /// <summary>
         /// A test for GetInstancePropertyValue
@@ -399,9 +399,9 @@ namespace PK.PkUtils.UnitTests.ReflectionTests
             Assert.IsTrue(res_private);
             Assert.AreEqual("that can be set", d_private);
         }
-        #endregion // Accessing_instance_property_value_limited_tests
+        #endregion // Accessing_instance_property_value_Shallow_Scope_tests
 
-        #region Accessing_instance_property_value_whole_depth_tests
+        #region Accessing_instance_property_value_Full_Scope_tests
 
         [TestMethod()]
         public void PropertiesUtils_GetInstancePropertyValueExTest()
@@ -449,9 +449,9 @@ namespace PK.PkUtils.UnitTests.ReflectionTests
             SetInstancePropertyValueExTestHelper<D, double>(d, 101.505, "P_d_protected");
             SetInstancePropertyValueExTestHelper<D, string>(d, "that can be set", "P_d_private");
         }
-        #endregion // Accessing_instance_property_value_whole_depth_tests
+        #endregion // Accessing_instance_property_value_Full_Scope_tests
 
-        #region Accessing_PropertyInfo_whole_depth
+        #region Accessing_PropertyInfo_Full_Scope
 
         /// <summary>
         /// A test for GetAllProperties
@@ -544,6 +544,6 @@ namespace PK.PkUtils.UnitTests.ReflectionTests
                 Assert.AreEqual(actual.Name, strPropertyName);
             }
         }
-        #endregion // Accessing_PropertyInfo_whole_depth
+        #endregion // Accessing_PropertyInfo_Full_Scope
     }
 }

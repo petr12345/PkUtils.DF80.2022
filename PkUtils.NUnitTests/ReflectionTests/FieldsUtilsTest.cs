@@ -1,4 +1,4 @@
-﻿// Ignore Spelling: PkUtils, Utils
+﻿// Ignore Spelling: PkUtils, Utils, Inline
 // 
 using System.Reflection;
 using PK.PkUtils.Reflection;
@@ -11,11 +11,9 @@ using PK.PkUtils.Reflection;
 
 namespace PK.PkUtils.NUnitTests.ReflectionTests;
 
-/// <summary>
-/// This is a test class for FieldsUtils and is intended
-/// to contain all FieldsUtils Unit Tests
-/// </summary>
+/// <summary> This is a test class for class FieldsUtils </summary>
 [TestFixture()]
+[CLSCompliant(false)]
 public class FieldsUtilsTest
 {
     #region Auxiliary_classes_for_test_purpose
@@ -158,11 +156,9 @@ public class FieldsUtilsTest
     };
     #endregion // Auxiliary_classes_for_test_purpose
 
-    #region Accessing_static_field_value_limited_tests
+    #region Accessing_static_field_value_Shallow_Scope_tests
 
-    /// <summary>
-    /// A test for GetStaticFieldValue
-    /// </summary>
+    /// <summary> A test for GetStaticFieldValue checking if it succeeds. </summary>
     [Test()]
     public void FieldsUtils_GetStaticFieldValueTest_01st()
     {
@@ -215,9 +211,7 @@ public class FieldsUtilsTest
         Assert.That(actual, Is.EqualTo("BBBbbb"));
     }
 
-    /// <summary>
-    /// A test for SetStaticFieldValue
-    /// </summary>
+    /// <summary> A test for SetStaticFieldValue checking if it succeeds. </summary>
     [Test()]
     public void FieldsUtils_SetStaticFieldValueTest_01()
     {
@@ -279,9 +273,42 @@ public class FieldsUtilsTest
         Assert.That(b_protected, Is.EqualTo(101.505));
         Assert.That(b_private, Is.EqualTo("that can be set"));
     }
-    #endregion // Accessing_static_field_value_limited_tests
 
-    #region Accessing_static_field_value_whole_depth_test
+    [Test, Description("Throws ArgumentNullException when 't' argument is null")]
+    public void SetStaticFieldValue_NullType_ThrowsArgumentNullException()
+    {
+        Type nullType = null!;
+        string fieldName = "SomeField";
+        object value = new object();
+        bool flattenHierarchy = false;
+
+        Assert.That(() => nullType.SetStaticFieldValue(fieldName, value, flattenHierarchy),
+            Throws.ArgumentNullException);
+    }
+
+    [TestCase(null)]
+    [TestCase("")]
+    [Description("Throws ArgumentNullException or ArgumentException when 'fieldName' is null or empty")]
+    public void SetStaticFieldValue_NullOrEmptyFieldName_ThrowsException(string? invalidFieldName)
+    {
+        Type type = typeof(object);
+        object value = new object();
+        bool flattenHierarchy = false;
+
+        if (invalidFieldName is null)
+        {
+            Assert.That(() => type.SetStaticFieldValue(invalidFieldName!, value, flattenHierarchy),
+                Throws.ArgumentNullException);
+        }
+        else
+        {
+            Assert.That(() => type.SetStaticFieldValue(invalidFieldName, value, flattenHierarchy),
+                Throws.ArgumentException);
+        }
+    }
+    #endregion // Accessing_static_field_value_Shallow_Scope_tests
+
+    #region Accessing_static_field_value_Full_Scope_test
 
     /// <summary>
     /// A test for GetStaticFieldValueEx
@@ -353,9 +380,9 @@ public class FieldsUtilsTest
         Assert.That(b_protected, Is.EqualTo(101.505));
         Assert.That(b_private, Is.EqualTo("that can be set in B"));
     }
-    #endregion // Accessing_static_field_value_whole_depth_test
+    #endregion // Accessing_static_field_value_Full_Scope_test
 
-    #region Accessing_instance_field_value_limited_tests
+    #region Accessing_Instance_Field_Value_Shallow_Scope_tests
 
     /// <summary>
     /// A generic helper for the GetInstanceFieldValueTest
@@ -457,9 +484,9 @@ public class FieldsUtilsTest
         Assert.That(res_private, Is.True);
         Assert.That(d_private, Is.EqualTo("that can be set"));
     }
-    #endregion // Accessing_instance_field_value_limited_tests
+    #endregion // Accessing_Instance_Field_Value_Shallow_Scope_tests
 
-    #region Accessing_instance_field_value_whole_depth_tests
+    #region Accessing_Instance_Field_Value_Full_Scope_tests
 
     /// <summary>
     /// A generic helper for the GetInstanceFieldValueExTest
@@ -641,9 +668,9 @@ public class FieldsUtilsTest
         C_MoreDerived? actual = owner.GetInstanceFieldValueEx<B_Derived>("_b") as C_MoreDerived;
         Assert.That(actual, Is.EqualTo(c));
     }
-    #endregion // Accessing_instance_field_value_whole_depth_tests
+    #endregion // Accessing_Instance_Field_Value_Full_Scope_tests
 
-    #region Accessing_FieldInfo_whole_depth_tests
+    #region Accessing_FieldInfo_Full_Scope_tests
 
     /// <summary>
     /// A test for GetAllFields
@@ -740,7 +767,7 @@ public class FieldsUtilsTest
             Assert.That(actual.Name, Is.EqualTo(strFieldName));
         }
     }
-    #endregion // Accessing_FieldInfo_whole_depth_tests
+    #endregion // Accessing_FieldInfo_Full_Scope_tests
 }
 
 #pragma warning restore IDE0018 // Inline variable declaration

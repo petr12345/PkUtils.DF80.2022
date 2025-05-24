@@ -177,7 +177,7 @@ public class PropertiesUtilsTest
     }
     #endregion // Auxiliary_code_for_tests
 
-    #region Accessing_static_property_value_limited_tests
+    #region Accessing_static_property_value_Shallow_Scope_tests
 
     /// <summary>
     /// A test for GetStaticPropertyValue
@@ -305,9 +305,9 @@ public class PropertiesUtilsTest
         Assert.That(b_private, Is.EqualTo("that can be set"));
     }
 
-    #endregion // Accessing_static_property_value_limited_tests
+    #endregion // Accessing_static_property_value_Shallow_Scope_tests
 
-    #region Accessing_instance_property_value_limited_tests
+    #region Accessing_instance_property_value_Shallow_Scope_tests
 
     /// <summary>
     /// A test for GetInstancePropertyValue
@@ -392,9 +392,9 @@ public class PropertiesUtilsTest
         Assert.That(res_private, Is.True);
         Assert.That(d_private, Is.EqualTo("that can be set"));
     }
-    #endregion // Accessing_instance_property_value_limited_tests
+    #endregion // Accessing_instance_property_value_Shallow_Scope_tests
 
-    #region Accessing_instance_property_value_whole_depth_tests
+    #region Accessing_instance_property_value_Full_Scope_tests
 
     [Test()]
     public void PropertiesUtils_GetInstancePropertyValueExTest()
@@ -442,9 +442,9 @@ public class PropertiesUtilsTest
         SetInstancePropertyValueExTestHelper<D, double>(d, 101.505, "P_d_protected");
         SetInstancePropertyValueExTestHelper<D, string>(d, "that can be set", "P_d_private");
     }
-    #endregion // Accessing_instance_property_value_whole_depth_tests
+    #endregion // Accessing_instance_property_value_Full_Scope_tests
 
-    #region Accessing_PropertyInfo_whole_depth
+    #region Accessing_PropertyInfo_Full_Scope
 
     /// <summary>
     /// A test for GetAllProperties
@@ -535,5 +535,5 @@ public class PropertiesUtilsTest
             Assert.That(actual.Name, Is.EqualTo(strPropertyName));
         }
     }
-    #endregion // Accessing_PropertyInfo_whole_depth
+    #endregion // Accessing_PropertyInfo_Full_Scope
 }

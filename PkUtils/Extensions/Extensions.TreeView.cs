@@ -5,8 +5,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Windows.Forms;
 
-namespace PK.PkUtils.Extensions;
+#pragma warning disable IDE0305 // Collection initialization can be simplified
 
+namespace PK.PkUtils.Extensions;
 
 /// <summary>
 /// Extension methods for TreeView, TreeNodeCollection and TreeNode
@@ -102,7 +103,6 @@ public static class TreeViewExtensions
         return currentNode;
     }
 
-
     /// <summary>   A TreeView extension method that expands all nodes. </summary>
     /// <param name="tv"> A TreeView control whose nodes are retrieved. Can't be null. </param>
     public static void ExpandAllNodes(this TreeView tv)
@@ -117,6 +117,15 @@ public static class TreeViewExtensions
     {
         ArgumentNullException.ThrowIfNull(tv);
         foreach (TreeNode node in tv.GetAllNodes()) { node.Collapse(); }
+    }
+
+    /// <summary>   A TreeView extension method that searches for the root node. </summary>
+    /// <param name="tv"> A TreeView control whose nodes are examined. Must not be equal to null. </param>
+    /// <returns>   The found root node, or null. </returns>
+    public static TreeNode FindRootNode(this TreeView tv)
+    {
+        ArgumentNullException.ThrowIfNull(tv);
+        return tv.Nodes.Count > 0 ? tv.Nodes[0] : null;
     }
 
     /// <summary>   Gets the full path of the top node in the <see cref="TreeView"/>, if one exists. </summary>
@@ -161,6 +170,30 @@ public static class TreeViewExtensions
                 tv.TopNode = node;
         }
         return result;
+    }
+
+    /// <summary>   Finds the paths of all the expanded nodes in tree control. </summary>
+    /// <param name="treeView"> The treeView to act on. Can't be null. </param>
+    /// <returns> The found expanded nodes paths. </returns>
+    /// <exception cref="ArgumentNullException"> Thrown when <paramref name="treeView"/> is null. </exception>
+    public static string[] FindExpandedNodesPaths(this TreeView treeView)
+    {
+        ArgumentNullException.ThrowIfNull(treeView);
+        return treeView.GetAllNodes().Where(x => x.IsExpanded).Select(x => x.FullPath).OrderBy(s => s).ToArray();
+    }
+
+    /// <summary>   Restore expanded nodes state, given paths to nodes. </summary>
+    /// <param name="treeView"> The treeView to act on. Can't be null. </param>
+    /// <param name="arrayExpandedNodesPaths"> The expanded nodes paths. May be null or empty; in such case,
+    /// root node is expanded. </param>
+    /// <exception cref="ArgumentNullException"> Thrown when <paramref name="treeView"/> is null. </exception>
+    public static void RestoreExpandedNodesState(this TreeView treeView, string[] arrayExpandedNodesPaths)
+    {
+        ArgumentNullException.ThrowIfNull(treeView);
+        if (arrayExpandedNodesPaths.IsNullOrEmpty())
+            treeView.FindRootNode()?.Expand();
+        else
+            arrayExpandedNodesPaths.ForEach(s => treeView.FindNode(s)?.Expand());
     }
     #endregion // Extensions_of_TreeView
 
@@ -239,6 +272,16 @@ public static class TreeViewExtensions
     {
         ArgumentNullException.ThrowIfNull(tn);
         return (tn.Nodes.Count == 0);
+    }
+
+    /// <summary> A TreeNode extension method that query if 'tn' is true leaf ( it is a leaf AND also is not the root). </summary>
+    /// <exception cref="ArgumentNullException"> Thrown when <paramref name="tn"/> is null. </exception>
+    /// <param name="tn"> A tree node examined. Can't be null. </param>
+    /// <returns> True if 'true leaf', i.e. leaf and not root, false if not. </returns>
+    public static bool IsTrueLeaf(this TreeNode tn)
+    {
+        ArgumentNullException.ThrowIfNull(tn);
+        return tn.IsLeaf() && !tn.IsRoot();
     }
 
     /// <summary>
@@ -333,3 +376,4 @@ public static class TreeViewExtensions
     }
     #endregion // Extensions_of_TreeNode
 }
+#pragma warning restore IDE0305

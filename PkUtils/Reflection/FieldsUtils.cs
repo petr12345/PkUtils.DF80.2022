@@ -1,14 +1,4 @@
-﻿/***************************************************************************************************************
-*
-* FILE NAME:   .\Reflection\FieldsUtils.cs
-*
-* AUTHOR:      Petr Kodet
-*
-* DESCRIPTION: The class FieldsUtils
-*
-**************************************************************************************************************/
-
-// Ignore Spelling: bitmask, Utils
+﻿// Ignore Spelling: bitmask, Utils
 //
 using System;
 using System.Collections.Generic;
@@ -40,15 +30,13 @@ public static class FieldsUtils
 
     #region Public Methods
 
-    #region Accessing_static_field_value_limited_depth
+    #region Accessing_Static_Field_Value_Shallow_Scope
 
-    /// <summary>
-    /// Retrieves the value of a static field in the specified type.
-    /// </summary>
+    /// <summary> Retrieves the value of a static field in the specified type. </summary>
     /// <remarks>
     /// This method does not access fields declared in a base class.  
     /// To include fields from base classes, use the overloaded  
-    /// <see cref="GetStaticFieldValue(System.Type, string, bool)"/> method.
+    /// <see cref="GetStaticFieldValue(Type, string, bool)"/> method.
     /// </remarks>
     /// <param name="t">The type that declares the static field.</param>
     /// <param name="fieldName">The name of the static field.</param>
@@ -56,23 +44,19 @@ public static class FieldsUtils
     /// <exception cref="ArgumentNullException">
     /// Thrown if <paramref name="t"/> or <paramref name="fieldName"/> is <see langword="null"/>.
     /// </exception>
-    /// <exception cref="InvalidOperationException">
-    /// Thrown if the specified field does not exist.
-    /// </exception>
+    /// <exception cref="ArgumentException"> Thrown if <paramref name="fieldName"/> is empty. </exception>
+    /// <exception cref="InvalidOperationException"> Thrown if the specified field does not exist. </exception>
     public static object GetStaticFieldValue(this Type t, string fieldName)
     {
         return GetStaticFieldValue(t, fieldName, false);
     }
 
-    /// <summary>
-    /// Retrieves the value of a static field in the specified type.
-    /// </summary>
+    /// <summary> Retrieves the value of a static field in the specified type. </summary>
     /// <remarks>
     /// Depending on <paramref name="flattenHierarchy"/>, this method may  
     /// access non-private static fields of base classes.  
     /// However, private fields declared in base classes are never accessed.  
     /// To access private fields, consider using <see cref="GetStaticFieldValueEx{T}"/>.  
-    /// <br/>
     /// For further details, see:  
     /// <a href="http://stackoverflow.com/questions/1155529/c-gettype-getfields-problem">
     /// Stack Overflow: C# GetType().GetFields problem</a>.
@@ -86,14 +70,13 @@ public static class FieldsUtils
     /// </param>
     /// <returns>The value of the static field.</returns>
     /// <exception cref="ArgumentNullException">
-    /// Thrown if <paramref name="t"/> or <paramref name="fieldName"/> is <see langword="null"/>.
-    /// </exception>
-    /// <exception cref="InvalidOperationException"> Thrown if the specified field does not exist.
-    /// </exception>
+    /// Thrown if <paramref name="t"/> or <paramref name="fieldName"/> is null>. </exception>
+    /// <exception cref="ArgumentException"> Thrown if <paramref name="fieldName"/> is empty. </exception>
+    /// <exception cref="InvalidOperationException"> Thrown if the specified field does not exist. </exception>
     public static object GetStaticFieldValue(this Type t, string fieldName, bool flattenHierarchy)
     {
         ArgumentNullException.ThrowIfNull(t);
-        ArgumentNullException.ThrowIfNull(fieldName);
+        ArgumentNullException.ThrowIfNullOrEmpty(fieldName);
 
         BindingFlags eFlags = AnyStatic;
         if (flattenHierarchy)
@@ -103,12 +86,10 @@ public static class FieldsUtils
         return GetFieldValue(t, null, fieldName, eFlags);
     }
 
-    /// <summary>
-    /// Sets the value of a static field in the specified type.
-    /// </summary>
+    /// <summary> Sets the value of a static field in the specified type. </summary>
     /// <remarks> This method does not access fields declared in a base class.  
     /// To include fields from base classes, use the overloaded  
-    /// <see cref="SetStaticFieldValue(System.Type, string, object, bool)"/> method. </remarks>
+    /// <see cref="SetStaticFieldValue(Type, string, object, bool)"/> method. </remarks>
     /// <param name="t">The type that declares the static field.</param>
     /// <param name="fieldName">The name of the static field.</param>
     /// <param name="value">The value to assign to the field.</param>
@@ -118,6 +99,7 @@ public static class FieldsUtils
     /// <exception cref="ArgumentNullException">
     /// Thrown if <paramref name="t"/> or <paramref name="fieldName"/> is <see langword="null"/>.
     /// </exception>
+    /// <exception cref="ArgumentException"> Thrown if <paramref name="fieldName"/> is empty. </exception>
     public static bool SetStaticFieldValue(this Type t, string fieldName, object value)
     {
         return SetStaticFieldValue(t, fieldName, value, false);
@@ -148,6 +130,7 @@ public static class FieldsUtils
     /// <exception cref="ArgumentNullException">
     /// Thrown if <paramref name="t"/> or <paramref name="fieldName"/> is <see langword="null"/>.
     /// </exception>
+    /// <exception cref="ArgumentException"> Thrown if <paramref name="fieldName"/> is empty. </exception>
     public static bool SetStaticFieldValue(
         this Type t,
         string fieldName,
@@ -155,7 +138,7 @@ public static class FieldsUtils
         bool flattenHierarchy)
     {
         ArgumentNullException.ThrowIfNull(t);
-        ArgumentNullException.ThrowIfNull(fieldName);
+        ArgumentNullException.ThrowIfNullOrEmpty(fieldName);
 
         return SetFieldValue(
             t,
@@ -164,9 +147,9 @@ public static class FieldsUtils
             value,
             flattenHierarchy ? AnyStatic | BindingFlags.FlattenHierarchy : AnyStatic);
     }
-    #endregion // Accessing_static_field_value_limited_depth
+    #endregion // Accessing_Static_Field_Value_Shallow_Scope
 
-    #region Accessing_Static_Field_Value_Whole_Depth
+    #region Accessing_Static_Field_Value_Full_Scope
 
     /// <summary>
     /// Retrieves the value of a static field from the specified type <paramref name="t"/>, 
@@ -214,26 +197,24 @@ public static class FieldsUtils
     public static void SetStaticFieldValueEx<T>(this Type t, string fieldName, T value)
     {
         ArgumentNullException.ThrowIfNull(t);
-        ArgumentNullException.ThrowIfNull(fieldName);
+        ArgumentNullException.ThrowIfNullOrEmpty(fieldName);
 
         FieldInfo fieldInfo = GetAllFieldsAssignableFrom(t, typeof(T), AnyStatic, fieldName).Single();
         fieldInfo.SetValue(null, value);
     }
-    #endregion // Accessing_Static_Field_Value_Whole_Depth
+    #endregion // Accessing_Static_Field_Value_Full_Scope
 
-    #region Accessing_Instance_Field_Value_Limited_Depth
+    #region Accessing_Instance_Field_Value_Shallow_Scope
 
-    /// <summary>
-    /// Retrieves the value of an instance field from the specified <paramref name="obj"/>.
-    /// </summary>
+    /// <summary> Retrieves the value of an instance field from the specified <paramref name="obj"/>. </summary>
     /// <remarks>
-    /// Unlike the method <see cref="GetStaticFieldValue(System.Type, string)"/>, which deals with static fields, 
+    /// Unlike the method <see cref="GetStaticFieldValue(Type, string)"/>, which deals with static fields, 
     /// this method can access public and protected fields declared in base classes without the need for 
     /// <see cref="BindingFlags.FlattenHierarchy"/>. This difference arises because static and instance fields are 
     /// handled differently by the <a href="http://msdn.microsoft.com/en-us/library/4ek9c21e(v=vs.110).aspx">Type.GetField</a> method.
     /// <br />
     /// Note that this method does not retrieve private fields declared in the base class. To access private fields, 
-    /// use the <see cref="GetAllFields(System.Type, System.Reflection.BindingFlags, Predicate{FieldInfo})"/> extension method.
+    /// use the <see cref="GetAllFields(Type, System.Reflection.BindingFlags, Predicate{FieldInfo})"/> extension method.
     /// <br />
     /// For more details, refer to <a href="http://stackoverflow.com/questions/1155529/c-gettype-getfields-problem">
     /// StackOverflow: C# GetType().GetFields problem</a>.
@@ -259,13 +240,13 @@ public static class FieldsUtils
     /// Sets the value of an instance field in the specified <paramref name="obj"/>.
     /// </summary>
     /// <remarks>
-    /// Unlike the method <see cref="SetStaticFieldValue(System.Type, string, object)"/>, which deals with static fields, 
+    /// Unlike the method <see cref="SetStaticFieldValue(Type, string, object)"/>, which deals with static fields, 
     /// this method can access public and protected fields declared in base classes without the need for 
     /// <see cref="BindingFlags.FlattenHierarchy"/>. This distinction arises because static and instance fields are 
     /// handled differently by the <a href="http://msdn.microsoft.com/en-us/library/4ek9c21e(v=vs.110).aspx">Type.GetField</a> method.
     /// <br />
     /// Note that this method does not allow access to private fields declared in the base class. To modify private fields, 
-    /// use the <see cref="GetAllFields(System.Type, System.Reflection.BindingFlags, Predicate{FieldInfo})"/> extension method.
+    /// use the <see cref="GetAllFields(Type, System.Reflection.BindingFlags, Predicate{FieldInfo})"/> extension method.
     /// <br />
     /// For more information, refer to <a href="http://stackoverflow.com/questions/1155529/c-gettype-getfields-problem">
     /// StackOverflow: C# GetType().GetFields problem</a>.
@@ -284,12 +265,13 @@ public static class FieldsUtils
 
         return SetFieldValue(obj.GetType(), obj, fieldName, value, AnyInstance);
     }
-    #endregion // Accessing_Instance_Field_Value_Limited_Depth
+    #endregion // Accessing_Instance_Field_Value_Shallow_Scope
 
-    #region Accessing_instance_field_value_whole_depth
-    /// <summary>Get the value of field in given object <paramref name="obj"/>, specified by field name. Is
-    /// searching all fields including the object type predecessors, and including their private fields. Throws
-    /// InvalidOperationException if there is no such field, or if there are more than one such fields.</summary>
+    #region Accessing_Instance_Field_Value_Full_Scope
+
+    /// <summary>Get the value of field in given object <paramref name="obj"/>, specified by field name.
+    /// Is searching all fields including the object type predecessors, and including their private fields.
+    /// Throws InvalidOperationException if there is no such field, or if there are more than one such fields.</summary>
     ///
     /// <exception cref="ArgumentNullException"> Thrown when one or more required arguments are null. </exception>
     ///
@@ -337,27 +319,26 @@ public static class FieldsUtils
         FieldInfo info = GetAllFieldsAssignableFrom(obj.GetType(), typeof(T), AnyInstance, fieldName).Single();
         info.SetValue(obj, value);
     }
-    #endregion // Accessing_instance_field_value_whole_depth
+    #endregion // Accessing_Instance_Field_Value_Full_Scope
 
-    #region Accessing_FieldInfo_whole_depth
+    #region Accessing_FieldInfo_Full_Scope
 
-    #region Accessing_FieldInfo_whole_depth_common_general
+    #region Accessing_FieldInfo_Full_Scope_common_general
 
-    /// <summary>Get all fields of a given type, including type predecessors, and including their private fields.</summary>
-    ///
-    /// <remarks>To get private fields declared in the base class, one cannot just simply call type.GetFields,
-    /// even with BindingFlags.FlattenHierarchy, that's why this method exists. <br/>
-    /// For the reasons behind, see
-    /// <a href="http://stackoverflow.com/questions/1155529/c-gettype-getfields-problem">
-    /// Stackoverflow: C# GetType().GetFields problem</a></remarks>
-    ///
-    /// <param name="t"> The type whose fields will be enumerated. Can't be null. </param>
-    /// <param name="flags"> A bitmask comprised of one or more <see cref="BindingFlags"/> that specify how the
-    /// search is conducted. </param>
-    /// <param name="match"> Specifies the predicate found fields must match. May be null. </param>
-    ///
-    /// <returns> Resulting sequence of FieldInfo that can be iterated.</returns>
-    public static IEnumerable<FieldInfo> GetAllFields(this Type t, BindingFlags flags, Predicate<FieldInfo> match)
+    /// <summary>
+    /// Get all fields of a given type, including type predecessors, and including their private fields.
+    /// </summary>
+    /// <remarks>
+    /// To get private fields declared in the base class, one cannot just simply call type.GetFields,
+    /// even with BindingFlags.FlattenHierarchy, that's why this method exists.
+    /// For the reasons behind, see:
+    /// https://stackoverflow.com/questions/1155529/c-gettype-getfields-problem
+    /// </remarks>
+    /// <param name="t">The type whose fields will be enumerated. Can't be null.</param>
+    /// <param name="flags">A bitmask comprised of one or more <see cref="BindingFlags"/> that specify how the search is conducted.</param>
+    /// <param name="match">Specifies the predicate found fields must match. May be null.</param>
+    /// <returns>Resulting sequence of FieldInfo that can be iterated.</returns>
+    public static IEnumerable<FieldInfo> GetAllFields(this Type t, BindingFlags flags, Predicate<FieldInfo> match = null)
     {
         ArgumentNullException.ThrowIfNull(t);
 
@@ -370,7 +351,7 @@ public static class FieldsUtils
         else
         {
             result = t.BaseType.GetAllFields(flags, match);
-            // in order to avoid duplicates, force BindingFlags.DeclaredOnly
+            // In order to avoid duplicates, force BindingFlags.DeclaredOnly
             IEnumerable<FieldInfo> temp = t.GetFields(flags | BindingFlags.DeclaredOnly);
             if (match != null)
                 temp = temp.Where(f => match(f));
@@ -379,89 +360,56 @@ public static class FieldsUtils
         return result;
     }
 
-    /// <summary>Get all fields of a given type, given a field name fieldName, include type predecessors, and
-    /// including their private fields, that have the given field name.</summary>
-    ///
-    /// <exception cref="ArgumentNullException"> Thrown when <paramref name="fieldName"/> is null. </exception>
-    ///
-    /// <param name="t"> The type whose fields will be enumerated. Can't be null. </param>
-    /// <param name="fieldName"> The field name the returned fields must match to. </param>
-    /// <param name="flags"> A bitmask comprised of one or more <see cref="BindingFlags"/> that specify how the
-    /// search is conducted. </param>
-    /// <param name="match"> (Optional) Specifies the predicate found fields must match. May be null. </param>
-    ///
-    /// <returns> Resulting sequence of FieldInfo that can be iterated.</returns>
-    public static IEnumerable<FieldInfo> GetAllFields(
-        this Type t,
-        string fieldName,
-        BindingFlags flags,
-        Predicate<FieldInfo> match = null)
+    /// <summary>
+    /// Get all fields of a given type, including type predecessors, including private fields,
+    /// that match the given field name.
+    /// </summary>
+    /// <param name="t">The type whose fields will be enumerated. Can't be null.</param>
+    /// <param name="fieldName">The field name the returned fields must match.</param>
+    /// <param name="flags">A bitmask comprised of one or more <see cref="BindingFlags"/> that specify how the search is conducted.</param>
+    /// <returns>Resulting sequence of FieldInfo that can be iterated.</returns>
+    public static IEnumerable<FieldInfo> GetAllFields(this Type t, string fieldName, BindingFlags flags)
     {
         ArgumentNullException.ThrowIfNull(t);
         ArgumentNullException.ThrowIfNull(fieldName);
 
-        // Predicate<FieldInfo> nameMatch = f => (0 == string.CompareOrdinal(fieldName, f.Name));
-        bool NameMatch(FieldInfo f) => (0 == string.CompareOrdinal(fieldName, f.Name));
-        IEnumerable<FieldInfo> result = GetAllFields(t, flags, NameMatch);
-#if DEBUG
-        // for possible debugging purpose
-        List<FieldInfo> tempList = [.. result];
-        Debug.Write(string.Format(CultureInfo.InvariantCulture, "GetAllFields returns {0} fields", tempList.Count));
-#endif // DEBUG
-
-        if (match != null)
-        {
-            result = result.Where(f => match(f));
-#if DEBUG
-            // for possible debugging purpose
-            List<FieldInfo> resList = [.. result];
-            Debug.Write(string.Format(CultureInfo.InvariantCulture, "GetAllFields returns {0} fields", resList.Count));
-#endif // DEBUG
-        }
-        return result;
+        return GetAllFields(t, flags, f => string.Equals(f.Name, fieldName, StringComparison.Ordinal));
     }
 
-    /// <summary>Get all fields of a given type, include type predecessors, and including their private fields,
-    /// that have the given field name, and the type of the field is either equal to type specified by
-    /// <paramref name="valType"/>, or is derived from it.
-    /// Hence, the field value can be assigned to any variable of type <paramref name="valType"/></summary>
-    ///
-    /// <param name="t"> The type whose fields will be enumerated. </param>
-    /// <param name="valType"> The type of the field. The FieldType property must match that type, or derive
-    /// from it. </param>
-    /// <param name="flags"> A bitmask comprised of one or more <see cref="BindingFlags"/> that specify how the
-    /// search is conducted. </param>
-    /// <param name="fieldName"> The field name the returned fields should match to. </param>
-    ///
-    /// <returns> Resulting sequence of FieldInfo that can be iterated.</returns>
-    public static IEnumerable<FieldInfo> GetAllFieldsAssignableTo(this Type t, Type valType,
-        BindingFlags flags, string fieldName)
+    /// <summary>
+    /// Get all fields of a given type, including type predecessors, including private fields,
+    /// that have the given field name and whose type is assignable *to* <paramref name="valType"/>.
+    /// Hence, the field value can be assigned to any variable of type <paramref name="valType"/>.
+    /// </summary>
+    /// <param name="t">The type whose fields will be enumerated.</param>
+    /// <param name="valType">The target type the field type must be assignable to.</param>
+    /// <param name="flags">A bitmask comprised of one or more <see cref="BindingFlags"/> that specify how the search is conducted.</param>
+    /// <param name="fieldName">The field name the returned fields must match.</param>
+    /// <returns>Resulting sequence of FieldInfo that can be iterated.</returns>
+    public static IEnumerable<FieldInfo> GetAllFieldsAssignableTo(this Type t, Type valType, BindingFlags flags, string fieldName)
     {
-        return GetAllFields(t, fieldName, flags, f => valType.IsAssignableFrom(f.FieldType));
+        ArgumentNullException.ThrowIfNull(valType);
+        return GetAllFields(t, flags, f => string.Equals(f.Name, fieldName, StringComparison.Ordinal) && valType.IsAssignableFrom(f.FieldType));
     }
 
-
-    /// <summary>Get all fields of a given type, include type predecessors, and including their private fields,
-    /// that have the given field name, and the type of the field is either equal to type specified by
-    /// <paramref name="valType"/>, or is a base of it.
-    /// Hence, any variable of type <paramref name="valType"/> can be assigned to such field value.</summary>
-    ///
-    /// <param name="t"> The type whose fields will be enumerated. </param>
-    /// <param name="valType"> The type of the field. The FieldType property must match that type, or be a base
-    /// of it. </param>
-    /// <param name="flags"> A bitmask comprised of one or more <see cref="BindingFlags"/> that specify how the
-    /// search is conducted. </param>
-    /// <param name="fieldName"> The field name the returned fields should match to. </param>
-    ///
-    /// <returns> Resulting sequence of FieldInfo that can be iterated.</returns>
-    public static IEnumerable<FieldInfo> GetAllFieldsAssignableFrom(this Type t, Type valType,
-      BindingFlags flags, string fieldName)
+    /// <summary>
+    /// Get all fields of a given type, including type predecessors, including private fields,
+    /// that have the given field name and whose type can be assigned *from* <paramref name="valType"/>.
+    /// Hence, any variable of type <paramref name="valType"/> can be assigned to such a field.
+    /// </summary>
+    /// <param name="t">The type whose fields will be enumerated.</param>
+    /// <param name="valType">The source type assignable to the field type.</param>
+    /// <param name="flags">A bitmask comprised of one or more <see cref="BindingFlags"/> that specify how the search is conducted.</param>
+    /// <param name="fieldName">The field name the returned fields must match.</param>
+    /// <returns>Resulting sequence of FieldInfo that can be iterated.</returns>
+    public static IEnumerable<FieldInfo> GetAllFieldsAssignableFrom(this Type t, Type valType, BindingFlags flags, string fieldName)
     {
-        return GetAllFields(t, fieldName, flags, f => f.FieldType.IsAssignableFrom(valType));
+        ArgumentNullException.ThrowIfNull(valType);
+        return GetAllFields(t, flags, f => string.Equals(f.Name, fieldName, StringComparison.Ordinal) && f.FieldType.IsAssignableFrom(valType));
     }
-    #endregion // Accessing_FieldInfo_whole_depth_common_general
+    #endregion // Accessing_FieldInfo_Full_Scope_common_general
 
-    #region Accessing_FieldInfo_whole_depth_instance_fields
+    #region Accessing_FieldInfo_Full_Scope_instance_fields
     /// <summary>Get all instance fields of a given type, include type predecessors, and including their private
     /// fields, that have the given field name.</summary>
     ///
@@ -486,7 +434,13 @@ public static class FieldsUtils
     /// <returns> Resulting sequence of FieldInfo that can be iterated.</returns>
     public static IEnumerable<FieldInfo> GetAllInstanceFieldsEx<T>(this Type t, string fieldName)
     {
-        IEnumerable<FieldInfo> temp = GetAllFields(t, fieldName, AnyInstance, f => typeof(T).IsAssignableFrom(f.FieldType));
+        // Local predicate method
+        static bool FieldMatches(FieldInfo f, string expectedFieldName)
+        {
+            return string.Equals(f.Name, expectedFieldName, StringComparison.Ordinal) &&
+                   typeof(T).IsAssignableFrom(f.FieldType);
+        }
+        IEnumerable<FieldInfo> temp = GetAllFields(t, AnyInstance, f => FieldMatches(f, fieldName));
         IEnumerable<FieldInfo> result = temp.Where(f => typeof(T).IsAssignableFrom(f.FieldType));
 #if DEBUG
         // for possible debugging purpose
@@ -513,9 +467,9 @@ public static class FieldsUtils
     {
         return GetAllInstanceFields(t, fieldName).Single();
     }
-    #endregion // Accessing_FieldInfo_whole_depth_instance_fields
+    #endregion // Accessing_FieldInfo_Full_Scope_instance_fields
 
-    #region Accessing_FieldInfo_whole_depth_static_fields
+    #region Accessing_FieldInfo_Full_Scope_static_fields
     /// <summary>Get all static fields of a given type, include type predecessors, and including their private
     /// fields, that have the given field name.</summary>
     ///
@@ -563,8 +517,8 @@ public static class FieldsUtils
     {
         return GetAllStaticFields(t, fieldName).Single();
     }
-    #endregion // Accessing_FieldInfo_whole_depth_static_fields
-    #endregion // Accessing_FieldInfo_whole_depth
+    #endregion // Accessing_FieldInfo_Full_Scope_static_fields
+    #endregion // Accessing_FieldInfo_Full_Scope
 
     #region Auxiliary_Methods
     /// <summary>

@@ -184,7 +184,7 @@ namespace PK.PkUtils.UnitTests.ReflectionTests
         };
         #endregion // Auxiliary_classes_for_test_purpose
 
-        #region Accessing_static_field_value_limited_tests
+        #region Accessing_static_field_value_Shallow_Scope_tests
 
         /// <summary>
         /// A test for GetStaticFieldValue
@@ -324,9 +324,9 @@ namespace PK.PkUtils.UnitTests.ReflectionTests
             Assert.IsTrue(res_private);
             Assert.AreEqual("that can be set", b_private);
         }
-        #endregion // Accessing_static_field_value_limited_tests
+        #endregion // Accessing_static_field_value_Shallow_Scope_tests
 
-        #region Accessing_static_field_value_whole_depth_test
+        #region Accessing_static_field_value_Full_Scope_test
 
         /// <summary>
         /// A test for GetStaticFieldValueEx
@@ -396,9 +396,9 @@ namespace PK.PkUtils.UnitTests.ReflectionTests
             Assert.AreEqual(101.505, b_protected);
             Assert.AreEqual("that can be set in B", b_private);
         }
-        #endregion // Accessing_static_field_value_whole_depth_test
+        #endregion // Accessing_static_field_value_Full_Scope_test
 
-        #region Accessing_instance_field_value_limited_tests
+        #region Accessing_Instance_Field_Value_Shallow_Scope_tests
 
         /// <summary>
         /// A generic helper for the GetInstanceFieldValueTest
@@ -498,9 +498,9 @@ namespace PK.PkUtils.UnitTests.ReflectionTests
             Assert.IsTrue(res_private);
             Assert.AreEqual("that can be set", d_private);
         }
-        #endregion // Accessing_instance_field_value_limited_tests
+        #endregion // Accessing_Instance_Field_Value_Shallow_Scope_tests
 
-        #region Accessing_instance_field_value_whole_depth_tests
+        #region Accessing_Instance_Field_Value_Full_Scope_tests
 
         /// <summary>
         /// A generic helper for the GetInstanceFieldValueExTest
@@ -683,9 +683,9 @@ namespace PK.PkUtils.UnitTests.ReflectionTests
             C_MoreDerived? actual = owner.GetInstanceFieldValueEx<B_Derived>("_b") as C_MoreDerived;
             Assert.AreEqual(c, actual);
         }
-        #endregion // Accessing_instance_field_value_whole_depth_tests
+        #endregion // Accessing_Instance_Field_Value_Full_Scope_tests
 
-        #region Accessing_FieldInfo_whole_depth_tests
+        #region Accessing_FieldInfo_Full_Scope_tests
 
         /// <summary>
         /// A test for GetAllFields
@@ -778,6 +778,6 @@ namespace PK.PkUtils.UnitTests.ReflectionTests
                 Assert.AreEqual(actual.Name, strFieldName);
             }
         }
-        #endregion // Accessing_FieldInfo_whole_depth_tests
+        #endregion // Accessing_FieldInfo_Full_Scope_tests
     }
 }

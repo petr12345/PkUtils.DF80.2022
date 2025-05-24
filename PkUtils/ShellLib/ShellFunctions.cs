@@ -68,7 +68,7 @@ public static class ShellFunctions
         ShellApi.SHGetDesktopFolder(out IShellFolder ptrRet);
         /* old code, without calling the other method GetShellFolder
          * 
-        System.Type shellFolderType = typeof(IShellFolder);
+        Type shellFolderType = typeof(IShellFolder);
         Object obj = Marshal.GetTypedObjectForIUnknown(ptrRet, shellFolderType);
         IShellFolder ishellFolder = (IShellFolder)obj;
 
@@ -88,7 +88,7 @@ public static class ShellFunctions
     /// <returns>An object implementing IShellFolder interface.</returns>
     public static IShellFolder GetShellFolder(IntPtr ptrShellFolder)
     {
-        System.Type shellFolderType = GetShellFolderType();
+        Type shellFolderType = GetShellFolderType();
         object obj = Marshal.GetTypedObjectForIUnknown(ptrShellFolder, shellFolderType);
         IShellFolder retVal = (IShellFolder)obj;
 
@@ -98,40 +98,40 @@ public static class ShellFunctions
     /// <summary>
     /// Returns the type of <see cref="IShellFolder"/> interface.
     /// </summary>
-    /// <returns>An instance of System.Type object.</returns>
+    /// <returns>An instance of Type object.</returns>
     public static Type GetShellFolderType()
     {
-        System.Type shellFolderType = typeof(IShellFolder);
+        Type shellFolderType = typeof(IShellFolder);
         return shellFolderType;
     }
 
     /// <summary>
     /// Returns the type of <see cref="IMalloc"/> interface.
     /// </summary>
-    /// <returns>An instance of System.Type object.</returns>
+    /// <returns>An instance of Type object.</returns>
     public static Type GetMallocType()
     {
-        System.Type mallocType = typeof(IMalloc);
+        Type mallocType = typeof(IMalloc);
         return mallocType;
     }
 
     /// <summary>
     /// Returns the type of <see cref="IFolderFilter"/> interface.
     /// </summary>
-    /// <returns>An instance of System.Type object.</returns>
+    /// <returns>An instance of Type object.</returns>
     public static Type GetFolderFilterType()
     {
-        System.Type folderFilterType = typeof(IFolderFilter);
+        Type folderFilterType = typeof(IFolderFilter);
         return folderFilterType;
     }
 
     /// <summary>
     /// Returns the type of <see cref="IFolderFilterSite"/> interface.
     /// </summary>
-    /// <returns>An instance of System.Type object.</returns>
+    /// <returns>An instance of Type object.</returns>
     public static Type GetFolderFilterSiteType()
     {
-        System.Type folderFilterSiteType = typeof(IFolderFilterSite);
+        Type folderFilterSiteType = typeof(IFolderFilterSite);
         return folderFilterSiteType;
     }
 

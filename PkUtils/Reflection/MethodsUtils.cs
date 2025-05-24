@@ -35,7 +35,7 @@ public static class MethodsUtils
     #endregion // Private Fields
 
     #region Public Methods
-    #region Methods_execution_limited_depth
+    #region Methods_execution_Shallow_Scope
     #region Running_static_methods
     /// <summary> Run static method for given object type, method name and arguments.</summary>
     ///
@@ -240,9 +240,9 @@ public static class MethodsUtils
         return (TResult)CallBaseBase<TD>(obj, methodName, args)!;
     }
     #endregion // Running_specific_nonstatic_methods
-    #endregion // Methods_execution_limited_depth
+    #endregion // Methods_execution_Shallow_Scope
 
-    #region Accessing_MethodInfo_whole_depth
+    #region Accessing_MethodInfo_Full_Scope
 
     #region Accessing_static_methods
     /// <summary>Get all static methods of a given type, include type predecessors, and including their private
@@ -380,23 +380,21 @@ public static class MethodsUtils
     /// <returns> Resulting sequence of MethodInfo that can be iterated.</returns>
     public static IEnumerable<MethodInfo> GetAllMethods(this Type t, string methodName, BindingFlags flags)
     {
-        if (string.IsNullOrEmpty(methodName))
-            throw new ArgumentException("This argument value cannot be null or an empty string", nameof(methodName));
-        // checking of 't' argument is performed by called overload
-        IEnumerable<MethodInfo> temp = GetAllMethods(t, flags);
+        ArgumentException.ThrowIfNullOrEmpty(methodName, nameof(methodName));
+
+        // Checking of 't' argument is done by called overload
+        IEnumerable<MethodInfo> allMethods = GetAllMethods(t, flags);
 #if DEBUG
-        IEnumerable<MethodInfo> result;
+        List<MethodInfo> allMethodsList = [.. allMethods];
+        IEnumerable<MethodInfo> matchedMethods = allMethodsList.Where(method =>
+            string.CompareOrdinal(methodName, method.Name) == 0);
+        List<MethodInfo> matchedMethodsList = [.. matchedMethods];
 
-        temp = temp.ToList();
-        result = temp.Where(m => 0 == string.CompareOrdinal(methodName, m.Name));
-        result = result.ToList();
-
-        return result;
+        return matchedMethodsList;
 #else
-        return temp.Where(m => 0 == string.CompareOrdinal(methodName, m.Name));
+        return  allMethods.Where(m => 0 == string.CompareOrdinal(methodName, m.Name));
 #endif // DEBUG
     }
-
 
     /// <summary>Get method of a given type, method name, argument types. Searches complete type hierarchy of base
     /// types their private methods, that have the given name.</summary>
@@ -437,11 +435,11 @@ public static class MethodsUtils
         return result;
     }
     #endregion // Accessing_just_any_methods
-    #endregion // Accessing_MethodInfo_whole_depth
+    #endregion // Accessing_MethodInfo_Full_Scope
     #endregion // Public Methods
 
     #region Private Methods
-    #region Running_method_limited_depth
+    #region Running_method_Shallow_Scope
     /// <summary>Implementation helper called by public methods. Runs given method, finding the method by calling
     /// Type.GetMethod.<br/>
     /// 
@@ -508,9 +506,9 @@ public static class MethodsUtils
         object? objRet = m.Invoke(objInstance, parameters);
         return objRet;
     }
-    #endregion // Running_method_limited_depth
+    #endregion // Running_method_Shallow_Scope
 
-    #region Running_method_whole_depth
+    #region Running_method_Full_Scope
     /// <summary>Run non-static method for given object instance, method name, argument types and arguments. Note
     /// this CAN access private methods declared in the base class.</summary>
     ///
@@ -581,6 +579,6 @@ public static class MethodsUtils
         objRet = m.Invoke(objInstance, parameters);
         return objRet;
     }
-    #endregion // Running_method_whole_depth
+    #endregion // Running_method_Full_Scope
     #endregion // Private Methods
 }

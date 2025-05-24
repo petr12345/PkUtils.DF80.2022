@@ -12,8 +12,6 @@ using PK.PkUtils.WinApi;
 
 namespace PK.PkUtils.UI.General;
 
-#pragma warning disable IDE0290     // Use primary constructor
-
 /// <summary> Represents a TreeView control that supports multiple selection of nodes. </summary>
 /// <seealso href="https://www.codeproject.com/Articles/20581/Multiselect-TreeView-Implementation/">
 /// Multiselect TreeView Implementation.</seealso>
@@ -1047,4 +1045,3 @@ public partial class MultiSelectTreeView : TreeView
     #endregion // Other_Private_Helper_Methods
     #endregion // Methods
 }
-#pragma warning restore IDE0290     // Use primary constructor

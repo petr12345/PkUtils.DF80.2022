@@ -344,7 +344,7 @@ namespace PK.PkUtils.XmlSerialization
             _readEx = null;
 
             if (!string.IsNullOrEmpty(strRuntimeType))
-            {  // handling the situation when the value of this.Node is itself System.Type
+            {  // handling the situation when the value of this.Node is itself Type
                 this._node = (T)(object)Type.GetType(strRuntimeType);
             }
             else if (OmitTypeInfo)
@@ -384,7 +384,7 @@ namespace PK.PkUtils.XmlSerialization
         /// Overwrites <see cref="IXmlSerializable.WriteXml"/>. Writes an object into its XML representation.
         /// The actual type of the object is stored here into the XML attribute "type",
         /// then a new XmlSerializer is generated for its serialization.
-        /// The only exception is the case when the object itself is System.Type;
+        /// The only exception is the case when the object itself is Type;
         /// in that case we write fully-qualified name into the XML attribute "RuntimeType"
         /// </summary>
         /// 
@@ -400,7 +400,7 @@ namespace PK.PkUtils.XmlSerialization
             Type t = this.Node.GetType();
             string strVal = Type2String(t);
 
-            // handling the situation when the value of this.Node is itself System.Type
+            // handling the situation when the value of this.Node is itself Type
             if (t.Name.Equals(_strAttrRuntimeType, StringComparison.Ordinal))
             {   // see http://stackoverflow.com/questions/12306/can-i-serialize-a-c-type-object
                 string strRuntimeType = Type2String((Node as Type));

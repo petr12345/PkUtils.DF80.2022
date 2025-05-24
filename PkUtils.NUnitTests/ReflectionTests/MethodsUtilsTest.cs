@@ -14,7 +14,7 @@ namespace PK.PkUtils.NUnitTests.ReflectionTests;
 [TestFixture()]
 public class MethodsUtilsTest
 {
-    #region Methods_execution_limited_tests
+    #region Methods_execution_Shallow_Scope_tests
 
     #region Auxiliary_classes_for_static_methods_tests
 
@@ -455,9 +455,9 @@ public class MethodsUtilsTest
     }
 
     #endregion // Running_nonstatic_methods_tests
-    #endregion // Methods_execution_limited_tests
+    #endregion // Methods_execution_Shallow_Scope_tests
 
-    #region Accessing_MethodInfo_whole_depth_tests
+    #region Accessing_MethodInfo_Full_Scope_tests
 
     /// <summary>
     /// A test for GetAllMethods, given the Type and BindingFlags, which should succeed.
@@ -617,5 +617,5 @@ public class MethodsUtilsTest
             new object[] { "kk", "ll" },
             "DumpStrings_Z_specific by Z: kk ll");
     }
-    #endregion // Accessing_MethodInfo_whole_depth_tests
+    #endregion // Accessing_MethodInfo_Full_Scope_tests
 }
