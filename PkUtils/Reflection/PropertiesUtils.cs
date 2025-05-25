@@ -1,14 +1,4 @@
-﻿/***************************************************************************************************************
-*
-* FILE NAME:   .\Reflection\PropertiesUtils.cs
-*
-* AUTHOR:      Petr Kodet
-*
-* DESCRIPTION: The class PropertiesUtils
-*
-**************************************************************************************************************/
-
-// Ignore Spelling: Utils
+﻿// Ignore Spelling: Utils, bitmask, endregion
 //
 using System;
 using System.Collections.Generic;
@@ -30,15 +20,11 @@ namespace PK.PkUtils.Reflection;
 public static class PropertiesUtils
 {
     #region Private Fields
+
     /// <summary> A bit-flag combination used when searching for non-static properties.</summary>
-    ///
-    /// <value> The non public.</value>
     private const BindingFlags AnyInstance = BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic;
 
-
     /// <summary> A bit-flag combination used when searching for static properties.</summary>
-    ///
-    /// <value> The non public.</value>
     private const BindingFlags AnyStatic = BindingFlags.Static | BindingFlags.Public | BindingFlags.NonPublic;
     #endregion // Private Fields
 
@@ -46,191 +32,150 @@ public static class PropertiesUtils
 
     #region Accessing_static_properties_Shallow_Scope
 
-    /// <summary> Get the value of static property in given class of type <paramref name="t"/>.</summary>
-    ///
-    /// <remarks>This method does not access any properties declared in a base class. To achieve that, use the
-    /// overloaded
-    /// <see cref="GetStaticPropertyValue(Type, string, bool)"/> extension method.</remarks>
-    ///
-    /// <exception cref="ArgumentNullException"> Thrown when one or more required arguments are null. </exception>
-    ///
-    /// <param name="t"> The type the required static property belongs to. </param>
-    /// <param name="propertyName"> The name of the static property. </param>
-    ///
-    /// <returns> The value of found static property.</returns>
+    /// <summary>
+    /// Gets the value of a static property declared directly on the specified <paramref name="t"/> type.
+    /// </summary>
+    /// <remarks>
+    /// This method does not consider static properties declared in base classes. 
+    /// To include base class properties, use the overload <see cref="GetStaticPropertyValue(Type, string, bool)"/> with <c>flattenHierarchy = true</c>.
+    /// </remarks>
+    /// <param name="t">The type that declares the static property.</param>
+    /// <param name="propertyName">The name of the static property.</param>
+    /// <returns>The value of the found static property, or <c>null</c> if not found.</returns>
+    /// <exception cref="ArgumentNullException">Thrown if <paramref name="t"/> or <paramref name="propertyName"/> is <c>null</c>.</exception>
     public static object? GetStaticPropertyValue(this Type t, string propertyName)
     {
         return GetStaticPropertyValue(t, propertyName, false);
     }
 
-
-    /// <summary> Get the value of static property in given class of type <paramref name="t"/>.</summary>
-    ///
-    /// <remarks>Depending on the argument <paramref name="flattenHierarchy"/> value, the method may access non-
-    /// private properties of the base type. Note this will NEVER return private properties declared in the base
-    /// class. To achieve that, one must to use the
-    /// <see cref="GetAllProperties(Type, System.Reflection.BindingFlags)"/> extension method.<br/></remarks>
-    ///
-    /// <exception cref="ArgumentNullException"> Thrown when one or more required arguments are null. </exception>
-    ///
-    /// <param name="t"> The type the required static property belongs to. </param>
-    /// <param name="propertyName"> The name of the static property. </param>
-    /// <param name="flattenHierarchy"> If true, specifies that public and protected static properties of base
-    /// classes up the hierarchy should be returned. Otherwise, properties declared in base classes are not
-    /// returned. </param>
-    ///
-    /// <returns> The value of found static property.</returns>
+    /// <summary>
+    /// Gets the value of a static property on the specified <paramref name="t"/> type, optionally including properties declared in base classes.
+    /// </summary>
+    /// <remarks>
+    /// If <paramref name="flattenHierarchy"/> is <c>true</c>, the method searches public and protected static properties in the inheritance hierarchy. 
+    /// Private static properties declared in base classes are never returned by this method. To access all such properties, use <see cref="GetAllProperties(Type, BindingFlags)"/>.
+    /// </remarks>
+    /// <param name="t">The type that declares the static property.</param>
+    /// <param name="propertyName">The name of the static property.</param>
+    /// <param name="flattenHierarchy">
+    /// When <c>true</c>, searches public and protected static properties up the inheritance chain; otherwise, only properties declared on <paramref name="t"/> are considered.
+    /// </param>
+    /// <returns>The value of the found static property, or <c>null</c> if not found.</returns>
+    /// <exception cref="ArgumentNullException">Thrown if <paramref name="t"/> or <paramref name="propertyName"/> is <c>null</c>.</exception>
     public static object? GetStaticPropertyValue(this Type t, string propertyName, bool flattenHierarchy)
     {
         ArgumentNullException.ThrowIfNull(t);
-        ArgumentNullException.ThrowIfNull(propertyName);
+        ArgumentNullException.ThrowIfNullOrEmpty(propertyName);
 
-        BindingFlags eFlags = AnyStatic;
-        if (flattenHierarchy)
-        {
-            eFlags |= BindingFlags.FlattenHierarchy;
-        }
-
-        return GetPropertyValue(t, null, propertyName, eFlags);
+        BindingFlags flags = flattenHierarchy ? (AnyStatic | BindingFlags.FlattenHierarchy) : AnyStatic;
+        return GetPropertyValue(t, null, propertyName, flags);
     }
 
-
-    /// <summary> Set the value of static property in given class of type <paramref name="t"/>.</summary>
-    ///
-    /// <remarks>This method does not access any properties declared in a base class. To achieve that, use the
-    /// overloaded
-    /// <see cref="SetStaticPropertyValue(Type, object, string, bool)"/> extension method.</remarks>
-    ///
-    /// <exception cref="ArgumentNullException"> Thrown when either the <paramref name="t"/>
-    /// or the <paramref name="propertyName"/> parameter is null. </exception>
-    ///
-    /// <param name="t"> The type the given static property belongs to. </param>
-    /// <param name="value"> The value being assigned to the property. </param>
-    /// <param name="propertyName"> Then static property name. </param>
-    ///
-    /// <returns> True on success, false on failure.</returns>
+    /// <summary>
+    /// Sets the value of a static property declared directly on the specified <paramref name="t"/> type.
+    /// </summary>
+    /// <remarks>
+    /// This method does not consider static properties declared in base classes. 
+    /// To include base class properties, use the overload <see cref="SetStaticPropertyValue(Type, object, string, bool)"/> with <c>flattenHierarchy = true</c>.
+    /// </remarks>
+    /// <param name="t">The type that declares the static property.</param>
+    /// <param name="value">The value to assign to the property.</param>
+    /// <param name="propertyName">The name of the static property.</param>
+    /// <returns><c>true</c> if the property was set successfully; otherwise, <c>false</c>.</returns>
+    /// <exception cref="ArgumentNullException">Thrown if <paramref name="t"/> or <paramref name="propertyName"/> is <c>null</c>.</exception>
     public static bool SetStaticPropertyValue(this Type t, object value, string propertyName)
     {
         return SetStaticPropertyValue(t, value, propertyName, false);
     }
 
-
-    /// <summary> Set the value of static property in given class of type <paramref name="t"/>.</summary>
-    ///
-    /// <remarks>Depending on the argument <paramref name="flattenHierarchy"/> value, the method may access non-
-    /// private properties of the base type. Note this will NEVER access private properties declared in the base
-    /// class. To achieve that, one must to use the
-    /// <see cref="GetAllProperties(Type, System.Reflection.BindingFlags)"/> extension method.<br/></remarks>
-    ///
-    /// <exception cref="ArgumentNullException"> Thrown when either the <paramref name="t"/>
-    /// or the <paramref name="propertyName"/> parameter is null. </exception>
-    ///
-    /// <param name="t"> The type the given static property belongs to. </param>
-    /// <param name="value"> The value being assigned to the property. </param>
-    /// <param name="propertyName"> Then static property name. </param>
-    /// <param name="flattenHierarchy"> If true, specifies that public and protected static properties of base
-    /// classes up the hierarchy should be accessed. Otherwise, properties declared in base classes are not
-    /// accessed. </param>
-    ///
-    /// <returns> True on success, false on failure.</returns>
-    public static bool SetStaticPropertyValue(
-        this Type t,
-        object value,
-        string propertyName,
-        bool flattenHierarchy)
+    /// <summary>
+    /// Sets the value of a static property on the specified <paramref name="t"/> type, optionally including properties declared in base classes.
+    /// </summary>
+    /// <remarks>
+    /// If <paramref name="flattenHierarchy"/> is <c>true</c>, the method attempts to set public and protected static properties in the inheritance hierarchy. 
+    /// Private static properties declared in base classes are never accessed by this method. To access all such properties, use <see cref="GetAllProperties(Type, BindingFlags)"/>.
+    /// </remarks>
+    /// <param name="t">The type that declares the static property.</param>
+    /// <param name="value">The value to assign to the property.</param>
+    /// <param name="propertyName">The name of the static property.</param>
+    /// <param name="flattenHierarchy">
+    /// When <c>true</c>, searches public and protected static properties up the inheritance chain; otherwise, only properties declared on <paramref name="t"/> are considered.
+    /// </param>
+    /// <returns><c>true</c> if the property was set successfully; otherwise, <c>false</c>.</returns>
+    /// <exception cref="ArgumentNullException">Thrown if <paramref name="t"/> or <paramref name="propertyName"/> is <c>null</c>.</exception>
+    public static bool SetStaticPropertyValue(this Type t, object value, string propertyName, bool flattenHierarchy)
     {
         ArgumentNullException.ThrowIfNull(t);
-        ArgumentNullException.ThrowIfNull(propertyName);
+        ArgumentNullException.ThrowIfNullOrEmpty(propertyName);
 
-        BindingFlags eFlags = AnyStatic;
-        if (flattenHierarchy)
-        {
-            eFlags |= BindingFlags.FlattenHierarchy;
-        }
-
-        return SetPropertyValue(t, null, value, propertyName, eFlags);
+        BindingFlags flags = flattenHierarchy ? (AnyStatic | BindingFlags.FlattenHierarchy) : AnyStatic;
+        return SetPropertyValue(t, null, value, propertyName, flags);
     }
+
     #endregion // Accessing_static_properties_Shallow_Scope
 
     #region Accessing_instance_property_value_Shallow_Scope
-    /// <summary> Get the value of property in given object <paramref name="obj"/>.</summary>
-    ///
-    /// <remarks>Unlike with the analogical method <see cref="GetStaticPropertyValue(Type, string)"/>, this
-    /// method can access public and protected properties declared in a base class, and there is no need
-    /// specifying BindingFlags.FlattenHierarchy. <br/>
-    /// 
-    /// Note this will NOT return private properties declared in the base class, and one must to use the
-    /// <see cref="GetAllProperties(Type, System.Reflection.BindingFlags)"/> extension method to do
-    /// that.<br/></remarks>
-    ///
-    /// <exception cref="ArgumentNullException"> Thrown when either the <paramref name="obj"/>
-    /// or the <paramref name="propertyName"/> parameter is null. </exception>
-    ///
-    /// <param name="obj"> The object whose property value is retrieved. </param>
-    /// <param name="propertyName"> The property name. </param>
-    ///
-    /// <returns> The instance property value.</returns>
+
+    /// <summary>
+    /// Gets the value of an instance property from the specified <paramref name="obj"/>.
+    /// </summary>
+    /// <remarks>
+    /// Unlike static property accessors, this method automatically considers public and protected properties declared in base classes without requiring <c>BindingFlags.FlattenHierarchy</c>. 
+    /// It does not return private properties declared in base classes; for those, use <see cref="GetAllProperties(Type, BindingFlags)"/>.
+    /// </remarks>
+    /// <param name="obj">The object instance whose property value is retrieved.</param>
+    /// <param name="propertyName">The name of the property.</param>
+    /// <returns>The value of the instance property, or <c>null</c> if not found.</returns>
+    /// <exception cref="ArgumentNullException">Thrown if <paramref name="obj"/> or <paramref name="propertyName"/> is <c>null</c>.</exception>
     public static object? GetInstancePropertyValue(this object obj, string propertyName)
     {
         ArgumentNullException.ThrowIfNull(obj);
-        ArgumentNullException.ThrowIfNull(propertyName);
+        ArgumentNullException.ThrowIfNullOrEmpty(propertyName);
 
         return GetPropertyValue(obj.GetType(), obj, propertyName, AnyInstance);
     }
 
-    /// <summary> Sets the value of property in given object <paramref name="obj"/>.</summary>
-    ///
-    /// <remarks>Unlike with the analogical method
-    /// <see cref="SetStaticPropertyValue(Type, object, string)"/>, this method can access public and
-    /// protected properties declared in a base class, and there is no need specifying
-    /// BindingFlags.FlattenHierarchy. The reason for that is that static and non-static properties are handled
-    /// differently by the
-    /// <a href="http://msdn.microsoft.com/en-us/library/system.type.getproperty(v=vs.110).aspx">
-    /// Type.GetProperty Method</a> <br/>
-    /// 
-    /// Note this will NOT access private properties declared in the base class, and one must to use the
-    /// <see cref="GetAllProperties(Type, System.Reflection.BindingFlags)"/>
-    /// extension method to do that.<br/></remarks>
-    ///
-    /// <exception cref="ArgumentNullException"> Thrown when one or more required arguments are null. </exception>
-    ///
-    /// <param name="obj"> The object the required property belongs to. </param>
-    /// <param name="value"> The value being assigned to the property. </param>
-    /// <param name="propertyName"> Then property name. </param>
-    ///
-    /// <returns> True on success, false on failure.</returns>
+    /// <summary>
+    /// Sets the value of an instance property on the specified <paramref name="obj"/>.
+    /// </summary>
+    /// <remarks>
+    /// This method considers public and protected instance properties declared in base classes automatically, without requiring <c>BindingFlags.FlattenHierarchy</c>. 
+    /// Private properties declared in base classes are not accessed; use <see cref="GetAllProperties(Type, BindingFlags)"/> to access those.
+    /// </remarks>
+    /// <param name="obj">The object instance on which to set the property value.</param>
+    /// <param name="value">The value to assign to the property.</param>
+    /// <param name="propertyName">The name of the property.</param>
+    /// <returns><c>true</c> if the property was set successfully; otherwise, <c>false</c>.</returns>
+    /// <exception cref="ArgumentNullException">Thrown if <paramref name="obj"/> or <paramref name="propertyName"/> is <c>null</c>.</exception>
     public static bool SetInstancePropertyValue(this object obj, object value, string propertyName)
     {
         ArgumentNullException.ThrowIfNull(obj);
-        ArgumentNullException.ThrowIfNull(propertyName);
+        ArgumentNullException.ThrowIfNullOrEmpty(propertyName);
 
         return SetPropertyValue(obj.GetType(), obj, value, propertyName, AnyInstance);
     }
     #endregion // Accessing_instance_property_value_Shallow_Scope
 
     #region Accessing_instance_property_value_Full_Scope
-    /// <summary>Get the value of property in given object obj, specified by property name. Is searching all
-    /// properties including the object type predecessors, and including their private properties. Throws
-    /// InvalidOperationException if there is no such property, or if there are more than one such properties.</summary>
-    ///
-    /// <remarks>Throws an exception if there is no such property, or if there are more than one such properties.</remarks>
-    ///
-    /// <exception cref="ArgumentNullException"> Thrown when one or more required arguments are null. </exception>
-    ///
-    /// <typeparam name="T"> The assumed type of the property. </typeparam>
-    /// <param name="obj"> The object whose property value is retrieved. </param>
-    /// <param name="propertyName"> The property name. </param>
-    ///
-    /// <returns> The property value.</returns>
+
+    /// <summary>
+    /// Gets the value of an instance property from the specified <paramref name="obj"/> by name, searching the entire inheritance hierarchy including private properties.
+    /// Throws <see cref="InvalidOperationException"/> if the property is not found or multiple properties with the same name exist.
+    /// </summary>
+    /// <typeparam name="T">The expected type of the property value.</typeparam>
+    /// <param name="obj">The object instance whose property value is retrieved.</param>
+    /// <param name="propertyName">The name of the property.</param>
+    /// <returns>The value of the property cast to <typeparamref name="T"/>.</returns>
+    /// <exception cref="ArgumentNullException">Thrown if <paramref name="obj"/> or <paramref name="propertyName"/> is <c>null</c>.</exception>
+    /// <exception cref="InvalidOperationException">Thrown if no matching property is found or multiple matches exist.</exception>
     public static T? GetInstancePropertyValueEx<T>(this object obj, string propertyName)
     {
         ArgumentNullException.ThrowIfNull(obj);
         PropertyInfo info = GetInstancePropertyEx<T>(obj.GetType(), propertyName);
         object? result = info.GetValue(obj, null);
 
-        return (result != null) ? (T)result : default;
+        return (T?)result;
     }
-
 
     /// <summary>Sets the value of property in given object obj. Throws InvalidOperationException if there is no
     /// such property, or if there are more than one such properties.</summary>
@@ -244,7 +189,7 @@ public static class PropertiesUtils
     public static void SetInstancePropertyValueEx<T>(this object obj, T? value, string propertyName)
     {
         ArgumentNullException.ThrowIfNull(obj);
-        ArgumentNullException.ThrowIfNull(propertyName);
+        ArgumentNullException.ThrowIfNullOrEmpty(propertyName);
 
         PropertyInfo info = GetInstancePropertyEx<T>(obj.GetType(), propertyName);
         info.SetValue(obj, value, null);
@@ -322,9 +267,8 @@ public static class PropertiesUtils
     /// <returns> Resulting sequence of PropertyInfo that can be iterated.</returns>
     public static IEnumerable<PropertyInfo> GetAllInstanceProperties(this Type t, string propertyName)
     {
-        return GetAllProperties(t, propertyName, BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance);
+        return GetAllProperties(t, propertyName, AnyInstance);
     }
-
 
     /// <summary>Get all instance properties of a given type, include type predecessors, and including their
     /// private properties, that have the given property name, and the type of the property is either equal to
@@ -407,7 +351,6 @@ public static class PropertiesUtils
 
         return result;
     }
-
 
     /// <summary>Set the value of property in given object obj, or of the static property if the object obj is
     /// null. If the object obj is non-null, the type of the object must be <paramref name="t"/>.</summary>

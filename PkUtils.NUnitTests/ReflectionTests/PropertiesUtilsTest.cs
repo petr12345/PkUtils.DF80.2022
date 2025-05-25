@@ -3,6 +3,7 @@
 using System.Reflection;
 using PK.PkUtils.Reflection;
 
+#pragma warning disable IDE0305 // Collection initialization can be simplified
 
 namespace PK.PkUtils.NUnitTests.ReflectionTests;
 
@@ -12,6 +13,12 @@ namespace PK.PkUtils.NUnitTests.ReflectionTests;
 [TestFixture()]
 public class PropertiesUtilsTest
 {
+    #region Fields
+
+    private const double PI_Exact = 3.1415926535;
+    #endregion // Fields
+
+
     #region Auxiliary_classes_for_tests
 
     /// <summary>
@@ -110,40 +117,40 @@ public class PropertiesUtilsTest
         }
     }
 
-    private readonly string[] P_arr_A_StaticPropertisNames = new string[] {
+    private readonly string[] P_arr_A_StaticPropertisNames = [
         "P_a_public",
         "P_a_protected",
         "P_a_private",
-    };
+    ];
 
-    private readonly string[] P_arr_B_StaticPropertisNames = new string[] {
+    private readonly string[] P_arr_B_StaticPropertisNames = [
         "P_a_public",
         "P_a_protected",
         "P_a_private",
         "P_b_public",
         "P_b_protected",
         "P_b_private",
-    };
+    ];
 
-    private readonly string[] P_arr_C_NonStaticPropertisNames = new string[] {
+    private readonly string[] P_arr_C_NonStaticPropertisNames = [
         "P_c_public",
         "P_c_protected",
         "P_c_private",
-    };
+    ];
 
-    private readonly string[] P_arr_D_NonStaticPropertisNames = new string[] {
+    private readonly string[] P_arr_D_NonStaticPropertisNames = [
         "P_c_public",
         "P_c_protected",
         "P_c_private",
         "P_d_public",
         "P_d_protected",
         "P_d_private",
-    };
+    ];
 
-    private readonly string[] P_arrInvalidPropertisNames = new string[] {
+    private readonly string[] P_arrInvalidPropertisNames = [
         "P_xyz",
         "?@#$%",
-    };
+    ];
     #endregion // Auxiliary_classes_for_tests
 
     #region Auxiliary_code_for_tests
@@ -151,7 +158,7 @@ public class PropertiesUtilsTest
     /// <summary>
     /// A generic helper for the GetInstancePropertyValueTest
     /// </summary>
-    internal static void GetInstancePropertyValueTestHelper<T, V>(T obj, string strPropertyName, V expected)
+    private static void GetInstancePropertyValueTestHelper<T, V>(T obj, string strPropertyName, V expected)
     {
         object? actual = obj!.GetInstancePropertyValue(strPropertyName);
         Assert.That(actual, Is.EqualTo(expected));
@@ -160,7 +167,7 @@ public class PropertiesUtilsTest
     /// <summary>
     /// A generic helper for the GetInstancePropertyValueExTest
     /// </summary>
-    internal static void GetInstancePropertyValueExTestHelper<T, V>(T obj, string strPropertyName, V expected)
+    private static void GetInstancePropertyValueExTestHelper<T, V>(T obj, string strPropertyName, V expected)
     {
         V? actual = obj!.GetInstancePropertyValueEx<V>(strPropertyName);
         Assert.That(actual, Is.EqualTo(expected));
@@ -169,7 +176,7 @@ public class PropertiesUtilsTest
     /// <summary>
     /// A generic helper for the SetInstancePropertyValueExTest
     /// </summary>
-    internal static void SetInstancePropertyValueExTestHelper<T, V>(T obj, V? value, string strPropertyName)
+    private static void SetInstancePropertyValueExTestHelper<T, V>(T obj, V? value, string strPropertyName)
     {
         obj!.SetInstancePropertyValueEx<V>(value, strPropertyName);
         V? actual = obj!.GetInstancePropertyValueEx<V>(strPropertyName);
@@ -179,10 +186,8 @@ public class PropertiesUtilsTest
 
     #region Accessing_static_property_value_Shallow_Scope_tests
 
-    /// <summary>
-    /// A test for GetStaticPropertyValue
-    /// </summary>
-    [Test()]
+    /// <summary> A test for GetStaticPropertyValue </summary>
+    [Test, Description("Tests retrieving static property values using PropertiesUtils under different binding scenarios.")]
     public void PropertiesUtils_GetStaticPropertyValueTest()
     {
         Type t;
@@ -229,10 +234,8 @@ public class PropertiesUtilsTest
         Assert.That(actual, Is.EqualTo("BBBbbb"));
     }
 
-    /// <summary>
-    /// A test for SetStaticPropertyValue
-    /// </summary>
-    [Test()]
+    /// <summary> A test for SetStaticPropertyValue </summary>
+    [Test, Description("Tests setting static property values using PropertiesUtils under different binding scenarios.")]
     public void PropertiesUtils_SetStaticPropertyValueTest()
     {
         Type t;
@@ -244,16 +247,19 @@ public class PropertiesUtilsTest
         // -- i/ Demonstrates that via typeof(A) you can set all properties of type A
         t = typeof(A);
         res_public = t.SetStaticPropertyValue(1492, "P_a_public");
-        res_protected = t.SetStaticPropertyValue(3.1415926535, "P_a_protected");
+        res_protected = t.SetStaticPropertyValue(PI_Exact, "P_a_protected");
         res_private = t.SetStaticPropertyValue("pyramid", "P_a_private");
         A.GetPropertiesA(out int a_public, out double a_protected, out string? a_private);
 
-        Assert.That(res_public, Is.True);
-        Assert.That(res_protected, Is.True);
-        Assert.That(res_private, Is.True);
-        Assert.That(a_public, Is.EqualTo(1492));
-        Assert.That(a_protected, Is.EqualTo(3.1415926535));
-        Assert.That(a_private, Is.EqualTo("pyramid"));
+        Assert.Multiple(() =>
+        {
+            Assert.That(res_public, Is.True);
+            Assert.That(res_protected, Is.True);
+            Assert.That(res_private, Is.True);
+            Assert.That(a_public, Is.EqualTo(1492));
+            Assert.That(a_protected, Is.EqualTo(PI_Exact));
+            Assert.That(a_private, Is.EqualTo("pyramid"));
+        });
 
         // -- ii/ Demonstrates that via typeof(B) you cannot simply set properties of type B declared in base A
         t = typeof(B);
@@ -262,14 +268,18 @@ public class PropertiesUtilsTest
         res_private = t.SetStaticPropertyValue("hole in the wall", "P_a_private");
         A.GetPropertiesA(out a_public, out a_protected, out a_private);
 
-        Assert.That(res_public, Is.False);
-        Assert.That(a_public, Is.Not.EqualTo(2006));
+        Assert.Multiple(() =>
+        {
+            Assert.That(res_public, Is.False);
+            Assert.That(a_public, Is.Not.EqualTo(2006));
+            Assert.That(a_protected, Is.Not.EqualTo(9.876));
 
-        Assert.That(res_protected, Is.False);
-        Assert.That(a_public, Is.Not.EqualTo(9.876));
+            Assert.That(res_protected, Is.False);
+            Assert.That(a_public, Is.Not.EqualTo(9.876));
 
-        Assert.That(res_private, Is.False);
-        Assert.That(a_private, Is.Not.EqualTo("hole in the wall"));
+            Assert.That(res_private, Is.False);
+            Assert.That(a_private, Is.Not.EqualTo("hole in the wall"));
+        });
 
         // -- iii/ Demonstrates that via typeof(B), with the usage of BindingFlags.FlattenHierarchy,
         // you can set public and protected properties of type B declared in base A, but NOT private properties
@@ -279,14 +289,17 @@ public class PropertiesUtilsTest
         res_private = t.SetStaticPropertyValue("cannot be set", "P_a_private", true);
         A.GetPropertiesA(out a_public, out a_protected, out a_private);
 
-        Assert.That(res_public, Is.True);
-        Assert.That(a_public, Is.EqualTo(223344));
+        Assert.Multiple(() =>
+        {
+            Assert.That(res_public, Is.True);
+            Assert.That(a_public, Is.EqualTo(223344));
 
-        Assert.That(res_protected, Is.True);
-        Assert.That(a_protected, Is.EqualTo(55.66));
+            Assert.That(res_protected, Is.True);
+            Assert.That(a_protected, Is.EqualTo(55.66));
 
-        Assert.That(res_private, Is.False);
-        Assert.That(a_private, Is.Not.EqualTo("cannot be set"));
+            Assert.That(res_private, Is.False);
+            Assert.That(a_private, Is.Not.EqualTo("cannot be set"));
+        });
 
         // -- iv/ Demonstrates that via typeof(B) you can set all properties of type B declared in B
         t = typeof(B);
@@ -295,23 +308,23 @@ public class PropertiesUtilsTest
         res_private = t.SetStaticPropertyValue("that can be set", "P_b_private", true);
         B.GetPropertiesB(out int b_public, out double b_protected, out string? b_private);
 
-        Assert.That(res_public, Is.True);
-        Assert.That(b_public, Is.EqualTo(89));
+        Assert.Multiple(() =>
+        {
+            Assert.That(res_public, Is.True);
+            Assert.That(b_public, Is.EqualTo(89));
 
-        Assert.That(res_protected, Is.True);
-        Assert.That(b_protected, Is.EqualTo(101.505));
+            Assert.That(res_protected, Is.True);
+            Assert.That(b_protected, Is.EqualTo(101.505));
 
-        Assert.That(res_private, Is.True);
-        Assert.That(b_private, Is.EqualTo("that can be set"));
+            Assert.That(res_private, Is.True);
+            Assert.That(b_private, Is.EqualTo("that can be set"));
+        });
     }
-
     #endregion // Accessing_static_property_value_Shallow_Scope_tests
 
     #region Accessing_instance_property_value_Shallow_Scope_tests
 
-    /// <summary>
-    /// A test for GetInstancePropertyValue
-    /// </summary>
+    /// <summary> A test for GetInstancePropertyValue. </summary>
     [Test()]
     public void PropertiesUtils_GetInstancePropertyValueTest()
     {
@@ -350,16 +363,19 @@ public class PropertiesUtilsTest
 
         // -- i/ Demonstrates that having C instance, you can set all properties of type C
         res_public = c.SetInstancePropertyValue(1492, "P_c_public");
-        res_protected = c.SetInstancePropertyValue(3.1415926535, "P_c_protected");
+        res_protected = c.SetInstancePropertyValue(PI_Exact, "P_c_protected");
         res_private = c.SetInstancePropertyValue("pyramid", "P_c_private");
         c.GetPropertiesC(out int c_public, out double c_protected, out string? c_private);
 
-        Assert.That(res_public, Is.True);
-        Assert.That(res_protected, Is.True);
-        Assert.That(res_private, Is.True);
-        Assert.That(c_public, Is.EqualTo(1492));
-        Assert.That(c_protected, Is.EqualTo(3.1415926535));
-        Assert.That(c_private, Is.EqualTo("pyramid"));
+        Assert.Multiple(() =>
+        {
+            Assert.That(res_public, Is.True);
+            Assert.That(res_protected, Is.True);
+            Assert.That(res_private, Is.True);
+            Assert.That(c_public, Is.EqualTo(1492));
+            Assert.That(c_protected, Is.EqualTo(PI_Exact));
+            Assert.That(c_private, Is.EqualTo("pyramid"));
+        });
 
         // -- ii/ Demonstrates that having D instance, you can access all non-static public and protected properties
         // of instance D declared in base C, but NOT private properties
@@ -368,14 +384,17 @@ public class PropertiesUtilsTest
         res_private = d.SetInstancePropertyValue("cannot be set", "P_c_private");
         d.GetPropertiesC(out c_public, out c_protected, out c_private);
 
-        Assert.That(res_public, Is.True);
-        Assert.That(c_public, Is.EqualTo(223344));
+        Assert.Multiple(() =>
+        {
+            Assert.That(res_public, Is.True);
+            Assert.That(c_public, Is.EqualTo(223344));
 
-        Assert.That(res_protected, Is.True);
-        Assert.That(c_protected, Is.EqualTo(55.66));
+            Assert.That(res_protected, Is.True);
+            Assert.That(c_protected, Is.EqualTo(55.66));
 
-        Assert.That(res_private, Is.False);
-        Assert.That(c_private, Is.Not.EqualTo("cannot be set"));
+            Assert.That(res_private, Is.False);
+            Assert.That(c_private, Is.Not.EqualTo("cannot be set"));
+        });
 
         // -- iii/ Demonstrates that having D instance, you can set all properties of type D declared in D
         res_public = d.SetInstancePropertyValue(89, "P_d_public");
@@ -383,14 +402,17 @@ public class PropertiesUtilsTest
         res_private = d.SetInstancePropertyValue("that can be set", "P_d_private");
         d.GetPropertiesD(out int d_public, out double d_protected, out string? d_private);
 
-        Assert.That(res_public, Is.True);
-        Assert.That(d_public, Is.EqualTo(89));
+        Assert.Multiple(() =>
+        {
+            Assert.That(res_public, Is.True);
+            Assert.That(d_public, Is.EqualTo(89));
 
-        Assert.That(res_protected, Is.True);
-        Assert.That(d_protected, Is.EqualTo(101.505));
+            Assert.That(res_protected, Is.True);
+            Assert.That(d_protected, Is.EqualTo(101.505));
 
-        Assert.That(res_private, Is.True);
-        Assert.That(d_private, Is.EqualTo("that can be set"));
+            Assert.That(res_private, Is.True);
+            Assert.That(d_private, Is.EqualTo("that can be set"));
+        });
     }
     #endregion // Accessing_instance_property_value_Shallow_Scope_tests
 
@@ -428,7 +450,7 @@ public class PropertiesUtilsTest
 
         // -- i/ Demonstrates that having C instance, SetInstancePropertyValueEx can set all properties of type C
         SetInstancePropertyValueExTestHelper<C, int>(c, 1492, "P_c_public");
-        SetInstancePropertyValueExTestHelper<C, double>(c, 3.1415926535, "P_c_protected");
+        SetInstancePropertyValueExTestHelper<C, double>(c, PI_Exact, "P_c_protected");
         SetInstancePropertyValueExTestHelper<C, string>(c, "pyramid", "P_c_private");
 
         // -- ii/ Demonstrates that having D instance, SetInstancePropertyValueEx can set all properties derived from C
@@ -446,9 +468,7 @@ public class PropertiesUtilsTest
 
     #region Accessing_PropertyInfo_Full_Scope
 
-    /// <summary>
-    /// A test for GetAllProperties
-    /// </summary>
+    /// <summary>  A test for GetAllProperties. </summary>
     [Test()]
     public void PropertiesUtils_GetAllPropertiesTest_01()
     {
@@ -460,8 +480,11 @@ public class PropertiesUtilsTest
         {
             actual = PropertiesUtils.GetAllProperties(typeof(B), strPropertyName, flags);
             listActual = actual.ToList();
-            Assert.That(listActual.Count(), Is.EqualTo(1));
-            Assert.That(listActual.First().Name, Is.EqualTo(strPropertyName));
+            Assert.Multiple(() =>
+            {
+                Assert.That(listActual.Count(), Is.EqualTo(1));
+                Assert.That(listActual.First().Name, Is.EqualTo(strPropertyName));
+            });
         }
 
         foreach (string strPropertyName in P_arrInvalidPropertisNames)
@@ -471,9 +494,7 @@ public class PropertiesUtilsTest
         }
     }
 
-    /// <summary>
-    /// A test for GetAllProperties
-    /// </summary>
+    /// <summary>  A test for GetAllProperties. </summary>
     [Test()]
     public void PropertiesUtils_GetAllPropertiesTest_02()
     {
@@ -490,9 +511,7 @@ public class PropertiesUtilsTest
         Assert.That(expectedNames.SequenceEqual(actualNames), Is.True);
     }
 
-    /// <summary>
-    /// A test for GetAllInstanceProperties
-    /// </summary>
+    /// <summary>   A test for GetAllInstanceProperties. </summary>
     [Test()]
     public void PropertiesUtils_GetAllInstancePropertiesTest()
     {
@@ -522,9 +541,7 @@ public class PropertiesUtilsTest
         }
     }
 
-    /// <summary>
-    /// A test for GetInstanceProperty
-    /// </summary>
+    /// <summary> A test for GetInstanceProperty. </summary>
     [Test()]
     public void PropertiesUtils_GetInstancePropertyTest()
     {
@@ -537,3 +554,5 @@ public class PropertiesUtilsTest
     }
     #endregion // Accessing_PropertyInfo_Full_Scope
 }
+
+#pragma warning restore IDE0305
