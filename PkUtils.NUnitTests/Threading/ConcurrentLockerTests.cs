@@ -31,7 +31,7 @@ public class ConcurrentLockerTests
         IConcurrentLocker<string> locker = new ConcurrentLocker<string>();
 
         // ASSERT
-        Assert.That(locker.CurrentSize, Is.EqualTo(0));
+        Assert.That(locker.CurrentSize, Is.Zero);
         Assert.That(locker.IsDisposed, Is.False);
     }
 
@@ -52,7 +52,7 @@ public class ConcurrentLockerTests
         IConcurrentLocker<string> locker = new ConcurrentLocker<string>(StringComparer.OrdinalIgnoreCase);
 
         // ASSERT
-        Assert.That(locker.CurrentSize, Is.EqualTo(0));
+        Assert.That(locker.CurrentSize, Is.Zero);
         Assert.That(locker.IsDisposed, Is.False);
     }
 
@@ -63,7 +63,7 @@ public class ConcurrentLockerTests
         IConcurrentLocker<string> locker = new ConcurrentLocker<string>(StringComparer.OrdinalIgnoreCase);
 
         // ASSERT
-        Assert.That(locker.CurrentSize, Is.EqualTo(0));
+        Assert.That(locker.CurrentSize, Is.Zero);
         Assert.That(locker.IsDisposed, Is.False);
     }
     #endregion // Tests_constructors
@@ -108,7 +108,7 @@ public class ConcurrentLockerTests
 
         // ASSERT
         Assert.That(locker.IsDisposed, Is.True);
-        Assert.That(locker.CurrentSize, Is.EqualTo(0));
+        Assert.That(locker.CurrentSize, Is.Zero);
     }
     #endregion // Tests_disposing
 
@@ -128,7 +128,7 @@ public class ConcurrentLockerTests
         myLock.Dispose();
         Assert.That(myLock, Is.InstanceOf<IDisposableEx>().Or.Null);
         Assert.That((myLock as IDisposableEx)?.IsDisposed, Is.True);
-        Assert.That(locker.CurrentSize, Is.EqualTo(0));
+        Assert.That(locker.CurrentSize, Is.Zero);
     }
 
     [Test]
@@ -155,7 +155,7 @@ public class ConcurrentLockerTests
 
         // ASSERT
         Assert.That(locks.All(x => x is IDisposableEx { IsDisposed: true }));
-        Assert.That(locker.CurrentSize, Is.EqualTo(0));
+        Assert.That(locker.CurrentSize, Is.Zero);
     }
 
     [Test]
@@ -174,7 +174,7 @@ public class ConcurrentLockerTests
         });
 
         // ASSERT
-        Assert.That(locker.CurrentSize, Is.EqualTo(0));
+        Assert.That(locker.CurrentSize, Is.Zero);
         Assert.That(locker.IsDisposed, Is.False);
         Assert.That(counter.AddReference(), Is.EqualTo(4));
     }
@@ -251,7 +251,7 @@ public class ConcurrentLockerTests
 
         // ASSERT
         // 
-        Assert.That(locker.CurrentSize, Is.EqualTo(0));
+        Assert.That(locker.CurrentSize, Is.Zero);
         Assert.That(locker.IsDisposed, Is.False);
         Assert.That(counter.AddReference(), Is.EqualTo(locks + 1));
     }
@@ -283,7 +283,7 @@ public class ConcurrentLockerTests
             locker, _constLockId, waitTimeout, token, sleepMs)).ToArray();
 
         Assert.DoesNotThrowAsync(async () => await Task.WhenAll(tasks));
-        Assert.That(locker.CurrentSize, Is.EqualTo(0));
+        Assert.That(locker.CurrentSize, Is.Zero);
     }
 
     [Test]

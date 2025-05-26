@@ -254,8 +254,8 @@ public class BSIDTests
         BSID? id_null = null;
         BSID id_dummy = new BSID(_sDummy);
 
-        Assert.That(BSID.Compare(id_null, id_null), Is.EqualTo(0));
-        Assert.That(BSID.Compare(id_dummy, id_dummy), Is.EqualTo(0));
+        Assert.That(BSID.Compare(id_null, id_null), Is.Zero);
+        Assert.That(BSID.Compare(id_dummy, id_dummy), Is.Zero);
 
         Assert.That(BSID.Compare(id_null, id_dummy), Is.EqualTo(-1));
         Assert.That(BSID.Compare(id_dummy, id_null), Is.EqualTo(1));
@@ -268,10 +268,10 @@ public class BSIDTests
         BSID id_1st = new BSID(_sLower);
         BSID id_2nd = new BSID(_sUpper);
 
-        Assert.That(id_dummy.CompareTo(id_dummy), Is.EqualTo(0));
-        Assert.That(id_1st.CompareTo(id_1st), Is.EqualTo(0));
-        Assert.That(id_1st.CompareTo(id_2nd), Is.EqualTo(0));
-        Assert.That(id_2nd.CompareTo(id_1st), Is.EqualTo(0));
+        Assert.That(id_dummy.CompareTo(id_dummy), Is.Zero);
+        Assert.That(id_1st.CompareTo(id_1st), Is.Zero);
+        Assert.That(id_1st.CompareTo(id_2nd), Is.Zero);
+        Assert.That(id_2nd.CompareTo(id_1st), Is.Zero);
 
         Assert.That(string.Compare(_sLower, _sDummy), Is.LessThan(0));
         Assert.That(id_1st.CompareTo(id_dummy), Is.LessThan(0));

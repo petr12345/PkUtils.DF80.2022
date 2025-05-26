@@ -31,7 +31,7 @@ public class SizeLimitedCacheTests
         // ACT
         ISizeLimitedCache<int, string> cache = new SizeLimitedCache<int, string>(12);
         // ASSERT
-        Assert.That(cache.CurrentSize, Is.EqualTo(0));
+        Assert.That(cache.CurrentSize, Is.Zero);
     }
     #endregion // Tests_constructors
 
@@ -357,7 +357,7 @@ public class SizeLimitedCacheTests
         foreach (int x in range) Assert.That(cache.Remove(x), Is.True);
         foreach (int x in range) Assert.That(cache.Remove(x), Is.False);
 
-        Assert.That(cache.CurrentSize, Is.EqualTo(0));
+        Assert.That(cache.CurrentSize, Is.Zero);
     }
     #endregion // Tests_Remove
 
@@ -372,7 +372,7 @@ public class SizeLimitedCacheTests
         Assert.That(cache.CurrentSize, Is.EqualTo(addedItems));
 
         cache.Clear();
-        Assert.That(cache.CurrentSize, Is.EqualTo(0));
+        Assert.That(cache.CurrentSize, Is.Zero);
     }
     #endregion // Tests_Clear
 }

@@ -33,8 +33,8 @@ public class FunctionalComparerTest
         Comparison<string> f = (x, y) => string.Compare(x, y, StringComparison.OrdinalIgnoreCase);
         FunctionalComparer<string> comparer = new FunctionalComparer<string>(f);
 
-        Assert.That(comparer.Compare("aaa", "AAA"), Is.EqualTo(0));
-        Assert.That(comparer.Compare("aaa", "bbb"), Is.Not.EqualTo(0));
+        Assert.That(comparer.Compare("aaa", "AAA"), Is.Zero);
+        Assert.That(comparer.Compare("aaa", "bbb"), Is.Not.Zero);
     }
 
     /// <summary>
@@ -92,13 +92,13 @@ public class FunctionalComparerTest
         Comparison<string> f = (x, y) => (x.Length - y.Length);
         FunctionalComparer<string> comparer = FunctionalComparer.CreateNullSafeComparer(f);
 
-        Assert.That(comparer.Compare("aaa", "AAA"), Is.EqualTo(0));
-        Assert.That(comparer.Compare("aaa", "XYZ"), Is.EqualTo(0));
+        Assert.That(comparer.Compare("aaa", "AAA"), Is.Zero);
+        Assert.That(comparer.Compare("aaa", "XYZ"), Is.Zero);
 
         Assert.That(comparer.Compare(null!, "pqr"), Is.LessThan(0));
         Assert.That(comparer.Compare("pqr", null!), Is.GreaterThan(0));
 
-        Assert.That(comparer.Compare(null!, null!), Is.EqualTo(0));
+        Assert.That(comparer.Compare(null!, null!), Is.Zero);
         Assert.That(comparer.Compare(null!, string.Empty), Is.LessThan(0));
         Assert.That(comparer.Compare(string.Empty, null!), Is.GreaterThan(0));
     }

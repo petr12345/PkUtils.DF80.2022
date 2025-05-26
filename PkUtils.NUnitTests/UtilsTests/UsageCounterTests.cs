@@ -52,6 +52,6 @@ public class UsageCounterTests
 
         // ASSERT
         // Assert.AreEqual(0, counter.Release());
-        Assert.That(counter.Release(), Is.EqualTo(0));
+        Assert.That(counter.Release(), Is.Zero);
     }
 }

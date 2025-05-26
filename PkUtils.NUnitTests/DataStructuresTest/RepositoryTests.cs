@@ -80,7 +80,7 @@ public class RepositoryTests
         {
             Assert.That(rep.HasData, Is.True);
             Assert.That(rep.IsAttached, Is.False);
-            Assert.That(rep.Data, Is.EqualTo(0));
+            Assert.That(rep.Data, Is.Zero);
         });
     }
 
