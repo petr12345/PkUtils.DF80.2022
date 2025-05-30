@@ -1,15 +1,4 @@
-/***************************************************************************************************************
-*
-* FILE NAME:   .\UI\General\MsgBoxYesNoAll.cs
-*
-*
-* AUTHOR:      Petr Kodet
-*
-* DESCRIPTION: The file contains definition of class MsgBoxYesNoAll 
-*
-**************************************************************************************************************/
-
-// Ignore Spelling: Utils
+// Ignore Spelling: Utils, endregion
 //
 using System;
 using System.Collections.Generic;
@@ -47,22 +36,51 @@ public partial class MsgBoxYesNoAll : Form
     }
     #endregion // Typedefs
 
-    #region Public Interface
+    #region Private Fields
+
+    /// <summary> The minimum width ( cached value retrieved in constructor). </summary>
+    private readonly int _minWidth;
+
+    /// <summary> The minimum height ( cached value retrieved in constructor). </summary>
+    private readonly int _minHeight;
+
+    /// <summary> The initial height ( cached value retrieved in constructor). </summary>
+    private readonly int _initHeight;
+
+    /// <summary> Initial height of _lblMainInstruction </summary>
+    private readonly int _initMainHeight;
+
+    /// <summary> Initial height of _lblContent</summary>
+    private readonly int _initContentHeight;
+
+    /// <summary> The last location of form. </summary>
+    private Nullable<Point> _lastLocation;
+
+    /// <summary> A backing field of property <see cref="ButtonTextsSpecified"/>.</summary>
+    private readonly IEnumerable<KeyValuePair<MsgBoxResult, string>> _buttonTexts;
+
+    /// <summary> The backing field of property <see cref="Result"/>. </summary> 
+    private MsgBoxResult _result = MsgBoxResult.Cancel;
+
+    /// <summary> The backing field for property <see cref="StandardIcon"/>. </summary>
+    private MessageBoxIcon _standardIcon = MessageBoxIcon.None;
+
+    /// <summary> A backing field for property <see cref="ResultToButtonsDict"/>. </summary>
+    private IReadOnlyDictionary<MsgBoxResult, Button> _resultToButtonsDictionary;
+    #endregion // Private Fields
 
     #region Constructor(s)
 
-    /// <summary>
-    /// Default argument-less constructor
-    /// </summary>
+    /// <summary> Default argument-less constructor. </summary>
     public MsgBoxYesNoAll()
     {
         InitializeComponent();
 
-        _MinWidth = MinimumSize.Width;
-        _MinHeight = MinimumSize.Height;
-        _InitHeight = this.Height;
-        _InitMainHeight = _lblMainInstruction.Height;
-        _InitContentHeight = _lblContent.Height;
+        _minWidth = MinimumSize.Width;
+        _minHeight = MinimumSize.Height;
+        _initHeight = this.Height;
+        _initMainHeight = _lblMainInstruction.Height;
+        _initContentHeight = _lblContent.Height;
     }
 
     /// <summary> Public constructor. </summary>
@@ -79,6 +97,7 @@ public partial class MsgBoxYesNoAll : Form
     }
     #endregion // Constructor(s)
 
+    #region Properties
     #region Public Properties
 
     /// <summary>
@@ -102,12 +121,12 @@ public partial class MsgBoxYesNoAll : Form
     /// <summary> Gets or sets the standard icon displayed in the PictureBox. </summary>
     public MessageBoxIcon StandardIcon
     {
-        get { return _StandardIcon; }
+        get { return _standardIcon; }
         set
         {
             if (StandardIcon != value)
             {
-                _StandardIcon = value;
+                _standardIcon = value;
                 UpdateIconImage();
                 UpdateSize();
             }
@@ -117,13 +136,46 @@ public partial class MsgBoxYesNoAll : Form
     /// <summary>
     /// The result of most recent ShowDialog or ShowDialogEx call.
     /// </summary>
-    public MsgBoxResult Result
-    {
-        get { return this._Result; }
-    }
+    public MsgBoxResult Result { get => this._result; }
     #endregion // Public Properties
 
+    #region Private Properties
+
+    /// <summary> Button texts provided by constructor (if any). May be null.</summary>
+    private IEnumerable<KeyValuePair<MsgBoxResult, string>> ButtonTextsSpecified
+    {
+        get { return _buttonTexts; }
+    }
+
+    /// <summary>
+    /// Returns a dictionary, representing the relationship (MsgBoxResult --- > Button related).
+    /// </summary>
+    /// <remarks>
+    /// Instead of usage of field initializer of backing field, the code uses the lazy initialization.
+    /// The reason is the former approach produces a compilation error
+    /// ( "A field initializer cannot reference the non-static field, method, or property ").
+    /// </remarks>
+    private IReadOnlyDictionary<MsgBoxResult, Button> ResultToButtonsDict
+    {
+        get
+        {
+            _resultToButtonsDictionary ??= new Dictionary<MsgBoxResult, Button>
+                {
+                    { MsgBoxResult.Yes, this._btnYes },
+                    { MsgBoxResult.YesToAll, this._btnYesToAll },
+                    { MsgBoxResult.No, this._btnNo },
+                    { MsgBoxResult.NoToAll, this._btnNoToAll},
+                    { MsgBoxResult.Cancel, this._btnCancel},
+                };
+            return _resultToButtonsDictionary;
+        }
+    }
+    #endregion // Private Properties
+    #endregion // Properties
+
+    #region Methods
     #region Public Methods
+
     /// <summary>
     /// A helper method calling ShowDialog internally.  You should call this method instead of ShowDialog, 
     /// to get <see cref="MsgBoxResult "/> instead of DialogResult.
@@ -134,7 +186,7 @@ public partial class MsgBoxYesNoAll : Form
     /// <returns> A MsgBoxResult reflecting the button clicked. </returns>
     public MsgBoxResult ShowDialogEx(IWin32Window owner)
     {
-        _Result = MsgBoxResult.Cancel;
+        _result = MsgBoxResult.Cancel;
 
         ShowDialog(owner);
         return Result;
@@ -155,11 +207,11 @@ public partial class MsgBoxYesNoAll : Form
     ///
     /// <returns> A MsgBoxResult reflecting the used button clicked. </returns>
     public MsgBoxResult ShowDialogEx(
-      IWin32Window owner,
-      string mainInstruction,
-      string content,
-      string caption,
-      MessageBoxIcon icon)
+        IWin32Window owner,
+        string mainInstruction,
+        string content,
+        string caption,
+        MessageBoxIcon icon)
     {
         this.StandardIcon = icon;
         this.MainInstructionText = mainInstruction;
@@ -169,9 +221,8 @@ public partial class MsgBoxYesNoAll : Form
         return ShowDialogEx(owner);
     }
     #endregion // Public Methods
-    #endregion // Public Interface
 
-    #region Protected Interface
+    #region Protected Methods
 
     /// <summary> Overrides the virtual method of the base class, 
     /// which raises the <see cref="Form.Load" /> event. 
@@ -180,62 +231,27 @@ public partial class MsgBoxYesNoAll : Form
     /// of Form for multiple ShowDialog calls).
     /// </summary>
     ///
-    /// <param name="args">  An <see cref="System.EventArgs" /> that contains the event data. </param>
+    /// <param name="args">  An <see cref="EventArgs" /> that contains the event data. </param>
     protected override void OnLoad(EventArgs args)
     {
         base.OnLoad(args);
 
         DialogResult = DialogResult.None;
-        _Result = MsgBoxResult.Cancel;
+        _result = MsgBoxResult.Cancel;
 
         if (_lastLocation != null)
             this.Location = _lastLocation.Value;
         UpdateSize();
     }
 
-    /// <summary> Raises the <see cref="System.Windows.Forms.Form.Closing" /> event. </summary>
-    /// <param name="args"> A <see cref="System.ComponentModel.CancelEventArgs" /> that contains the event data. </param>
+    /// <summary> Raises the <see cref="Form.Closing" /> event. </summary>
+    /// <param name="args"> A <see cref="CancelEventArgs" /> that contains the event data. </param>
     protected override void OnClosing(CancelEventArgs args)
     {
         base.OnClosing(args);
         _lastLocation = this.Location;
     }
-    #endregion // Protected Interface
-
-    #region Private Members
-
-    #region Private Properties
-
-    /// <summary> Button texts provided by constructor (if any). May be null.</summary>
-    private IEnumerable<KeyValuePair<MsgBoxResult, string>> ButtonTextsSpecified
-    {
-        get { return _buttonTexts; }
-    }
-
-    /// <summary>
-    /// Returns a dictionary, representing the relationship (MsgBoxResult --- > Button related).
-    /// </summary>
-    /// <remarks>
-    /// Instead of usage of field initializer of backing field _Dict, the code uses the lazy initialization.
-    /// The reason is the former approach produces a compilation error
-    /// ( "A field initializer cannot reference the non-static field, method, or property ").
-    /// </remarks>
-    private IReadOnlyDictionary<MsgBoxResult, Button> ResultToButtonsDict
-    {
-        get
-        {
-            _resultToButtonsDictionary ??= new Dictionary<MsgBoxResult, Button>
-                {
-                    { MsgBoxResult.Yes, this._btnYes },
-                    { MsgBoxResult.YesToAll, this._btnYesToAll },
-                    { MsgBoxResult.No, this._btnNo },
-                    { MsgBoxResult.NoToAll, this._btnNoToAll},
-                    { MsgBoxResult.Cancel, this._btnCancel},
-                };
-            return _resultToButtonsDictionary;
-        }
-    }
-    #endregion // Private Properties
+    #endregion // Protected Methods
 
     #region Private Methods
 
@@ -255,10 +271,10 @@ public partial class MsgBoxYesNoAll : Form
     /// <summary>	Updates the buttons visibility. </summary>
     private void UpdateButtonsVisibility()
     {
-        foreach (var bttn in ResultToButtonsDict.Values)
+        foreach (Button button in ResultToButtonsDict.Values)
         {
-            bool bVisible = !string.IsNullOrEmpty(bttn.Text);
-            bttn.Visible = bVisible;
+            bool bVisible = !string.IsNullOrEmpty(button.Text);
+            button.Visible = bVisible;
         }
     }
 
@@ -285,12 +301,12 @@ public partial class MsgBoxYesNoAll : Form
         _lblMainInstruction.Location = new Point(_lblContent.Location.X, _lblMainInstruction.Location.Y);
 
         // increase new width if computed is too small
-        newWidth = Math.Max(newWidth, this._MinWidth);
+        newWidth = Math.Max(newWidth, this._minWidth);
 
         // compute new height
-        nDeltaMainheight = Math.Max(0, _lblMainInstruction.Size.Height - _InitMainHeight);
-        nDeltaContentHeight = Math.Max(0, _lblContent.Size.Height - 4 * _InitContentHeight);
-        newHeight = Math.Max(_InitHeight + nDeltaMainheight + nDeltaContentHeight, _MinHeight);
+        nDeltaMainheight = Math.Max(0, _lblMainInstruction.Size.Height - _initMainHeight);
+        nDeltaContentHeight = Math.Max(0, _lblContent.Size.Height - 4 * _initContentHeight);
+        newHeight = Math.Max(_initHeight + nDeltaMainheight + nDeltaContentHeight, _minHeight);
         // apply all that
         this.Size = new Size(newWidth, newHeight);
     }
@@ -326,7 +342,8 @@ public partial class MsgBoxYesNoAll : Form
         }
         _pbxIcon.Image = iconImage?.ToBitmap();
     }
-    #endregion //   Private Methods
+    #endregion // Private Methods
+    #endregion // Methods
 
     #region Event Handlers
 
@@ -340,9 +357,8 @@ public partial class MsgBoxYesNoAll : Form
     }
 
     /// <summary> The Event handler for any button being clicked.</summary>
-    ///
-    /// <param name="sender"></param>
-    /// <param name="args"> </param>
+    /// <param name="sender"> The sender. </param>
+    /// <param name="args"> Event information. </param>
     private void OnBtn_Click(object sender, EventArgs args)
     {
         Button btn = (Button)sender; // raise an exception if the sender is not a button
@@ -350,42 +366,7 @@ public partial class MsgBoxYesNoAll : Form
         Debug.Assert(btn.DialogResult == DialogResult.Yes || btn.DialogResult == DialogResult.No
           || btn.DialogResult == DialogResult.Cancel);
         this.DialogResult = btn.DialogResult;
-        this._Result = ResultToButtonsDict.First(pair => pair.Value == btn).Key;
+        this._result = ResultToButtonsDict.First(pair => pair.Value == btn).Key;
     }
     #endregion // Event Handlers
-
-    #region Private Fields
-
-    /// <summary> The minimum width ( cached value retrieved in constructor). </summary>
-    private readonly int _MinWidth;
-
-    /// <summary> The minimum height ( cached value retrieved in constructor). </summary>
-    private readonly int _MinHeight;
-
-    /// <summary> The initial height ( cached value retrieved in constructor). </summary>
-    private readonly int _InitHeight;
-
-    /// <summary> Initial height of _lblMainInstruction </summary>
-    private readonly int _InitMainHeight;
-
-    /// <summary> Initial height of _lblContent</summary>
-    private readonly int _InitContentHeight;
-
-    /// <summary> The last location of form. </summary>
-    private Nullable<Point> _lastLocation;
-
-    /// <summary> A backing field of property <see cref="ButtonTextsSpecified"/>.</summary>
-    private readonly IEnumerable<KeyValuePair<MsgBoxResult, string>> _buttonTexts;
-
-    /// <summary> The backing field of property <see cref="Result"/>. </summary> 
-    private MsgBoxResult _Result = MsgBoxResult.Cancel;
-
-    /// <summary> The backing field for property <see cref="StandardIcon"/>. </summary>
-    private MessageBoxIcon _StandardIcon = MessageBoxIcon.None;
-
-    /// <summary> A backing field for property <see cref="ResultToButtonsDict"/>. </summary>
-    private IReadOnlyDictionary<MsgBoxResult, Button> _resultToButtonsDictionary;
-
-    #endregion // Private Fields
-    #endregion // Private Members
 }

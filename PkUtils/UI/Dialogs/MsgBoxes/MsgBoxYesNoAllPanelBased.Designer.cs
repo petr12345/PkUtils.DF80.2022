@@ -3,7 +3,7 @@
 
 namespace PK.PkUtils.UI.General
 {
-  partial class MsgBoxYesNoAllLP
+  partial class MsgBoxYesNoAllPanelBased
   {
     /// <summary>
     /// Required designer variable.
@@ -169,7 +169,7 @@ namespace PK.PkUtils.UI.General
       this._TableLayoutPanel.Size = new System.Drawing.Size(452, 94);
       this._TableLayoutPanel.TabIndex = 5;
       // 
-      // MsgBoxYesNoAllLP
+      // MsgBoxYesNoAllPanelBased
       // 
       this.AcceptButton = this._btnYes;
       this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -186,11 +186,11 @@ namespace PK.PkUtils.UI.General
       this.MaximizeBox = false;
       this.MinimizeBox = false;
       this.MinimumSize = new System.Drawing.Size(440, 180);
-      this.Name = "MsgBoxYesNoAllLP";
+      this.Name = "MsgBoxYesNoAllPanelBased";
       this.ShowIcon = false;
       this.ShowInTaskbar = false;
       this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
-      this.Text = "MsgBoxYesNoAllLP";
+      this.Text = "MsgBoxYesNoAllPanelBased";
       this.DoubleClick += new System.EventHandler(this.MsgBoxYesNoAllLP_DoubleClick);
       ((System.ComponentModel.ISupportInitialize)(this._pbxIcon)).EndInit();
       this._TableLayoutPanel.ResumeLayout(false);

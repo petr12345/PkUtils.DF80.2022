@@ -66,7 +66,7 @@ namespace PK.TestMsgBoxYesNoAll
             this._btnClose.TabIndex = 1;
             this._btnClose.Text = "Close";
             this._btnClose.UseVisualStyleBackColor = true;
-            this._btnClose.Click += new System.EventHandler(this._btnClose_Click);
+            this._btnClose.Click += new System.EventHandler(this.OnBtnClose_Click);
             // 
             // _checkBxTestLayoutPanel
             // 

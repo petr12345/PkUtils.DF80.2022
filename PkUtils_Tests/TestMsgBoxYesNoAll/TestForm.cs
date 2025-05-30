@@ -7,7 +7,7 @@ using System.Windows.Forms;
 using PK.PkUtils.UI.General;
 using PK.TestMsgBoxYesNoAll.Properties;
 using MsgBoxResult = PK.PkUtils.UI.General.MsgBoxYesNoAll.MsgBoxResult;
-using MsgBoxResultLP = PK.PkUtils.UI.General.MsgBoxYesNoAllLP.MsgBoxResult;
+using MsgBoxResultLP = PK.PkUtils.UI.General.MsgBoxYesNoAllPanelBased.MsgBoxResult;
 
 namespace PK.TestMsgBoxYesNoAll
 {
@@ -18,15 +18,15 @@ namespace PK.TestMsgBoxYesNoAll
 
         private readonly string _strOriginalInfo;
         private readonly string _strTestTitle = "Testing MsgBoxYesNoAll";
-        private readonly string _strTestTitleLP = "Testing MsgBoxYesNoAllLP";
+        private readonly string _strTestTitleLP = "Testing MsgBoxYesNoAllPanelBased";
 
-        private readonly MessageBoxIcon[] _TestIcons = {
+        private readonly MessageBoxIcon[] _TestIcons = [
             MessageBoxIcon.None,
             MessageBoxIcon.Error,
             MessageBoxIcon.Question,
             MessageBoxIcon.Warning,
             MessageBoxIcon.Information,
-        };
+        ];
 
         private readonly IReadOnlyDictionary<MsgBoxYesNoAll.MsgBoxResult, string> _btnsModifiedTexts = new Dictionary<MsgBoxYesNoAll.MsgBoxResult, string>()
         {
@@ -37,13 +37,13 @@ namespace PK.TestMsgBoxYesNoAll
             { MsgBoxYesNoAll.MsgBoxResult.Cancel, "Cancel it"},
         };
 
-        private readonly IReadOnlyDictionary<MsgBoxYesNoAllLP.MsgBoxResult, string> _btnsModifiedTextsLP = new Dictionary<MsgBoxYesNoAllLP.MsgBoxResult, string>()
+        private readonly IReadOnlyDictionary<MsgBoxYesNoAllPanelBased.MsgBoxResult, string> _btnsModifiedTextsLP = new Dictionary<MsgBoxYesNoAllPanelBased.MsgBoxResult, string>()
         {
-            { MsgBoxYesNoAllLP.MsgBoxResult.Yes, "Yes!"},
-            { MsgBoxYesNoAllLP.MsgBoxResult.YesToAll, "Yes to All"},
-            { MsgBoxYesNoAllLP.MsgBoxResult.No, "Oh No"},
-            { MsgBoxYesNoAllLP.MsgBoxResult.NoToAll, ""},
-            { MsgBoxYesNoAllLP.MsgBoxResult.Cancel, "Cancel it"},
+            { MsgBoxYesNoAllPanelBased.MsgBoxResult.Yes, "Yes!"},
+            { MsgBoxYesNoAllPanelBased.MsgBoxResult.YesToAll, "Yes to All"},
+            { MsgBoxYesNoAllPanelBased.MsgBoxResult.No, "Oh No"},
+            { MsgBoxYesNoAllPanelBased.MsgBoxResult.NoToAll, ""},
+            { MsgBoxYesNoAllPanelBased.MsgBoxResult.Cancel, "Cancel it"},
         };
         #endregion // Fields
 
@@ -77,10 +77,9 @@ namespace PK.TestMsgBoxYesNoAll
             sett.Save();
         }
 
-        /// <summary>
-        /// Test of class MsgBoxYesNoAll
-        /// </summary>
-        private void Test_MsgBoxYesNoAll(bool bCustomTextx)
+        /// <summary>   Test of class MsgBoxYesNoAll. </summary>
+        /// <param name="bCustomTexts"> True to custom texts. </param>
+        private void Test_MsgBoxYesNoAll(bool bCustomTexts)
         {
             // prepare the dialog and its text
             string strMainInstructionBase = "This is a good question, isn't it?";
@@ -100,7 +99,7 @@ namespace PK.TestMsgBoxYesNoAll
             //  loop and count the yes and no replies
             for (int ii = 0; !bStop && (ii < _nMaxTestLoopCount); ii++)
             {
-                MsgBoxYesNoAll msgBx = new(bCustomTextx ? _btnsModifiedTexts : null);
+                MsgBoxYesNoAll msgBx = new(bCustomTexts ? _btnsModifiedTexts : null);
                 string strContentTemp = ((ii % 2) == 0) ? strContentTextBase : (strContentTextBase + strRandomContents);
                 IEnumerable<string> moreLines = Enumerable.Range(0, ii).Select(
                   n => string.Format(CultureInfo.CurrentCulture, "[Another test line {0}]", n + 3));
@@ -111,7 +110,7 @@ namespace PK.TestMsgBoxYesNoAll
 
                 int nIconIndex = ii % _TestIcons.Length;
                 MessageBoxIcon icon = _TestIcons[nIconIndex];
-                var result = msgBx.ShowDialogEx(this, strMainInstruction, strContentText, _strTestTitle, icon);
+                MsgBoxResult result = msgBx.ShowDialogEx(this, strMainInstruction, strContentText, _strTestTitle, icon);
 
                 switch (result)
                 {
@@ -129,13 +128,12 @@ namespace PK.TestMsgBoxYesNoAll
                         n_No_Count++;
                         break;
                 }
-                _lblInfo.Text = string.Format(CultureInfo.CurrentCulture,
-                  "Yes: {0} No: {1}", nYes_Count, n_No_Count);
+                UpdateLabel(nYes_Count, n_No_Count);
             }
         }
 
         /// <summary>
-        /// Test of class MsgBoxYesNoAllLP
+        /// Test of class MsgBoxYesNoAllPanelBased
         /// </summary>
         private void Test_MsgBoxYesNoAllLP(bool bCustomTextx)
         {
@@ -143,7 +141,7 @@ namespace PK.TestMsgBoxYesNoAll
             string strMainInstructionBase = "This is a good question, isn't it?";
             string strRandomContents = " Now this is just dummy sentence to make it all longer.";
             string strContentTextBase = string.Format(CultureInfo.CurrentCulture,
-                "This test demonstrates the behaviour of MsgBoxYesNoAllLP class.{0}You will be asked maximally {1} times a Yes or No, and given a running total.",
+                "This test demonstrates the behaviour of MsgBoxYesNoAllPanelBased class.{0}You will be asked maximally {1} times a Yes or No, and given a running total.",
                 Environment.NewLine, _nMaxTestLoopCount);
 
             // make some other preparation
@@ -157,7 +155,7 @@ namespace PK.TestMsgBoxYesNoAll
             //  loop and count the yes and no replies
             for (int ii = 0; !bStop && (ii < _nMaxTestLoopCount); ii++)
             {
-                MsgBoxYesNoAllLP msgBx = new(bCustomTextx ? _btnsModifiedTextsLP : null);
+                MsgBoxYesNoAllPanelBased msgBx = new(bCustomTextx ? _btnsModifiedTextsLP : null);
                 StringBuilder sbContentTemp = new();
 
                 sbContentTemp.Append(strContentTextBase);
@@ -174,7 +172,7 @@ namespace PK.TestMsgBoxYesNoAll
 
                 int nIconIndex = ii % _TestIcons.Length;
                 MessageBoxIcon icon = _TestIcons[nIconIndex];
-                var result = msgBx.ShowDialogEx(this, strMainInstruction, strContentText, _strTestTitleLP, icon);
+                MsgBoxResultLP result = msgBx.ShowDialogEx(this, strMainInstruction, strContentText, _strTestTitleLP, icon);
 
                 switch (result)
                 {
@@ -192,9 +190,13 @@ namespace PK.TestMsgBoxYesNoAll
                         n_No_Count++;
                         break;
                 }
-                _lblInfo.Text = string.Format(CultureInfo.CurrentCulture,
-                  "Yes: {0} No: {1}", nYes_Count, n_No_Count);
+                UpdateLabel(nYes_Count, n_No_Count);
             }
+        }
+
+        private void UpdateLabel(int yesCount, int noCount)
+        {
+            _lblInfo.Text = $"Yes: {yesCount} No: {noCount}";
         }
         #endregion // Methods
 
@@ -215,7 +217,7 @@ namespace PK.TestMsgBoxYesNoAll
             this.SaveSettings();
         }
 
-        private void _btnClose_Click(object sender, EventArgs e)
+        private void OnBtnClose_Click(object sender, EventArgs e)
         {
             this.Close();
         }

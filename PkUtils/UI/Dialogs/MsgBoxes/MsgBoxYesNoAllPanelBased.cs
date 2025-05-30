@@ -1,14 +1,4 @@
-/***************************************************************************************************************
-*
-* FILE NAME:   .\UI\General\MsgBoxYesNoAllLP.cs
-*
-* AUTHOR:      Petr Kodet
-*
-* DESCRIPTION: The file contains definition of class MsgBoxYesNoAllLP 
-*
-**************************************************************************************************************/
-
-// Ignore Spelling: Utils
+// Ignore Spelling: Utils, endregion
 //
 using System;
 using System.Collections.Generic;
@@ -62,7 +52,8 @@ namespace PK.PkUtils.UI.General;
 /// <seealso href="http://stackoverflow.com/questions/3290414/hide-and-show-a-cell-of-the-tablelayoutpanel">
 /// Hide and show a cell of the TableLayoutPanel</seealso>
 /// 
-public partial class MsgBoxYesNoAllLP : Form
+
+public partial class MsgBoxYesNoAllPanelBased : Form
 {
     #region Typedefs
 
@@ -84,14 +75,46 @@ public partial class MsgBoxYesNoAllLP : Form
     }
     #endregion // Typedefs
 
-    #region Public Interface
+    #region Private Fields
+
+    /// <summary> The initial size ( cached value retrieved in constructor). </summary>
+    private readonly Size _initSize;
+
+    /// <summary> The initial size of panel ( cached value retrieved in constructor). </summary>
+    private readonly Size _initPanelSize;
+
+    /// <summary> The last location of form. </summary>
+    private Nullable<Point> _lastLocation;
+
+    /// <summary> The backup field for size type of column containing the icon. </summary>
+    private Nullable<SizeType> _prevSizeType;
+
+    /// <summary> The backup field for width of column containing the icon. </summary>
+    private float _prevWidth;
+
+    /// <summary> A backing field of property <see cref="ButtonTextsSpecified"/>.</summary>
+    private readonly IEnumerable<KeyValuePair<MsgBoxResult, string>> _buttonTexts;
+
+    /// <summary> The backing field of property <see cref="Result"/>. </summary> 
+    private MsgBoxResult _result = MsgBoxResult.Cancel;
+
+    /// <summary> The backing field for property <see cref="StandardIcon"/>. </summary>
+    private MessageBoxIcon _standardIcon = MessageBoxIcon.None;
+
+    /// <summary> A backing field for property <see cref="ResultToButtonsDict"/>. </summary>
+    private IReadOnlyDictionary<MsgBoxResult, Button> _resultToButtonsDictionary;
+
+    /// <summary> A backing field for property <see cref="EmphasizeCells"/>. </summary>
+    private bool _emphasizeCells;
+
+    #endregion // Private Fields
 
     #region Constructor(s)
 
     /// <summary>
     /// Default argument-less constructor
     /// </summary>
-    public MsgBoxYesNoAllLP()
+    public MsgBoxYesNoAllPanelBased()
     {
         InitializeComponent();
 
@@ -99,20 +122,23 @@ public partial class MsgBoxYesNoAllLP : Form
         _initPanelSize = this._TableLayoutPanel.Size;
     }
 
-    /// <summary> Public constructor. </summary>
-    ///
-    /// <param name="buttonTexts">  Button texts provided by caller; may be null. 
-    ///  If this argument is not null, text of individual buttons matching the given key
-    ///  will be changed to provided value.</param>
-    public MsgBoxYesNoAllLP(IReadOnlyDictionary<MsgBoxResult, string> buttonTexts)
-      : this()
+    /// <summary>   Public constructor. </summary>
+    /// <param name="buttonTexts"> Button texts provided by caller; may be null. If this argument is not null,
+    /// text of individual buttons matching the given key will be changed to provided value. </param>
+    /// <param name="emphasizeCells"> (Optional) A backing field for property <see cref="EmphasizeCells"/>. </param>
+    public MsgBoxYesNoAllPanelBased(
+        IReadOnlyDictionary<MsgBoxResult, string> buttonTexts,
+        bool emphasizeCells = false)
+        : this()
     {
         _buttonTexts = buttonTexts;
+        _emphasizeCells = emphasizeCells;
         UpdateButtonsTexts();
         UpdateButtonsVisibility();
     }
     #endregion // Constructor(s)
 
+    #region Properties
     #region Public Properties
 
     /// <summary>
@@ -136,139 +162,27 @@ public partial class MsgBoxYesNoAllLP : Form
     /// <summary> Gets or sets the standard icon displayed in the PictureBox. </summary>
     public MessageBoxIcon StandardIcon
     {
-        get { return _StandardIcon; }
+        get { return _standardIcon; }
         set
         {
             if (StandardIcon != value)
             {
-                _StandardIcon = value;
+                _standardIcon = value;
                 UpdateIconImage();
                 UpdateSize(true);
             }
         }
     }
 
-    /// <summary>
-    /// The result of most recent ShowDialog or ShowDialogEx call.
-    /// </summary>
-    public MsgBoxResult Result
-    {
-        get { return this._Result; }
-    }
-    #endregion // Public Properties
+    /// <summary> The result of most recent ShowDialog or ShowDialogEx call. </summary>
+    public MsgBoxResult Result { get => this._result; }
 
-    #region Public Methods
-    /// <summary>
-    /// A helper method calling ShowDialog internally.  You should call this method instead of ShowDialog, 
-    /// to get <see cref="MsgBoxResult "/> instead of DialogResult.
-    /// </summary>
-    ///
-    /// <param name="owner"> Any object that implements IWin32Window that represents the top-level window 
-    ///                       that will own the modal dialog box. May be null. </param>
-    /// <returns> A MsgBoxResult reflecting the button clicked. </returns>
-    public MsgBoxResult ShowDialogEx(IWin32Window owner)
-    {
-        _Result = MsgBoxResult.Cancel;
-
-        ShowDialog(owner);
-        return Result;
-    }
-    /// <summary>
-    /// A helper method calling ShowDialog internally.  You should call this method instead of ShowDialog, to get
-    /// <see cref="MsgBoxResult"/> instead of   <see cref="DialogResult"/>
-    /// </summary>
-    /// 
-    /// <param name="owner"> Any object that implements IWin32Window that represents the top-level window 
-    ///                       that will own the modal dialog box. May be null. </param>
-    /// <param name="mainInstruction">  The main instruction. </param>
-    /// <param name="content">         A string that specifies the content to display ( below the main
-    /// instruction).  
-    /// The value will be assigned to  <see cref="ContentText"/> property. </param>
-    /// <param name="caption">          A string that specifies the title bar caption to display. </param>
-    /// <param name="icon">             The icon. </param>
-    ///
-    /// <returns> A MsgBoxResult reflecting the used button clicked. </returns>
-    public MsgBoxResult ShowDialogEx(
-      IWin32Window owner,
-      string mainInstruction,
-      string content,
-      string caption,
-      MessageBoxIcon icon)
-    {
-        this.StandardIcon = icon;
-        this.MainInstructionText = mainInstruction;
-        this.ContentText = content;
-        this.Text = caption;
-
-        return ShowDialogEx(owner);
-    }
-    #endregion // Public Methods
-    #endregion // Public Interface
-
-    #region Protected Interface
-
-    /// <summary>
-    /// Should be table cell emphasized
-    /// </summary>
+    /// <summary> Should be table cell emphasized. </summary>
     protected bool EmphasizeCells
     {
-        get { return _EmphasizeCells; }
+        get { return _emphasizeCells; }
     }
-
-    /// <summary> Updates the cell emphasize properties. </summary>
-    ///
-    /// <param name="updateSize"> true to consequently update size. </param>
-    protected void UpdateCellEmphasizeProperties(bool updateSize)
-    {
-        if (EmphasizeCells)
-        {
-            this._lblContent.BackColor = System.Drawing.Color.PaleTurquoise;
-            this._lblMainInstruction.BackColor = System.Drawing.Color.Ivory;
-            this._TableLayoutPanel.CellBorderStyle = System.Windows.Forms.TableLayoutPanelCellBorderStyle.Outset;
-        }
-        else
-        {
-            this._lblContent.BackColor = System.Drawing.SystemColors.Control;
-            this._lblMainInstruction.BackColor = System.Drawing.SystemColors.Control;
-            this._TableLayoutPanel.CellBorderStyle = System.Windows.Forms.TableLayoutPanelCellBorderStyle.None;
-        }
-        if (updateSize)
-        {
-            UpdateSize(false);
-        }
-    }
-
-    /// <summary> Overrides the virtual method of the base class, 
-    /// which raises the <see cref="E:System.Windows.Forms.Form.Load" /> event. 
-    /// Performs additional initialization for which calling int from constructor is either too early,
-    /// or if we need to guarantee it is called each time the ShowDialog is called ( if reusing the instance 
-    /// of Form for multiple ShowDialog calls).
-    /// </summary>
-    ///
-    /// <param name="args"> An <see cref="EventArgs" /> that contains the event data. </param>
-    protected override void OnLoad(EventArgs args)
-    {
-        base.OnLoad(args);
-
-        DialogResult = DialogResult.None;
-        _Result = MsgBoxResult.Cancel;
-
-        if (_lastLocation != null)
-            this.Location = _lastLocation.Value;
-        UpdateCellEmphasizeProperties(false);
-        UpdateSize(true);
-    }
-
-    /// <summary> Raises the <see cref="Form.Closing" /> event. </summary>
-    /// <param name="args"> A <see cref="System.ComponentModel.CancelEventArgs" /> that contains the event data. </param>
-    protected override void OnClosing(CancelEventArgs args)
-    {
-        base.OnClosing(args);
-        _lastLocation = this.Location;
-    }
-    #endregion // Protected Interface
-
-    #region Private Members
+    #endregion // Public Properties
 
     #region Private Properties
 
@@ -302,6 +216,110 @@ public partial class MsgBoxYesNoAllLP : Form
         }
     }
     #endregion // Private Properties
+    #endregion // Properties
+
+    #region Methods
+    #region Public Methods
+
+    /// <summary>
+    /// A helper method calling ShowDialog internally.  You should call this method instead of ShowDialog, 
+    /// to get <see cref="MsgBoxResult "/> instead of DialogResult.
+    /// </summary>
+    ///
+    /// <param name="owner"> Any object that implements IWin32Window that represents the top-level window 
+    ///                       that will own the modal dialog box. May be null. </param>
+    /// <returns> A MsgBoxResult reflecting the button clicked. </returns>
+    public MsgBoxResult ShowDialogEx(IWin32Window owner)
+    {
+        _result = MsgBoxResult.Cancel;
+
+        ShowDialog(owner);
+        return Result;
+    }
+    /// <summary>
+    /// A helper method calling ShowDialog internally.  You should call this method instead of ShowDialog, to get
+    /// <see cref="MsgBoxResult"/> instead of   <see cref="DialogResult"/>
+    /// </summary>
+    /// 
+    /// <param name="owner"> Any object that implements IWin32Window that represents the top-level window 
+    ///                       that will own the modal dialog box. May be null. </param>
+    /// <param name="mainInstruction">  The main instruction. </param>
+    /// <param name="content">         A string that specifies the content to display ( below the main
+    /// instruction).  
+    /// The value will be assigned to  <see cref="ContentText"/> property. </param>
+    /// <param name="caption">          A string that specifies the title bar caption to display. </param>
+    /// <param name="icon">             The icon. </param>
+    ///
+    /// <returns> A MsgBoxResult reflecting the used button clicked. </returns>
+    public MsgBoxResult ShowDialogEx(
+        IWin32Window owner,
+        string mainInstruction,
+        string content,
+        string caption,
+        MessageBoxIcon icon)
+    {
+        this.StandardIcon = icon;
+        this.MainInstructionText = mainInstruction;
+        this.ContentText = content;
+        this.Text = caption;
+
+        return ShowDialogEx(owner);
+    }
+    #endregion // Public Methods
+
+    #region Protected Methods
+
+    /// <summary> Updates the cell emphasize properties. </summary>
+    /// <param name="updateSize"> true to consequently update size. </param>
+    protected virtual void UpdateCellEmphasizeProperties(bool updateSize)
+    {
+        if (EmphasizeCells)
+        {
+            this._lblContent.BackColor = System.Drawing.Color.PaleTurquoise;
+            this._lblMainInstruction.BackColor = System.Drawing.Color.Ivory;
+            this._TableLayoutPanel.CellBorderStyle = System.Windows.Forms.TableLayoutPanelCellBorderStyle.Outset;
+        }
+        else
+        {
+            this._lblContent.BackColor = System.Drawing.SystemColors.Control;
+            this._lblMainInstruction.BackColor = System.Drawing.SystemColors.Control;
+            this._TableLayoutPanel.CellBorderStyle = System.Windows.Forms.TableLayoutPanelCellBorderStyle.None;
+        }
+        if (updateSize)
+        {
+            UpdateSize(false);
+        }
+    }
+
+    /// <summary> Overrides the virtual method of the base class, 
+    /// which raises the <see cref="E:System.Windows.Forms.Form.Load" /> event. 
+    /// Performs additional initialization for which calling int from constructor is either too early,
+    /// or if we need to guarantee it is called each time the ShowDialog is called ( if reusing the instance 
+    /// of Form for multiple ShowDialog calls).
+    /// </summary>
+    ///
+    /// <param name="args"> An <see cref="EventArgs" /> that contains the event data. </param>
+    protected override void OnLoad(EventArgs args)
+    {
+        base.OnLoad(args);
+
+        DialogResult = DialogResult.None;
+        _result = MsgBoxResult.Cancel;
+
+        if (_lastLocation != null)
+            this.Location = _lastLocation.Value;
+        UpdateCellEmphasizeProperties(false);
+        UpdateSize(true);
+    }
+
+    /// <summary> Raises the <see cref="Form.Closing" /> event. </summary>
+    /// <param name="args"> A <see cref="System.ComponentModel.CancelEventArgs" /> that contains the event data. </param>
+    protected override void OnClosing(CancelEventArgs args)
+    {
+        base.OnClosing(args);
+        _lastLocation = this.Location;
+    }
+    #endregion // Protected Methods
 
     #region Private Methods
 
@@ -407,7 +425,8 @@ public partial class MsgBoxYesNoAllLP : Form
             cs.Width = _prevWidth;
         }
     }
-    #endregion //   Private Methods
+    #endregion // Private Methods
+    #endregion // Methods
 
     #region Event Handlers
 
@@ -422,7 +441,7 @@ public partial class MsgBoxYesNoAllLP : Form
 
     private void MsgBoxYesNoAllLP_DoubleClick(object sender, EventArgs args)
     {
-        _EmphasizeCells = !EmphasizeCells;
+        _emphasizeCells = !EmphasizeCells;
         UpdateCellEmphasizeProperties(true);
     }
 
@@ -437,42 +456,7 @@ public partial class MsgBoxYesNoAllLP : Form
         Debug.Assert(btn.DialogResult == DialogResult.Yes || btn.DialogResult == DialogResult.No
           || btn.DialogResult == DialogResult.Cancel);
         this.DialogResult = btn.DialogResult;
-        this._Result = ResultToButtonsDict.First(pair => pair.Value == btn).Key;
+        this._result = ResultToButtonsDict.First(pair => pair.Value == btn).Key;
     }
     #endregion // Event Handlers
-
-    #region Private Fields
-
-    /// <summary> The initial size ( cached value retrieved in constructor). </summary>
-    private readonly Size _initSize;
-
-    /// <summary> The initial size of panel ( cached value retrieved in constructor). </summary>
-    private readonly Size _initPanelSize;
-
-    /// <summary> The last location of form. </summary>
-    private Nullable<Point> _lastLocation;
-
-    /// <summary> The backup field for size type of column containing the icon. </summary>
-    private Nullable<SizeType> _prevSizeType;
-
-    /// <summary> The backup field for width of column containing the icon. </summary>
-    private float _prevWidth;
-
-    /// <summary> A backing field of property <see cref="ButtonTextsSpecified"/>.</summary>
-    private readonly IEnumerable<KeyValuePair<MsgBoxResult, string>> _buttonTexts;
-
-    /// <summary> The backing field of property <see cref="Result"/>. </summary> 
-    private MsgBoxResult _Result = MsgBoxResult.Cancel;
-
-    /// <summary> The backing field for property <see cref="StandardIcon"/>. </summary>
-    private MessageBoxIcon _StandardIcon = MessageBoxIcon.None;
-
-    /// <summary> A backing field for property <see cref="ResultToButtonsDict"/>. </summary>
-    private IReadOnlyDictionary<MsgBoxResult, Button> _resultToButtonsDictionary;
-
-    /// <summary> A backing field for property <see cref="EmphasizeCells"/>. </summary>
-    private bool _EmphasizeCells = true;
-
-    #endregion // Private Fields
-    #endregion // Private Members
 }
