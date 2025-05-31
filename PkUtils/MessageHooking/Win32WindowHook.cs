@@ -15,6 +15,7 @@
 // Ignore Spelling: Utils
 //
 using System;
+using System.Runtime.CompilerServices;
 using System.Windows.Forms;
 using PK.PkUtils.WinApi;
 
@@ -34,9 +35,8 @@ namespace PK.PkUtils.MessageHooking;
 public class Win32WindowHook : WindowMessageHook
 {
     #region Fields
-    /// <summary>
-    /// The interface of IWin32Window window hooked
-    /// </summary>
+
+    /// <summary> The interface of IWin32Window window hooked. </summary>
     private IWin32Window _hookedIWin32;
     #endregion // Fields
 
@@ -62,10 +62,7 @@ public class Win32WindowHook : WindowMessageHook
     /// <summary>
     /// Returns the hooked window interface (if any), or null.
     /// </summary>
-    public IWin32Window HookedWindow
-    {
-        get { return _hookedIWin32; }
-    }
+    public IWin32Window HookedWindow { get => _hookedIWin32; }
     #endregion // Properties
 
     #region Public Methods
@@ -80,13 +77,13 @@ public class Win32WindowHook : WindowMessageHook
     /// <returns>   True on success, false on failure. </returns>
     public virtual bool HookWindow(IWin32Window win32Window)
     {
-        bool bWasHooked = IsHooked;
+        bool wasHooked = IsHooked;
         bool result;
 
         if (win32Window != null)
         {   // the caller wants to hook something
             result = base.HookWindow(win32Window.Handle);
-            if (IsHooked && !bWasHooked)
+            if (IsHooked && !wasHooked)
             {   // update the member variable
                 _hookedIWin32 = win32Window;
                 OnHookup(HookedWindow);
@@ -95,7 +92,7 @@ public class Win32WindowHook : WindowMessageHook
         else
         {   // the caller wants to unhook 
             result = base.HookWindow(IntPtr.Zero);
-            if ((!IsHooked) && bWasHooked)
+            if ((!IsHooked) && wasHooked)
             {   // update the member variable
                 OnUnhook(HookedWindow);
                 _hookedIWin32 = null;
@@ -115,6 +112,7 @@ public class Win32WindowHook : WindowMessageHook
     /// <param name="lParam"> The lParam parameter of windows message. </param>
     ///
     /// <returns> The control Id. </returns>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static ushort xWMCMD_ID(uint wParam, IntPtr lParam)
     {
         return (Win32.LOWORD((int)wParam));
@@ -133,6 +131,7 @@ public class Win32WindowHook : WindowMessageHook
     /// <param name="lParam"> The lParam parameter of windows message. </param>
     ///
     /// <returns> The control-specific notification code. </returns>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static ushort xWMCMD_CMD(uint wParam, IntPtr lParam)
     {
         return (Win32.HIWORD((int)wParam));
@@ -148,7 +147,8 @@ public class Win32WindowHook : WindowMessageHook
     /// <param name="wParam"> The wParam parameter of windows message. </param>
     /// <param name="lParam"> The lParam parameter of windows message. </param>
     ///
-    /// <returns> The window control handle . </returns>
+    /// <returns> The window control handle. </returns>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static IntPtr xWMCMD_WND(uint wParam, IntPtr lParam)
     {
         return lParam;
