@@ -184,13 +184,13 @@ public class DumperCtrlWrapper<CTRL> : IDumperEx, IDisposableEx where CTRL : Sys
         get
         {
             CTRL ctrlTarget;
-            bool bRes = false;
+            bool result = false;
 
             if ((!this.IsDisposed) && (null != (ctrlTarget = WrappedControl)))
             {
-                bRes = ctrlTarget.InvokeRequired;
+                result = ctrlTarget.InvokeRequired;
             }
-            return bRes;
+            return result;
         }
     }
 
@@ -203,6 +203,9 @@ public class DumperCtrlWrapper<CTRL> : IDumperEx, IDisposableEx where CTRL : Sys
     /// If true,  the method PreprocessAddedText will be called upon adding the new item.
     /// </summary>
     protected bool ShouldPreprocessItems { get => _shouldPreprocessItems; }
+
+    /// <summary>   Gets a value indicating whether this object has added text before. </summary>
+    protected bool HasAddedTextBefore { get => _hasAddedTextBefore; }
 
     #endregion // Properties
 
@@ -277,7 +280,7 @@ public class DumperCtrlWrapper<CTRL> : IDumperEx, IDisposableEx where CTRL : Sys
             if (isControlOk)
             {
                 // Either first time or history rollover → rebuild full content
-                if (!_hasAddedTextBefore || historyFull)
+                if (!HasAddedTextBefore || historyFull)
                 {
                     sbCompletelyNewContents = RebuildHistoryText();
                 }
@@ -352,7 +355,7 @@ public class DumperCtrlWrapper<CTRL> : IDumperEx, IDisposableEx where CTRL : Sys
     {
         ArgumentNullException.ThrowIfNull(entry);
 
-        bool bRes = false;
+        bool result = false;
         CTRL ctrl = WrappedControl;
 
         if (null != ctrl)
@@ -360,16 +363,16 @@ public class DumperCtrlWrapper<CTRL> : IDumperEx, IDisposableEx where CTRL : Sys
             if (ctrl.InvokeRequired)
             {
                 ctrl.BeginInvoke(DumpEntry, entry);
-                bRes = true;
+                result = true;
             }
             else
             {
                 AddTextResult addRes = this.AddText(entry);
-                bRes = (addRes != AddTextResult.AddNone);
+                result = (addRes != AddTextResult.AddNone);
             }
         }
 
-        return bRes;
+        return result;
     }
 
     /// <summary>  Flushes the history to control. </summary>
@@ -474,10 +477,10 @@ public class DumperCtrlWrapper<CTRL> : IDumperEx, IDisposableEx where CTRL : Sys
     public bool Reset()
     {
         CTRL ctrl;
-        bool bRes;
+        bool result;
 
         this.CheckNotDisposed();
-        if (bRes = ((null != (ctrl = WrappedControl)) && ctrl.IsHandleCreated))
+        if (result = ((null != (ctrl = WrappedControl)) && ctrl.IsHandleCreated))
         {
             if (ctrl.InvokeRequired)
             {
@@ -488,7 +491,7 @@ public class DumperCtrlWrapper<CTRL> : IDumperEx, IDisposableEx where CTRL : Sys
                 this.ClearTextHistory();
             }
         }
-        return bRes;
+        return result;
     }
     #endregion // IDumper Members
 

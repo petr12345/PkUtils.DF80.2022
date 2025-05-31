@@ -224,7 +224,6 @@ public class FilePathHelperTest
     /// </summary>
     [TestMethod]
     [DataRow(@"\", true)]
-    [DataRow(@"\", true)]
     [DataRow(@"/", true)]
     [DataRow(@"c:\", true)]
     [DataRow(@"c:/", true)]

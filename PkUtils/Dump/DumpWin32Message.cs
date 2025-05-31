@@ -10,7 +10,6 @@ using static System.FormattableString;
 namespace PK.PkUtils.Dump;
 
 /// <summary> A static utility to dump window32 messages to text. </summary>
-[CLSCompliant(true)]
 public static class DumpWin32Message
 {
     /// <summary> Converts a window message number to a human-readable hexa string. </summary>
