@@ -1,0 +1,1026 @@
+<!DOCTYPE html>
+<html>
+
+
+
+<head>
+    
+    
+    <title>.net - How to select different app.config for several build configurations - Stack Overflow</title>
+    <link rel="shortcut icon" href="http://cdn.sstatic.net/stackoverflow/img/favicon.ico">
+    <link rel="apple-touch-icon" href="http://cdn.sstatic.net/stackoverflow/img/apple-touch-icon.png">
+    <link rel="search" type="application/opensearchdescription+xml" title="Stack Overflow" href="/opensearch.xml">
+
+    
+    <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
+    <script type="text/javascript" src="http://cdn.sstatic.net/js/stub.js?v=c014461b9109"></script>
+    <link rel="stylesheet" type="text/css" href="http://cdn.sstatic.net/stackoverflow/all.css?v=6fc726be6344">
+    
+    <link rel="canonical" href="http://stackoverflow.com/questions/8082662/how-to-select-different-app-config-for-several-build-configurations">
+    <link rel="alternate" type="application/atom+xml" title="Feed for question 'How to select different app.config for several build configurations'" href="/feeds/question/8082662">
+    <meta name="title" content=".net - How to select different app.config for several build configurations - Stack Overflow">
+    <link rel="image_src" href="http://sstatic.net/stackoverflow/img/apple-touch-icon.png">
+    <script type="text/javascript">
+        
+        StackExchange.ready(function () {
+
+            StackExchange.question.init({showAnswerHelp:true,totalCommentCount:0,shownCommentCount:0,highlightColor:'#F4A83D',backgroundColor:'#FFF',questionId:8082662});
+
+            styleCode();
+        });
+    </script>
+
+
+        <script type="text/javascript">
+        StackExchange.init({"stackAuthUrl":"https://stackauth.com","serverTime":1331460006,"styleCode":true,"enableUserHovercards":true,"site":{"name":"Stack Overflow","description":"Q&A for professional and enthusiast programmers"},"user":{"isAnonymous":true,"fkey":"a5ba5956fd814abdddb3d0c48f4ca908","inboxUnviewedCount":-1}});
+        StackExchange.using.setCacheBreakers({"js/prettify-full.js":"4ed9aa4b8d0e","js/moderator.js":"f57f00dcb1ac","js/full-anon.js":"c3d00036fa7e","js/full.js":"44ceac30f05f","js/wmd.js":"9ad7148077d1","js/third-party/jquery.autocomplete.min.js":"e5f01e97f7c3","js/mobile.js":"9e820382dd06","js/help.js":"fc9fb0517db2","js/tageditor.js":"c1ba807b32aa","js/tageditornew.js":"ab523171ddc9","js/inline-tag-editing.js":"be882e188985","js/revisions.js":"8c6bcd93b7fe","js/suggested-edits.js":"92144b1c12be","js/probes.js":"beb933322ff0"});
+        
+    </script>
+
+</head>
+<body class="question-page">
+    <noscript><div id="noscript-padding"></div></noscript>
+    <div id="notify-container"></div>
+    <div id="overlay-header"></div>
+    <div id="custom-header"></div>
+
+    <div class="container">
+        <div id="header">
+            <div id="portalLink">
+                <a class="genu" href="http://stackexchange.com" onclick="StackExchange.ready(function(){genuwine.click();});return false;">Stack Exchange</a>
+            </div>
+            <div id="topbar">
+                <div id="hlinks">
+                    <span id="hlinks-user">
+                  
+                  </span>
+                  <span id="hlinks-nav">
+                  <a href="/users/login?returnurl=%2fquestions%2f8082662%2fhow-to-select-different-app-config-for-several-build-configurations">log in</a>
+ <span class="lsep">|</span>
+<a href="http://careers.stackoverflow.com">careers</a>
+ <span class="lsep">|</span>
+
+                  </span>
+                  <span id="hlinks-custom">
+                  <a href="http://chat.stackoverflow.com">chat</a>
+ <span class="lsep">|</span>
+<a href="http://meta.stackoverflow.com">meta</a>
+ <span class="lsep">|</span>
+<a href="/about">about</a>
+ <span class="lsep">|</span>
+<a href="/faq">faq</a>
+                  </span>
+                </div>
+                <div id="hsearch">
+                    <form id="search" action="/search" method="get" autocomplete="off">
+                    <div>
+                        <input autocomplete="off" name="q" class="textbox" placeholder="search" tabindex="1" type="text" maxlength="140" size="28" value="">
+                    </div>
+                    </form>
+                </div>
+            </div>
+            <br class="cbt">
+            <div id="hlogo">
+                <a href="/" >Stack Overflow</a>
+            </div>
+            <div id="hmenus">
+                <div class="nav mainnavs">
+                    <ul>
+                        <li class="youarehere"><a id="nav-questions" href="/questions">Questions</a></li>
+                        <li><a id="nav-tags" href="/tags">Tags</a></li>
+                        <li><a id="nav-users" href="/users">Users</a></li>
+                        <li><a id="nav-badges" href="/badges">Badges</a></li>
+                        <li><a id="nav-unanswered" href="/unanswered">Unanswered</a></li>
+                    </ul>
+                </div>
+                <div class="nav askquestion">
+                    <ul>
+                        <li>
+                            <a id="nav-askquestion"  href="/questions/ask">Ask Question</a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        
+
+
+        <div id="content">
+            
+            
+
+
+<div itemscope itemtype="http://schema.org/Article">
+<link itemprop="image" href="http://cdn.sstatic.net/stackoverflow/img/apple-touch-icon.png">
+<div id="question-header">
+    <h1 itemprop="name"><a href="/questions/8082662/how-to-select-different-app-config-for-several-build-configurations" class="question-hyperlink">How to select different app.config for several build configurations</a></h1>
+</div>
+<div id="mainbar">
+
+
+<div class="question" id="question" data-questionid="8082662">
+
+    <div class="everyonelovesstackoverflow" id="adzerk1">
+    </div>
+
+    
+    <table>
+    <tr>
+    <td class="votecell">
+        
+
+<div class="vote">
+    <input type="hidden" value="8082662">
+    <a class="vote-up-off" title="This question shows research effort; it is useful and clear (click again to undo)">up vote</a>
+    <span class="vote-count-post">2</span>
+    <a class="vote-down-off" title="This question does not show any research effort; it is unclear or not useful (click again to undo)">down vote</a>
+    <a class="star-off" href="#" title="This is a favorite question (click again to undo)">favorite</a>
+    <div class="favoritecount"><b></b></div>   
+ 
+    <script type="text/javascript">
+        StackExchange.ready(function () {
+            var shareUrl = 'http%3a%2f%2fstackoverflow.com%2fq%2f8082662';
+            var shareMsg = 'How+to+select+different+app.config+for+several+build+configurations';
+            
+            StackExchange.share.gplus($('#gp-share-8082662'), shareUrl, shareMsg) ;
+            StackExchange.share.facebook($('#fb-share-8082662'), shareUrl, shareMsg);
+            StackExchange.share.twitter($('#twitter-share-8082662'), shareUrl, shareMsg);
+        });
+    </script>
+    <a id="gp-share-8082662" class="gp-share" title="share link to this question on Google+">share [g+]</a>
+    <a id="fb-share-8082662" class="fb-share" title="share link to this question on Facebook">share [fb]</a>
+    <a id="twitter-share-8082662" class="twitter-share" title="share link to this question on Twitter">share [tw]</a>    
+</div>
+
+    </td>
+<td class="postcell">
+<div>          
+    <div class="post-text" itemprop="description">
+        <p>I have a dll type project that contains MSTest integration tests. On my machine the tests pass, and I want the same to happen on a CI server (I use TeamCity). But the tests fail, because I need to tweak some settings in app.config. This is why I was thinking to have a separate second app.config file that will hold the settings for CI server.</p>
+
+<p>So I would like to have</p>
+
+<pre>
+/Sln
+ /Proj
+  app.config (I think this is required by VS)
+  app.Release.config (This is a standalone independent config file)
+</pre>
+
+<p>Thus if I select Release configuration in build config on CI, I would like to use app.Release.config file instead of app.config</p>
+
+<p>But this doesn't seem to be straightforward for simple .dll type projects. For web projects, I can do web config transformations. I found a hack how to do these transformations for a dll type project, but I am not a big fan of hacks.</p>
+
+<p><strong>Q:</strong> What is a standard approach to fully change app.config files depending on build config for .NET projects (such as Debug, Release, ...)?</p>
+
+    </div>            
+    <div class="post-taglist">
+        <a href="/questions/tagged/.net" class="post-tag" title="show questions tagged '.net'" rel="tag">.net</a> <a href="/questions/tagged/visual-studio" class="post-tag" title="show questions tagged 'visual-studio'" rel="tag">visual-studio</a> <a href="/questions/tagged/configuration" class="post-tag" title="show questions tagged 'configuration'" rel="tag">configuration</a> <a href="/questions/tagged/continuous-integration" class="post-tag" title="show questions tagged 'continuous-integration'" rel="tag">continuous-integration</a> <a href="/questions/tagged/release-management" class="post-tag" title="show questions tagged 'release-management'" rel="tag">release-management</a> 
+    </div>
+    <table class="fw">
+    <tr>
+    <td class="vt">
+        <div class="post-menu"><a href="/q/8082662" title="short permalink to this question" id="link-post-8082662">link</a><span class="lsep">|</span><a href="/posts/8082662/edit" >improve this question</a></div>
+    </td>
+    <td align="right" class="post-signature">
+<div class="user-info"><div class="user-action-time">edited <a href="/posts/8082662/revisions" title="show all edits to this post"><span title="2011-11-10 16:23:20Z" class="relativetime">Nov 10 '11 at 16:23</span></a></div><div class="user-gravatar32"></div><div class="user-details"><br></div></div>    </td>
+    <td class="post-signature owner">
+    <div class="user-info"><div class="user-action-time">asked <span title="2011-11-10 16:17:28Z" class="relativetime">Nov 10 '11 at 16:17</span></div><div class="user-gravatar32"><a href="/users/706456/oleksii"><div class=""><img src="http://www.gravatar.com/avatar/8440c1cc847e9fd1e0272853724e6060?s=32&amp;d=identicon&amp;r=PG" alt="" width="32" height="32"></div></a></div><div class="user-details"><a href="/users/706456/oleksii">oleksii</a><br><span class="reputation-score" title="reputation score" dir="ltr">4,535</span><span title="1 gold badge"><span class="badge1"></span><span class="badgecount">1</span></span><span title="5 silver badges"><span class="badge2"></span><span class="badgecount">5</span></span><span title="21 bronze badges"><span class="badge3"></span><span class="badgecount">21</span></span></div></div>
+        <br class="cbt">
+        <div class="accept-rate accept-answer-link" title="this user has accepted an answer for 30 of 31 eligible questions">97% accept rate</div>
+    </td>
+    </tr>
+    </table>
+</div>
+</td>    </tr>
+
+
+<tr>
+<td class="votecell"></td>
+<td>
+    <div id="comments-8082662" class="comments dno">
+        <table>
+        <tbody>
+        
+            <tr><td></td><td></td></tr>
+        
+        </tbody>
+    
+        </table>
+    </div>
+    
+    
+    <div class="was-this-helpful">
+        feedback
+    </div>
+    
+</td>
+</tr>    </table>    
+</div>
+
+
+
+<div id="answers">
+
+    <a name="tab-top"></a>
+    <div id="answers-header">
+        <div class="subheader answers-subheader">
+            <h2>4 Answers</h2>
+            <div id="tabs">
+                <a href="/questions/8082662/how-to-select-different-app-config-for-several-build-configurations?answertab=active#tab-top" title="Answers with the latest activity first">active</a>
+<a href="/questions/8082662/how-to-select-different-app-config-for-several-build-configurations?answertab=oldest#tab-top" title="Answers in the order they were provided">oldest</a>
+<a class="youarehere" href="/questions/8082662/how-to-select-different-app-config-for-several-build-configurations?answertab=votes#tab-top" title="Answers with the highest score first">votes</a>
+
+            </div>
+        </div>    
+    </div>    
+
+
+  
+    <a name="8082937"></a>
+    <div id="answer-8082937" class="answer"  data-answerid="8082937">
+        <table>
+        <tr>
+        <td class="votecell">
+            
+
+<div class="vote">
+    <input type="hidden" value="8082937">
+    <a class="vote-up-off" title="This answer is useful (click again to undo)">up vote</a>
+    <span class="vote-count-post">2</span>
+    <a class="vote-down-off" title="This answer is not useful (click again to undo)">down vote</a>
+ 
+</div>
+
+        </td>
+
+
+<td class="answercell">
+    <div class="post-text"><p>You should consider <a href="http://configgen.codeplex.com/" rel="nofollow">ConfigGen</a>. It was developed for this purpose. It produces a config file for each deployment machine, based on a template file and a settings file. I know that this doesn't answer your question specifically, but it might well answer your problem.</p>
+
+<p>So rather than Debug, Release etc, you might have Test, UAT, Production etc. You can also have different settings for each developer machine, so that you can generate a config specific to your dev machine and change it without affecting any one else's deployment.</p>
+
+<p>An example of usage might be...</p>
+
+<pre><code>&lt;Target Name="BeforeBuild"&gt;
+    &lt;Exec Command="C:\Tools\cfg -s $(ProjectDir)App.Config.Settings.xls -t       
+        $(ProjectDir)App.config.template.xml -o $(SolutionDir)ConfigGen" /&gt;
+
+    &lt;Exec Command="C:\Tools\cfg -s $(ProjectDir)App.Config.Settings.xls -t
+        $(ProjectDir)App.config.template.xml -l -n $(ProjectDir)App.config" /&gt;
+&lt;/Target&gt;
+</code></pre>
+
+<p>If you place this in your .csproj file, and you have the following files...</p>
+
+<pre><code>$(ProjectDir)App.Config.Settings.xls
+
+MachineName        ConfigFilePath   SQLServer        
+
+default             App.config      DEVSQL005
+Test                App.config      TESTSQL005
+UAT                 App.config      UATSQL005
+Production          App.config      PRODSQL005
+YourLocalMachine    App.config      ./SQLEXPRESS
+
+
+$(ProjectDir)App.config.template.xml 
+
+&lt;?xml version="1.0" encoding="utf-8" standalone="yes"?&gt;
+   &lt;configuration&gt;
+   &lt;appSettings&gt;
+       &lt;add key="ConnectionString" value="Data Source=[%SQLServer%]; 
+           Database=DatabaseName; Trusted_Connection=True"/&gt;
+   &lt;/appSettings&gt;
+&lt;/configuration&gt;
+</code></pre>
+
+<p>... then this will be the result...</p>
+
+<p>From the first command, a config file generated for each environment specified in the xls file, placed in the output directory $(SolutionDir)ConfigGen</p>
+
+<pre><code>.../solutiondir/ConfigGen/Production/App.config
+
+&lt;?xml version="1.0" encoding="utf-8" standalone="yes"?&gt;
+   &lt;configuration&gt;
+   &lt;appSettings&gt;
+       &lt;add key="ConnectionString" value="Data Source=PRODSQL005; 
+           Database=DatabaseName; Trusted_Connection=True"/&gt;
+   &lt;/appSettings&gt;
+&lt;/configuration&gt;
+</code></pre>
+
+<p>From the second command, the local App.config used on your dev machine will be replaced with the generated config specified by the local (-l) switch and the filename (-n) switch.</p>
+</div>
+    <table class="fw">
+    <tr>
+    <td class="vt">
+<div class="post-menu"><a href="/a/8082937" title="short permalink to this answer" id="link-post-8082937">link</a><span class="lsep">|</span><a href="/posts/8082937/edit" >improve this answer</a></div>    </td>
+    <td align="right" class="post-signature">
+<div class="user-info"><div class="user-action-time">edited <a href="/posts/8082937/revisions" title="show all edits to this post"><span title="2011-11-10 16:53:55Z" class="relativetime">Nov 10 '11 at 16:53</span></a></div><div class="user-gravatar32"></div><div class="user-details"><br></div></div>    </td>
+            
+
+    <td align="right" class="post-signature">   
+       
+
+    <div class="user-info user-hover"><div class="user-action-time">answered <span title="2011-11-10 16:33:53Z" class="relativetime">Nov 10 '11 at 16:33</span></div><div class="user-gravatar32"><a href="/users/230428/daniel-dyson"><div class=""><img src="http://www.gravatar.com/avatar/98c1075e0fb4e710ff63a2f0d0b6b31d?s=32&amp;d=identicon&amp;r=PG" alt="" width="32" height="32"></div></a></div><div class="user-details"><a href="/users/230428/daniel-dyson">Daniel Dyson</a><br><span class="reputation-score" title="reputation score" dir="ltr">7,452</span><span title="3 gold badges"><span class="badge1"></span><span class="badgecount">3</span></span><span title="5 silver badges"><span class="badge2"></span><span class="badgecount">5</span></span><span title="27 bronze badges"><span class="badge3"></span><span class="badgecount">27</span></span></div></div>
+    </td>
+    </tr>
+    </table>
+</td>        </tr>
+
+
+<tr>
+<td class="votecell"></td>
+<td>
+    <div id="comments-8082937" class="comments">
+        <table>
+        <tbody>
+                    
+    <tr id="comment-9909966" class="comment">
+        <td></td>
+        <td class="comment-text"><div><span class="comment-copy">Tnx for the answer, this looks not bad. But there are some drawbacks, it shows only 75 downloads (thus it&#39;s not mature) and it works with .xls or .xlsx only. I don&#39;t really want to depend on yet another custom document format for simple operations. I was looking for a more standard approach...</span> &ndash;&nbsp;<a href="/users/706456/oleksii" title="4535 reputation" class="comment-user owner">oleksii</a> <span class="comment-date" dir="ltr"><span title="2011-11-10 19:51:37Z">Nov 10 '11 at 19:51</span></span></div></td>
+    </tr>
+            
+    <tr id="comment-9912429" class="comment">
+        <td class="comment-actions"><table><tbody><tr>
+<td class="comment-score">
+<span title="number of 'great comment' votes received" class="cool">1</span>
+</td>
+<td>
+&nbsp;
+</td></tr>
+</tbody></table></td>
+        <td class="comment-text"><div><span class="comment-copy">Fair point, although it says 194 downloads on CodePlex, xls is a spreadsheet, hardly a custom format, and I know of three Major Investment Banks that have approved this for use, so if it is good enough for them...  Also, one of the features currently requested is to use xml for the settings. It is nearly ready, but I prefer the spreadsheet approach anyway. It is much easier to see every setting for every environment in a tabular view</span> &ndash;&nbsp;<a href="/users/230428/daniel-dyson" title="7452 reputation" class="comment-user">Daniel Dyson</a> <span class="comment-date" dir="ltr"><span title="2011-11-10 22:17:50Z">Nov 10 '11 at 22:17</span></span><span class="edited-yes" title="this comment was edited"></span></div></td>
+    </tr>
+
+        </tbody>
+    
+        </table>
+    </div>
+    
+    
+    <div class="was-this-helpful">
+        feedback
+    </div>
+    
+</td>
+</tr>    </table>
+</div>
+
+    <div class="everyonelovesstackoverflow" id="adzerk3">
+    </div>
+
+    
+  
+    <a name="8083060"></a>
+    <div id="answer-8083060" class="answer"  data-answerid="8083060">
+        <table>
+        <tr>
+        <td class="votecell">
+            
+
+<div class="vote">
+    <input type="hidden" value="8083060">
+    <a class="vote-up-off" title="This answer is useful (click again to undo)">up vote</a>
+    <span class="vote-count-post">0</span>
+    <a class="vote-down-off" title="This answer is not useful (click again to undo)">down vote</a>
+ 
+</div>
+
+        </td>
+
+
+<td class="answercell">
+    <div class="post-text"><p>You can try the following approach:</p>
+
+<ol>
+<li>Right-click on the project in Solution Explorer and select <strong>Unload Project</strong>.</li>
+<li>The project will be unloaded. Right-click on the project again and select <strong>Edit &lt;YourProjectName&gt;.csproj</strong>.</li>
+<li>Now you can edit the project file inside Visual Studio.</li>
+<li>Locate the place in *.csproj file where your application configuration file is included. It will look like:</li>
+</ol>
+
+<pre>
+    &lt;ItemGroup&gt;
+        &lt;None Include="App.config"/&gt;
+    &lt;/ItemGroup&gt;
+</pre>
+
+<ol>
+<li>Replace this lines with following:</li>
+</ol>
+
+<pre>
+    &lt;ItemGroup Condition=" '$(Configuration)' == 'Debug' "&gt;
+        &lt;None Include="App.Debug.config"/&gt;
+    &lt;/ItemGroup&gt;
+
+    &lt;ItemGroup Condition=" '$(Configuration)' == 'Release' "&gt;
+        &lt;None Include="App.Release.config"/&gt;
+    &lt;/ItemGroup&gt;
+</pre>
+
+<p>I have not tried this approach to <code>app.config</code> files, but it worked fine with other items of Visual Studio projects. You can customize the build process in almost any way you like. Anyway, let me know the result.</p>
+</div>
+    <table class="fw">
+    <tr>
+    <td class="vt">
+<div class="post-menu"><a href="/a/8083060" title="short permalink to this answer" id="link-post-8083060">link</a><span class="lsep">|</span><a href="/posts/8083060/edit" >improve this answer</a></div>    </td>
+            
+
+    <td align="right" class="post-signature">   
+       
+
+    <div class="user-info"><div class="user-action-time">answered <span title="2011-11-10 16:41:33Z" class="relativetime">Nov 10 '11 at 16:41</span></div><div class="user-gravatar32"><a href="/users/1015239/romeo"><div class=""><img src="http://www.gravatar.com/avatar/e5e06612ab424ef00e90159226e854f1?s=32&amp;d=identicon&amp;r=PG" alt="" width="32" height="32"></div></a></div><div class="user-details"><a href="/users/1015239/romeo">Romeo</a><br><span class="reputation-score" title="reputation score" dir="ltr">630</span><span title="1 silver badge"><span class="badge2"></span><span class="badgecount">1</span></span><span title="6 bronze badges"><span class="badge3"></span><span class="badgecount">6</span></span></div></div>
+    </td>
+    </tr>
+    </table>
+</td>        </tr>
+
+
+<tr>
+<td class="votecell"></td>
+<td>
+    <div id="comments-8083060" class="comments">
+        <table>
+        <tbody>
+                    
+    <tr id="comment-9911342" class="comment">
+        <td></td>
+        <td class="comment-text"><div><span class="comment-copy">Tnx for the answer, but this doesn&#39;t work with app.config. VS requires a mandatory <code>app.config</code> and is not applying Release config if I use VS build or Teamcity VS sln build runner.</span> &ndash;&nbsp;<a href="/users/706456/oleksii" title="4535 reputation" class="comment-user owner">oleksii</a> <span class="comment-date" dir="ltr"><span title="2011-11-10 21:18:43Z">Nov 10 '11 at 21:18</span></span><span class="edited-yes" title="this comment was edited"></span></div></td>
+    </tr>
+
+        </tbody>
+    
+        </table>
+    </div>
+    
+    
+    <div class="was-this-helpful">
+        feedback
+    </div>
+    
+</td>
+</tr>    </table>
+</div>
+
+  
+    <a name="8090323"></a>
+    <div id="answer-8090323" class="answer"  data-answerid="8090323">
+        <table>
+        <tr>
+        <td class="votecell">
+            
+
+<div class="vote">
+    <input type="hidden" value="8090323">
+    <a class="vote-up-off" title="This answer is useful (click again to undo)">up vote</a>
+    <span class="vote-count-post">0</span>
+    <a class="vote-down-off" title="This answer is not useful (click again to undo)">down vote</a>
+ 
+</div>
+
+        </td>
+
+
+<td class="answercell">
+    <div class="post-text"><p>I'm using <a href="http://xmlpreprocess.codeplex.com/" rel="nofollow">XmlPreprocess tool</a> for config files manipulation. It is using one mapping file for multiple environments(or multiple build targets in your case). You can edit mapping file by Excel. It is very easy to use.</p>
+</div>
+    <table class="fw">
+    <tr>
+    <td class="vt">
+<div class="post-menu"><a href="/a/8090323" title="short permalink to this answer" id="link-post-8090323">link</a><span class="lsep">|</span><a href="/posts/8090323/edit" >improve this answer</a></div>    </td>
+            
+
+    <td align="right" class="post-signature">   
+       
+
+    <div class="user-info user-hover"><div class="user-action-time">answered <span title="2011-11-11 06:10:56Z" class="relativetime">Nov 11 '11 at 6:10</span></div><div class="user-gravatar32"><a href="/users/990170/ludwo"><div class=""><img src="http://www.gravatar.com/avatar/136797e72ab624244d114e193cadd2d8?s=32&amp;d=identicon&amp;r=PG" alt="" width="32" height="32"></div></a></div><div class="user-details"><a href="/users/990170/ludwo">Ludwo</a><br><span class="reputation-score" title="reputation score" dir="ltr">1,578</span><span title="2 silver badges"><span class="badge2"></span><span class="badgecount">2</span></span><span title="12 bronze badges"><span class="badge3"></span><span class="badgecount">12</span></span></div></div>
+    </td>
+    </tr>
+    </table>
+</td>        </tr>
+
+
+<tr>
+<td class="votecell"></td>
+<td>
+    <div id="comments-8090323" class="comments dno">
+        <table>
+        <tbody>
+        
+            <tr><td></td><td></td></tr>
+        
+        </tbody>
+    
+        </table>
+    </div>
+    
+    
+    <div class="was-this-helpful">
+        feedback
+    </div>
+    
+</td>
+</tr>    </table>
+</div>
+
+  
+    <a name="8125657"></a>
+    <div id="answer-8125657" class="answer"  data-answerid="8125657">
+        <table>
+        <tr>
+        <td class="votecell">
+            
+
+<div class="vote">
+    <input type="hidden" value="8125657">
+    <a class="vote-up-off" title="This answer is useful (click again to undo)">up vote</a>
+    <span class="vote-count-post">0</span>
+    <a class="vote-down-off" title="This answer is not useful (click again to undo)">down vote</a>
+<span class="vote-accepted-on" title="The question owner accepted this as the best answer Nov 14 '11 at 17:36">accepted</span> 
+</div>
+
+        </td>
+
+
+<td class="answercell">
+    <div class="post-text"><p>I used a solution provided in <a href="http://icelava.net/forums/thread/2920.aspx" rel="nofollow">this blog</a></p>
+
+<p>Basically it's a custom MSBuild task that I embeded into .proj file.</p>
+
+<pre><code>&lt;Target Name="AfterBuild"&gt;
+    &lt;Delete Files="$(TargetDir)$(TargetFileName).config" /&gt;
+    &lt;Copy SourceFiles="$(ProjectDir)\Config\App.$(Configuration).config"
+          DestinationFiles="$(TargetDir)$(TargetFileName).config" /&gt;
+&lt;/Target&gt;
+</code></pre>
+
+<p>This how my app.config looks like</p>
+
+<pre><code>&lt;?xml version="1.0" encoding="utf-8"?&gt;
+&lt;configuration&gt;
+    &lt;!--This section is updated by the AfterBuild MSBuild task--&gt;
+
+    &lt;!--Depending on the configuration the content of projectName.dll.config is fully 
+        substituted by the correspondent file from the 'Config' directory--&gt;
+
+    &lt;!--This is a sample task--&gt;
+    &lt;!--&lt;Target Name="AfterBuild"&gt;
+        &lt;Delete Files="$(TargetDir)$(TargetFileName).config" /&gt;
+        &lt;Copy SourceFiles="$(ProjectDir)\Config\App.$(Configuration).config"
+              DestinationFiles="$(TargetDir)$(TargetFileName).config" /&gt;
+    &lt;/Target&gt;--&gt;    
+
+&lt;/configuration&gt;
+</code></pre>
+
+<p>And in the project I have the following structure</p>
+
+<p><img src="http://i.stack.imgur.com/uy2sh.png" alt="enter image description here"></p>
+</div>
+    <table class="fw">
+    <tr>
+    <td class="vt">
+<div class="post-menu"><a href="/a/8125657" title="short permalink to this answer" id="link-post-8125657">link</a><span class="lsep">|</span><a href="/posts/8125657/edit" >improve this answer</a></div>    </td>
+            
+
+    <td align="right" class="post-signature owner">   
+       
+
+    <div class="user-info"><div class="user-action-time">answered <span title="2011-11-14 17:36:17Z" class="relativetime">Nov 14 '11 at 17:36</span></div><div class="user-gravatar32"><a href="/users/706456/oleksii"><div class=""><img src="http://www.gravatar.com/avatar/8440c1cc847e9fd1e0272853724e6060?s=32&amp;d=identicon&amp;r=PG" alt="" width="32" height="32"></div></a></div><div class="user-details"><a href="/users/706456/oleksii">oleksii</a><br><span class="reputation-score" title="reputation score" dir="ltr">4,535</span><span title="1 gold badge"><span class="badge1"></span><span class="badgecount">1</span></span><span title="5 silver badges"><span class="badge2"></span><span class="badgecount">5</span></span><span title="21 bronze badges"><span class="badge3"></span><span class="badgecount">21</span></span></div></div>
+    </td>
+    </tr>
+    </table>
+</td>        </tr>
+
+
+<tr>
+<td class="votecell"></td>
+<td>
+    <div id="comments-8125657" class="comments dno">
+        <table>
+        <tbody>
+        
+            <tr><td></td><td></td></tr>
+        
+        </tbody>
+    
+        </table>
+    </div>
+    
+    
+    <div class="was-this-helpful">
+        feedback
+    </div>
+    
+</td>
+</tr>    </table>
+</div>
+    <a name='new-answer'></a>
+    <form id="post-form" action="/questions/8082662/answer/submit" method="post"  class="post-form">
+        <h2 class="space">Your Answer</h2>
+
+<script type="text/javascript">
+    StackExchange.ready(function() {
+    
+        initTagRenderer("".split(" "), "".split(" "));
+
+              
+            prepareEditor({
+                heartbeatType: 'answer',
+                bindNavPrevention: true,
+                postfix: "",
+                onDemand: true
+                ,immediatelyShowMarkdownHelp:true
+            });
+            
+    });  
+</script>
+
+
+<div id="post-editor" class="post-editor">  
+
+    
+    <div class="wmd-container">
+        <div id="wmd-button-bar" class="wmd-button-bar"></div>
+        <textarea id="wmd-input" class="wmd-input" name="post-text" cols="92" rows="15" tabindex="101"></textarea>
+    </div>
+
+    <div class="fl" style="margin-top: 8px; height:24px;">&nbsp;</div>
+    <div id="draft-saved" class="draft-saved community-option fl" style="margin-top: 8px; height:24px; display:none;">draft saved</div>
+
+
+
+    <div id="wmd-preview" class="wmd-preview"></div>
+    <div></div>
+    <div class="edit-block">
+        <input id="fkey" name="fkey" type="hidden" value="a5ba5956fd814abdddb3d0c48f4ca908">
+        <input id="author" name="author" type="text">
+    </div>
+</div>   
+    <div class="form-item">
+        <table>
+        <tr>
+        <td class="vm open-id-login">
+            <a id="login-link" style="font-size: 200%; margin-left: 30px;" href="/users/login?returnurl=%2fquestions%2f8082662%2fhow-to-select-different-app-config-for-several-build-configurations">log in</a>
+            <script type="text/javascript">
+                StackExchange.ready(function () {
+                    StackExchange.helpers.onClickDraftSave('#login-link');
+                });
+            </script>
+        </td>
+
+    
+        <td class="orcell">
+            <div class="orword">or</div>
+            <div class="orline"></div>
+        </td>
+        <td class="vm">
+            <div>
+                <label for="display-name">Name</label>
+                <input id="display-name" name="display-name" type="text" size="30" maxlength="30" value="" tabindex="105">
+            </div>
+            <div>
+                <label for="m-address">Email</label>
+                <input id="m-address" name="m-address" type="text" size="40" maxlength="100" value="" tabindex="106">
+                <span class="edit-field-overlay">required, but never shown</span>
+            </div>
+            <div>
+                <label for="home-page">Home Page</label>
+                <input id="home-page" name="home-page" type="text" size="40" maxlength="200" value="" tabindex="107">
+            </div>
+        </td>
+    
+        </tr>
+        </table>
+    </div>
+               
+        <div class="form-submit cbt"><input id="submit-button" type="submit" value="Post Your Answer" tabindex="110"></div>
+    </form>
+
+
+
+
+        <h2 class="bottom-notice">
+                Not the answer you're looking for? 
+            Browse other questions tagged <a href="/questions/tagged/.net" class="post-tag" title="show questions tagged '.net'" rel="tag">.net</a> <a href="/questions/tagged/visual-studio" class="post-tag" title="show questions tagged 'visual-studio'" rel="tag">visual-studio</a> <a href="/questions/tagged/configuration" class="post-tag" title="show questions tagged 'configuration'" rel="tag">configuration</a> <a href="/questions/tagged/continuous-integration" class="post-tag" title="show questions tagged 'continuous-integration'" rel="tag">continuous-integration</a> <a href="/questions/tagged/release-management" class="post-tag" title="show questions tagged 'release-management'" rel="tag">release-management</a> 
+                or <a href="/questions/ask">ask your own question</a>.
+        </h2>
+</div>
+</div>
+<div id="sidebar">
+
+
+
+    <style type="text/css">
+        .hide-newsletter-loading
+        {
+            visibility: hidden;
+        }
+    </style>
+    <div class="module newuser newuser-greeting hide-newsletter-loading" style="display:none">
+        <h4>Hello World!</h4>
+        <div>
+            <p><p>This is a collaboratively edited question and answer site for <b>professional and enthusiast programmers</b>. It's 100% free, no registration required.</p></p>
+            <p class="ar"><a href="/about?mnu=1">about &raquo;</a>&nbsp;&nbsp;&nbsp;<a href="/faq?mnu=1">faq &raquo;</a>
+            </p>
+        </div>
+
+
+            <script type="text/javascript">
+                StackExchange.ready(function () {
+                    var newUser = $('.newuser-greeting');
+                    if(!StackExchange.options.user.isAnonymous) {
+                        newUser.removeClass('hide-newsletter-loading');
+                        return;
+                    }
+
+                    var continuingSession = window.sessionStorage && window.sessionStorage['targettedNewsletter'];
+
+                    var matches = /:\/\/([^\/]*)/.exec(document.referrer);
+
+                    if (!continuingSession && (!matches || matches.length != 2)) {
+                        newUser.removeClass('hide-newsletter-loading');
+                    } else {
+                        var domain = continuingSession || matches[1];
+
+                        if (continuingSession || $.inArray(domain, ['www.reddit.com','news.ycombinator.com']) > -1) {
+                            $.ajax({
+                                url: '/newsletter/targetted/ajax',
+                                data: { domain: domain },
+                                success: function (data, status, xhr) {
+                                    $('#newsletter-ad').remove();
+                                    newUser.empty().append($(data));
+                                },
+                                complete: function () {
+                                    newUser.attr('class', '').attr('style', '');
+                                }
+                            });
+
+                            if(!continuingSession && window.sessionStorage) {
+                                window.sessionStorage['targettedNewsletter'] = domain + '-continued';
+                            }
+                        } else {
+                            newUser.removeClass('hide-newsletter-loading');
+                        }
+                    }
+                });
+            </script>
+    </div>
+    <div class="module">
+        <p class="label-key">tagged</p>
+        <div class="tagged"><a href="/questions/tagged/.net" class="post-tag" title="show questions tagged '.net'" rel="tag">.net</a>&nbsp;<span class="item-multiplier"><span class="item-multiplier-x">&times;</span>&nbsp;<span class="item-multiplier-count">109615</span></span><br>
+<a href="/questions/tagged/visual-studio" class="post-tag" title="show questions tagged 'visual-studio'" rel="tag">visual-studio</a>&nbsp;<span class="item-multiplier"><span class="item-multiplier-x">&times;</span>&nbsp;<span class="item-multiplier-count">19925</span></span><br>
+<a href="/questions/tagged/configuration" class="post-tag" title="show questions tagged 'configuration'" rel="tag">configuration</a>&nbsp;<span class="item-multiplier"><span class="item-multiplier-x">&times;</span>&nbsp;<span class="item-multiplier-count">4327</span></span><br>
+<a href="/questions/tagged/continuous-integration" class="post-tag" title="show questions tagged 'continuous-integration'" rel="tag">continuous-integration</a>&nbsp;<span class="item-multiplier"><span class="item-multiplier-x">&times;</span>&nbsp;<span class="item-multiplier-count">1788</span></span><br>
+<a href="/questions/tagged/release-management" class="post-tag" title="show questions tagged 'release-management'" rel="tag">release-management</a>&nbsp;<span class="item-multiplier"><span class="item-multiplier-x">&times;</span>&nbsp;<span class="item-multiplier-count">264</span></span><br>
+</div>
+        <table id="qinfo">
+            <tr>
+                <td><p class="label-key">asked</p></td>
+                <td style="padding-left:10px"><p class="label-key" title="2011-11-10 16:17:28Z"><b>4 months ago</b></p></td>
+            </tr>
+            <tr>
+                <td><p class="label-key">viewed</p></td>
+
+                <td style="padding-left:10px"><p class="label-key"><b>362 times</b></p></td>
+            </tr>
+            <tr>
+                <td><p class="label-key">active</p></td>
+                <td style="padding-left:10px"><p class="label-key"><b><a href="?lastactivity" class="lastactivity-link" title="2011-11-14 17:36:17Z">3 months ago</a></b></p></td>
+            </tr>
+        </table>
+    </div>
+    
+        <script type="text/javascript">
+            var scriptSrc = "http://engine2.adzerk.net/z/8277/adzerk1_2_4_43,adzerk2_2_17_45,adzerk3_2_4_44?keywords=.net,visual-studio,configuration,continuous-integration,release-management";
+            if (document.referrer) {
+                if (/\?/.test(scriptSrc))
+                    scriptSrc += "&";
+                else
+                    scriptSrc += "?";
+                scriptSrc += "xReferrer=" + document.referrer;
+            }
+            StackExchange.ready(function(){var z = document.createElement("script"); z.type = "text/javascript"; z.async = "true"; z.src = scriptSrc; var s = document.getElementsByTagName("script")[0]; s.parentNode.insertBefore(z, s);});
+        </script>
+    
+    <div class="everyonelovesstackoverflow" id="adzerk2">
+    </div>
+
+    
+    <div id="hireme">
+        <script type="text/javascript">
+            var careers_adurl="http://careers.stackoverflow.com/ad/js",careers_cssurl="http://cdn.sstatic.net/careers/ads/sidebar.min.css?35dadc",careers_leaderboardcssurl="http://cdn.sstatic.net/careers/ads/ninja.min.css?35dadc",careers_companycssurl="http://cdn.sstatic.net/careers/ads/company",careers_adselector="div.hireme, div#hireme";if($(careers_adselector).length==0){var style="min-height:220px;margin:12px 0",div=$("<div>").attr("id","hireme").addClass("hireme").attr("style",style),dummy=$("<div>").html(div);document.write(dummy.html())}StackExchange.ready(function(){$.ajax({url:"http://cdn.sstatic.net/careers/ads/adloader.min.js?35dadc",dataType:"script",cache:true})});
+        </script>
+    </div>
+
+      
+
+    <div class="module">
+    <h4 id="h-linked">Linked</h4>
+    <div class="linked">
+    <div class="spacer">
+<a href="/questions/8334794/managing-config-files-and-code-constants-in-a-big-project" class="question-hyperlink">Managing config files and code constants in a big project</a>
+</div>
+<div class="spacer">
+<a href="/questions/8083422/is-there-a-way-to-prevent-the-loss-of-comments-in-my-web-config-if-i-use-visual" class="question-hyperlink">Is there a way to prevent the loss of comments in my web.config if I use Visual Studio&#39;s settings editor?</a>
+</div>
+
+    </div>
+    </div>
+    <div class="module">
+    <h4 id="h-related">Related</h4>
+    <div class="related">
+    <div class="spacer">
+<a href="/questions/350377/how-to-conditionally-deploy-an-app-config-based-on-build-configuration" class="question-hyperlink">How to conditionally deploy an app.config based on build configuration?</a>
+</div>
+<div class="spacer">
+<a href="/questions/444179/how-can-i-set-up-different-build-configurations-for-asp-net-web-site-projects" class="question-hyperlink">How can I set up different build configurations for ASP.Net web site projects?</a>
+</div>
+<div class="spacer">
+<a href="/questions/550931/how-do-i-manage-many-configurations-in-visual-studio" class="question-hyperlink">How do I manage many configurations in Visual Studio?</a>
+</div>
+<div class="spacer">
+<a href="/questions/633879/excluding-page-from-release-build-in-asp-net-project" class="question-hyperlink">Excluding Page from Release Build in ASP.NET Project</a>
+</div>
+<div class="spacer">
+<a href="/questions/716242/controlled-integration-of-changes-with-continuous-integration" class="question-hyperlink">Controlled Integration of Changes with Continuous Integration</a>
+</div>
+<div class="spacer">
+<a href="/questions/782301/maven-release-via-hudson" class="question-hyperlink">Maven release via Hudson</a>
+</div>
+<div class="spacer">
+<a href="/questions/923245/how-to-get-teamcity-to-exclude-nunit-test-categories" class="question-hyperlink">How to get TeamCity to exclude nunit test categories?</a>
+</div>
+<div class="spacer">
+<a href="/questions/1191667/continuous-integration-build-configurations" class="question-hyperlink">Continuous Integration Build Configurations</a>
+</div>
+<div class="spacer">
+<a href="/questions/1203739/how-to-get-assembly-version-of-another-project-from-app-config" class="question-hyperlink">How to get assembly version of another project from app.config?</a>
+</div>
+<div class="spacer">
+<a href="/questions/1465654/compare-configurations-within-visual-studio" class="question-hyperlink">Compare Configurations within Visual Studio?</a>
+</div>
+<div class="spacer">
+<a href="/questions/1715989/is-there-any-way-to-catch-compile-errors-in-all-build-configurations" class="question-hyperlink">Is there any way to catch compile errors in all build configurations?</a>
+</div>
+<div class="spacer">
+<a href="/questions/2372653/how-to-select-correct-app-config-file-at-build-time-in-tfs" class="question-hyperlink">How to select correct app.config file at build time in TFS?</a>
+</div>
+<div class="spacer">
+<a href="/questions/3113563/what-is-the-best-way-to-handle-java-web-application-versioning" class="question-hyperlink">What is the best way to handle Java web application versioning?</a>
+</div>
+<div class="spacer">
+<a href="/questions/3714723/swapping-test-database-connection-code-as-a-post-build-step" class="question-hyperlink">Swapping test database connection code as a post-build step</a>
+</div>
+<div class="spacer">
+<a href="/questions/3943268/what-is-the-purpose-of-debug-release-configurations-in-visual-studio-2008-2010-c" class="question-hyperlink">What is the purpose of debug/release configurations in Visual Studio 2008/2010 compiling to different folders?</a>
+</div>
+<div class="spacer">
+<a href="/questions/4214776/how-to-control-release-versions-with-visual-studio" class="question-hyperlink">How to control release versions with Visual Studio?</a>
+</div>
+<div class="spacer">
+<a href="/questions/4361417/why-did-my-wpf-3-5-app-gain-an-app-config-file-when-i-changed-the-target-framewo" class="question-hyperlink">Why did my WPF 3.5 app gain an app.config file when I changed the target framework to 4.0?</a>
+</div>
+<div class="spacer">
+<a href="/questions/4467986/any-open-source-release-management-system-like-codeplex-or-sourceforge" class="question-hyperlink">Any open source release management system like codeplex or sourceforge?</a>
+</div>
+<div class="spacer">
+<a href="/questions/4784030/what-does-an-extraordinary-release-process-look-like" class="question-hyperlink">What does an extraordinary release process look like?</a>
+</div>
+<div class="spacer">
+<a href="/questions/4876929/looking-for-release-management-software-recommendations" class="question-hyperlink">Looking for release management software recommendations</a>
+</div>
+<div class="spacer">
+<a href="/questions/5181502/how-to-use-hudson-parameterized-build-values-in-an-email" class="question-hyperlink">How to use Hudson &ldquo;Parameterized Build&rdquo; values in an email</a>
+</div>
+<div class="spacer">
+<a href="/questions/7098571/can-nant-be-used-to-deploy-to-different-servers" class="question-hyperlink">Can Nant be used to deploy to different servers?</a>
+</div>
+<div class="spacer">
+<a href="/questions/7418810/handling-files-that-change-during-each-test-phase-during-release-management" class="question-hyperlink">Handling files that change during each test phase during Release Management</a>
+</div>
+<div class="spacer">
+<a href="/questions/7657033/how-do-setup-my-ci-to-facilitate-my-releases" class="question-hyperlink">How do setup my CI to facilitate my releases?</a>
+</div>
+<div class="spacer">
+<a href="/questions/9276915/differences-between-visual-studio-sln-build-runner-and-msbuild" class="question-hyperlink">Differences between Visual Studio (.sln) build runner and MSBuild</a>
+</div>
+
+    </div>
+    </div>
+</div>
+
+<div id="feed-link">
+    <div id="feed-link-text"><a href="/feeds/question/8082662" title="feed of this question and its answers"><span class="feed-icon"></span>question feed</a></div>
+</div>
+<script type="text/javascript">
+StackExchange.ready(function(){$.get('/posts/8082662/ivc/799c');});
+</script>
+<noscript>
+    <div><img src="/posts/8082662/ivc/799c" class="dno" alt="" width="0" height="0"></div>
+</noscript><div style="display:none" id="prettify-lang">default</div></div>
+        </div>
+    </div>
+    <div id="footer">
+        <div class="footerwrap">
+            <div id="footer-menu">
+                <a href="/about">about</a> |
+                <a href="/faq">faq</a> |
+                <a href="http://blog.stackexchange.com?blb=1">blog</a> |
+                    <a href="http://chat.stackoverflow.com">chat</a> |
+                <a href="http://data.stackexchange.com">data</a> |
+                <a href="http://blog.stackoverflow.com/category/podcasts/">podcast</a> |
+                <a href="http://shop.stackexchange.com/">shop</a> |
+                <a href="http://stackexchange.com/legal">legal</a> |
+                <a href="http://engine.adzerk.net/redirect/0/2776/2751/0/4de3c60f719c4dfcb1a57531c7050090/0">advertising info</a> |
+
+                <a onclick="StackExchange.switchMobile('on', '/questions/8082662/how-to-select-different-app-config-for-several-build-configurations')">mobile</a> |
+
+                <b><a href="mailto:team@stackoverflow.com">contact us</a></b>
+                  | <b><a href="http://meta.stackoverflow.com">feedback</a></b>
+                <div id="footer-sites">
+                    
+                        <span style="color:#FE7A15;font-size:140%">&#9632;</span>&nbsp;<a href="http://stackoverflow.com">stackoverflow.com</a>&nbsp; 
+                        <span style="color:#FE7A15;font-size:140%">&#9632;</span>&nbsp;<a href="http://stackapps.com">api/apps</a>&nbsp; 
+                        <span style="color:#FE7A15;font-size:140%">&#9632;</span>&nbsp;<a href="http://careers.stackoverflow.com">careers</a>&nbsp; 
+                        <span style="color:#E8272C;font-size:140%">&#9632;</span>&nbsp;<a href="http://serverfault.com">serverfault.com</a>&nbsp; 
+                        <span style="color:#00AFEF;font-size:140%">&#9632;</span>&nbsp;<a href="http://superuser.com">superuser.com</a>&nbsp; 
+                        <span style="color:#969696;font-size:140%">&#9632;</span>&nbsp;<a href="http://meta.stackoverflow.com">meta</a>&nbsp; 
+                        <span style="color:#46937D;font-size:140%">&#9632;</span>&nbsp;<a href="http://area51.stackexchange.com">area&nbsp;51</a>&nbsp; 
+                        <span style="color:#C0D0DC;font-size:140%">&#9632;</span>&nbsp;<a href="http://webapps.stackexchange.com">webapps</a>&nbsp; 
+                        <span style="color:#000000;font-size:140%">&#9632;</span>&nbsp;<a href="http://gaming.stackexchange.com">gaming</a>&nbsp; 
+                        <span style="color:#dd4814;font-size:140%">&#9632;</span>&nbsp;<a href="http://askubuntu.com">ubuntu</a>&nbsp; 
+                        <span style="color:#9ce4fe;font-size:140%">&#9632;</span>&nbsp;<a href="http://webmasters.stackexchange.com">webmasters</a>&nbsp; 
+                        <span style="color:#cf4d3f;font-size:140%">&#9632;</span>&nbsp;<a href="http://cooking.stackexchange.com">cooking</a>&nbsp; 
+                        <span style="color:#f4f28d;font-size:140%">&#9632;</span>&nbsp;<a href="http://gamedev.stackexchange.com">game development</a>&nbsp; 
+                        <span style="color:#0f3559;font-size:140%">&#9632;</span>&nbsp;<a href="http://math.stackexchange.com">math</a>&nbsp; 
+                        <span style="color:#f2f2f2;font-size:140%">&#9632;</span>&nbsp;<a href="http://photo.stackexchange.com">photography</a>&nbsp; 
+                        <span style="color:#037187;font-size:140%">&#9632;</span>&nbsp;<a href="http://stats.stackexchange.com">stats</a>&nbsp; 
+                        <span style="color:#f1e7cc;font-size:140%">&#9632;</span>&nbsp;<a href="http://tex.stackexchange.com">tex</a>&nbsp; 
+                        <span style="color:#e1cdae;font-size:140%">&#9632;</span>&nbsp;<a href="http://english.stackexchange.com">english</a>&nbsp; 
+                        <span style="color:#a2d9f6;font-size:140%">&#9632;</span>&nbsp;<a href="http://cstheory.stackexchange.com">theoretical cs</a>&nbsp; 
+                        <span style="color:#1b3e6c;font-size:140%">&#9632;</span>&nbsp;<a href="http://programmers.stackexchange.com">programmers</a>&nbsp; 
+                        <span style="color:#293a5d;font-size:140%">&#9632;</span>&nbsp;<a href="http://unix.stackexchange.com">unix</a>&nbsp;
+                        <span style="color:#bec0cb;font-size:140%">&#9632;</span>&nbsp;<a href="http://apple.stackexchange.com">apple</a>&nbsp;
+                        <span style="color:#939185;font-size:140%">&#9632;</span>&nbsp;<a href="http://wordpress.stackexchange.com">wordpress</a>&nbsp;
+                        <span style="color:#ebf5f5;font-size:140%">&#9632;</span>&nbsp;<a href="http://physics.stackexchange.com">physics</a>&nbsp;
+                        <span style="color:#4176ab;font-size:140%">&#9632;</span>&nbsp;<a href="http://diy.stackexchange.com">home&nbsp;improvement</a>&nbsp;
+                        <span style="color:#d1d8d7;font-size:140%">&#9632;</span>&nbsp;<a href="http://gis.stackexchange.com">gis</a>&nbsp;
+                        <span style="color:#e5e2d3;font-size:140%">&#9632;</span>&nbsp;<a href="http://electronics.stackexchange.com">electronics</a>&nbsp;
+                        <span style="color:#a4c639;font-size:140%">&#9632;</span>&nbsp;<a href="http://android.stackexchange.com">android</a>&nbsp;
+                        <span style="color:#2e4e60;font-size:140%">&#9632;</span>&nbsp;<a href="http://security.stackexchange.com">security</a>&nbsp;
+                        <span style="color:#45bcb5;font-size:140%">&#9632;</span>&nbsp;<a href="http://bicycles.stackexchange.com">bicycles</a>&nbsp;
+                        <span style="color:#00adee;font-size:140%">&#9632;</span>&nbsp;<a href="http://dba.stackexchange.com">dba</a>&nbsp;
+                        <span style="color:#2edaf0;font-size:140%">&#9632;</span>&nbsp;<a href="http://drupal.stackexchange.com">drupal</a>&nbsp;
+                        <span style="color:#213951;font-size:140%">&#9632;</span>&nbsp;<a href="http://sharepoint.stackexchange.com">sharepoint</a>&nbsp;
+                        <span style="color:#73abb3;font-size:140%">&#9632;</span>&nbsp;<a href="http://scifi.stackexchange.com">scifi &amp; fantasy</a>&nbsp;
+                        <span style="color:#23629F;font-size:140%">&#9632;</span>&nbsp;<a href="http://ux.stackexchange.com">user experience</a>&nbsp;
+                </div>
+            </div>
+            <div id="footer-flair">
+                <a class="peer1" href="http://www.peer1.com/stackoverflow"></a>  
+	            <a href="http://creativecommons.org/licenses/by-sa/3.0/" class="cc-wiki-link"></a>
+                <div id="svnrev">rev 2012.3.11.1576</div>
+            </div>
+            <div id="copyright">
+                site design / logo &copy; 2012 stack exchange inc; 
+                user contributions licensed under <a href="http://creativecommons.org/licenses/by-sa/3.0/" rel="license">cc-wiki</a> with <a href="http://blog.stackoverflow.com/2009/06/attribution-required/" rel="license">attribution required</a>
+            </div>
+            
+
+        </div>
+    </div>
+    
+    <noscript>
+        <div id="noscript-warning">Stack Overflow works best with JavaScript enabled<img src="http://pixel.quantserve.com/pixel/p-c1rF4kxgLUzNc.gif" alt="" class="dno"></div>
+    </noscript>
+    <script type="text/javascript">var _gaq=_gaq||[];_gaq.push(['_setAccount','UA-5620270-1']);
+        _gaq.push(['_setCustomVar', 1, 'tags', '|.net|visual-studio|configuration|continuous-integration|release-management|']); 
+_gaq.push(['_trackPageview']);
+    var _qevents = _qevents || [];
+    (function(){
+        var s=document.getElementsByTagName('script')[0];
+        var ga=document.createElement('script');
+        ga.type='text/javascript';
+        ga.async=true;
+        ga.src='http://www.google-analytics.com/ga.js';
+        s.parentNode.insertBefore(ga,s);
+        var sc=document.createElement('script');
+        sc.type='text/javascript';
+        sc.async=true;
+        sc.src='http://edge.quantserve.com/quant.js'; 
+        s.parentNode.insertBefore(sc,s);
+    })();
+    </script>
+    <script type="text/javascript">
+        _qevents.push({ qacct: "p-c1rF4kxgLUzNc" });
+    </script>    
+    
+    
+    
+</body>
+</html>
