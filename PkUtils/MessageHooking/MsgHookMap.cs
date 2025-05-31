@@ -51,11 +51,11 @@ internal sealed class MsgHookMap : Singleton<MsgHookMap>
     /// <summary> Internal implementation helper; does the 'real' hookup of window. </summary>
     ///
     /// <param name="hwnd"> The handle of the window that is subject of adding. </param>
-    /// <param name="pMsgHook"> The hook to be added. </param>
-    internal void Add(IntPtr hwnd, WindowMessageHook pMsgHook)
+    /// <param name="msgHook"> The hook to be added. </param>
+    internal void Add(IntPtr hwnd, WindowMessageHook msgHook)
     {
         Debug.Assert(User32.IsWindow(hwnd));
-        Debug.Assert(pMsgHook != null);
+        Debug.Assert(msgHook != null);
         // find out if the window hooked yet or not
         ChainedNativeWindow nativeWindow = LookupNativeHook(hwnd);
 
@@ -66,23 +66,23 @@ internal sealed class MsgHookMap : Singleton<MsgHookMap>
             // 
             nativeWindow = new ChainedNativeWindow();
             _mapHwndToHook[hwnd] = nativeWindow;
-            pMsgHook.SubclassWindow(hwnd, nativeWindow);
+            msgHook.SubclassWindow(hwnd, nativeWindow);
         }
         else
         {   // window is hooked already, just add another hook to the chain
-            pMsgHook.ChainHook(hwnd, nativeWindow);
+            msgHook.ChainHook(hwnd, nativeWindow);
         }
     }
 
     /// <summary>
-    /// Internal implementation helper; removes 'real' hookup <paramref name="pMsgHook"/> from set of hooks for
+    /// Internal implementation helper; removes 'real' hookup <paramref name="msgHook"/> from set of hooks for
     /// its hooked window.
     /// </summary>
-    /// <param name="pMsgHook"> The hook to be removed. </param>
-    internal void Remove(WindowMessageHook pMsgHook)
+    /// <param name="msgHook"> The hook to be removed. </param>
+    internal void Remove(WindowMessageHook msgHook)
     {
-        Debug.Assert(pMsgHook != null);
-        IntPtr hwnd = pMsgHook.HookedHWND;
+        Debug.Assert(msgHook != null);
+        IntPtr hwnd = msgHook.HookedHWND;
         ChainedNativeWindow nativeWindow;
         /* Don't! Actually, the original window *might* be destroyed already
          * Debug.Assert(User32.IsWindow(hwnd));
@@ -90,18 +90,18 @@ internal sealed class MsgHookMap : Singleton<MsgHookMap>
         if (null != (nativeWindow = LookupNativeHook(hwnd)))
         {
             Debug.Assert(nativeWindow.FirstMsgHook != null);
-            if (nativeWindow.FirstMsgHook == pMsgHook)
+            if (nativeWindow.FirstMsgHook == msgHook)
             {   // hook is the first one: replace w/next
-                if (pMsgHook.NextHook != null)
+                if (msgHook.NextHook != null)
                 {   // But was not quite the last one hook
-                    nativeWindow.FirstMsgHook = pMsgHook.NextHook;
-                    pMsgHook.UnChainHook();
+                    nativeWindow.FirstMsgHook = msgHook.NextHook;
+                    msgHook.UnChainHook();
                 }
                 else
                 {   // This was the last hook for this window: 
                     // restore the window-proc and remove list from map
                     nativeWindow.FirstMsgHook = null;
-                    pMsgHook.UnSubclassWindow();
+                    msgHook.UnSubclassWindow();
                     _mapHwndToHook.Remove(hwnd);
                 }
             }
@@ -109,14 +109,14 @@ internal sealed class MsgHookMap : Singleton<MsgHookMap>
             {   // Hook to remove is in the middle: just remove from linked list
                 WindowMessageHook tempHook = nativeWindow.FirstMsgHook;
 
-                while ((tempHook != null) && (tempHook.NextHook != pMsgHook))
+                while ((tempHook != null) && (tempHook.NextHook != msgHook))
                 {
                     tempHook = tempHook.NextHook;
                 }
                 Debug.Assert(tempHook != null);
-                Debug.Assert(tempHook.NextHook == pMsgHook);
-                tempHook.SetNextHook(pMsgHook.NextHook);
-                pMsgHook.UnChainHook();
+                Debug.Assert(tempHook.NextHook == msgHook);
+                tempHook.SetNextHook(msgHook.NextHook);
+                msgHook.UnChainHook();
             }
         }
     }
@@ -125,11 +125,11 @@ internal sealed class MsgHookMap : Singleton<MsgHookMap>
     /// <param name="hwnd"> The handle of the window that is subject of removal. </param>
     internal void RemoveAll(IntPtr hwnd)
     {
-        WindowMessageHook pMsgHook;
+        WindowMessageHook msgHook;
 
-        while ((pMsgHook = Lookup(hwnd)) != null)
+        while ((msgHook = Lookup(hwnd)) != null)
         {
-            pMsgHook.HookWindow(IntPtr.Zero);   // (unhook)
+            msgHook.HookWindow(IntPtr.Zero);   // (unhook)
         }
     }
 

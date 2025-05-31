@@ -101,16 +101,16 @@ namespace PK.TestSystemHooking
         /// <returns></returns>
         public bool SetMouseHook()
         {
-            bool bRes;
+            bool result;
 
             _mouse_hook ??= new WindowsSystemHookMouse(new User32.HookProc(MouseHookMessageProc));
-            if (!(bRes = _mouse_hook.IsInstalled))
+            if (!(result = _mouse_hook.IsInstalled))
             {
                 _mouse_hook.Install();
-                bRes = _mouse_hook.IsInstalled;
+                result = _mouse_hook.IsInstalled;
             }
 
-            return bRes;
+            return result;
         }
 
         /// <summary>
@@ -160,17 +160,17 @@ namespace PK.TestSystemHooking
         /// <returns></returns>
         public bool SetKeyboardHook()
         {
-            bool bRes;
+            bool result;
 
             _keyboard_hook ??= new WindowsSystemHookKeyboard(new User32.HookProc(KeyboardProc));
 
-            if (!(bRes = _keyboard_hook.IsInstalled))
+            if (!(result = _keyboard_hook.IsInstalled))
             {
                 _keyboard_hook.Install();
-                bRes = _keyboard_hook.IsInstalled;
+                result = _keyboard_hook.IsInstalled;
             }
 
-            return bRes;
+            return result;
         }
 
         /// <summary>
@@ -238,16 +238,16 @@ namespace PK.TestSystemHooking
         /// <returns></returns>
         public bool SetLLMouseHook()
         {
-            bool bRes;
+            bool result;
 
             _mouse_ll_hook ??= new WindowsSystemHookMouseLL(new User32.HookProc(MouseLLProc));
-            if (!(bRes = _mouse_ll_hook.IsInstalled))
+            if (!(result = _mouse_ll_hook.IsInstalled))
             {
                 _mouse_ll_hook.Install();
-                bRes = _mouse_ll_hook.IsInstalled;
+                result = _mouse_ll_hook.IsInstalled;
             }
 
-            return bRes;
+            return result;
         }
 
         /// <summary>
@@ -332,16 +332,16 @@ namespace PK.TestSystemHooking
         /// <returns></returns>
         public bool SetLLKeyboardHook()
         {
-            bool bRes;
+            bool result;
 
             _keyboard_ll_hook ??= new WindowsSystemHookKbLL(new User32.HookProc(KeyboardLLProc));
-            if (!(bRes = _keyboard_ll_hook.IsInstalled))
+            if (!(result = _keyboard_ll_hook.IsInstalled))
             {
                 _keyboard_ll_hook.Install();
-                bRes = _keyboard_ll_hook.IsInstalled;
+                result = _keyboard_ll_hook.IsInstalled;
             }
 
-            return bRes;
+            return result;
         }
 
         /// <summary>
@@ -411,17 +411,17 @@ namespace PK.TestSystemHooking
         /// <returns></returns>
         public bool SetCallWndProcHook()
         {
-            bool bRes;
+            bool result;
 
             _callWndProc_hook ??= new WindowsSystemHookBase(Win32.HookType.WH_CALLWNDPROCRET, new User32.HookProc(FnCallWndProcHook));
 
-            if (!(bRes = _callWndProc_hook.IsInstalled))
+            if (!(result = _callWndProc_hook.IsInstalled))
             {
                 _callWndProc_hook.Install();
-                bRes = _callWndProc_hook.IsInstalled;
+                result = _callWndProc_hook.IsInstalled;
             }
 
-            return bRes;
+            return result;
         }
 
         /// <summary>

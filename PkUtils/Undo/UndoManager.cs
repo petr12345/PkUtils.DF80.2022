@@ -299,7 +299,7 @@ public class UndoManager : UndoableCompoundEdit
         get
         {
             IUndoableEdit e;
-            bool bRes = false;
+            bool result = false;
 
             lock (_syncRoot)
             {
@@ -308,15 +308,15 @@ public class UndoManager : UndoableCompoundEdit
                     if (IsOpenMultiMode)
                     {
                         e = EditToBeUndone();
-                        bRes = (e != null && e.CanUndo);
+                        result = (e != null && e.CanUndo);
                     }
                     else
                     {
-                        bRes = base.CanUndo;
+                        result = base.CanUndo;
                     }
                 }
             }
-            return bRes;
+            return result;
         }
     }
 
@@ -326,7 +326,7 @@ public class UndoManager : UndoableCompoundEdit
         get
         {
             IUndoableEdit e;
-            bool bRes = false;
+            bool result = false;
 
             lock (_syncRoot)
             {
@@ -335,15 +335,15 @@ public class UndoManager : UndoableCompoundEdit
                     if (IsOpenMultiMode)
                     {
                         e = EditToBeRedone();
-                        bRes = (e != null && e.CanRedo);
+                        result = (e != null && e.CanRedo);
                     }
                     else
                     {
-                        bRes = base.CanRedo;
+                        result = base.CanRedo;
                     }
                 }
             }
-            return bRes;
+            return result;
         }
     }
 

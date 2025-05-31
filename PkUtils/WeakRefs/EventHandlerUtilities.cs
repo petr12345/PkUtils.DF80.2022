@@ -29,7 +29,7 @@ public static class EventHandlerUtilities
         ref EventHandler handler,
         Func<Delegate, bool> predicate)
     {
-        bool bRes = false;
+        bool result = false;
 
         if (null != handler)
         {
@@ -43,11 +43,11 @@ public static class EventHandlerUtilities
                 if ((null == predicate) || predicate(deleg))
                 {
                     handler -= (EventHandler)deleg;
-                    bRes = true;
+                    result = true;
                 }
             }
         }
-        return bRes;
+        return result;
     }
 
     /// <summary>
@@ -63,7 +63,7 @@ public static class EventHandlerUtilities
         ref EventHandler<TEventArgs> handler,
         Func<Delegate, bool> predicate) where TEventArgs : EventArgs
     {
-        bool bRes = false;
+        bool result = false;
 
         if (null != handler)
         {
@@ -76,11 +76,11 @@ public static class EventHandlerUtilities
                 if ((null == predicate) || predicate(deleg))
                 {
                     handler -= (EventHandler<TEventArgs>)deleg;
-                    bRes = true;
+                    result = true;
                 }
             }
         }
-        return bRes;
+        return result;
     }
 
     /// <summary>
@@ -92,14 +92,14 @@ public static class EventHandlerUtilities
     /// <returns> true if any change has been done, false otherwise</returns>
     public static bool InvocationListDestroy(ref EventHandler handler)
     {
-        bool bRes = false;
+        bool result = false;
 
         if (null != handler)
         {
-            bRes = InvocationListClear(ref handler, null);
+            result = InvocationListClear(ref handler, null);
             Debug.Assert(null == handler as MulticastDelegate);
         }
-        return bRes;
+        return result;
     }
 
     /// <summary>
@@ -112,13 +112,13 @@ public static class EventHandlerUtilities
     public static bool InvocationListDestroy<TEventArgs>(
         ref EventHandler<TEventArgs> handler) where TEventArgs : EventArgs
     {
-        bool bRes = false;
+        bool result = false;
 
         if (null != handler)
         {
-            bRes = InvocationListClear(ref handler, null);
+            result = InvocationListClear(ref handler, null);
             Debug.Assert(null == handler as MulticastDelegate);
         }
-        return bRes;
+        return result;
     }
 }

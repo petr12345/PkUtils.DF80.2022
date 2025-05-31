@@ -730,9 +730,9 @@ public class FormStack : List<IStackedForm>, IDisposable, ISuspendable, ICompact
     /// <returns> true if succeeds, false if fails. </returns>
     public bool Pop(IStackedForm id)
     {
-        bool bRes;
+        bool result;
 
-        if (bRes = id != null && ReferenceEquals(id, TopStackedForm))
+        if (result = id != null && ReferenceEquals(id, TopStackedForm))
         {
             Pop(1);
         }
@@ -740,7 +740,7 @@ public class FormStack : List<IStackedForm>, IDisposable, ISuspendable, ICompact
         {   // should not happen
             Debug.Fail("The argument value must match the top Form");
         }
-        return bRes;
+        return result;
     }
 
     /// <summary>
@@ -1303,7 +1303,7 @@ public class FormStack : List<IStackedForm>, IDisposable, ISuspendable, ICompact
     /// <returns> True on success, false on failure. </returns>
     protected virtual bool Preload(IStackedForm iForm)
     {
-        bool bRes;
+        bool result;
 
         // get data on a separate thread
         iForm.LoadData(out bool bThreadStarted);
@@ -1320,9 +1320,9 @@ public class FormStack : List<IStackedForm>, IDisposable, ISuspendable, ICompact
         }
 
         // now populate the controls with any retrieved data
-        bRes = iForm.Populate();
+        result = iForm.Populate();
 
-        return bRes;
+        return result;
     }
     #endregion // Virtual Methods
 

@@ -175,13 +175,13 @@ public class DumperCtrlWrapper<CTRL> : IDumperEx, IDisposableEx where CTRL : Sys
         get
         {
             CTRL ctrlTraget;
-            bool bRes = false;
+            bool result = false;
 
             if ((!this.IsDisposed) && (null != (ctrlTraget = WrappedControl)))
             {
-                bRes = ctrlTraget.InvokeRequired;
+                result = ctrlTraget.InvokeRequired;
             }
-            return bRes;
+            return result;
         }
     }
 
@@ -328,7 +328,7 @@ public class DumperCtrlWrapper<CTRL> : IDumperEx, IDisposableEx where CTRL : Sys
     {
         ArgumentNullException.ThrowIfNull(entry);
 
-        bool bRes = false;
+        bool result = false;
         CTRL ctrl = WrappedControl;
 
         if (null != ctrl)
@@ -336,16 +336,16 @@ public class DumperCtrlWrapper<CTRL> : IDumperEx, IDisposableEx where CTRL : Sys
             if (ctrl.InvokeRequired)
             {
                 ctrl.BeginInvoke(DumpEntry, entry);
-                bRes = true;
+                result = true;
             }
             else
             {
                 AddTextResult addRes = this.AddText(entry);
-                bRes = (addRes != AddTextResult.AddNone);
+                result = (addRes != AddTextResult.AddNone);
             }
         }
 
-        return bRes;
+        return result;
     }
     #endregion // Methods
 
@@ -430,10 +430,10 @@ public class DumperCtrlWrapper<CTRL> : IDumperEx, IDisposableEx where CTRL : Sys
     public bool Reset()
     {
         CTRL ctrl;
-        bool bRes;
+        bool result;
 
         this.CheckNotDisposed();
-        if (bRes = ((null != (ctrl = WrappedControl)) && ctrl.IsHandleCreated))
+        if (result = ((null != (ctrl = WrappedControl)) && ctrl.IsHandleCreated))
         {
             if (ctrl.InvokeRequired)
             {
@@ -444,7 +444,7 @@ public class DumperCtrlWrapper<CTRL> : IDumperEx, IDisposableEx where CTRL : Sys
                 this.ClearTextHistory();
             }
         }
-        return bRes;
+        return result;
     }
     #endregion // IDumper Members
 

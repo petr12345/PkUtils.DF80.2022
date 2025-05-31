@@ -23,42 +23,34 @@ using PK.PkUtils.WinApi;
 
 namespace PK.PkUtils.MessageHooking;
 
-/// <summary> <para>
-/// The WindowMessageHook class is able to hook to any Win32 window. This 'hooking' means subclassing
-/// in the Windows sense — — that is, by inserting its own window procedure ahead of whatever procedure
-/// is there currently.
-/// </para>
-/// <para>
-/// This functionality is useful particularly in situations when you don't have the source code of
-/// the control that you need to hookup, or you don't want or cannot extend the class hierarchy
-/// (for instance when multiple inheritance would be necessary, but is not supported by the language).
-/// </para>
-/// <para>
-/// The original idea for the design came from the article in Microsoft Systems Journal March 1997
-/// More Fun With MFC: DIBs, Palettes, Subclassing and a Gamut of Goodies Part II, by Paul DiLascia,
-/// particularly the paragraph CMsgHook - Windows Subclassing. <br/>
-/// 
-/// The code transferred to C#/.NET is using for implementation the 
-/// <a href="https://learn.microsoft.com/en-us/dotnet/api/system.windows.forms.nativewindow">
-/// NativeWindow</a> from Framework Class Library
-/// </para>
-/// <para>
-/// The reason why the NativeWindow just cannot be used directly is that when more instances of
-/// NativeWindow class are hooked to the same window, only one of them is functional.
-/// </para>
-/// <para>
-/// Hence, the implementation here is internally using <see cref="ChainedNativeWindow"/>
-/// ( derived from NativeWindow ), and more hooks hooked to the same window (Win32 HWND) are linked in the list.
-/// </para>
-/// <para>
-/// The hook is initialized by public virtual bool HookWindow(IntPtr hwnd),
-/// where hwnd is the window handle (of the control or anything that is Win32 window).
-/// In your code, you will derive from WindowMessageHook, and overwrite its
+/// <summary>
+/// The <c>WindowMessageHook</c> class enables hooking (subclassing) to any Win32 window. Subclassing in the Windows sense
+/// refers to inserting this class’s window procedure ahead of the existing one in the Windows message chain.
+///
+/// This functionality is especially useful when you either do not have the source code of the control you need to hook, 
+/// or you cannot (or do not want to) extend the class hierarchy (for example, when multiple inheritance would be required 
+/// but is not supported by the language).
+///
+/// The original idea for this design was inspired by the article 
+/// “More Fun With MFC: DIBs, Palettes, Subclassing and a Gamut of Goodies Part II” by Paul DiLascia, 
+/// published in Microsoft Systems Journal, March 1997, particularly the section “CMsgHook – Windows Subclassing.”
+///
+/// The implementation in C#/.NET uses 
+/// <see href="https://learn.microsoft.com/en-us/dotnet/api/system.windows.forms.nativewindow">NativeWindow</see> 
+/// from the .NET Framework Class Library.
+/// However, <c>NativeWindow</c> cannot be used directly because when multiple instances are hooked to the same window, 
+/// only one remains functional.
+/// Therefore, this implementation uses an internal <see cref="ChainedNativeWindow"/> (derived from <c>NativeWindow</c>), 
+/// and multiple hooks attached to the same Win32 <c>HWND</c> are linked in a chain.
+///
+/// To initialize the hook, call the public method <c>HookWindow(IntPtr hwnd)</c>, 
+/// where <c>hwnd</c> is the window handle of the control or window to hook.
+/// In your derived class, override:
 /// <code>
-///    protected virtual void HookWindowProc(ref Message m)
-///  </code>
-///  to change the processing of messages of your choice.
-/// </para> </summary>
+/// protected virtual void HookWindowProc(ref Message m)
+/// </code>
+/// to modify message processing as needed.
+/// </summary>
 public class WindowMessageHook : IDisposableEx
 {
     #region Fields
@@ -105,14 +97,14 @@ public class WindowMessageHook : IDisposableEx
     /// already to something. </returns>
     public virtual bool HookWindow(IntPtr hwnd)
     {
-        bool bRes = false;
+        bool result = false;
 
         if (hwnd != IntPtr.Zero)
         {
             if ((User32.IsWindow(hwnd)) && !IsHooked)
             {  // Hook the window - add to map of hooks, etc.
                 MsgHookMap.Instance.Add(hwnd, this);
-                bRes = true;
+                result = true;
                 OnHookup(null);
             }
             else
@@ -126,7 +118,7 @@ public class WindowMessageHook : IDisposableEx
             MsgHookMap.Instance.Remove(this);
             OnUnhook(null);
         }
-        return bRes;
+        return result;
     }
 
     /// <summary>
@@ -284,7 +276,7 @@ public class WindowMessageHook : IDisposableEx
     /// Auxiliary implementation helper, created only for purpose of ChainedNativeWindow implementation
     /// ( so it is able to call protected ( but not internal ) WindowMessageHook.HookWindowProc
     /// </summary>
-    /// <param name="m"></param>
+    /// <param name = "m"> The Windows message structure being processed.</param>
     internal void CallHookWindowProc(ref Message m)
     {
         HookWindowProc(ref m);
@@ -293,50 +285,50 @@ public class WindowMessageHook : IDisposableEx
     /// <summary>
     /// Auxiliary implementation helper, called by MsgHookMap
     /// </summary>
-    /// <param name="hwnd"></param>
-    /// <param name="pNativeHook"></param>
+    /// <param name = "hwnd" > The handle of the window being subclassed.</param>
+    /// <param name = "nativeHook" > The ChainedNativeWindow object handling the native hook logic.</param>
     /// <returns>true on success, false on failure </returns>
-    internal bool SubclassWindow(IntPtr hwnd, ChainedNativeWindow pNativeHook)
+    internal bool SubclassWindow(IntPtr hwnd, ChainedNativeWindow nativeHook)
     {
         bool result = false;
 
         Debug.Assert(hwnd != IntPtr.Zero);
-        Debug.Assert(pNativeHook != null);
-        Debug.Assert(pNativeHook.FirstMsgHook == null);
+        Debug.Assert(nativeHook != null);
+        Debug.Assert(nativeHook.FirstMsgHook == null);
         Debug.Assert(!IsHooked);
         if (!IsHooked)
         {   // do the hookup, setup hookedWnd and _nextHook
             this._hookedHwnd = hwnd;
-            this._realHook = pNativeHook;
+            this._realHook = nativeHook;
             Debug.Assert(this._nextHook == null);
-            pNativeHook.AssignHandle(hwnd);
-            pNativeHook.FirstMsgHook = this;
+            nativeHook.AssignHandle(hwnd);
+            nativeHook.FirstMsgHook = this;
             result = true;
         }
         return result;
     }
 
     /// <summary>
-    /// Auxiliary implementation helper. Adds 'this object' to the chain of 
-    /// message hooks that represented by ChainedNativeWindow argument.
+    /// Auxiliary helper method. Adds this instance to the chain of message hooks
+    /// represented by the specified <paramref name="nativeHook"/>.
     /// </summary>
-    /// <param name="hwnd"></param>
-    /// <param name="pNative"></param>
-    /// <returns> true on success, false on failure </returns>
-    internal bool ChainHook(IntPtr hwnd, ChainedNativeWindow pNative)
+    /// <param name="hwnd">The window handle (HWND) to associate with this hook.</param>
+    /// <param name="nativeHook">The existing chained native window object to which this will be added.</param>
+    /// <returns><c>true</c> if the hook was successfully added; otherwise, <c>false</c>.</returns>
+    internal bool ChainHook(IntPtr hwnd, ChainedNativeWindow nativeHook)
     {
         bool result = false;
 
         Debug.Assert(hwnd != IntPtr.Zero);
         Debug.Assert(!IsHooked);
-        Debug.Assert(pNative != null);
-        Debug.Assert(pNative.FirstMsgHook != null);
+        Debug.Assert(nativeHook != null);
+        Debug.Assert(nativeHook.FirstMsgHook != null);
         if (!IsHooked)
         {
             this._hookedHwnd = hwnd;
-            this._realHook = pNative;
-            this._nextHook = pNative.FirstMsgHook;
-            pNative.FirstMsgHook = this;
+            this._realHook = nativeHook;
+            this._nextHook = nativeHook.FirstMsgHook;
+            nativeHook.FirstMsgHook = this;
             result = true;
         }
         return result;
@@ -362,8 +354,8 @@ public class WindowMessageHook : IDisposableEx
 
     /// <summary>
     /// Auxiliary implementation helper. Releases the hooked handle and calls UnChainHook().
-    /// <returns>true on success, false on failure </returns>
     /// </summary>
+    /// <returns>true on success, false on failure </returns>
     internal bool UnSubclassWindow()
     {
         bool result = false;
@@ -398,16 +390,12 @@ public class WindowMessageHook : IDisposableEx
     }
 
     /// <summary>
-    /// Dispose(bool disposing) executes in two distinct scenarios.
-    /// If disposing equals true, the method has been called directly
-    /// or indirectly by a user's code. Managed and unmanaged resources
-    /// can be disposed.
-    /// If disposing equals false, the method has been called by the 
-    /// runtime from inside the finalizer and you should not reference 
-    /// other objects. Only unmanaged resources can be disposed.
+    /// Dispose(bool disposing) executes in two distinct scenarios. If disposing equals true, the method has been
+    /// called directly or indirectly by a user's code. Managed and unmanaged resources can be disposed. If
+    /// disposing equals false, the method has been called by the runtime from inside the finalizer and you
+    /// should not reference other objects. Only unmanaged resources can be disposed.
     /// </summary>
-    /// <param name="disposing"> If true, is called by IDisposable.Dispose. 
-    /// Otherwise it is called by finalizer.</param>
+    /// <param name="disposing"> If true, is called by IDisposable.Dispose. Otherwise it is called by finalizer. </param>
     protected virtual void Dispose(bool disposing)
     {
         // Check to see if Dispose has already been called.

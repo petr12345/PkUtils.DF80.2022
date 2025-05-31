@@ -123,22 +123,22 @@ public class UndoableCompoundEdit : UndoableAbstractEdit, ICompoundEdit
     {
         get
         {
-            bool bRes;
+            bool result;
 
             if (IsActive)
             {
-                bRes = CanUndoWhileActive;
+                result = CanUndoWhileActive;
             }
             else if (IsOpenMultiMode)
             {
-                bRes = false;
+                result = false;
             }
             else
             {
-                bRes = base.CanUndo;
+                result = base.CanUndo;
             }
 
-            return bRes;
+            return result;
         }
     }
 
@@ -147,22 +147,22 @@ public class UndoableCompoundEdit : UndoableAbstractEdit, ICompoundEdit
     {
         get
         {
-            bool bRes;
+            bool result;
 
             if (IsActive)
             {
-                bRes = CanRedoWhileActive;
+                result = CanRedoWhileActive;
             }
             else if (IsOpenMultiMode)
             {
-                bRes = false;
+                result = false;
             }
             else
             {
-                bRes = base.CanRedo;
+                result = base.CanRedo;
             }
 
-            return bRes;
+            return result;
         }
     }
 
@@ -298,14 +298,14 @@ public class UndoableCompoundEdit : UndoableAbstractEdit, ICompoundEdit
         get
         {
             IUndoableEdit temp;
-            bool bRes = false;
+            bool result = false;
 
             if (null != (temp = GetActiveEdit()))
             {
                 Debug.Assert(temp.IsActive);
-                bRes = temp.IsActive;
+                result = temp.IsActive;
             }
-            return bRes;
+            return result;
         }
     }
 
@@ -317,16 +317,16 @@ public class UndoableCompoundEdit : UndoableAbstractEdit, ICompoundEdit
         get
         {
             IUndoableEdit temp;
-            bool bRes = false;
+            bool result = false;
 
             if (IsActive)
             {
                 if (null != (temp = GetActiveEdit()))
-                    bRes = temp.CanUndoWhileActive;
+                    result = temp.CanUndoWhileActive;
                 else
                     Debug.Fail("Unable to find an active IUndoableEdit");
             }
-            return bRes;
+            return result;
         }
     }
 
@@ -338,16 +338,16 @@ public class UndoableCompoundEdit : UndoableAbstractEdit, ICompoundEdit
         get
         {
             IUndoableEdit temp;
-            bool bRes = false;
+            bool result = false;
 
             if (IsActive)
             {
                 if (null != (temp = GetActiveEdit()))
-                    bRes = temp.CanRedoWhileActive;
+                    result = temp.CanRedoWhileActive;
                 else
                     Debug.Fail("Unable to find an active IUndoableEdit");
             }
-            return bRes;
+            return result;
         }
     }
 
@@ -397,7 +397,7 @@ public class UndoableCompoundEdit : UndoableAbstractEdit, ICompoundEdit
     /// <returns>True on success, false on failure.</returns>
     public virtual bool AddEdit(IUndoableEdit e)
     {
-        bool bRes = false;
+        bool result = false;
 
         if (IsOpenMultiMode)
         {
@@ -414,15 +414,15 @@ public class UndoableCompoundEdit : UndoableAbstractEdit, ICompoundEdit
             }
             if (null != (iCompound = last as ICompoundEdit))
             {
-                bRes = iCompound.AddEdit(e);
+                result = iCompound.AddEdit(e);
             }
             else
             {
                 _edits.Add(e);
-                bRes = true;
+                result = true;
             }
         }
-        return bRes;
+        return result;
     }
 
     /// <inheritdoc/>

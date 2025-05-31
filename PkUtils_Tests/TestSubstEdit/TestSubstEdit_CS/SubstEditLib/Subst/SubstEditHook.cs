@@ -638,7 +638,7 @@ namespace PK.SubstEditLib.Subst
 
         protected bool CloseUndoInfo()
         {
-            bool bRes = false;
+            bool result = false;
 
             if (null != LastStatus)
             {
@@ -663,10 +663,10 @@ namespace PK.SubstEditLib.Subst
                     _undoMgr.AddEdit(edit);
                     // cleanup the last status to indicate it should be recorded again
                     _lastStatus = null;
-                    bRes = true;
+                    result = true;
                 }
             }
-            return bRes;
+            return result;
         }
 
         protected void IncUndoCounter()

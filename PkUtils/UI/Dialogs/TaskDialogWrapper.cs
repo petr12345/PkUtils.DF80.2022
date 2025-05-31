@@ -1,4 +1,4 @@
-﻿// Ignore Spelling: Utils
+﻿// Ignore Spelling: Utils, checkbox
 //
 using System;
 using System.Collections.Generic;
@@ -261,6 +261,163 @@ public static class TaskDialogWrapper
         TaskDialogButton buttonResult = TaskDialog.ShowDialog(owner, page);
         return buttonResult.Tag is DialogResult dr ? dr : DialogResult.Ignore;
     }
+
+    /// <summary>
+    /// Invoke TaskDialog to ask a question with Abort, Retry, Ignore, and Ignore All options.
+    /// </summary>
+    /// <param name="owner"> control or form. </param>
+    /// <param name="caption"> text for dialog caption. </param>
+    /// <param name="heading"> text for dialog heading. </param>
+    /// <param name="text"> The text. </param>
+    /// <param name="icon"> (Optional) Icon to display. If null, TaskDialogIcon.Information will be used. </param>
+    /// <param name="defaultButton"> (Optional) Button to focus. </param>
+    /// <returns>
+    /// A tuple where Item1 is a DialogResult: Abort, Retry, or Ignore (used for both Ignore and Ignore All),
+    /// and Item2 is a boolean indicating whether the user selected Ignore All (true) or not (false).
+    /// </returns>
+    public static (DialogResult Result, bool IsIgnoreAll) QuestionAbortRetryIgnoreIgnoreAll(
+        IWin32Window owner,
+        string caption,
+        string heading,
+        string text,
+        TaskDialogIcon icon = null,
+        DialogResult defaultButton = DialogResult.Retry)
+    {
+        TaskDialogButton abortButton = new("Abort") { Tag = DialogResult.Abort };
+        TaskDialogButton retryButton = new("Retry") { Tag = DialogResult.Retry };
+        TaskDialogButton ignoreButton = new("Ignore") { Tag = DialogResult.Ignore };
+        // Custom button for Ignore All (reuses DialogResult.Ignore tag)
+        TaskDialogButton ignoreAllButton = new("Ignore All") { Tag = DialogResult.Ignore };
+
+        TaskDialogButtonCollection buttons = [abortButton, retryButton, ignoreButton, ignoreAllButton];
+        TaskDialogPage page = new()
+        {
+            Caption = caption,
+            SizeToContent = true,
+            Heading = heading,
+            Text = text,
+            Icon = icon ?? QuestionIcon,
+            Buttons = buttons,
+            DefaultButton = FindButton(buttons, defaultButton),
+            AllowCancel = false,
+        };
+
+        TaskDialogButton buttonResult = TaskDialog.ShowDialog(owner, page);
+        bool isIgnoreAll = ReferenceEquals(buttonResult, ignoreAllButton);
+        DialogResult result = buttonResult.Tag is DialogResult dr ? dr : DialogResult.Ignore;
+
+        return (result, isIgnoreAll);
+    }
+
+    ///// <summary>
+    ///// Displays a dialog with Abort, Retry, Ignore buttons and a checkbox saying "Ignore all subsequent errors".
+    ///// </summary>
+    ///// <param name="owner">The window that owns this dialog.</param>
+    ///// <param name="caption">The window caption.</param>
+    ///// <param name="heading">The heading text of the dialog.</param>
+    ///// <param name="text">The main message body text.</param>
+    ///// <param name="icon">Optional icon for the dialog (defaults to QuestionIcon).</param>
+    ///// <param name="defaultButton">Default selected button (defaults to Retry).</param>
+    ///// <param name="initiallyChecked">Whether the checkbox should be initially checked.</param>
+    ///// <returns>
+    ///// A tuple containing the <see cref="DialogResult"/> of the button pressed and a <see cref="bool"/>
+    ///// indicating whether the checkbox was checked when the dialog was closed.
+    ///// </returns>
+    //public static (DialogResult Result, bool ApplyIgnoreToAll) QuestionAbortRetryIgnoreWithCheckbox(
+    //    IWin32Window owner,
+    //    string caption,
+    //    string heading,
+    //    string text,
+    //    TaskDialogIcon icon = null,
+    //    DialogResult defaultButton = DialogResult.Retry,
+    //    bool initiallyChecked = false)
+    //{
+    //    TaskDialogButton abortButton = new("Abort") { Tag = DialogResult.Abort };
+    //    TaskDialogButton retryButton = new("Retry") { Tag = DialogResult.Retry };
+    //    TaskDialogButton ignoreButton = new("Ignore") { Tag = DialogResult.Ignore };
+
+    //    TaskDialogButtonCollection buttons = [abortButton, retryButton, ignoreButton];
+
+    //    var verificationCheckBox = new TaskDialogVerificationCheckBox("Apply Ignore to all subsequent errors")
+    //    {
+    //        Checked = initiallyChecked
+    //    };
+
+    //    TaskDialogPage page = new()
+    //    {
+    //        Caption = caption,
+    //        SizeToContent = true,
+    //        Heading = heading,
+    //        Text = text,
+    //        Icon = icon ?? QuestionIcon,
+    //        Buttons = buttons,
+    //        DefaultButton = FindButton(buttons, defaultButton),
+    //        AllowCancel = false,
+    //        Verification = verificationCheckBox
+    //    };
+
+    //    TaskDialogButton buttonResult = TaskDialog.ShowDialog(owner, page);
+    //    bool applyIgnoreToAll = page.Verification?.Checked ?? false;
+    //    DialogResult result = buttonResult.Tag is DialogResult dr ? dr : DialogResult.Ignore;
+
+    //    return (result, applyIgnoreToAll);
+    //}
+
+
+    /// <summary>
+    /// Displays a dialog with Abort, Retry, Ignore buttons and a customizable checkbox.
+    /// </summary>
+    /// <param name="owner">The window that owns this dialog.</param>
+    /// <param name="caption">The window caption.</param>
+    /// <param name="heading">The heading text of the dialog.</param>
+    /// <param name="text">The main message body text.</param>
+    /// <param name="checkboxText">Text to display next to the checkbox.</param>
+    /// <param name="initiallyChecked">Whether the checkbox should be initially checked.</param>
+    /// <param name="icon">Optional icon for the dialog (defaults to QuestionIcon).</param>
+    /// <param name="defaultButton">Default selected button (defaults to Retry).</param>
+    /// <returns>
+    /// A tuple containing the <see cref="DialogResult"/> of the button pressed and a <see cref="bool"/>
+    /// indicating whether the checkbox was checked when the dialog was closed.
+    /// </returns>
+    public static (DialogResult Result, bool ApplyIgnoreToAll) QuestionAbortRetryIgnoreWithCheckbox(
+        IWin32Window owner,
+        string caption,
+        string heading,
+        string text,
+        string checkboxText = "Ignore all subsequent errors",
+        bool initiallyChecked = false,
+        TaskDialogIcon icon = null,
+        DialogResult defaultButton = DialogResult.Retry)
+    {
+        TaskDialogButton abortButton = new("Abort") { Tag = DialogResult.Abort };
+        TaskDialogButton retryButton = new("Retry") { Tag = DialogResult.Retry };
+        TaskDialogButton ignoreButton = new("Ignore") { Tag = DialogResult.Ignore };
+        TaskDialogButtonCollection buttons = [abortButton, retryButton, ignoreButton];
+        TaskDialogVerificationCheckBox verificationCheckBox = new(checkboxText)
+        {
+            Checked = initiallyChecked
+        };
+
+        TaskDialogPage page = new()
+        {
+            Caption = caption,
+            SizeToContent = true,
+            Heading = heading,
+            Text = text,
+            Icon = icon ?? QuestionIcon,
+            Buttons = buttons,
+            DefaultButton = FindButton(buttons, defaultButton),
+            AllowCancel = false,
+            Verification = verificationCheckBox
+        };
+
+        TaskDialogButton buttonResult = TaskDialog.ShowDialog(owner, page);
+        bool applyIgnoreToAll = page.Verification?.Checked ?? false;
+        DialogResult result = buttonResult.Tag is DialogResult dr ? dr : DialogResult.Ignore;
+
+        return (result, applyIgnoreToAll);
+    }
+
     #endregion // Question_methods
 
     #region Information_methods

@@ -284,7 +284,7 @@ public class ErrorPresenterBase : IErrorPresenter
         ArgumentNullException.ThrowIfNull(info);
 
         string strTmp;
-        bool bRes = false;
+        bool result = false;
 
         if (obj != null)
         {
@@ -310,7 +310,7 @@ public class ErrorPresenterBase : IErrorPresenter
             }
         }
 
-        return bRes;
+        return result;
     }
     #endregion // Methods
 

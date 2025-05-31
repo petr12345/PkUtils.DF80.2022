@@ -336,7 +336,7 @@ namespace TestCompositeImages.UI
         protected bool AskForImagesPath(out string strValidPath)
         {
             string strLast;
-            bool bRes = false;
+            bool result = false;
 
             // initialize output to nothing
             strValidPath = string.Empty;
@@ -355,10 +355,10 @@ namespace TestCompositeImages.UI
             if (FolderBrowserLauncher.ShowFolderBrowser(dlg, this) == DialogResult.OK)
             {
                 strValidPath = dlg.SelectedPath;
-                bRes = true;
+                result = true;
             }
 
-            return bRes;
+            return result;
         }
 
         /// <summary> Initializes the used paths. </summary>

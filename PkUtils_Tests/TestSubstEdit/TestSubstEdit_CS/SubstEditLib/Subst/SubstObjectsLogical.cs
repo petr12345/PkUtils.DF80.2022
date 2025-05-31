@@ -260,20 +260,20 @@ namespace PK.SubstEditLib.Subst
 
         public bool Equals(LogInfo<TFIELDID> other)
         {
-            bool bRes = false;
+            bool result = false;
 
             if (other is null)
-                bRes = false;
+                result = false;
             else if (object.ReferenceEquals(this, other))
-                bRes = true;
+                result = true;
             else
             {
                 byte[] arrThis = CloneHelperBinary.ToByteArray(this);
                 byte[] arrThat = CloneHelperBinary.ToByteArray(other);
-                bRes = MemUtils.memcmp(arrThis, arrThat);
+                result = MemUtils.memcmp(arrThis, arrThat);
             }
 
-            return bRes;
+            return result;
         }
         #endregion // IEquatable<LogInfo<TFIELDID>> Members
     }
@@ -867,23 +867,23 @@ namespace PK.SubstEditLib.Subst
 
         public bool Equals(SubstLogData<TFIELDID> other)
         {
-            bool bRes = false;
+            bool result = false;
 
             if (null != other)
             {
                 if (object.ReferenceEquals(this, other))
                 {
-                    bRes = true;
+                    result = true;
                 }
-                else if (bRes = (0 == string.Compare(this.GetLogStr, other.GetLogStr, StringComparison.Ordinal)))
+                else if (result = (0 == string.Compare(this.GetLogStr, other.GetLogStr, StringComparison.Ordinal)))
                 {
                     List<LogInfo<TFIELDID>> listThis = this.GetLogList;
                     List<LogInfo<TFIELDID>> listThat = other.GetLogList;
 
-                    bRes = (listThis.Count == listThat.Count) && listThis.SequenceEqual(listThat);
+                    result = (listThis.Count == listThat.Count) && listThis.SequenceEqual(listThat);
                 }
             }
-            return bRes;
+            return result;
         }
         #endregion // IEquatable<SubstLogData<TFIELDID>> Members
     };

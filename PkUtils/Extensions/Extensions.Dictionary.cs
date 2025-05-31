@@ -293,9 +293,9 @@ public static class DictionaryExtensions
     {
         ArgumentNullException.ThrowIfNull(dictionary);
 
-        bool bRes;
+        bool result;
 
-        if (bRes = dictionary.TryGetValue(key, out value))
+        if (result = dictionary.TryGetValue(key, out value))
         {
             dictionary.Remove(key);
         }
@@ -304,7 +304,7 @@ public static class DictionaryExtensions
             value = default;
         }
 
-        return bRes;
+        return result;
     }
 
     /// <summary> An IDictionary extension method that tests for equality.</summary>

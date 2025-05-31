@@ -33,15 +33,15 @@ public static class DesignerSupport
     /// <returns> true if design mode, false if not. </returns>
     public static bool IsDesignMode(this Control ctrl)
     {
-        bool bRes;
+        bool result;
         ArgumentNullException.ThrowIfNull(ctrl);
 
         if (LicenseManager.UsageMode == LicenseUsageMode.Designtime)
-            bRes = true;
+            result = true;
         else
-            bRes = ctrl.GetDesignModeFromSite();
+            result = ctrl.GetDesignModeFromSite();
 
-        return bRes;
+        return result;
     }
 
     /// <summary> Returns the negation of <see cref="IsDesignMode"/>. </summary>
@@ -69,20 +69,20 @@ public static class DesignerSupport
     private static bool GetDesignModeFromSite(this Control ctrl)
     {
         Control parent;
-        bool bRes = false;
+        bool result = false;
 
         if (ctrl != null)
         {
             if (ctrl.Site != null && ctrl.Site.DesignMode)
             {
-                bRes = true;
+                result = true;
             }
             else if (null != (parent = ctrl.Parent))
             {
-                bRes = parent.GetDesignModeFromSite();
+                result = parent.GetDesignModeFromSite();
             }
         }
-        return bRes;
+        return result;
     }
     #endregion // Private Methods
     #endregion // Methods

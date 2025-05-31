@@ -151,13 +151,13 @@ namespace PK.SubstEditLib.Subst
         /// <returns></returns>
         protected override bool ProcessCmdKey(ref Message msg, Keys keyData)
         {
-            bool bRes = false;
+            bool result = false;
             if ((_keyTraps != null) && _keyTraps.ContainsKey(keyData))
             {
                 _keyTraps[keyData](this, new KeyEventArgs(keyData));
-                bRes = true;
+                result = true;
             }
-            return bRes;
+            return result;
         }
 
         protected override void Dispose(bool disposing)

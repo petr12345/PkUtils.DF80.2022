@@ -17,15 +17,15 @@ public static class PopupTextExtensions
     /// <summary> An extension method changing the position and size of tooltip window <paramref name="this"/>. </summary>
     ///
     /// <param name="this">         Tooltip window being moved. </param>
-    /// <param name="iWnd">         An object that exposes Win32 HWND handle. Could be null. </param>
-    /// <param name="ptLocation">   The new location, relative to top-left corner of <paramref name="iWnd"/>. </param>
+    /// <param name="win32Window">         An object that exposes Win32 HWND handle. Could be null. </param>
+    /// <param name="ptLocation">   The new location, relative to top-left corner of <paramref name="win32Window"/>. </param>
     /// <param name="size">         The new size. </param>
-    public static void MoveToWindow(this IPopupText @this, IWin32Window iWnd, Point ptLocation, Size size)
+    public static void MoveToWindow(this IPopupText @this, IWin32Window win32Window, Point ptLocation, Size size)
     {
         ArgumentNullException.ThrowIfNull(@this);
 
         @this.Size = size;
-        @this.MoveToWindow(iWnd, ptLocation);
+        @this.MoveToWindow(win32Window, ptLocation);
     }
 
     /// <summary>

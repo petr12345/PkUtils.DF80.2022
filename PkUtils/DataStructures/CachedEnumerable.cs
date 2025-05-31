@@ -534,7 +534,7 @@ public class CachedEnumerable<T> : NotifyPropertyChanged, ICachedEnumerable<T>, 
 
         int nOldPosition = en.CurrentPosition;
         int nNewPosition = nOldPosition + 1;
-        bool bRes = false;
+        bool result = false;
 
         try
         {
@@ -552,16 +552,16 @@ public class CachedEnumerable<T> : NotifyPropertyChanged, ICachedEnumerable<T>, 
             ValidateMe();
             CheckEnumerator(en);
 
-            if (bRes = (nNewPosition < CachedItemsCount))
+            if (result = (nNewPosition < CachedItemsCount))
             {
                 Debug.Assert(this.Status != ParseStatus.ParseNotInitialized);
                 en.CurrentPosition = nNewPosition;
             }
             else if (ParseHasEnded)
             {
-                /* bRes = false;  already is */
+                /* result = false;  already is */
             }
-            else if (bRes = DoEnlargeBuffer(nNewPosition + 1))
+            else if (result = DoEnlargeBuffer(nNewPosition + 1))
             {
                 en.CurrentPosition = nNewPosition;
             }
@@ -573,7 +573,7 @@ public class CachedEnumerable<T> : NotifyPropertyChanged, ICachedEnumerable<T>, 
             SlimLock.ExitUpgradeableReadLock();
         }
 
-        return bRes;
+        return result;
     }
 
     /// <summary> Allocates the internal cache buffer and assigns the status to ParseStatus.Parsing,
@@ -1032,7 +1032,7 @@ public class CachedEnumerable<T> : NotifyPropertyChanged, ICachedEnumerable<T>, 
     /// <returns> true if it succeeds, false if it fails. </returns>
     public bool ResumeParsing()
     {
-        bool bRes = false;
+        bool result = false;
 
         // Check before attempting to acquire a lock (more details in the first comment "Check before ...")
         this.CheckNotDisposed();
@@ -1054,14 +1054,14 @@ public class CachedEnumerable<T> : NotifyPropertyChanged, ICachedEnumerable<T>, 
             {
                 case ParseStatus.ParseNotInitialized:
                 case ParseStatus.Parsing:
-                    bRes = true;
+                    result = true;
                     break;
 
                 case ParseStatus.ParsePrematureEnd:
                     if (!PrematureParseEndCriteria())
                     {
                         ChangeStatus(ParseStatus.Parsing);
-                        bRes = true;
+                        result = true;
                     }
                     break;
             }
@@ -1071,7 +1071,7 @@ public class CachedEnumerable<T> : NotifyPropertyChanged, ICachedEnumerable<T>, 
             SlimLock.ExitWriteLock();
         }
 
-        return bRes;
+        return result;
     }
     #endregion // ICachedEnumerable<T> Members
 

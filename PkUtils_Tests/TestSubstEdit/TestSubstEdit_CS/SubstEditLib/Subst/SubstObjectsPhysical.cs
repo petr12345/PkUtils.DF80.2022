@@ -393,7 +393,7 @@ namespace PK.SubstEditLib.Subst
         {
             LogInfo<TFIELDID> lpLog;
             string strTmp;
-            bool bRes = false;
+            bool result = false;
 
             if (null == lpInf)
             {
@@ -416,10 +416,10 @@ namespace PK.SubstEditLib.Subst
                     strTmp = GetPhysStr.Remove(start, ilen);
                     SetPhysStr(strTmp);
                 }
-                bRes = true;
+                result = true;
             }
 
-            return bRes;
+            return result;
         }
 
         /// <summary>

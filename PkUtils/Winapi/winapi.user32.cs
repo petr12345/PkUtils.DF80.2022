@@ -3308,12 +3308,12 @@ public static class User32
     /// <see href="https://msdn.microsoft.com/en-us/library/system.windows.forms.iwin32window(v=vs.110).aspx">
     /// IWin32Window </see> interface.
     /// </summary>
-    /// <param name="iWnd"> An interface exposing Win32 HWND handles. </param>
+    /// <param name="win32Window"> An interface exposing Win32 HWND handles. </param>
     /// <returns> True on success, false on failure. </returns>
-    public static bool ActivateWnd(IWin32Window iWnd)
+    public static bool ActivateWnd(IWin32Window win32Window)
     {
-        ArgumentNullException.ThrowIfNull(iWnd);
-        return ActivateWnd(iWnd.Handle);
+        ArgumentNullException.ThrowIfNull(win32Window);
+        return ActivateWnd(win32Window.Handle);
     }
 
     /// <summary> Activates the top-level window, given the window handle. </summary>
@@ -3334,9 +3334,9 @@ public static class User32
     /// <returns> true if it succeeds, false if it fails. </returns>
     public static bool ActivateWindow(IntPtr hWnd, User32.SW command)
     {
-        bool bRes;
+        bool result;
 
-        if (bRes = User32.IsWindow(hWnd))
+        if (result = User32.IsWindow(hWnd))
         {
             if (User32.IsIconic(hWnd))
             {
@@ -3345,7 +3345,7 @@ public static class User32
             User32.ShowWindow(hWnd, (int)command);
             User32.SetForegroundWindow(hWnd);
         }
-        return bRes;
+        return result;
     }
 
     /// <summary>

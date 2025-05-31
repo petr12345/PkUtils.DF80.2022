@@ -172,7 +172,7 @@ public static class TypeExtension
     {
         ArgumentNullException.ThrowIfNull(t);
 
-        bool bRes = false;
+        bool result = false;
 
         if (t.IsClass && !t.IsAbstract)
         {
@@ -184,10 +184,10 @@ public static class TypeExtension
             Type[] itsInterfaces = t.FindInterfaces(filter, interfaceType);
             if (itsInterfaces.Length > 0)
             {
-                bRes = true;
+                result = true;
             }
         }
-        return bRes;
+        return result;
     }
 
     /// <summary>

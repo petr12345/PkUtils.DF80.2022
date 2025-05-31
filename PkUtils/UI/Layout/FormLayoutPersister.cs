@@ -753,13 +753,13 @@ public class FormLayoutPersister
     /// <returns>True on success, false otherwise</returns>
     private bool AssignWidth(int nLastWidth)
     {
-        bool bRes = false;
+        bool result = false;
         if (CurrentForm.MinimumSize.Width <= nLastWidth && nLastWidth < SystemInformation.PrimaryMonitorSize.Width)
         {
             CurrentForm.Width = nLastWidth;
-            bRes = true;
+            result = true;
         }
-        return bRes;
+        return result;
     }
 
     /// <summary>
@@ -769,13 +769,13 @@ public class FormLayoutPersister
     /// <returns>True on success, false otherwise</returns>
     private bool AssignHeight(int nLastHeight)
     {
-        bool bRes = false;
+        bool result = false;
         if (CurrentForm.MinimumSize.Width <= nLastHeight && nLastHeight < SystemInformation.PrimaryMonitorSize.Height)
         {
             CurrentForm.Height = nLastHeight;
-            bRes = true;
+            result = true;
         }
-        return bRes;
+        return result;
     }
 
     /// <summary>
@@ -785,15 +785,15 @@ public class FormLayoutPersister
     /// <returns>True on success, false otherwise</returns>
     private bool AssignSize(Size sz)
     {
-        bool bCxOk, bCyOk, bRes;
+        bool bCxOk, bCyOk, result;
 
         bCxOk = CurrentForm.MinimumSize.Width <= sz.Width && sz.Width < SystemInformation.PrimaryMonitorSize.Width;
         bCyOk = CurrentForm.MinimumSize.Height <= sz.Height && sz.Height < SystemInformation.PrimaryMonitorSize.Height;
-        if (bRes = bCxOk && bCyOk)
+        if (result = bCxOk && bCyOk)
         {
             CurrentForm.Size = sz;
         }
-        return bRes;
+        return result;
     }
 
     /// <summary>
@@ -803,16 +803,16 @@ public class FormLayoutPersister
     /// <returns>True on success, false otherwise</returns>
     private bool AssignLocation(Point pt)
     {
-        bool bCxOk, bCyOk, bRes;
+        bool bCxOk, bCyOk, result;
 
         bCxOk = 0 <= pt.X && pt.X < SystemInformation.PrimaryMonitorSize.Width;
         bCyOk = 0 <= pt.Y && pt.Y < SystemInformation.PrimaryMonitorSize.Height;
-        if (bRes = bCxOk && bCyOk)
+        if (result = bCxOk && bCyOk)
         {
             CurrentForm.StartPosition = FormStartPosition.Manual;
             CurrentForm.Location = pt;
         }
-        return bRes;
+        return result;
     }
     #endregion // Assigns
 

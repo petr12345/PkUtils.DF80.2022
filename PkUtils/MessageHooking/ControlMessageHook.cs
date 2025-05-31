@@ -72,16 +72,16 @@ public class ControlMessageHook : WindowMessageHook
     /// <returns>True on success, false on failure.</returns>
     public bool HookControl(Control ctrlToHook)
     {
-        bool bRes;
+        bool result;
 
         ctrlToHook.CheckNotDisposed(nameof(ctrlToHook));
-        if (bRes = HookWindow(ctrlToHook.Handle))
+        if (result = HookWindow(ctrlToHook.Handle))
         {
             // Subscribe to the event HandleCreated, to handle properly the case when NET 
             // in the background recreates the window handle.
             SubscribeToControl(ctrlToHook);
         }
-        return bRes;
+        return result;
     }
     #endregion // Public Methods
 

@@ -263,11 +263,11 @@ public abstract class TipHandler : WindowMessageHook
     public override bool HookWindow(IntPtr hwnd)
     {
         bool bWasHooked = IsHooked;
-        bool bRes;
+        bool result;
 
         if (hwnd != IntPtr.Zero)
         {   // the caller wants to hook something
-            bRes = base.HookWindow(hwnd);
+            result = base.HookWindow(hwnd);
             if (IsHooked && !bWasHooked)
             {   // update the member variable
                 OnHookup(hwnd);
@@ -275,27 +275,27 @@ public abstract class TipHandler : WindowMessageHook
         }
         else
         {   // the caller wants to unhook 
-            bRes = base.HookWindow(IntPtr.Zero);
+            result = base.HookWindow(IntPtr.Zero);
             if ((!IsHooked) && bWasHooked)
             {   // update the member variable
                 OnUnhook(this.HookedHWND);
             }
         }
-        return bRes;
+        return result;
     }
 
     /// <summary>
-    /// Hooks the given IWin32Window0derived object, by calling base.HookWindow(iWnd.Handle).
+    /// Hooks the given IWin32Window0derived object, by calling base.HookWindow(win32Window.Handle).
     /// To unhook already created hook, you should call HookWindow(null).
     /// </summary>
-    /// <param name="iWnd"> An object that exposes Win32 HWND handle.</param>
+    /// <param name="win32Window"> An object that exposes Win32 HWND handle.</param>
     /// <returns>True on success, false on failure.</returns>
-    public virtual bool HookControl(IWin32Window iWnd)
+    public virtual bool HookControl(IWin32Window win32Window)
     {
-        IntPtr hwnd = (iWnd != null) ? iWnd.Handle : IntPtr.Zero;
-        bool bRes = HookWindow(hwnd);
+        IntPtr hwnd = (win32Window != null) ? win32Window.Handle : IntPtr.Zero;
+        bool result = HookWindow(hwnd);
 
-        return bRes;
+        return result;
     }
 
     /// <summary> Initializes the TipHandler - installs the hook, and creates the tip window. <br/>
@@ -309,9 +309,9 @@ public abstract class TipHandler : WindowMessageHook
     public void Init(Control ctrl, Font pFont)
     {
         Debug.Assert(ctrl != null);
-        IWin32Window iWnd = ctrl;
+        IWin32Window win32Window = ctrl;
 
-        HookControl(iWnd);
+        HookControl(win32Window);
         if (IsHooked)
         {   // create tip window ( invisible for now )
             CreateTipWindow(pFont);
@@ -581,7 +581,7 @@ public abstract class TipHandler : WindowMessageHook
     /// <returns>True on success, false on failure.</returns>
     protected virtual bool CreateTipWindow(Font pFont)
     {
-        bool bRes = true;
+        bool result = true;
 
         if (null == TipWindow)
         {
@@ -594,11 +594,11 @@ public abstract class TipHandler : WindowMessageHook
             else
             {
                 /* throw new ApplicationException("TipHandler error - cannot hook IWin32Window which is not a Control"); */
-                bRes = false;
+                result = false;
             }
         }
 
-        return bRes;
+        return result;
     }
 
     /// <summary>
@@ -816,16 +816,16 @@ public abstract class TipHandler : WindowMessageHook
     /// <returns></returns>
     private static bool SetMouseHook()
     {
-        bool bRes;
+        bool result;
 
         _mouseHook ??= new TipHookMouse();
-        if (!(bRes = _mouseHook.IsInstalled))
+        if (!(result = _mouseHook.IsInstalled))
         {
             _mouseHook.Install();
-            bRes = _mouseHook.IsInstalled;
+            result = _mouseHook.IsInstalled;
         }
 
-        return bRes;
+        return result;
     }
 
     /// <summary>
@@ -846,16 +846,16 @@ public abstract class TipHandler : WindowMessageHook
     /// <returns></returns>
     private static bool SetLLKeyboardHookHook()
     {
-        bool bRes;
+        bool result;
 
         _keyboardHook ??= new TipHookKbLL();
-        if (!(bRes = _keyboardHook.IsInstalled))
+        if (!(result = _keyboardHook.IsInstalled))
         {
             _keyboardHook.Install();
-            bRes = _keyboardHook.IsInstalled;
+            result = _keyboardHook.IsInstalled;
         }
 
-        return bRes;
+        return result;
     }
 
     /// <summary>

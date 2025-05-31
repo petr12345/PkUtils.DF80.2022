@@ -217,7 +217,7 @@ public class MsgBoxObserver : SystemEventObserver<MsgBoxObserver.EventMsgBoxActi
     /// <returns> True if new key has been added, false otherwise. </returns>
     protected virtual bool AddNewMessageBox(IntPtr hWnd)
     {
-        bool bRes;
+        bool result;
 
         lock (Locker)
         {
@@ -226,13 +226,13 @@ public class MsgBoxObserver : SystemEventObserver<MsgBoxObserver.EventMsgBoxActi
             Debug.Assert(0 == string.CompareOrdinal(strClassName, Win32.MessageBoxClass), "Must be a dialog");
 #endif
             // does not contain that key yet, some new MessageBox is being created
-            if (bRes = !DictOfMsgBoxes.ContainsKey(hWnd))
+            if (result = !DictOfMsgBoxes.ContainsKey(hWnd))
             {
                 string strWndText = User32.GetWindowText(hWnd);
                 DictOfMsgBoxes.Add(hWnd, new MsgBoxInfo(hWnd, strWndText));
             }
         }
-        return bRes;
+        return result;
     }
 
     /// <summary>
@@ -245,7 +245,7 @@ public class MsgBoxObserver : SystemEventObserver<MsgBoxObserver.EventMsgBoxActi
     /// Stackoverflow: How do I read MessageBox text using WinAPI</seealso>
     protected virtual bool UpdateMessageBoxText(IntPtr hWnd)
     {
-        bool bRes;
+        bool result;
 
         lock (Locker)
         {
@@ -254,7 +254,7 @@ public class MsgBoxObserver : SystemEventObserver<MsgBoxObserver.EventMsgBoxActi
             Debug.Assert(0 == string.CompareOrdinal(strClassName,
               Win32.MessageBoxClass), "Must be a dialog");
 #endif
-            if (bRes = DictOfMsgBoxes.TryGetValue(hWnd, out MsgBoxInfo info))
+            if (result = DictOfMsgBoxes.TryGetValue(hWnd, out MsgBoxInfo info))
             {
                 IntPtr hChildChild;
                 string strText = string.Empty;
@@ -278,7 +278,7 @@ public class MsgBoxObserver : SystemEventObserver<MsgBoxObserver.EventMsgBoxActi
                 info.Text = strText;
             }
         }
-        return bRes;
+        return result;
     }
 
     /// <summary>
@@ -332,7 +332,7 @@ public class MsgBoxObserver : SystemEventObserver<MsgBoxObserver.EventMsgBoxActi
     {
         string strText;
         string strClassName = User32.GetClassName(hWnd);
-        bool bRes = false;
+        bool result = false;
 
         if (0 != string.CompareOrdinal(strClassName, Win32.ButtonClass))
         {
@@ -341,11 +341,11 @@ public class MsgBoxObserver : SystemEventObserver<MsgBoxObserver.EventMsgBoxActi
             {
                 // To do - figure out how to get text from SysLink control. See for instance
                 // http://msdn.microsoft.com/en-us/library/windows/desktop/bb760724(v=vs.85).aspx
-                bRes = true;
+                result = true;
             }
         }
 
-        return bRes;
+        return result;
     }
 
     /// <summary> The callback for the system hook WH_CALLWNDPROCRET. </summary>

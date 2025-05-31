@@ -95,14 +95,14 @@ public abstract class NotifyPropertyChanged : INotifyPropertyChanged
         IEqualityComparer<T> comparer)
     {
         ArgumentNullException.ThrowIfNull(comparer);
-        bool bRes;
+        bool result;
 
-        if (bRes = !comparer.Equals(field, value))
+        if (result = !comparer.Equals(field, value))
         {
             field = value;
             RaisePropertyChanged(propertyName);
         }
-        return bRes;
+        return result;
     }
 
     /// <summary> Sets a new value of a property <paramref name="propertyName"/>. </summary>

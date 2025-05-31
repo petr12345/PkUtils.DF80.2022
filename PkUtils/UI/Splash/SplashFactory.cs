@@ -114,7 +114,7 @@ public class SplashFactory : ISplashFactory
     /// <returns>True on success, false on failure</returns>
     protected virtual bool DoCreateSplash(int millisecondsTimeout, ThreadPriority priority, Image backgroundImage, bool isImageOwner)
     {
-        bool bRes = false;
+        bool result = false;
 
         if ((millisecondsTimeout < 0) && (millisecondsTimeout != Timeout.Infinite))
         {
@@ -134,7 +134,7 @@ public class SplashFactory : ISplashFactory
                     var iniData = new SplashForm.SplashInitData(priority, backgroundImage, isImageOwner);
                     _splashThread = new SplashForm.SplashScreenThread(iniData, this);
                     _splashThread.Start();
-                    bRes = true;
+                    result = true;
 
                     if (0 != millisecondsTimeout)
                     {
@@ -152,7 +152,7 @@ public class SplashFactory : ISplashFactory
                 }
             }
         }
-        return bRes;
+        return result;
     }
 
     /// <summary>
@@ -327,13 +327,13 @@ public class SplashFactory : ISplashFactory
             lock (SyncRoot)
             {
                 ISplashWindow splash;
-                bool bRes = false;
+                bool result = false;
 
                 if (null != (splash = SplashWindow))
                 {
-                    bRes = !(splash as Form).NullSafe(f => f.IsDisposed);
+                    result = !(splash as Form).NullSafe(f => f.IsDisposed);
                 }
-                return bRes;
+                return result;
             }
         }
     }

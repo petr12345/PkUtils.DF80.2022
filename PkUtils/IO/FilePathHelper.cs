@@ -311,24 +311,24 @@ public static class FilePathHelper
     {
         int nLastIndex;
         char chLast;
-        bool bRes = false;
+        bool result = false;
 
         if ((path != null) && (0 <= (nLastIndex = path.Length - 1)))
         {
             if (IsDirectorySeparator(chLast = path[nLastIndex]))
             {
                 if (nLastIndex == 0)
-                    bRes = true;
+                    result = true;
                 else if ((nLastIndex == 2) && (path[1] == Path.VolumeSeparatorChar) && char.IsLetter(path[0]))
-                    bRes = true;
+                    result = true;
             }
             else if ((chLast == Path.VolumeSeparatorChar) && (nLastIndex == 1) && char.IsLetter(path[0]))
             {
-                bRes = acceptDriveLetterColon;
+                result = acceptDriveLetterColon;
             }
         }
 
-        return bRes;
+        return result;
     }
 
     /// <summary> Gets a value indicating whether the specified path string contains a root. </summary>
@@ -367,7 +367,7 @@ public static class FilePathHelper
     /// </seealso>
     public static bool IsPathRooted(string path, bool acceptDriveLetterColon = false)
     {
-        bool bRes = false;
+        bool result = false;
 
         if ((path != null) && (0 > path.IndexOfAny(_PathInvalidOrWildCharacters)))
         {
@@ -376,24 +376,24 @@ public static class FilePathHelper
                 case 0:
                     break;
                 case 1:
-                    bRes = IsDirectorySeparator(path[0]);
+                    result = IsDirectorySeparator(path[0]);
                     break;
                 case 2:
                     if (IsDirectorySeparator(path[0]))
-                        bRes = true;
+                        result = true;
                     else if (char.IsLetter(path[0]) && (path[1] == Path.VolumeSeparatorChar))
-                        bRes = acceptDriveLetterColon;
+                        result = acceptDriveLetterColon;
                     break;
                 default:
                     if (path[1] == Path.VolumeSeparatorChar)
-                        bRes = char.IsLetter(path[0]) && IsDirectorySeparator(path[2]);
+                        result = char.IsLetter(path[0]) && IsDirectorySeparator(path[2]);
                     else
-                        bRes = IsPathRooted(path.Substring(0, 2));
+                        result = IsPathRooted(path.Substring(0, 2));
                     break;
             }
         }
 
-        return bRes;
+        return result;
     }
 
     /// <summary>
@@ -661,17 +661,17 @@ public static class FilePathHelper
     {
         string strMainFolder = NormalizeFolderPath(parentPath);
         string strSubFolder = NormalizeFolderPath(childPath);
-        bool bRes = false;
+        bool result = false;
 
         if (strSubFolder.StartsWith(strMainFolder, StringComparison.OrdinalIgnoreCase))
         {
             if (strMainFolder.Length == strSubFolder.Length)
-                bRes = allowEqual;
+                result = allowEqual;
             else
-                bRes = true;
+                result = true;
         }
 
-        return bRes;
+        return result;
     }
 
     /// <summary> This method is opposite to Path.Combine. Assuming that <paramref name="parentPath"/> and

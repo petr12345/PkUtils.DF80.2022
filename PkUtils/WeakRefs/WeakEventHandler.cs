@@ -418,15 +418,15 @@ public class WeakEventHandler<TEventArgs> where TEventArgs : EventArgs
         ref EventHandler handler,
         bool bIncludeStaticTarget)
     {
-        bool bRes = false;
+        bool result = false;
 
         if (null != handler)
         {
-            bRes = EventHandlerUtilities.InvocationListClear(
+            result = EventHandlerUtilities.InvocationListClear(
               ref handler,
               deleg => (deleg.Target as WeakEventHandler<EventArgs>).NullSafe(d => d.IsDeregisterAbleNow(bIncludeStaticTarget)));
         }
-        return bRes;
+        return result;
     }
 
     /// <summary>
@@ -445,16 +445,16 @@ public class WeakEventHandler<TEventArgs> where TEventArgs : EventArgs
         ref EventHandler<TEventArgs> handler,
         bool bIncludeStaticTarget)
     {
-        bool bRes = false;
+        bool result = false;
 
         if (null != handler)
         {
             // In this case, the code calls the generic NullSafe, which generally takes care about the null input argument.
-            bRes = EventHandlerUtilities.InvocationListClear(
+            result = EventHandlerUtilities.InvocationListClear(
               ref handler,
               deleg => (deleg.Target as WeakEventHandler<TEventArgs>).NullSafe(d => d.IsDeregisterAbleNow(bIncludeStaticTarget)));
         }
-        return bRes;
+        return result;
     }
     #endregion // Invocation_List_modifiers
     #endregion // Public Methods

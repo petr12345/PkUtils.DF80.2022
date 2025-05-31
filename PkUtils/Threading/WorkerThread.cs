@@ -220,13 +220,13 @@ public class WorkerThread : Repository<Thread>, IDisposableEx
     {
         get
         {
-            bool bRes = false;
+            bool result = false;
             if (null != EventWaitExit)
             { // If millisecondsTimeout is zero, the method does not block. 
               // It tests the state of the wait handle and returns immediately. 
-                bRes = EventWaitExit.WaitOne(0);
+                result = EventWaitExit.WaitOne(0);
             }
-            return bRes;
+            return result;
         }
     }
     #endregion // Properties

@@ -370,15 +370,15 @@ public static class PropertiesUtils
         BindingFlags bindingAttr)
     {
         PropertyInfo? info;
-        bool bRes = false;
+        bool result = false;
 
         if (null != (info = t.GetProperty(propertyName, bindingAttr)))
         {
             info.SetValue(obj, value, null);
-            bRes = true;
+            result = true;
         }
 
-        return bRes;
+        return result;
     }
     #endregion // Private Methods
 }

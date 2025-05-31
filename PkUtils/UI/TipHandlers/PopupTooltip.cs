@@ -496,9 +496,9 @@ public class PopupTooltip : Control, IPopupText
     }
 
     /// <inheritdoc/>
-    public void MoveToWindow(IWin32Window iWnd, Point ptLocation)
+    public void MoveToWindow(IWin32Window win32Window, Point ptLocation)
     {
-        if (iWnd == null)
+        if (win32Window == null)
         {
             this.Location = ptLocation;
         }
@@ -506,14 +506,14 @@ public class PopupTooltip : Control, IPopupText
         {
             Control ctrlParent = this.Parent;
 
-            if (iWnd.Equals(ctrlParent))
-            {  // the case when iWnd is my parent
+            if (win32Window.Equals(ctrlParent))
+            {  // the case when win32Window is my parent
                 this.Location = ptLocation;
             }
             else if ((ctrlParent == null) || (ctrlParent.Handle == User32.GetParent(Handle)))
             { // The case of no parent, 
-              // or when iWnd and me have the same parent
-                Win32WindowHook.ClientToScreen(iWnd.Handle, ref ptLocation);
+              // or when win32Window and me have the same parent
+                Win32WindowHook.ClientToScreen(win32Window.Handle, ref ptLocation);
 
                 /* DO NOT do the following, when the style is WindowStyles.WS_POPUP.
                 * ( is set by override CreateParams ).

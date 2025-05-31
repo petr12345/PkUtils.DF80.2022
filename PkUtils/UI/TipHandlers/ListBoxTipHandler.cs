@@ -152,11 +152,11 @@ public class ListBoxTipHandler : TipHandler
     /// <returns> True on success, false on failure. </returns>
     protected override bool CreateTipWindow(Font pFont)
     {
-        bool bRes;
+        bool result;
         Debug.Assert(!IsListBoxOwnerDraw());
-        bRes = base.CreateTipWindow(pFont);
+        result = base.CreateTipWindow(pFont);
 
-        return bRes;
+        return result;
     }
 
     /// <inheritdoc/>

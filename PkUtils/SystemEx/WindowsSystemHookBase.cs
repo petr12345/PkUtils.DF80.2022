@@ -87,18 +87,18 @@ public class WindowsSystemHookBase : IDisposable
         /// </returns>
         protected override bool ReleaseHandle()
         {
-            bool bRes;
+            bool result;
 
             if (!IsInvalid)
             {
-                bRes = (0 != User32.UnhookWindowsHookEx(handle));
+                result = (0 != User32.UnhookWindowsHookEx(handle));
                 this.handle = IntPtr.Zero;
             }
             else
             {
-                bRes = true;
+                result = true;
             }
-            return bRes;
+            return result;
         }
     }
     #endregion // Typedefs

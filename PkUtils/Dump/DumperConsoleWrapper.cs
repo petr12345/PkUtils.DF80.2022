@@ -94,9 +94,9 @@ public class DumperConsoleWrapper : IDumper
         get
         {
             WinVer winVer = SysInfo.GetWindowsVersion();
-            bool bRes = (winVer >= WinVer.WinVista);
+            bool result = (winVer >= WinVer.WinVista);
 
-            return bRes;
+            return result;
         }
     }
     #endregion // Properties

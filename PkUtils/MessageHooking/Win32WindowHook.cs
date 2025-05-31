@@ -49,11 +49,11 @@ public class Win32WindowHook : WindowMessageHook
     { }
 
     /// <summary> Constructor which directly hooks the given IWin32Window. </summary>
-    /// <param name="iWnd"> An object that exposes Win32 HWND handle. Must NOT be null. </param>
-    public Win32WindowHook(IWin32Window iWnd)
+    /// <param name="win32Window"> An object that exposes Win32 HWND handle. Must NOT be null. </param>
+    public Win32WindowHook(IWin32Window win32Window)
     {
-        ArgumentNullException.ThrowIfNull(iWnd, nameof(iWnd));
-        HookWindow(iWnd);
+        ArgumentNullException.ThrowIfNull(win32Window);
+        HookWindow(win32Window);
     }
     #endregion // Constructor(s)
 
@@ -71,37 +71,37 @@ public class Win32WindowHook : WindowMessageHook
     #region Public Methods
 
     /// <summary>
-    /// Hooks the given IWin32Window-derived object, by calling base.HookWindow(iWnd.Handle). 
+    /// Hooks the given IWin32Window-derived object, by calling base.HookWindow(win32Window.Handle). 
     /// To unhook already created hook, you should call HookWindow(null).
     /// </summary>
-    /// <param name="iWnd"> An object that exposes Win32 HWND handle.
+    /// <param name="win32Window"> An object that exposes Win32 HWND handle.
     /// Could be null; in that case the hook unhooks itself. 
     /// </param>
     /// <returns>   True on success, false on failure. </returns>
-    public virtual bool HookWindow(IWin32Window iWnd)
+    public virtual bool HookWindow(IWin32Window win32Window)
     {
         bool bWasHooked = IsHooked;
-        bool bRes;
+        bool result;
 
-        if (iWnd != null)
+        if (win32Window != null)
         {   // the caller wants to hook something
-            bRes = base.HookWindow(iWnd.Handle);
+            result = base.HookWindow(win32Window.Handle);
             if (IsHooked && !bWasHooked)
             {   // update the member variable
-                _hookedIWin32 = iWnd;
+                _hookedIWin32 = win32Window;
                 OnHookup(HookedWindow);
             }
         }
         else
         {   // the caller wants to unhook 
-            bRes = base.HookWindow(IntPtr.Zero);
+            result = base.HookWindow(IntPtr.Zero);
             if ((!IsHooked) && bWasHooked)
             {   // update the member variable
                 OnUnhook(HookedWindow);
                 _hookedIWin32 = null;
             }
         }
-        return bRes;
+        return result;
     }
 
     /// <summary> Returns the dialog-control id for the specific message command ( WM_COMMAND ).  <br/>

@@ -105,14 +105,14 @@ public class ClipMonitorHook : ControlMessageHook
     /// <seealso cref="UnregisterClipboardViewer"/>
     protected bool RegisterClipboardViewer()
     {
-        bool bRes = false;
+        bool result = false;
 
         if (!IsClipViewerRegistered)
         {
             _viewerNext = User32.SetClipboardViewer(this.HookedHWND);
-            bRes = IsClipViewerRegistered;
+            result = IsClipViewerRegistered;
         }
-        return bRes;
+        return result;
     }
 
     /// <summary> Unregisters the clipboard viewer if it has been registered. </summary>
@@ -121,15 +121,15 @@ public class ClipMonitorHook : ControlMessageHook
     /// <seealso cref="RegisterClipboardViewer"/>
     protected bool UnregisterClipboardViewer()
     {
-        bool bRes = false;
+        bool result = false;
 
         if (IsClipViewerRegistered)
         {
             User32.ChangeClipboardChain(HookedHWND, NextClipViewer);
             _viewerNext = IntPtr.Zero;
-            bRes = true;
+            result = true;
         }
-        return bRes;
+        return result;
     }
 
 

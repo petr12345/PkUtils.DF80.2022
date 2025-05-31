@@ -140,11 +140,11 @@ public class KeyEqualityComparer<T, TKey> : IEqualityComparer<T>
     {
         TKey keyX = KeyExtractorFn(x);
         TKey keyY = KeyExtractorFn(y);
-        bool bRes;
+        bool result;
 
         if (null != KeyComparer)
         {
-            bRes = KeyComparer.Equals(keyX, keyY);
+            result = KeyComparer.Equals(keyX, keyY);
         }
         else
         {
@@ -155,15 +155,15 @@ public class KeyEqualityComparer<T, TKey> : IEqualityComparer<T>
             {
                 iEnY = keyY as IEnumerable<object>;
                 Debug.Assert(null != iEnY);
-                bRes = iEnX.SequenceEqual(iEnY);
+                result = iEnX.SequenceEqual(iEnY);
             }
             else
             {
-                bRes = keyX.Equals(keyY);
+                result = keyX.Equals(keyY);
             }
         }
 
-        return bRes;
+        return result;
     }
 
     /// <inheritdoc/>

@@ -329,7 +329,7 @@ private bool _bShouldClose;
     /// </summary>
     private bool DoStoreIncrements()
     {
-        bool bRes;
+        bool result;
 
         lock (SyncObject)
         {
@@ -339,7 +339,7 @@ private bool _bShouldClose;
 
             lock (_alActualTimes)
             {
-                if (bRes = (0 < (nCount = _alActualTimes.Count)))
+                if (result = (0 < (nCount = _alActualTimes.Count)))
                 {
                     for (int ii = 0; ;)
                     {
@@ -354,14 +354,14 @@ private bool _bShouldClose;
                 }
             }
 
-            if (bRes)
+            if (result)
             {
                 RegistryAccess.SetStringRegistryValue(REGVALUE_PB_PERCENTS, sbPercent.ToString());
                 _dblPBIncrementPerTimerInterval = 1.0 / _nActualTicks;
                 RegistryAccess.SetStringRegistryValue(REGVALUE_PB_MILISECOND_INCREMENT, _dblPBIncrementPerTimerInterval.ToString("#.000000", NumberFormatInfo.InvariantInfo));
             }
         }
-        return bRes;
+        return result;
     }
 
     /// <summary>
@@ -405,14 +405,14 @@ private bool _bShouldClose;
 
     private bool SetBackgroundImage(Image backgroundImage)
     {
-        bool bRes = false;
+        bool result = false;
         if (null != backgroundImage)
         {
             this.BackgroundImage = backgroundImage;
             this.ClientSize = backgroundImage.Size;
-            bRes = true;
+            result = true;
         }
-        return bRes;
+        return result;
     }
 
     private void UpdateLblStatusText()

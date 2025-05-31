@@ -54,17 +54,17 @@ public interface IPopupText : IDisposable
 
     /// <summary>
     /// Changes the position the tooltip window. <br/>
-    /// For a non-null argument <paramref name="iWnd"/>, the position is relative to the upper-left
-    /// corner of the <paramref name="iWnd"/>.<br/>
-    /// For a null argument <paramref name="iWnd"/>, the position is relative to the upper-left
+    /// For a non-null argument <paramref name="win32Window"/>, the position is relative to the upper-left
+    /// corner of the <paramref name="win32Window"/>.<br/>
+    /// For a null argument <paramref name="win32Window"/>, the position is relative to the upper-left
     /// corner of the screen.
     /// </summary>
     ///
-    /// <param name="iWnd">         An object that exposes Win32 HWND handle. If not null, position
+    /// <param name="win32Window">         An object that exposes Win32 HWND handle. If not null, position
     /// will be relative to its top left corner. If null, position will be relative to the desktop. </param>
     /// <param name="ptLocation">   A new window position, relative to the upper-left corner of that
     /// window. </param>
-    void MoveToWindow(IWin32Window iWnd, Point ptLocation);
+    void MoveToWindow(IWin32Window win32Window, Point ptLocation);
 
     /// <summary>
     /// Places the tooltip window above all non-topmost windows, 

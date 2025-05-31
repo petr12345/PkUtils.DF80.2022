@@ -328,11 +328,11 @@ public class ComboBoxTipHandler : TipHandler
     /// <summary>
     /// Overriding the method of the base class, to perform specific processing.
     /// </summary>
-    /// <param name="iWnd"> An object that exposes Win32 HWND handle.</param>
+    /// <param name="win32Window"> An object that exposes Win32 HWND handle.</param>
     /// <returns>True on success, false on failure.</returns>
-    public override bool HookControl(IWin32Window iWnd)
+    public override bool HookControl(IWin32Window win32Window)
     {
-        bool bRes = base.HookControl(iWnd);
+        bool result = base.HookControl(win32Window);
 
         // Must test IsHooked, 
         // because unhooking is called simply by HookWindow(NULL)
@@ -349,7 +349,7 @@ public class ComboBoxTipHandler : TipHandler
             }
         }
 
-        return bRes;
+        return result;
     }
 
     /// <inheritdoc/>

@@ -131,19 +131,19 @@ public static class RtlAwareMessageBox
     /// <returns> true if right to left, false if not. </returns>
     public static bool IsRightToLeft(IWin32Window owner)
     {
-        bool bRes;
+        bool result;
 
         if (owner is Control control)
         {
-            bRes = control.RightToLeft == RightToLeft.Yes;
+            result = control.RightToLeft == RightToLeft.Yes;
         }
         else
         {
             // If no parent control is available, ask the CurrentUICulture
             // if we are running under right-to-left.
-            bRes = CultureInfo.CurrentUICulture.TextInfo.IsRightToLeft;
+            result = CultureInfo.CurrentUICulture.TextInfo.IsRightToLeft;
         }
 
-        return bRes;
+        return result;
     }
 }

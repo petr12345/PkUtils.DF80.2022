@@ -118,17 +118,17 @@ public class CollectionEditorObserver<T> : SystemEventObserver<CollectionFormAct
         ArgumentNullException.ThrowIfNull(collectionForm);
 
         IntPtr hwnd = collectionForm.Handle;
-        bool bRes;
+        bool result;
 
         lock (Locker)
         {
             // does not contain that key yet, some new window is being created
-            if (bRes = !DictOfCollectionFormHooks.ContainsKey(hwnd))
+            if (result = !DictOfCollectionFormHooks.ContainsKey(hwnd))
             {
                 DictOfCollectionFormHooks.Add(hwnd, new CollectionFormHook<T>(hwnd, this));
             }
         }
-        return bRes;
+        return result;
     }
 
     /// <summary> Updates the CollectionFormHook related to given collection form handle.<br/> </summary>
@@ -140,17 +140,17 @@ public class CollectionEditorObserver<T> : SystemEventObserver<CollectionFormAct
     /// <returns>   True if valid handle from the dictionary has been provided, false otherwise. </returns>
     protected virtual bool UpdateCollectionFormHook(IntPtr hwnd)
     {
-        bool bRes;
+        bool result;
 
         lock (Locker)
         {
-            if (bRes = DictOfCollectionFormHooks.TryGetValue(hwnd, out CollectionFormHook<T> info))
+            if (result = DictOfCollectionFormHooks.TryGetValue(hwnd, out CollectionFormHook<T> info))
             {
                 HookCollectionForm(info);
             }
         }
 
-        return bRes;
+        return result;
     }
 
     /// <summary>
