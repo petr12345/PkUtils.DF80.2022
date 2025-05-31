@@ -93,11 +93,18 @@ public class DumperCtrlWrapper<CTRL> : IDumperEx, IDisposableEx where CTRL : Sys
     /// <summary> A default value of field  _shouldPreprocessItems </summary>
     protected const bool _defaultShouldPreprocessItems = true;
 
+    /// <summary>
+    /// An indicator that is true if has added text before, false if not.
+    /// With the help of that, When the control becomes valid the first time, it not only adds the new text,
+    /// but also flushes the existing _msgHistory content.
+    /// </summary>
+    protected bool _hasAddedTextBefore;
+
     /// <summary> A queue of inserted text items</summary>
     protected Queue<LogEntry> _msgHistory = new();
 
     /// <summary> The lock around queue</summary>
-    private readonly object _lockHistory = new();
+    protected readonly object _lockHistory = new();
 
     /// <summary> Maximum length of the internal queue buffer </summary>
     private int _maxMsgHistoryItems = _defaultMsgHistoryItems;
@@ -106,7 +113,7 @@ public class DumperCtrlWrapper<CTRL> : IDumperEx, IDisposableEx where CTRL : Sys
     private readonly bool _shouldPreprocessItems = _defaultShouldPreprocessItems;
 
     /// <summary> A weak reference to target wrapped control. Used by the public property WrappedControl </summary>
-    private WeakReference _targetReference;
+    private WeakReference<CTRL> _targetReference;
     #endregion // Fields
 
     #region Constructor(s)
@@ -137,9 +144,11 @@ public class DumperCtrlWrapper<CTRL> : IDumperEx, IDisposableEx where CTRL : Sys
         ctrl.CheckNotDisposed(nameof(ctrl));
         ArgumentOutOfRangeException.ThrowIfLessThanOrEqual(maxMsgHistoryItems, 0);
 
-        _targetReference = new WeakReference(ctrl);
+        _targetReference = new WeakReference<CTRL>(ctrl);
         _maxMsgHistoryItems = maxMsgHistoryItems;
         _shouldPreprocessItems = shouldPreprocessItems;
+
+        ctrl.HandleCreated += Ctrl_HandleCreated;
     }
     #endregion // Constructor(s)
 
@@ -153,7 +162,7 @@ public class DumperCtrlWrapper<CTRL> : IDumperEx, IDisposableEx where CTRL : Sys
         get
         {
             this.CheckNotDisposed();
-            return (TargetReference.Target as CTRL);
+            return (TargetReference.TryGetTarget(out CTRL ctrl) ? ctrl : null);
         }
     }
 
@@ -164,7 +173,7 @@ public class DumperCtrlWrapper<CTRL> : IDumperEx, IDisposableEx where CTRL : Sys
     /// </summary>
     public bool IsAlive
     {
-        get { return (!this.IsDisposed) && TargetReference.IsAlive; }
+        get { return (!this.IsDisposed) && TargetReference.TryGetTarget(out CTRL _); }
     }
 
     /// <summary>
@@ -174,20 +183,20 @@ public class DumperCtrlWrapper<CTRL> : IDumperEx, IDisposableEx where CTRL : Sys
     {
         get
         {
-            CTRL ctrlTraget;
-            bool result = false;
+            CTRL ctrlTarget;
+            bool bRes = false;
 
-            if ((!this.IsDisposed) && (null != (ctrlTraget = WrappedControl)))
+            if ((!this.IsDisposed) && (null != (ctrlTarget = WrappedControl)))
             {
-                result = ctrlTraget.InvokeRequired;
+                bRes = ctrlTarget.InvokeRequired;
             }
-            return result;
+            return bRes;
         }
     }
 
     /// <summary>   Returns the WeakReference created by the constructor. </summary>
     /// <remarks>   Will be null if this DumperCtrlWrapper has been disposed. </remarks>
-    protected WeakReference TargetReference { get => _targetReference; }
+    protected WeakReference<CTRL> TargetReference { get => _targetReference; }
 
     /// <summary>
     /// Getter for the value of the boolean flag _shouldPreprocessItems.
@@ -248,42 +257,37 @@ public class DumperCtrlWrapper<CTRL> : IDumperEx, IDisposableEx where CTRL : Sys
         {
             entry = new LogEntry(PreprocessAddedText(entry.Text), entry.Level);
         }
+
         string strAdd = entry.Text;
         StringBuilder sbCompletelyNewContents = null;
         CTRL ctrl = WrappedControl;
         bool isControlOk = (null != ctrl);
+        bool historyFull = false;
         AddTextResult res = AddTextResult.AddNone;
 
         lock (_lockHistory)
         {
-            if (isControlOk)
-            {  // better do this inside the lock, too, so the other thread does not mess-up
-                isControlOk = ctrl.IsHandleCreated && !ctrl.InvokeRequired;
-            }
-
-            if (_msgHistory.Count < this.HistoryLimit)
-            {
-                _msgHistory.Enqueue(entry);
-            }
-            else
+            isControlOk = isControlOk && ctrl.IsHandleCreated && !ctrl.InvokeRequired;
+            if (historyFull = _msgHistory.Count >= this.HistoryLimit)
             {
                 _msgHistory.Dequeue();
-                _msgHistory.Enqueue(entry);
+            }
+            _msgHistory.Enqueue(entry);
 
-                if (isControlOk)
+            if (isControlOk)
+            {
+                // Either first time or history rollover → rebuild full content
+                if (!_hasAddedTextBefore || historyFull)
                 {
-                    sbCompletelyNewContents = new StringBuilder();
-                    foreach (LogEntry item in _msgHistory)
-                    {
-                        sbCompletelyNewContents.Append(item.Text);
-                    }
+                    sbCompletelyNewContents = RebuildHistoryText();
                 }
+                _hasAddedTextBefore = true;
             }
         }
 
         if (isControlOk)
         {
-            if (null == sbCompletelyNewContents)
+            if (sbCompletelyNewContents is null)
             {
                 ctrl.Text += strAdd;
                 res = AddTextResult.AppendedOnly;
@@ -291,11 +295,31 @@ public class DumperCtrlWrapper<CTRL> : IDumperEx, IDisposableEx where CTRL : Sys
             else
             {
                 ctrl.Text = sbCompletelyNewContents.ToString();
-                res = AddTextResult.RemovedAndAppended;
+                res = historyFull ? AddTextResult.RemovedAndAppended : AddTextResult.AppendedOnly;
             }
         }
 
         return res;
+    }
+
+    /// <summary>
+    /// Rebuilds the full concatenated text from the current message history.
+    /// </summary>
+    /// <returns>The concatenated text of all log entries in the message history.</returns>
+    protected StringBuilder RebuildHistoryText()
+    {
+        StringBuilder sb = null;
+
+        if (_msgHistory.Count > 0)
+        {
+            sb = new StringBuilder();
+            foreach (LogEntry item in _msgHistory)
+            {
+                sb.Append(item.Text);
+            }
+        }
+
+        return sb;
     }
 
     /// <summary>
@@ -328,7 +352,7 @@ public class DumperCtrlWrapper<CTRL> : IDumperEx, IDisposableEx where CTRL : Sys
     {
         ArgumentNullException.ThrowIfNull(entry);
 
-        bool result = false;
+        bool bRes = false;
         CTRL ctrl = WrappedControl;
 
         if (null != ctrl)
@@ -336,16 +360,40 @@ public class DumperCtrlWrapper<CTRL> : IDumperEx, IDisposableEx where CTRL : Sys
             if (ctrl.InvokeRequired)
             {
                 ctrl.BeginInvoke(DumpEntry, entry);
-                result = true;
+                bRes = true;
             }
             else
             {
                 AddTextResult addRes = this.AddText(entry);
-                result = (addRes != AddTextResult.AddNone);
+                bRes = (addRes != AddTextResult.AddNone);
             }
         }
 
-        return result;
+        return bRes;
+    }
+
+    /// <summary>  Flushes the history to control. </summary>
+    protected virtual void FlushHistoryToControl()
+    {
+        CTRL ctrl = WrappedControl;
+
+        if (ctrl != null && ctrl.IsHandleCreated)
+        {
+            lock (_lockHistory)
+            {
+                StringBuilder rebuilt = RebuildHistoryText();
+                if (rebuilt is not null)
+                {
+                    ctrl.Text = rebuilt.ToString();
+                    _hasAddedTextBefore = true;
+                }
+            }
+        }
+    }
+
+    private void Ctrl_HandleCreated(object sender, EventArgs args)
+    {
+        FlushHistoryToControl();
     }
     #endregion // Methods
 
@@ -353,16 +401,12 @@ public class DumperCtrlWrapper<CTRL> : IDumperEx, IDisposableEx where CTRL : Sys
     #region IDisposable Members
 
     /// <summary>
-    /// Dispose(bool disposing) executes in two distinct scenarios.
-    /// If disposing equals true, the method has been called directly
-    /// or indirectly by a user's code. Managed and unmanaged resources
-    /// can be disposed.
-    /// If disposing equals false, the method has been called by the 
-    /// runtime from inside the finalizer and you should not reference 
-    /// other objects. Only unmanaged resources can be disposed.
+    /// Dispose(bool disposing) executes in two distinct scenarios. If disposing equals true, the method has been
+    /// called directly or indirectly by a user's code. Managed and unmanaged resources can be disposed. If
+    /// disposing equals false, the method has been called by the runtime from inside the finalizer and you
+    /// should not reference other objects. Only unmanaged resources can be disposed.
     /// </summary>
-    /// <param name="disposing"> If true, is called by IDisposable.Dispose. 
-    /// Otherwise it is called by finalizer.</param>
+    /// <param name="disposing"> If true, is called by IDisposable.Dispose. Otherwise it is called by finalizer. </param>
     protected virtual void Dispose(bool disposing)
     {
         // release managed resources first
@@ -430,10 +474,10 @@ public class DumperCtrlWrapper<CTRL> : IDumperEx, IDisposableEx where CTRL : Sys
     public bool Reset()
     {
         CTRL ctrl;
-        bool result;
+        bool bRes;
 
         this.CheckNotDisposed();
-        if (result = ((null != (ctrl = WrappedControl)) && ctrl.IsHandleCreated))
+        if (bRes = ((null != (ctrl = WrappedControl)) && ctrl.IsHandleCreated))
         {
             if (ctrl.InvokeRequired)
             {
@@ -444,29 +488,20 @@ public class DumperCtrlWrapper<CTRL> : IDumperEx, IDisposableEx where CTRL : Sys
                 this.ClearTextHistory();
             }
         }
-        return result;
+        return bRes;
     }
     #endregion // IDumper Members
 
     /// <inheritdoc/>
-    public bool SupportsHistory
-    {
-        get { return true; }
-    }
+    public bool SupportsHistory { get => true; }
 
     /// <inheritdoc/>
-    public int HistoryLimit
-    {
-        get { return _maxMsgHistoryItems; }
-    }
+    public int HistoryLimit { get => _maxMsgHistoryItems; }
 
     /// <inheritdoc/>
     public bool SetHistoryLimit(int nNewLimit)
     {
-        if (nNewLimit <= 0)
-        {
-            throw new ArgumentOutOfRangeException(nameof(nNewLimit), nNewLimit, "The value must be positive");
-        }
+        ArgumentOutOfRangeException.ThrowIfLessThanOrEqual(nNewLimit, 0);
         _maxMsgHistoryItems = nNewLimit;
 
         lock (_lockHistory)

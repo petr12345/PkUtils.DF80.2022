@@ -57,6 +57,51 @@ public class DumperCtrRichTextBoxWrapper : DumperCtrlTextBoxBaseWrapper<RichText
         };
     }
 
+    /// <summary>   Appends an entry with color. </summary>
+    /// <param name="rtb"> The rtb control. </param>
+    /// <param name="entry"> The log entry. Can't be null. </param>
+    protected void AppendEntryWithColor(RichTextBox rtb, LogEntry entry)
+    {
+        Color? color = GetColorForEntry(entry);
+        rtb.SelectionStart = rtb.TextLength;
+        rtb.SelectionLength = 0;
+
+        if (color.HasValue)
+            rtb.SelectionColor = color.Value;
+        else
+            rtb.SelectionColor = rtb.ForeColor;
+
+        rtb.AppendText(entry.Text);
+    }
+
+    /// <summary>   Flushes the history to control. </summary>
+    protected override void FlushHistoryToControl()
+    {
+        RichTextBox rtb = this.WrappedControl;
+        if (rtb == null || !rtb.IsHandleCreated)
+            return;
+
+        if (rtb.InvokeRequired)
+        {
+            rtb.Invoke(new Action(FlushHistoryToControl));
+            return;
+        }
+
+        bool wasReadOnly = rtb.ReadOnly;
+        rtb.ReadOnly = false;
+        rtb.Clear();
+
+        foreach (LogEntry entry in _msgHistory)
+        {
+            AppendEntryWithColor(rtb, entry);
+        }
+
+        rtb.SelectionColor = rtb.ForeColor;
+        rtb.ReadOnly = wasReadOnly;
+
+        _hasAddedTextBefore = true;
+    }
+
     /// <summary> Overrides the virtual method of the base class, in order to add scrolling to the actual end of
     /// control text. </summary>
     ///
@@ -71,63 +116,70 @@ public class DumperCtrRichTextBoxWrapper : DumperCtrlTextBoxBaseWrapper<RichText
 
         RichTextBox rtb = this.WrappedControl;
         AddTextResult result = AddTextResult.AddNone;
+        bool historyFull;
 
-        if (rtb.IsHandleCreated && !rtb.InvokeRequired)
+        if (ShouldPreprocessItems)
         {
-            TextBoxSelInfo selInfo = rtb.GetSelInfo();
+            entry = new LogEntry(PreprocessAddedText(entry.Text), entry.Level);
+        }
 
-            if (ShouldPreprocessItems)
+        TextBoxSelInfo selInfo = null;
+
+        lock (_lockHistory)
+        {
+            if (_msgHistory.Count >= HistoryLimit)
             {
-                entry = new LogEntry(PreprocessAddedText(entry.Text), entry.Level);
+                _msgHistory.Dequeue();
+                historyFull = true;
             }
-
-            for (bool wasReadOnly = rtb.ReadOnly; _msgHistory.Count >= HistoryLimit;)
+            else
             {
-                LogEntry removed = _msgHistory.Dequeue();
-                int removeLength = removed.Text.Length;
-
-                if (removeLength > 0)
-                {
-                    rtb.ReadOnly = false;
-                    if (rtb.TextLength >= removeLength)
-                    {
-                        rtb.Select(0, removeLength);
-                        rtb.SelectedText = string.Empty;
-                        selInfo = selInfo?.WithOffset(-removeLength);
-                    }
-                    else
-                    {
-                        rtb.Clear();
-                        selInfo = null;
-                    }
-                    rtb.ReadOnly = wasReadOnly;
-                    result = AddTextResult.RemovedAndAppended;
-                }
+                historyFull = false;
             }
 
             _msgHistory.Enqueue(entry);
 
-            Color? color = GetColorForEntry(entry);
-            int oldLength = rtb.TextLength;
-
-            rtb.SelectionStart = oldLength;
-            rtb.SelectionLength = 0;
-
-            if (color.HasValue)
+            if (rtb.IsHandleCreated && !rtb.InvokeRequired)
             {
-                rtb.SelectionColor = color.Value;
-                rtb.AppendText(entry.Text);
-                rtb.SelectionColor = rtb.ForeColor;
-            }
-            else
-            {
-                rtb.AppendText(entry.Text);
-            }
+                selInfo = rtb.GetSelInfo();
 
-            if (selInfo != null)
-            {
-                RestoreSelectionOrScrollToEnd(rtb, selInfo);
+                if (!_hasAddedTextBefore || historyFull)
+                {
+                    // On first add or after rollover, flush everything
+                    FlushHistoryToControl();
+                    result = AddTextResult.RemovedAndAppended;
+                    _hasAddedTextBefore = true;
+                }
+                else
+                {
+                    Color? color = GetColorForEntry(entry);
+                    int oldLength = rtb.TextLength;
+
+                    rtb.SelectionStart = oldLength;
+                    rtb.SelectionLength = 0;
+
+                    if (color.HasValue)
+                    {
+                        rtb.SelectionColor = color.Value;
+                        rtb.AppendText(entry.Text);
+                        rtb.SelectionColor = rtb.ForeColor;
+                    }
+                    else
+                    {
+                        rtb.AppendText(entry.Text);
+                    }
+
+                    if (result == AddTextResult.AddNone && entry.Text.Length > 0)
+                    {
+                        result = AddTextResult.AppendedOnly;
+                    }
+                }
             }
+        }
+
+        if (selInfo != null)
+        {
+            RestoreSelectionOrScrollToEnd(rtb, selInfo);
         }
 
         return result;
