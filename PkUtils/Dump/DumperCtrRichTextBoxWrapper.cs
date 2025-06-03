@@ -6,6 +6,8 @@ using System.Drawing;
 using System.Windows.Forms;
 using PK.PkUtils.UI.Utils;
 
+#pragma warning disable IDE0290     // Use primary constructor
+
 namespace PK.PkUtils.Dump;
 
 /// <summary>
@@ -117,10 +119,10 @@ public class DumperCtrRichTextBoxWrapper : DumperCtrlTextBoxBaseWrapper<RichText
 
     /// <summary> Overrides the virtual method of the base class, in order to add scrolling to the actual end of
     /// control text. </summary>
-    ///
     /// <remarks> In case there was any selection before text adding, and if the text is just appended
     /// ( AddTextResult.AppendedOnly ), the selection is eventually  restored. </remarks>
-    ///
+    /// 
+    /// <param name="entry"> The log entry containing the text and severity level. </param>
     /// <returns> An enum <see cref="DumperCtrlWrapper{CTRL}.AddTextResult"/> value indicating what
     /// type of change has been done. </returns>
     protected override AddTextResult AddText(LogEntry entry)
@@ -154,7 +156,7 @@ public class DumperCtrRichTextBoxWrapper : DumperCtrlTextBoxBaseWrapper<RichText
             {
                 // On first add, flush everything
                 FlushHistoryToControl();
-                result = AddTextResult.RemovedAndAppended;
+                result = AddTextResult.AppendedOnly;
             }
             else if (historyFull)
             {
@@ -177,3 +179,4 @@ public class DumperCtrRichTextBoxWrapper : DumperCtrlTextBoxBaseWrapper<RichText
 
     #endregion // Methods
 }
+#pragma warning restore IDE0290     // Use primary constructor

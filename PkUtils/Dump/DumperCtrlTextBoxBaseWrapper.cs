@@ -5,6 +5,8 @@ using System;
 using System.Windows.Forms;
 using PK.PkUtils.UI.Utils;
 
+#pragma warning disable IDE0290     // Use primary constructor
+
 namespace PK.PkUtils.Dump;
 
 /// <summary>
@@ -91,6 +93,7 @@ public class DumperCtrlTextBoxBaseWrapper<T> : DumperCtrlWrapper<T> where T : Te
     /// <remarks> In case there was any selection before text adding, and if the text is just appended
     /// ( AddTextResult.AppendedOnly ), the selection is eventually  restored. </remarks>
     ///
+    /// <param name="entry"> The log entry containing the text and severity level. </param>
     /// <returns> An enum <see cref="DumperCtrlWrapper{T}.AddTextResult"/> value indicating what
     /// type of change has been done. </returns>
     protected override AddTextResult AddText(LogEntry entry)
@@ -127,3 +130,4 @@ public class DumperCtrlTextBoxBaseWrapper<T> : DumperCtrlWrapper<T> where T : Te
     }
     #endregion // Methods
 }
+#pragma warning restore IDE0290     // Use primary constructor

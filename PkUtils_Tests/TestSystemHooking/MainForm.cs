@@ -22,7 +22,7 @@ namespace PK.TestSystemHooking
         private Tester _tester;
         private Settings _settings;
         private readonly DumperCtrlTextBoxWrapper _wrapper;
-        private const int _maxMsgHistoryItems = 1024;
+        private const int _maxMsgHistoryItems = 256;
         #endregion // Fields
 
         #region Constructor(s)
