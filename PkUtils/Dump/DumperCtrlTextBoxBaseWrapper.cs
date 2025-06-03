@@ -47,18 +47,35 @@ public class DumperCtrlTextBoxBaseWrapper<T> : DumperCtrlWrapper<T> where T : Te
 
     #region Methods
 
+    /// <summary>   Removes text from the start of the control. </summary>
+    /// <param name="tb"> The text box to be affected. </param>
+    /// <param name="length"> Number of characters to remove. </param>
+    protected static void RemoveTextFromStart(TextBoxBase tb, int length)
+    {
+        ArgumentNullException.ThrowIfNull(tb);
+        ArgumentOutOfRangeException.ThrowIfNegative(length);
+
+        if (length > 0)
+        {
+            bool wasReadOnly = tb.ReadOnly;
+
+            tb.ReadOnly = false;
+            tb.Select(0, Math.Min(length, tb.TextLength));
+            tb.SelectedText = string.Empty;
+            tb.ReadOnly = wasReadOnly;
+        }
+    }
+
     /// <summary>
     /// Restores the selection in the RichTextBox, or scrolls to end if selection conflicts with latest text
     /// visibility.
     /// </summary>
-    /// <param name="textBox"> The text box control. </param>
     /// <param name="selInfo"> Information describing the selected. </param>
-    protected static void RestoreSelectionOrScrollToEnd(
-        TextBoxBase textBox,
+    protected virtual void RestoreSelectionOrScrollToEnd(
         TextBoxSelInfo selInfo)
     {
-        ArgumentNullException.ThrowIfNull(textBox);
         ArgumentNullException.ThrowIfNull(selInfo);
+        TextBoxBase textBox = this.WrappedControl;
 
         if (!selInfo.IsSel)
         {
@@ -87,6 +104,16 @@ public class DumperCtrlTextBoxBaseWrapper<T> : DumperCtrlWrapper<T> where T : Te
         }
     }
 
+    /// <summary> Appends an entry contents. </summary>
+    /// <param name="entry"> The text entry. Can't be null. </param>
+    protected virtual void AppendEntry(LogEntry entry)
+    {
+        ArgumentNullException.ThrowIfNull(entry);
+        TextBoxBase tb = this.WrappedControl;
+
+        tb.AppendText(entry.Text);
+    }
+
     /// <summary> Overrides the virtual method of the base class, in order to add scrolling to the actual end of
     /// control text. </summary>
     ///
@@ -99,32 +126,56 @@ public class DumperCtrlTextBoxBaseWrapper<T> : DumperCtrlWrapper<T> where T : Te
     protected override AddTextResult AddText(LogEntry entry)
     {
         TextBoxBase txtBx = WrappedControl;
-        TextBoxSelInfo selInfo = null;
-        AddTextResult result;
+        AddTextResult result = AddTextResult.AddNone;
 
-        if ((null != txtBx) && txtBx.IsHandleCreated && !txtBx.InvokeRequired)
+        if (txtBx == null || txtBx.InvokeRequired)
+            return result;
+
+        if (ShouldPreprocessItems)
         {
-            // Get old selection info. It will also indicate there is reasonable control to operate with
-            selInfo = txtBx.GetSelInfo();
+            entry = new LogEntry(PreprocessAddedText(entry.Text), entry.Level);
         }
 
-        if (AddTextResult.AddNone != (result = base.AddText(entry)))
+        bool historyFull = false;
+        bool isOk = txtBx.IsHandleCreated;
+        TextBoxSelInfo selInfo = isOk ? txtBx.GetSelInfo() : null;
+
+        lock (_lockHistory)
         {
-            if (selInfo != null)
+            int sumaRemovedLength = 0;
+
+            while (_msgHistory.Count >= HistoryLimit)
             {
-                if (!selInfo.IsSel)
+                sumaRemovedLength += _msgHistory.Dequeue().Text.Length;
+                historyFull = true;
+            }
+            _msgHistory.Enqueue(entry);
+
+            if (isOk)
+            {
+                if (!HasAddedTextBefore)
                 {
-                    // Scroll to end only if there was no selection.
-                    txtBx.Select(txtBx.Text.Length, 0);
-                    txtBx.ScrollToCaret();
+                    // On first add, flush everything
+                    FlushHistoryToControl();
+                    result = AddTextResult.AppendedOnly;
                 }
-                else if (result == AddTextResult.AppendedOnly)
+                else if (historyFull)
                 {
-                    // Restore selection if text was just appended.
-                    txtBx.SetSelInfo(selInfo);
+                    // tb.SuspendLayout();
+                    RemoveTextFromStart(txtBx, sumaRemovedLength);
+                    AppendEntry(entry);
+                    // tb.ResumeLayout();
+                    result = AddTextResult.RemovedAndAppended;
+                }
+                else
+                {
+                    AppendEntry(entry);
+                    result = AddTextResult.AppendedOnly;
                 }
             }
         }
+
+        if (isOk) RestoreSelectionOrScrollToEnd(selInfo);
 
         return result;
     }
