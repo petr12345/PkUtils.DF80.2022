@@ -64,42 +64,41 @@ public class DumperCtrRichTextBoxWrapper : DumperCtrlTextBoxBaseWrapper<RichText
     {
         ArgumentNullException.ThrowIfNull(entry);
         RichTextBox rtb = this.WrappedControl;
+        CheckInvokeNotRequired(rtb);
 
         Color? color = GetColorForEntry(entry);
+        Color foreColor = rtb.ForeColor;
+
         rtb.SelectionStart = rtb.TextLength;
         rtb.SelectionLength = 0;
-        rtb.SelectionColor = color ?? rtb.ForeColor;
+        rtb.SelectionColor = color ?? foreColor;
 
         rtb.AppendText(entry.Text);
-        rtb.SelectionColor = rtb.ForeColor;
+        rtb.SelectionColor = foreColor;
 
         _hasAddedTextBefore = true;
     }
 
-    /// <summary>   Flushes the history to control. </summary>
+    /// <summary>  Flushes the history to control. </summary>
     protected override void FlushHistoryToControl()
     {
-        RichTextBox rtb = this.WrappedControl;
-        if (rtb == null || !rtb.IsHandleCreated)
-            return;
+        RichTextBox rtb = WrappedControl;
+        CheckInvokeNotRequired(rtb);
 
-        if (rtb.InvokeRequired)
+        lock (_lockHistory)
         {
-            rtb.Invoke(new Action(FlushHistoryToControl));
-            return;
+            bool wasReadOnly = rtb.ReadOnly;
+            rtb.ReadOnly = false;
+            rtb.Clear();
+
+            foreach (LogEntry entry in _msgHistory)
+            {
+                AppendEntry(entry);
+            }
+
+            rtb.ReadOnly = wasReadOnly;
+            _hasAddedTextBefore = true;
         }
-
-        bool wasReadOnly = rtb.ReadOnly;
-        rtb.ReadOnly = false;
-        rtb.Clear();
-
-        foreach (LogEntry entry in _msgHistory)
-        {
-            AppendEntry(entry);
-        }
-
-        rtb.ReadOnly = wasReadOnly;
-        _hasAddedTextBefore = true;
     }
     #endregion // Methods
 }

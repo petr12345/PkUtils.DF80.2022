@@ -4,7 +4,6 @@
 using System;
 using System.Windows.Forms;
 
-#pragma warning disable IDE0057   // Use range operator
 #pragma warning disable IDE0290   // Use primary constructor
 
 namespace PK.PkUtils.Dump;
@@ -58,21 +57,23 @@ public class DumperCtrlTextBoxWrapper : DumperCtrlTextBoxBaseWrapper<TextBox>
         }
         else
         {
-            bool wasReadOnly = tb.ReadOnly;
-            tb.ReadOnly = false;
-
-            tb.Clear();
-
-            foreach (LogEntry entry in _msgHistory)
+            lock (_lockHistory)
             {
-                tb.AppendText(entry.Text);
-            }
+                bool wasReadOnly = tb.ReadOnly;
+                tb.ReadOnly = false;
 
-            tb.ReadOnly = wasReadOnly;
-            _hasAddedTextBefore = true;
+                tb.Clear();
+
+                foreach (LogEntry entry in _msgHistory)
+                {
+                    tb.AppendText(entry.Text);
+                }
+
+                tb.ReadOnly = wasReadOnly;
+                _hasAddedTextBefore = true;
+            }
         }
     }
     #endregion // Methods
 }
 #pragma warning restore IDE0290  // Use primary constructor
-#pragma warning restore IDE0057  // Use range operator

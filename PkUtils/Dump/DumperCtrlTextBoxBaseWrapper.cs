@@ -48,21 +48,22 @@ public class DumperCtrlTextBoxBaseWrapper<T> : DumperCtrlWrapper<T> where T : Te
     #region Methods
 
     /// <summary>   Removes text from the start of the control. </summary>
-    /// <param name="tb"> The text box to be affected. </param>
+    /// <param name="txtBx"> The text box to be affected. </param>
     /// <param name="length"> Number of characters to remove. </param>
-    protected static void RemoveTextFromStart(TextBoxBase tb, int length)
+    protected static void RemoveTextFromStart(TextBoxBase txtBx, int length)
     {
-        ArgumentNullException.ThrowIfNull(tb);
+        ArgumentNullException.ThrowIfNull(txtBx);
         ArgumentOutOfRangeException.ThrowIfNegative(length);
+        CheckInvokeNotRequired(txtBx);
 
         if (length > 0)
         {
-            bool wasReadOnly = tb.ReadOnly;
+            bool wasReadOnly = txtBx.ReadOnly;
 
-            tb.ReadOnly = false;
-            tb.Select(0, Math.Min(length, tb.TextLength));
-            tb.SelectedText = string.Empty;
-            tb.ReadOnly = wasReadOnly;
+            txtBx.ReadOnly = false;
+            txtBx.Select(0, Math.Min(length, txtBx.TextLength));
+            txtBx.SelectedText = string.Empty;
+            txtBx.ReadOnly = wasReadOnly;
         }
     }
 
@@ -71,11 +72,11 @@ public class DumperCtrlTextBoxBaseWrapper<T> : DumperCtrlWrapper<T> where T : Te
     /// visibility.
     /// </summary>
     /// <param name="selInfo"> Information describing the selected. </param>
-    protected virtual void RestoreSelectionOrScrollToEnd(
-        TextBoxSelInfo selInfo)
+    protected virtual void RestoreSelectionOrScrollToEnd(TextBoxSelInfo selInfo)
     {
         ArgumentNullException.ThrowIfNull(selInfo);
-        TextBoxBase textBox = this.WrappedControl;
+        CheckInvokeNotRequired(WrappedControl);
+        TextBoxBase textBox = WrappedControl;
 
         if (!selInfo.IsSel)
         {
@@ -109,9 +110,11 @@ public class DumperCtrlTextBoxBaseWrapper<T> : DumperCtrlWrapper<T> where T : Te
     protected virtual void AppendEntry(LogEntry entry)
     {
         ArgumentNullException.ThrowIfNull(entry);
-        TextBoxBase tb = this.WrappedControl;
+        TextBoxBase txtBx = this.WrappedControl;
 
-        tb.AppendText(entry.Text);
+        CheckInvokeNotRequired(txtBx);
+        txtBx.AppendText(entry.Text);
+        _hasAddedTextBefore = true;
     }
 
     /// <summary> Overrides the virtual method of the base class, in order to add scrolling to the actual end of
@@ -125,11 +128,9 @@ public class DumperCtrlTextBoxBaseWrapper<T> : DumperCtrlWrapper<T> where T : Te
     /// type of change has been done. </returns>
     protected override AddTextResult AddText(LogEntry entry)
     {
+        ArgumentNullException.ThrowIfNull(entry);
         TextBoxBase txtBx = WrappedControl;
-        AddTextResult result = AddTextResult.AddNone;
-
-        if (txtBx == null || txtBx.InvokeRequired)
-            return result;
+        CheckInvokeNotRequired(txtBx);
 
         if (ShouldPreprocessItems)
         {
@@ -137,13 +138,13 @@ public class DumperCtrlTextBoxBaseWrapper<T> : DumperCtrlWrapper<T> where T : Te
         }
 
         bool historyFull = false;
-        bool isOk = txtBx.IsHandleCreated;
-        TextBoxSelInfo selInfo = isOk ? txtBx.GetSelInfo() : null;
+        bool isControlOk = txtBx.IsHandleCreated;
+        int sumaRemovedLength = 0;
+        TextBoxSelInfo selInfo = isControlOk ? txtBx.GetSelInfo() : null;
+        AddTextResult result = AddTextResult.AddNone;
 
         lock (_lockHistory)
         {
-            int sumaRemovedLength = 0;
-
             while (_msgHistory.Count >= HistoryLimit)
             {
                 sumaRemovedLength += _msgHistory.Dequeue().Text.Length;
@@ -151,7 +152,7 @@ public class DumperCtrlTextBoxBaseWrapper<T> : DumperCtrlWrapper<T> where T : Te
             }
             _msgHistory.Enqueue(entry);
 
-            if (isOk)
+            if (isControlOk)
             {
                 if (!HasAddedTextBefore)
                 {
@@ -161,11 +162,11 @@ public class DumperCtrlTextBoxBaseWrapper<T> : DumperCtrlWrapper<T> where T : Te
                 }
                 else if (historyFull)
                 {
-                    // tb.SuspendLayout();
                     RemoveTextFromStart(txtBx, sumaRemovedLength);
                     AppendEntry(entry);
-                    // tb.ResumeLayout();
                     result = AddTextResult.RemovedAndAppended;
+                    // get rid of no longer valid previous selection info
+                    selInfo = new TextBoxSelInfo(txtBx.Text.Length);
                 }
                 else
                 {
@@ -175,7 +176,7 @@ public class DumperCtrlTextBoxBaseWrapper<T> : DumperCtrlWrapper<T> where T : Te
             }
         }
 
-        if (isOk) RestoreSelectionOrScrollToEnd(selInfo);
+        if (isControlOk) RestoreSelectionOrScrollToEnd(selInfo);
 
         return result;
     }
