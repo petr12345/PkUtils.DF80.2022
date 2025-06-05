@@ -339,8 +339,7 @@ public class DumperCtrlWrapper<CTRL> : IDumperEx, IDisposableEx where CTRL : Con
         {
             if (ctrl.InvokeRequired)
             {
-                ctrl.BeginInvoke(DumpEntry, entry);
-                result = true;
+                result = ctrl.Invoke((Func<bool>)(() => DumpEntry(entry)));
             }
             else
             {
@@ -352,7 +351,7 @@ public class DumperCtrlWrapper<CTRL> : IDumperEx, IDisposableEx where CTRL : Con
         return result;
     }
 
-    /// <summary>  Flushes the history to control. </summary>
+    /// <summary> Flushes the history to control. </summary>
     protected virtual void FlushHistoryToControl()
     {
         CTRL ctrl = WrappedControl;
