@@ -1,4 +1,4 @@
-﻿// Ignore Spelling: Utils, checkbox
+﻿// Ignore Spelling: Utils, checkbox, fallback
 //
 using System;
 using System.Collections.Generic;
@@ -7,7 +7,7 @@ using System.Linq;
 using System.Windows.Forms;
 using PK.PkUtils.UI.Utils;
 
-namespace PK.PkUtils.UI.Dialogs;
+namespace PK.PkUtils.UI.Dialogs.TaskDialogs;
 
 /// <summary> Several utilities as example of usage of <see cref="TaskDialog"/> </summary>
 /// <remarks>
@@ -49,34 +49,11 @@ public static class TaskDialogWrapper
         string noText,
         DialogResult defaultButton = DialogResult.Yes)
     {
+        TaskDialogButtonCollection buttons = (defaultButton == DialogResult.Yes)
+            ? CreateButtons((yesText, DialogResult.Yes), (noText, DialogResult.No))
+            : CreateButtons((noText, DialogResult.No), (yesText, DialogResult.Yes));
 
-        TaskDialogButton yesButton = new(yesText) { Tag = DialogResult.Yes };
-        TaskDialogButton noButton = new(noText) { Tag = DialogResult.No };
-
-        var buttons = new TaskDialogButtonCollection();
-
-        if (defaultButton == DialogResult.Yes)
-        {
-            buttons.Add(yesButton);
-            buttons.Add(noButton);
-        }
-        else
-        {
-            buttons.Add(noButton);
-            buttons.Add(yesButton);
-        }
-
-        TaskDialogPage page = new()
-        {
-            Caption = caption,
-            SizeToContent = true,
-            Heading = heading,
-            Icon = QuestionIcon,
-            Buttons = buttons,
-            DefaultButton = FindButton(buttons, defaultButton)
-        };
-
-        TaskDialogButton buttonResult = TaskDialog.ShowDialog(owner, page);
+        TaskDialogButton buttonResult = ShowDialogWithButtons(owner, caption, heading, null, QuestionIcon, buttons, defaultButton);
         bool result = buttonResult.Tag is DialogResult dr && dr == DialogResult.Yes;
 
         return result;
@@ -98,34 +75,11 @@ public static class TaskDialogWrapper
         Icon icon,
         DialogResult defaultButton = DialogResult.Yes)
     {
-        TaskDialogButton yesButton = new("Yes") { Tag = DialogResult.Yes };
-        TaskDialogButton noButton = new("No") { Tag = DialogResult.No };
-
-        var buttons = new TaskDialogButtonCollection();
-
-        if (defaultButton == DialogResult.Yes)
-        {
-            buttons.Add(yesButton);
-            buttons.Add(noButton);
-        }
-        else
-        {
-            buttons.Add(noButton);
-            buttons.Add(yesButton);
-        }
-
-        TaskDialogPage page = new()
-        {
-            Caption = caption,
-            SizeToContent = true,
-            Heading = heading,
-            Text = text,
-            Icon = new TaskDialogIcon(icon),
-            Buttons = buttons,
-            DefaultButton = FindButton(buttons, defaultButton)
-        };
-
-        TaskDialogButton buttonResult = TaskDialog.ShowDialog(owner, page);
+        TaskDialogButtonCollection buttons = (defaultButton == DialogResult.Yes)
+            ? CreateButtons(("Yes", DialogResult.Yes), ("No", DialogResult.No))
+            : CreateButtons(("No", DialogResult.No), ("Yes", DialogResult.Yes));
+        TaskDialogIcon tdIcon = new(icon);
+        TaskDialogButton buttonResult = ShowDialogWithButtons(owner, caption, heading, text, tdIcon, buttons, defaultButton);
         bool result = buttonResult.Tag is DialogResult dr && dr == DialogResult.Yes;
 
         return result;
@@ -133,8 +87,6 @@ public static class TaskDialogWrapper
 
     /// <summary> Invoke Task Dialog to ask a question. </summary>
     /// <remarks>
-    /// Dialogs.Question(this, "Ask something", YesMethod, NoMethod);
-    /// 
     /// Last two parameters are the actions to perform.
     /// </remarks>
     /// <param name="owner"> control or form. </param>
@@ -155,25 +107,9 @@ public static class TaskDialogWrapper
         Action noAction,
         TaskDialogIcon icon = null)
     {
-        TaskDialogButton yesButton = new("Yes") { Tag = DialogResult.Yes };
-        TaskDialogButton noButton = new("No") { Tag = DialogResult.No };
-        var buttons = new TaskDialogButtonCollection
-        {
-            yesButton,
-            noButton
-        };
-
-        TaskDialogPage page = new()
-        {
-            Caption = caption,
-            SizeToContent = true,
-            Heading = heading,
-            Text = text,
-            Icon = icon ?? QuestionIcon,
-            Buttons = buttons
-        };
-
-        TaskDialogButton buttonResult = TaskDialog.ShowDialog(owner, page);
+        TaskDialogButtonCollection buttons = CreateButtons(("Yes", DialogResult.Yes), ("No", DialogResult.No));
+        TaskDialogIcon tdIcon = icon ?? QuestionIcon;
+        TaskDialogButton buttonResult = ShowDialogWithButtons(owner, caption, heading, text, tdIcon, buttons, DialogResult.Yes);
         bool result = buttonResult.Tag is DialogResult dr && dr == DialogResult.Yes;
 
         if (result)
@@ -202,25 +138,9 @@ public static class TaskDialogWrapper
         string text,
         DialogResult defaultButton = DialogResult.Yes)
     {
-        TaskDialogButton yesButton = new("Yes") { Tag = DialogResult.Yes };
-        TaskDialogButton noButton = new("No") { Tag = DialogResult.No };
-        TaskDialogButton cancelButton = new("Cancel") { Tag = DialogResult.Cancel };
-        TaskDialogButtonCollection buttons = [yesButton, noButton, cancelButton];
-
-        TaskDialogPage page = new()
-        {
-            Caption = caption,
-            SizeToContent = true,
-            Heading = heading,
-            Text = text,
-            Icon = QuestionIcon,
-            Buttons = buttons,
-            DefaultButton = FindButton(buttons, defaultButton),
-            AllowCancel = true,
-        };
-
-        TaskDialogButton buttonResult = TaskDialog.ShowDialog(owner, page);
-        DialogResult result = buttonResult.Tag is DialogResult dr ? dr : DialogResult.Cancel;
+        TaskDialogButtonCollection buttons = CreateButtons(MessageBoxButtons.YesNoCancel);
+        TaskDialogButton buttonResult = ShowDialogWithButtons(owner, caption, heading, text, QuestionIcon, buttons, defaultButton, allowCancel: true);
+        DialogResult result = buttonResult.Tag is DialogResult dr ? dr : defaultButton;
 
         return result;
     }
@@ -241,25 +161,11 @@ public static class TaskDialogWrapper
         TaskDialogIcon icon = null,
         DialogResult defaultButton = DialogResult.Retry)
     {
-        TaskDialogButton abortButton = new("Abort") { Tag = DialogResult.Abort };
-        TaskDialogButton retryButton = new("Retry") { Tag = DialogResult.Retry };
-        TaskDialogButton ignoreButton = new("Ignore") { Tag = DialogResult.Ignore };
-        TaskDialogButtonCollection buttons = [abortButton, retryButton, ignoreButton];
+        TaskDialogButtonCollection buttons = CreateButtons(MessageBoxButtons.AbortRetryIgnore);
+        TaskDialogButton buttonResult = ShowDialogWithButtons(owner, caption, heading, text, icon ?? QuestionIcon, buttons, defaultButton);
+        DialogResult result = buttonResult.Tag is DialogResult dr ? dr : defaultButton;
 
-        TaskDialogPage page = new()
-        {
-            Caption = caption,
-            SizeToContent = true,
-            Heading = heading,
-            Text = text,
-            Icon = icon ?? QuestionIcon,
-            Buttons = buttons,
-            DefaultButton = FindButton(buttons, defaultButton),
-            AllowCancel = false,
-        };
-
-        TaskDialogButton buttonResult = TaskDialog.ShowDialog(owner, page);
-        return buttonResult.Tag is DialogResult dr ? dr : DialogResult.Ignore;
+        return result;
     }
 
     /// <summary>
@@ -283,86 +189,19 @@ public static class TaskDialogWrapper
         TaskDialogIcon icon = null,
         DialogResult defaultButton = DialogResult.Retry)
     {
-        TaskDialogButton abortButton = new("Abort") { Tag = DialogResult.Abort };
-        TaskDialogButton retryButton = new("Retry") { Tag = DialogResult.Retry };
-        TaskDialogButton ignoreButton = new("Ignore") { Tag = DialogResult.Ignore };
         // Custom button for Ignore All (reuses DialogResult.Ignore tag)
-        TaskDialogButton ignoreAllButton = new("Ignore All") { Tag = DialogResult.Ignore };
-
-        TaskDialogButtonCollection buttons = [abortButton, retryButton, ignoreButton, ignoreAllButton];
-        TaskDialogPage page = new()
-        {
-            Caption = caption,
-            SizeToContent = true,
-            Heading = heading,
-            Text = text,
-            Icon = icon ?? QuestionIcon,
-            Buttons = buttons,
-            DefaultButton = FindButton(buttons, defaultButton),
-            AllowCancel = false,
-        };
-
-        TaskDialogButton buttonResult = TaskDialog.ShowDialog(owner, page);
+        TaskDialogButtonCollection buttons = CreateButtons(
+            ("Abort", DialogResult.Abort),
+            ("Retry", DialogResult.Retry),
+            ("Ignore", DialogResult.Ignore),
+            ("Ignore All", DialogResult.Ignore));
+        TaskDialogButton ignoreAllButton = buttons[3];
+        TaskDialogButton buttonResult = ShowDialogWithButtons(owner, caption, heading, text, icon ?? QuestionIcon, buttons, defaultButton);
         bool isIgnoreAll = ReferenceEquals(buttonResult, ignoreAllButton);
-        DialogResult result = buttonResult.Tag is DialogResult dr ? dr : DialogResult.Ignore;
+        DialogResult result = buttonResult.Tag is DialogResult dr ? dr : defaultButton;
 
         return (result, isIgnoreAll);
     }
-
-    ///// <summary>
-    ///// Displays a dialog with Abort, Retry, Ignore buttons and a checkbox saying "Ignore all subsequent errors".
-    ///// </summary>
-    ///// <param name="owner">The window that owns this dialog.</param>
-    ///// <param name="caption">The window caption.</param>
-    ///// <param name="heading">The heading text of the dialog.</param>
-    ///// <param name="text">The main message body text.</param>
-    ///// <param name="icon">Optional icon for the dialog (defaults to QuestionIcon).</param>
-    ///// <param name="defaultButton">Default selected button (defaults to Retry).</param>
-    ///// <param name="initiallyChecked">Whether the checkbox should be initially checked.</param>
-    ///// <returns>
-    ///// A tuple containing the <see cref="DialogResult"/> of the button pressed and a <see cref="bool"/>
-    ///// indicating whether the checkbox was checked when the dialog was closed.
-    ///// </returns>
-    //public static (DialogResult Result, bool ApplyIgnoreToAll) QuestionAbortRetryIgnoreWithCheckbox(
-    //    IWin32Window owner,
-    //    string caption,
-    //    string heading,
-    //    string text,
-    //    TaskDialogIcon icon = null,
-    //    DialogResult defaultButton = DialogResult.Retry,
-    //    bool initiallyChecked = false)
-    //{
-    //    TaskDialogButton abortButton = new("Abort") { Tag = DialogResult.Abort };
-    //    TaskDialogButton retryButton = new("Retry") { Tag = DialogResult.Retry };
-    //    TaskDialogButton ignoreButton = new("Ignore") { Tag = DialogResult.Ignore };
-
-    //    TaskDialogButtonCollection buttons = [abortButton, retryButton, ignoreButton];
-
-    //    var verificationCheckBox = new TaskDialogVerificationCheckBox("Apply Ignore to all subsequent errors")
-    //    {
-    //        Checked = initiallyChecked
-    //    };
-
-    //    TaskDialogPage page = new()
-    //    {
-    //        Caption = caption,
-    //        SizeToContent = true,
-    //        Heading = heading,
-    //        Text = text,
-    //        Icon = icon ?? QuestionIcon,
-    //        Buttons = buttons,
-    //        DefaultButton = FindButton(buttons, defaultButton),
-    //        AllowCancel = false,
-    //        Verification = verificationCheckBox
-    //    };
-
-    //    TaskDialogButton buttonResult = TaskDialog.ShowDialog(owner, page);
-    //    bool applyIgnoreToAll = page.Verification?.Checked ?? false;
-    //    DialogResult result = buttonResult.Tag is DialogResult dr ? dr : DialogResult.Ignore;
-
-    //    return (result, applyIgnoreToAll);
-    //}
-
 
     /// <summary>
     /// Displays a dialog with Abort, Retry, Ignore buttons and a customizable checkbox.
@@ -389,35 +228,26 @@ public static class TaskDialogWrapper
         TaskDialogIcon icon = null,
         DialogResult defaultButton = DialogResult.Retry)
     {
-        TaskDialogButton abortButton = new("Abort") { Tag = DialogResult.Abort };
-        TaskDialogButton retryButton = new("Retry") { Tag = DialogResult.Retry };
-        TaskDialogButton ignoreButton = new("Ignore") { Tag = DialogResult.Ignore };
-        TaskDialogButtonCollection buttons = [abortButton, retryButton, ignoreButton];
+        TaskDialogButtonCollection buttons = CreateButtons(MessageBoxButtons.AbortRetryIgnore);
         TaskDialogVerificationCheckBox verificationCheckBox = new(checkboxText)
         {
             Checked = initiallyChecked
         };
-
-        TaskDialogPage page = new()
-        {
-            Caption = caption,
-            SizeToContent = true,
-            Heading = heading,
-            Text = text,
-            Icon = icon ?? QuestionIcon,
-            Buttons = buttons,
-            DefaultButton = FindButton(buttons, defaultButton),
-            AllowCancel = false,
-            Verification = verificationCheckBox
-        };
-
-        TaskDialogButton buttonResult = TaskDialog.ShowDialog(owner, page);
-        bool applyIgnoreToAll = page.Verification?.Checked ?? false;
-        DialogResult result = buttonResult.Tag is DialogResult dr ? dr : DialogResult.Ignore;
+        TaskDialogButton buttonResult = ShowDialogWithButtons(
+            owner,
+            caption,
+            heading,
+            text,
+            icon ?? QuestionIcon,
+            buttons,
+            defaultButton,
+            allowCancel: false,
+            verification: verificationCheckBox);
+        bool applyIgnoreToAll = verificationCheckBox.Checked;
+        DialogResult result = buttonResult.Tag is DialogResult dr ? dr : defaultButton;
 
         return (result, applyIgnoreToAll);
     }
-
     #endregion // Question_methods
 
     #region Information_methods
@@ -437,28 +267,158 @@ public static class TaskDialogWrapper
         string buttonText = null,
         TaskDialogIcon icon = null)
     {
-        TaskDialogButton okayButton = new(buttonText ?? "OK");
+        TaskDialogButtonCollection buttons = CreateButtons((buttonText ?? "OK", DialogResult.OK));
+        TaskDialogIcon tdIcon = icon ?? TaskDialogIcon.Information;
 
-        TaskDialogPage page = new()
-        {
-            Caption = caption ?? "Information",
-            SizeToContent = true,
-            Heading = heading,
-            Text = text,
-            Icon = icon ?? TaskDialogIcon.Information,
-            Buttons = [okayButton]
-        };
-
-        TaskDialog.ShowDialog(owner, page);
+        ShowDialogWithButtons(owner, caption ?? "Information", heading, text, tdIcon, buttons, defaultButton: DialogResult.OK);
     }
     #endregion // Information_methods
     #endregion // Public Methods
 
+    #region Internal Methods
+
+    /// <summary>
+    /// Creates a <see cref="TaskDialogButtonCollection"/> from the specified button definitions.
+    /// </summary>
+    /// <param name="buttonDefs"> An array of tuples where each tuple contains the button text and the
+    /// corresponding <see cref="DialogResult"/> tag. </param>
+    /// <returns> A collection populated with buttons configured with the given text and associated tag. </returns>
+    internal static TaskDialogButtonCollection CreateButtons(
+        params (string Text, DialogResult Tag)[] buttonDefs)
+    {
+        TaskDialogButtonCollection buttons = [];
+
+        foreach (var (Text, Tag) in buttonDefs)
+        {
+            buttons.Add(new TaskDialogButton(Text) { Tag = Tag });
+        }
+
+        return buttons;
+    }
+
+    /// <summary> Creates a <see cref="TaskDialogButtonCollection"/> based on the specified <see cref="MessageBoxButtons"/>. </summary>
+    /// <param name="buttons"> The standard MessageBoxButtons value to translate into task dialog buttons. </param>
+    /// <returns> A <see cref="TaskDialogButtonCollection"/> representing the specified button configuration. </returns>
+    internal static TaskDialogButtonCollection CreateButtons(MessageBoxButtons buttons)
+    {
+        return CreateButtons(buttons, DialogResult.None).Buttons;
+    }
+
+    /// <summary>
+    /// Creates a collection of <see cref="TaskDialogButton"/>s based on the specified <see cref="MessageBoxButtons"/>
+    /// value, and determines the appropriate default <see cref="DialogResult"/> for the dialog.
+    /// </summary>
+    /// <exception cref="ArgumentException"> Thrown if <paramref name="requestedDefault"/> does not match
+    /// any of the valid results implied by <paramref name="buttons"/>. </exception>
+    /// 
+    /// <param name="buttons"> Specifies the combination of buttons to include in the dialog. </param>
+    /// <param name="requestedDefault"> The requested default button to be preselected. If set to <see cref="DialogResult.None"/>,
+    /// the first button in the collection will be used as default. </param>
+    /// <returns>
+    /// A tuple containing:
+    /// - <see cref="TaskDialogButtonCollection"/>: the constructed list of buttons for the dialog,
+    /// - <see cref="DialogResult"/>: the validated default result to use in <see cref="TaskDialogPage.DefaultButton"/>.
+    /// </returns>
+    internal static (TaskDialogButtonCollection Buttons, DialogResult Default) CreateButtons(
+        MessageBoxButtons buttons,
+        DialogResult requestedDefault)
+    {
+        DialogResult firstButton = DialogResult.None;
+        List<DialogResult> validResults = [];
+        TaskDialogButtonCollection taskButtons = [];
+
+        void AddButton(string text, DialogResult buttonResult)
+        {
+            taskButtons.Add(new TaskDialogButton(text) { Tag = buttonResult });
+            if (firstButton == DialogResult.None)
+                firstButton = buttonResult;
+            validResults.Add(buttonResult);
+        }
+
+        switch (buttons)
+        {
+            case MessageBoxButtons.OK:
+                AddButton("OK", DialogResult.OK);
+                break;
+            case MessageBoxButtons.OKCancel:
+                AddButton("OK", DialogResult.OK);
+                AddButton("Cancel", DialogResult.Cancel);
+                break;
+            case MessageBoxButtons.YesNo:
+                AddButton("Yes", DialogResult.Yes);
+                AddButton("No", DialogResult.No);
+                break;
+            case MessageBoxButtons.YesNoCancel:
+                AddButton("Yes", DialogResult.Yes);
+                AddButton("No", DialogResult.No);
+                AddButton("Cancel", DialogResult.Cancel);
+                break;
+            case MessageBoxButtons.RetryCancel:
+                AddButton("Retry", DialogResult.Retry);
+                AddButton("Cancel", DialogResult.Cancel);
+                break;
+            case MessageBoxButtons.AbortRetryIgnore:
+                AddButton("Abort", DialogResult.Abort);
+                AddButton("Retry", DialogResult.Retry);
+                AddButton("Ignore", DialogResult.Ignore);
+                break;
+        }
+
+        // Validate or fallback
+        DialogResult effectiveDefault;
+        if (requestedDefault == DialogResult.None)
+        {
+            effectiveDefault = firstButton;
+        }
+        else if (!validResults.Contains(requestedDefault))
+        {
+            throw new ArgumentException(
+                $"The specified default button '{requestedDefault}' is not valid for MessageBoxButtons '{buttons}'.",
+                nameof(requestedDefault));
+        }
+        else
+        {
+            effectiveDefault = requestedDefault;
+        }
+
+        return (taskButtons, effectiveDefault);
+    }
+    #endregion // Internal Methods
+
     #region Private Methods
 
-    private static TaskDialogButton FindButton(IEnumerable<TaskDialogButton> buttons, DialogResult buttonTag)
+    private static TaskDialogButton FindButton(
+        IEnumerable<TaskDialogButton> buttons,
+        DialogResult buttonTag)
     {
         return buttons.FirstOrDefault(x => x.Tag is DialogResult dr && dr == buttonTag);
+    }
+
+    private static TaskDialogButton ShowDialogWithButtons(
+        IWin32Window owner,
+        string caption,
+        string heading,
+        string text,
+        TaskDialogIcon icon,
+        TaskDialogButtonCollection buttons,
+        DialogResult defaultButton,
+        bool allowCancel = false,
+        TaskDialogVerificationCheckBox verification = null)
+    {
+        TaskDialogPage page = new()
+        {
+            Caption = caption,
+            SizeToContent = true,
+            Heading = heading,
+            Text = text,
+            Icon = icon,
+            Buttons = buttons,
+            DefaultButton = FindButton(buttons, defaultButton),
+            AllowCancel = allowCancel,
+            Verification = verification
+        };
+
+        return TaskDialog.ShowDialog(owner, page);
     }
     #endregion // Private Methods
 }
