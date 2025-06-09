@@ -7,7 +7,6 @@ using System.Windows.Forms;
 
 namespace PK.PkUtils.UI.Dialogs.TaskDialogs;
 
-
 /// <summary>
 /// Shows a structured exception dialog using <see cref="TaskDialog"/>, summarizing the error,
 /// its impact, suggested actions, and optional technical details. Replaces basic <see cref="MessageBox"/>
@@ -88,10 +87,11 @@ public static class ExceptionDialogWrapper
         (TaskDialogButtonCollection taskButtons, DialogResult defaultResult) = TaskDialogWrapper.CreateButtons(buttons, defaultButton);
 
         // Construct main text content
-        string fullContent =
-            $"► What happened:{Environment.NewLine}{errorMessage}{Environment.NewLine}{Environment.NewLine}" +
-            $"► How this will affect you:{Environment.NewLine}{scope}{Environment.NewLine}{Environment.NewLine}" +
-            $"► What you can do about it:{Environment.NewLine}{action}";
+        string[] contentParts = [
+            $"► What happened:{Environment.NewLine}{errorMessage}",
+            $"► How this will affect you:{Environment.NewLine}{scope}",
+            $"► What you can do about it:{Environment.NewLine}{action}"];
+        string fullContent = string.Join(Environment.NewLine + Environment.NewLine, contentParts);
 
         // Create TaskDialogPage
         TaskDialogPage page = new()

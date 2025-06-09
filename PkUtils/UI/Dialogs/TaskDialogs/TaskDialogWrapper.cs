@@ -5,15 +5,10 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
-using PK.PkUtils.UI.Utils;
 
 namespace PK.PkUtils.UI.Dialogs.TaskDialogs;
 
-/// <summary> Several utilities as example of usage of <see cref="TaskDialog"/> </summary>
-/// <remarks>
-/// For the actual value of 'owner' argument in each method, you should use a Form, 
-/// Control or instance of <see cref="Win32Window"/>, created from window handle.
-/// </remarks>
+/// <summary> Implements several utilities as example of usage of <see cref="TaskDialog"/> </summary>
 public static class TaskDialogWrapper
 {
     #region Fields
@@ -189,13 +184,9 @@ public static class TaskDialogWrapper
         TaskDialogIcon icon = null,
         DialogResult defaultButton = DialogResult.Retry)
     {
-        // Custom button for Ignore All (reuses DialogResult.Ignore tag)
-        TaskDialogButtonCollection buttons = CreateButtons(
-            ("Abort", DialogResult.Abort),
-            ("Retry", DialogResult.Retry),
-            ("Ignore", DialogResult.Ignore),
-            ("Ignore All", DialogResult.Ignore));
-        TaskDialogButton ignoreAllButton = buttons[3];
+        TaskDialogButtonCollection buttons = CreateButtons(MessageBoxButtons.AbortRetryIgnore);
+        TaskDialogButton ignoreAllButton = new("Ignore All") { Tag = DialogResult.Ignore };
+        buttons.Add(ignoreAllButton);
         TaskDialogButton buttonResult = ShowDialogWithButtons(owner, caption, heading, text, icon ?? QuestionIcon, buttons, defaultButton);
         bool isIgnoreAll = ReferenceEquals(buttonResult, ignoreAllButton);
         DialogResult result = buttonResult.Tag is DialogResult dr ? dr : defaultButton;
