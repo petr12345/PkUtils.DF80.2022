@@ -3436,7 +3436,7 @@ public static class User32
     /// Note that this does not disable the Alt+F4 functionality.
     /// </summary>
     /// <param name="form">The Form whose system Close(x) button should be disabled.</param>
-    /// <param name="bRemoveMenuItem">Determines the way of implementation: <br/>
+    /// <param name="removeMenuItem">Determines the way of implementation: <br/>
     /// If the value is true, the system menu item "Close" is removed.<br/>
     /// If the value is false, just disables that menu item.<br/>
     /// Both of this disables the related system Close(x) button.
@@ -3445,7 +3445,7 @@ public static class User32
     /// <seealso cref="EnableCloseXButton"/>
     public static bool DisableCloseXButton(
         Form form,
-        bool bRemoveMenuItem)
+        bool removeMenuItem)
     {
         ArgumentNullException.ThrowIfNull(form);
 
@@ -3458,7 +3458,7 @@ public static class User32
         }
         else
         {
-            if (bRemoveMenuItem)
+            if (removeMenuItem)
             {
                 // See also 
                 // http://blogs.msdn.com/b/atosah/archive/2007/05/18/disable-close-x-button-in-winforms-using-c.aspx
@@ -3470,7 +3470,7 @@ public static class User32
             }
             else
             {
-                // see also http://code.google.com/p/wyupdate/source/browse/trunk/SystemMenu.cs?r=412
+                // See also http://code.google.com/p/wyupdate/source/browse/trunk/SystemMenu.cs?r=412
                 User32.EnableMenuItem(hMenu, Win32.SC_CLOSE, User32.MF_GRAYED);
             }
         }
@@ -3609,7 +3609,7 @@ public static class User32
     private static bool WindowFirstMatchCallback(IntPtr hWnd, ref WindowSearchData matchData)
     {
         string strText;
-        bool bProcessMatch, bTextMatch;
+        bool processMatch, textMatch;
 
 #pragma warning disable IDE0059 // Unnecessary assignment of a value
         // Initialize ProcessId. Whatever GetWindowThreadProcessId does with output, better safe than sorry
@@ -3617,20 +3617,20 @@ public static class User32
 #pragma warning restore IDE0059 // Unnecessary assignment of a value
         bool bContinueEnumeration = true;
 
-        if (!(bProcessMatch = (matchData.ProcessId == WindowSearchData.NoProcessId)))
+        if (!(processMatch = (matchData.ProcessId == WindowSearchData.NoProcessId)))
         {
             GetWindowThreadProcessId(hWnd, out dwProcessId);
-            bProcessMatch = (matchData.ProcessId == dwProcessId);
+            processMatch = (matchData.ProcessId == dwProcessId);
         }
-        if (bProcessMatch)
+        if (processMatch)
         {
-            if (!(bTextMatch = (matchData.WindowText == null)))
+            if (!(textMatch = (matchData.WindowText == null)))
             {
                 strText = GetWindowText(hWnd);
-                bTextMatch = string.Equals(strText, matchData.WindowText, StringComparison.Ordinal);
+                textMatch = string.Equals(strText, matchData.WindowText, StringComparison.Ordinal);
             }
 
-            if (bTextMatch)
+            if (textMatch)
             {
                 // match has been found
                 matchData.FoundWindows.Add(hWnd);

@@ -44,11 +44,33 @@ public static class AssemblyExtensions
     {
         ArgumentNullException.ThrowIfNull(assembly);
 
-        string theFullName = assembly.FullName;
-        IEnumerable<Assembly> callerAssemblies = new StackTrace().GetFrames()
-            .Select(x => x.GetMethod().ReflectedType.Assembly).Distinct()
-            .Where(x => x.GetReferencedAssemblies().Any(y => y.FullName == theFullName));
-        Assembly rootAssembly = callerAssemblies.LastOrDefault();
+        // The commented-out code below was observed to throw NullReferenceException in some cases, 
+        // for reasons not entirely clear. It is replaced with a more robust code more below.
+        // IEnumerable<Assembly> callerAssemblies = new StackTrace().GetFrames()
+        //    .Select(x => x.GetMethod().ReflectedType.Assembly).Distinct()
+        //    .Where(x => x.GetReferencedAssemblies().Any(y => y.FullName == theFullName));
+
+        string targetFullName = assembly.FullName;
+        StackFrame[] frames = new StackTrace().GetFrames();
+        if (frames == null)
+            return null;
+
+        // Use HashSet for uniqueness
+        HashSet<Assembly> callerAssemblies = [];
+        foreach (StackFrame frame in frames)
+        {
+            Assembly asm = frame.GetMethod()?.ReflectedType?.Assembly;
+            if (asm != null)
+                callerAssemblies.Add(asm);
+        }
+
+        // Find assemblies that reference the target assembly; return the last one found
+        Assembly rootAssembly = null;
+        foreach (Assembly asm in callerAssemblies)
+        {
+            if (asm.GetReferencedAssemblies().Any(r => r?.FullName == targetFullName))
+                rootAssembly = asm;
+        }
 
         return rootAssembly;
     }
