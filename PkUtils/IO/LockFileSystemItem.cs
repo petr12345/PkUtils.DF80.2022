@@ -1,14 +1,4 @@
-﻿/***************************************************************************************************************
-*
-* FILE NAME:   .\IO\LockFileSystemItem.cs
-*
-* AUTHOR:      Petr Kodet
-*
-* DESCRIPTION: The file contains definition of classes LockFileSystemItem, LockFolder, LockFile
-*
-**************************************************************************************************************/
-
-// Ignore Spelling: Utils
+﻿// Ignore Spelling: Utils
 //
 using System;
 using System.ComponentModel;
@@ -20,6 +10,7 @@ using Microsoft.Win32.SafeHandles;
 using PK.PkUtils.Utils;
 using PK.PkUtils.WinApi;
 
+
 namespace PK.PkUtils.IO;
 
 /// <summary> An abstract file system item locker. 
@@ -30,18 +21,17 @@ public abstract class LockFileSystemItem : IDisposable
     #region Fields
 
     /// <summary> SafeFileHandle value of previously open file system item. </summary>
-    private SafeFileHandle _ItemHandle;
+    private SafeFileHandle _itemHandle;
 
-    /// <summary>Value indicating whether this object has locked given file system item. </summary>
-    private bool _ItemLocked;
+    /// <summary> Value indicating whether this object has locked given file system item. </summary>
+    private bool _itemLocked;
     #endregion // Fields
 
     #region Constructor(s)
 
     /// <summary> Specialized default constructor for use only by derived classes. </summary>
     protected LockFileSystemItem()
-    {
-    }
+    { }
     #endregion // Constructor(s)
 
     /// <summary>
@@ -82,14 +72,14 @@ public abstract class LockFileSystemItem : IDisposable
     /// <summary> Gets a value indicating whether this object has locked given file system item. </summary>
     public bool IsItemLocked
     {
-        get { return IsItemOpen && _ItemLocked; }
+        get { return IsItemOpen && _itemLocked; }
     }
 
     /// <summary> Gets a SafeFileHandle value of previously open file system item. </summary>
     public SafeFileHandle ItemHandle
     {
-        get { return _ItemHandle; }
-        protected set { _ItemHandle = value; }
+        get { return _itemHandle; }
+        protected set { _itemHandle = value; }
     }
     #endregion // Properties
 
@@ -118,18 +108,18 @@ public abstract class LockFileSystemItem : IDisposable
         Debug.Assert(item != null);
 
 #if CREATEFILE_RETURNS_SIMPLE_HANDLE
-  IntPtr handle = Kernel32.CreateFile(
-    item.FullName,
-    Kernel32.EFileAccess.GenericWrite,
-    fileShare,
-    IntPtr.Zero,
-    FileMode.Open,
-    (uint)Kernel32.CreateFileFlags.FILE_FLAG_BACKUP_SEMANTICS,
-    IntPtr.Zero);
-  nLastError = Marshal.GetLastWin32Error();
-  _ItemHandle = new SafeFileHandle(handle, true);
+        IntPtr handle = Kernel32.CreateFile(
+          item.FullName,
+          Kernel32.EFileAccess.GenericWrite,
+          fileShare,
+          IntPtr.Zero,
+          FileMode.Open,
+          (uint)Kernel32.CreateFileFlags.FILE_FLAG_BACKUP_SEMANTICS,
+          IntPtr.Zero);
+        nLastError = Marshal.GetLastWin32Error();
+        _itemHandle = new SafeFileHandle(handle, true);
 #else
-        _ItemHandle = Kernel32.CreateFile(
+        _itemHandle = Kernel32.CreateFile(
           item.FullName,
           Kernel32.EFileAccess.GenericWrite,
           fileShare,
@@ -142,7 +132,7 @@ public abstract class LockFileSystemItem : IDisposable
 
         if (ItemHandle.IsInvalid)
         {
-            _ItemHandle = null;
+            _itemHandle = null;
             if (throwOnError)
             {
                 throw new Win32Exception(nLastError);
@@ -153,7 +143,7 @@ public abstract class LockFileSystemItem : IDisposable
     /// <summary> Dispose item handle. </summary>
     protected void CloseItemHandle()
     {
-        Disposer.SafeDispose(ref _ItemHandle);
+        Disposer.SafeDispose(ref _itemHandle);
     }
 
     /// <summary> Locks the item handle. </summary>
@@ -175,18 +165,18 @@ public abstract class LockFileSystemItem : IDisposable
     /// <param name="nNumberOfBytesToLockLow"> Number of bytes to lock lows. </param>
     /// <param name="nNumberOfBytesToLockHigh"> Number of bytes to lock highs. </param>
     protected void LockItemHandle(
-      bool throwOnError,
-      uint dwFileOffsetLow,
-      uint dwFileOffsetHigh,
-      uint nNumberOfBytesToLockLow,
-      uint nNumberOfBytesToLockHigh)
+        bool throwOnError,
+        uint dwFileOffsetLow,
+        uint dwFileOffsetHigh,
+        uint nNumberOfBytesToLockLow,
+        uint nNumberOfBytesToLockHigh)
     {
         int nLastError;
 
         if (IsItemOpen)
         {
-            Debug.Assert(!_ItemLocked);
-            _ItemLocked = Kernel32.LockFile(ItemHandle.DangerousGetHandle(),
+            Debug.Assert(!_itemLocked);
+            _itemLocked = Kernel32.LockFile(ItemHandle.DangerousGetHandle(),
               dwFileOffsetLow, dwFileOffsetHigh, nNumberOfBytesToLockLow, nNumberOfBytesToLockHigh);
             nLastError = Marshal.GetLastWin32Error();
 
@@ -205,7 +195,7 @@ public abstract class LockFileSystemItem : IDisposable
             Debug.Assert(ItemHandle != null);
             Debug.Assert(!ItemHandle.IsInvalid);
             Kernel32.UnlockFile(ItemHandle.DangerousGetHandle(), 0, 0, 0, 0);
-            _ItemLocked = false;
+            _itemLocked = false;
         }
     }
 
@@ -223,10 +213,10 @@ public abstract class LockFileSystemItem : IDisposable
     /// <param name="throwOnOpenError"> true to throw an exception on item open error. </param>
     /// <param name="throwOnLockError"> true to throw an exception on item lock error. </param>
     protected virtual void OpenAndLockItem(
-      FileSystemInfo item,
-      FileShare fileShare,
-      bool throwOnOpenError,
-      bool throwOnLockError)
+        FileSystemInfo item,
+        FileShare fileShare,
+        bool throwOnOpenError,
+        bool throwOnLockError)
     {
         OpenAndLockItem(item, fileShare, throwOnOpenError, throwOnLockError, 0, 0, 0, 0);
     }
@@ -325,10 +315,8 @@ public class LockFolder : LockFileSystemItem
     #region Constructor(s)
 
     /// <summary> Default argument-less constructor. </summary>
-    public LockFolder()
-      : base()
-    {
-    }
+    public LockFolder() : base()
+    { }
     #endregion // Constructor(s)
 
     #region Methods
@@ -362,9 +350,8 @@ public class LockFolder : LockFileSystemItem
 
         if (!Directory.Exists(strFolderPath))
         {
-            string strMsg = string.Format(CultureInfo.InvariantCulture,
-              "The folder '{0}' does not exist", strFolderPath);
-            throw new ArgumentException(strMsg, nameof(strFolderPath));
+            string errorMessage = $"The folder '{strFolderPath}' does not exist";
+            throw new ArgumentException(errorMessage, nameof(strFolderPath));
         }
 
         Close();
@@ -382,19 +369,15 @@ public class LockFile : LockFileSystemItem
     #region Constructor(s)
 
     /// <summary> Default argument-less constructor. </summary>
-    public LockFile()
-      : base()
-    {
-    }
+    public LockFile() : base()
+    { }
     #endregion // Constructor(s)
 
     #region Methods
 
     /// <summary> Locks the file. Throws one of listed exceptions if the lock could not be acquired. </summary>
-    /// <exception cref="ArgumentNullException"> 
-    ///    Thrown when <paramref name="strFilePath"/> argument is null. </exception>
-    /// <exception cref="ArgumentException"> 
-    ///    Thrown when the file <paramref name="strFilePath"/> does not exist. </exception>
+    /// <exception cref="ArgumentNullException"> Thrown when <paramref name="strFilePath"/> argument is null. </exception>
+    /// <exception cref="ArgumentException">Thrown when the file <paramref name="strFilePath"/> does not exist. </exception>
     /// <param name="strFilePath"> Full path of the file. </param>
     /// <param name="offset"> The offset in the file. </param>
     /// <param name="count"> Number of bytes to lock. </param>
@@ -411,9 +394,8 @@ public class LockFile : LockFileSystemItem
 
         if (!File.Exists(strFilePath))
         {
-            string strMsg = string.Format(CultureInfo.InvariantCulture,
-              "The file '{0}' does not exist", strFilePath);
-            throw new ArgumentException(strMsg, nameof(strFilePath)); ;
+            string errorMessage = $"The file '{strFilePath}' does not exist";
+            throw new ArgumentException(errorMessage, nameof(strFilePath)); ;
         }
 
         uint offsetLow = (uint)offset;

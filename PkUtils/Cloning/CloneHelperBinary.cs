@@ -1,15 +1,4 @@
-﻿/***************************************************************************************************************
-*
-* FILE NAME:   .\Cloning\CloneHelperBinary.cs
-*
-* AUTHOR:      Petr Kodet
-*
-* DESCRIPTION: The class CloneHelperBinary
-*
-**************************************************************************************************************/
-
-
-// Ignore Spelling: Utils
+﻿// Ignore Spelling: Utils, Cat, Dog, miaow
 //
 #pragma warning disable SYSLIB0011 // BinaryFormatter serialization is obsolete and should not be used.
 #pragma warning disable IDE0130 // Namespace "..." does not match folder structure
@@ -52,7 +41,7 @@ namespace PK.PkUtils.Cloning.Binary;
 ///   miaow.Dog = bowwow;
 ///   bowwow.Cat = miaow; // nice cyclic graph
 ///   
-///   // The code line below has the the same sense as: 
+///   // The code line below has the same sense as: 
 ///   // Cat clone = CloneHelperBinary.DeepClone(miaow);
 ///   //   or
 ///   // Cat clone = CloneHelperBinary.DeepClone{Cat}(miaow);

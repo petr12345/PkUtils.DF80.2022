@@ -101,7 +101,7 @@ namespace PK.TestCloning
             miaow.Dog = bowwow;
             bowwow.Cat = miaow; // nice cyclic graph
 
-            // The code line below has the the same sense as: 
+            // The code line below has the same sense as: 
             // Cat clone = CloneHelperBinary.DeepClone(miaow);
             //   or
             // Cat clone = CloneHelperBinary.DeepClone<Cat>(miaow);

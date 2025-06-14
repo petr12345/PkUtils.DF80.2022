@@ -1,4 +1,4 @@
-﻿// Ignore Spelling: Utils
+﻿// Ignore Spelling: Utils, Foo, Bar
 //
 using System;
 using System.IO;
@@ -37,7 +37,7 @@ namespace PK.PkUtils.Cloning.ByContract;
 ///   foo.Bar = bar;
 ///   bar.Foo = foo; // nice cyclic graph
 /// 
-///   // The code line below has the the same sense as: 
+///   // The code line below has the same sense as: 
 ///   // Foo clone = CloneHelperByContract.DeepClone(foo);
 ///   //   or
 ///   // Foo clone = CloneHelperByContract.DeepClone{Foo}(foo);
