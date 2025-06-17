@@ -67,6 +67,16 @@ public class DumperCtrlTextBoxBaseWrapper<T> : DumperCtrlWrapper<T> where T : Te
         }
     }
 
+    /// <summary>  Scroll to the end. </summary>
+    protected override void ScrollToTheEnd()
+    {
+        TextBoxBase textBox = WrappedControl;
+        CheckInvokeNotRequired(textBox);
+
+        textBox.Select(textBox.Text.Length, 0);
+        textBox.ScrollToCaret();
+    }
+
     /// <summary>
     /// Restores the selection in the RichTextBox, or scrolls to end if selection conflicts with latest text
     /// visibility.
@@ -81,8 +91,7 @@ public class DumperCtrlTextBoxBaseWrapper<T> : DumperCtrlWrapper<T> where T : Te
         if (!selInfo.IsSel)
         {
             // No selection => move caret to end and scroll
-            textBox.Select(textBox.Text.Length, 0);
-            textBox.ScrollToCaret();
+            ScrollToTheEnd();
         }
         else
         {

@@ -1,14 +1,4 @@
-﻿/***************************************************************************************************************
-*
-* FILE NAME:   .\Dump\DumperTextWriter.cs
-*
-* AUTHOR:      Petr Kodet
-*
-* DESCRIPTION: The class DumperTextWriter
-*
-**************************************************************************************************************/
-
-// Ignore Spelling: Utils
+﻿// Ignore Spelling: Utils
 //
 using System;
 using System.Collections.Generic;

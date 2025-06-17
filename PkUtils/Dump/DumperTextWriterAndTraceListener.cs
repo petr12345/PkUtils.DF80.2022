@@ -1,14 +1,4 @@
-﻿/***************************************************************************************************************
-*
-* FILE NAME:   .\Dump\DumperTextWriterAndTraceListener.cs
-*
-* AUTHOR:      Petr Kodet
-*
-* DESCRIPTION: The class DumperTextWriterAndTraceListener
-*
-**************************************************************************************************************/
-
-// Ignore Spelling: Utils
+﻿// Ignore Spelling: Utils
 //
 using System;
 using System.Diagnostics;

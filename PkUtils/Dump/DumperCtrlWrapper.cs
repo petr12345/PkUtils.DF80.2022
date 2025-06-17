@@ -302,6 +302,11 @@ public class DumperCtrlWrapper<CTRL> : IDumperEx, IDisposableEx where CTRL : Con
         return result;
     }
 
+    /// <summary>  Scroll to the end. No implementtaion here, the derived class should overwrite it. </summary>
+    protected virtual void ScrollToTheEnd()
+    {
+    }
+
     /// <summary>
     /// Cleans any previously dumped contents, both in the internal message buffer (queue)
     /// and in the wrapped control ( if there is any ).
@@ -387,6 +392,7 @@ public class DumperCtrlWrapper<CTRL> : IDumperEx, IDisposableEx where CTRL : Con
     private void Ctrl_HandleCreated(object sender, EventArgs args)
     {
         FlushHistoryToControl();
+        ScrollToTheEnd();
     }
     #endregion // Methods
 

@@ -1,14 +1,4 @@
-﻿/***************************************************************************************************************
-*
-* FILE NAME:   .\Dump\DumperStringWrapper.cs
-*
-* AUTHOR:      Petr Kodet
-*
-* DESCRIPTION: The class DumperStringWrapper
-*
-**************************************************************************************************************/
-
-// Ignore Spelling: Utils
+﻿// Ignore Spelling: Utils
 //
 
 using System;

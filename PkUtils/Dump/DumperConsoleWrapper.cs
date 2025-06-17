@@ -1,14 +1,4 @@
-﻿/***************************************************************************************************************
-*
-* FILE NAME:   .\Dump\DumperConsoleWrapper.cs
-*
-* AUTHOR:      Petr Kodet
-*
-* DESCRIPTION: The file contains definition of class DumperConsoleWrapper
-*
-**************************************************************************************************************/
-
-// Ignore Spelling: Utils, Admin
+﻿// Ignore Spelling: Utils, Admin
 //
 using System;
 using PK.PkUtils.Interfaces;
