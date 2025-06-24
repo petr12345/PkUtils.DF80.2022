@@ -1,4 +1,4 @@
-// Ignore Spelling: Ctrl, TreeView, treeview, Multiselect, Sel, unselects
+// Ignore Spelling: Ctrl, TreeView, treeview, Multiselect, Sel, unselects, bg, fg
 //
 using System;
 using System.Collections.Generic;
@@ -11,6 +11,8 @@ using PK.PkUtils.Extensions;
 using PK.PkUtils.WinApi;
 
 namespace PK.PkUtils.UI.General;
+
+#pragma warning disable IDE0290     // Use primary constructor
 
 /// <summary> Represents a TreeView control that supports multiple selection of nodes. </summary>
 /// <seealso href="https://www.codeproject.com/Articles/20581/Multiselect-TreeView-Implementation/">
@@ -26,6 +28,8 @@ public partial class MultiSelectTreeView : TreeView
     private bool _selectionInitialized;
     private bool _suppressRightClickHighlight = true;
     private readonly HashSet<TreeNode> _selectedNodes = [];
+    // A dictionary of TreeNode to Color, mapping nodes with custom foreground colors
+    private readonly Dictionary<TreeNode, Color> _foreColors = [];
     #endregion // Fields
 
     #region Constructor(s)
@@ -151,6 +155,20 @@ public partial class MultiSelectTreeView : TreeView
         return (node is not null) && SelectedNodes.Contains(node);
     }
 
+    /// <summary> Adds a colored node to '_foreColors' dictionary. </summary>
+    /// <remarks> Note, it does NOT add the node to the tree view. but caller should do so.</remarks>
+    /// <param name="node"> The <see cref="TreeNode"/> to remove from the control. </param>
+    /// <param name="foreColor"> The foreground color. </param>
+    public void AddColoredNode(TreeNode node, Color foreColor)
+    {
+        ArgumentNullException.ThrowIfNull(node);
+
+        // Set the foreground color for the node
+        node.ForeColor = foreColor;
+        // Cache the foreground color for later use
+        _foreColors[node] = foreColor;
+    }
+
     /// <summary>
     /// Removes the specified <see cref="TreeNode"/> from the <see cref="TreeView"/>,
     /// and ensures that the internal selection set remains consistent by removing the node
@@ -171,6 +189,7 @@ public partial class MultiSelectTreeView : TreeView
         {
             using IDisposable deferred = DeferSelectionChange();
 
+            RemoveDescendantsFromForeColorsCache(node, includeNode: true);
             RemoveDescendantsFromSelection(node, includeNode: true);
             node.Remove();
             Invalidate();
@@ -352,6 +371,24 @@ public partial class MultiSelectTreeView : TreeView
         return removedCount;
     }
 
+    /// <summary> Removes the descendants from foreground colors cache. </summary>
+    /// <param name="node"> The <see cref="TreeNode"/> to remove from fore colors cache. </param>
+    /// <param name="includeNode"> If <c>true</c>, the <paramref name="node"/> itself will also be removed
+    /// if it is present. </param>
+    protected virtual void RemoveDescendantsFromForeColorsCache(TreeNode node, bool includeNode)
+    {
+        if (node is not null)
+        {
+            for (var stack = new Stack<TreeNode>(includeNode ? [node] : node.Nodes.Cast<TreeNode>()); stack.Count > 0;)
+            {
+                TreeNode current = stack.Pop();
+
+                _foreColors.Remove(current);
+                stack.PushRange(current.Nodes.Cast<TreeNode>());
+            }
+        }
+    }
+
     /// <summary>
     /// Performs a hit test on the TreeView at the specified point and returns the associated TreeNode if the hit
     /// location matches the provided criteria.
@@ -370,6 +407,47 @@ public partial class MultiSelectTreeView : TreeView
         TreeNode node = isMatch ? hitTest.Node : null;
 
         return node;
+    }
+
+    /// <summary>  Enforce node color to be selected or unselected; depending <paramref name="selectNode"/>. </summary>
+    /// <param name="node"> The <see cref="TreeNode"/> to be modified. Can't be null. </param>
+    /// <param name="selectNode"> True to use select, false unselected node color. </param>
+    protected virtual void EnforceNodeColor(TreeNode node, bool selectNode)
+    {
+        if (selectNode)
+        {
+            node.BackColor = SystemColors.Highlight;
+            node.ForeColor = SystemColors.HighlightText;
+        }
+        else
+        {
+            DetermineUnselectedNodeColor(out Color bgColor, out Color fgColor);
+            if (_foreColors.TryGetValue(node, out Color cached))
+            {
+                fgColor = cached;
+            }
+            node.BackColor = bgColor;
+            node.ForeColor = fgColor;
+        }
+    }
+
+    /// <summary>   Determine unselected node color. </summary>
+    /// <param name="bgColor"> [out] The background color. </param>
+    /// <param name="fgColor"> [out] The foreground color. </param>
+    protected virtual void DetermineUnselectedNodeColor(out Color bgColor, out Color fgColor)
+    {
+        if (IsUsingVisualStyles)
+        {
+            ColorsCache cache = InitializeColorsCache();
+            bgColor = cache.BgColor;
+            fgColor = cache.FgColor;
+        }
+        else
+        {
+            // Visual styles disabled - inherit from TreeView
+            bgColor = this.BackColor;
+            fgColor = this.ForeColor;
+        }
     }
     #endregion // Selection_change_related
 
@@ -947,7 +1025,10 @@ public partial class MultiSelectTreeView : TreeView
             foreach (TreeNode node in SelectedNodes)
             {
                 node.BackColor = bgColor;
-                node.ForeColor = fgColor;
+                if (_foreColors.TryGetValue(node, out Color cached))
+                    node.ForeColor = cached;
+                else
+                    node.ForeColor = fgColor;
             }
         }
         finally
@@ -1008,40 +1089,7 @@ public partial class MultiSelectTreeView : TreeView
 
         return result;
     }
-
-    /// <summary>  Enforce node color to be selected or unselected; depending <paramref name="selectNode"/>. </summary>
-    /// <param name="node"> The <see cref="TreeNode"/> to be modified. Can't be null. </param>
-    /// <param name="selectNode"> True to use select, false unselected node color. </param>
-    private void EnforceNodeColor(TreeNode node, bool selectNode)
-    {
-        if (selectNode)
-        {
-            node.BackColor = SystemColors.Highlight;
-            node.ForeColor = SystemColors.HighlightText;
-        }
-        else
-        {
-            DetermineUnselectedNodeColor(out Color bgColor, out Color fgColor);
-            node.BackColor = bgColor;
-            node.ForeColor = fgColor;
-        }
-    }
-
-    private void DetermineUnselectedNodeColor(out Color bgColor, out Color fgColor)
-    {
-        if (IsUsingVisualStyles)
-        {
-            ColorsCache cache = InitializeColorsCache();
-            bgColor = cache.BgColor;
-            fgColor = cache.FgColor;
-        }
-        else
-        {
-            // Visual styles disabled - inherit from TreeView
-            bgColor = this.BackColor;
-            fgColor = this.ForeColor;
-        }
-    }
     #endregion // Other_Private_Helper_Methods
     #endregion // Methods
 }
+#pragma warning restore IDE0290     // Use primary constructor
