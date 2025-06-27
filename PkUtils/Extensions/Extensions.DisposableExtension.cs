@@ -1,19 +1,7 @@
-﻿/***************************************************************************************************************
-*
-* FILE NAME:   .\Extensions\Extensions.System.cs
-*
-* AUTHOR:      Petr Kodet
-*
-* DESCRIPTION:
-*   The file contains extension-methods classes ObjectExtension, DisposableExtension, TypeExtension
-*
-**************************************************************************************************************/
-
-// Ignore Spelling: Utils
-//
-using System;
+﻿using System;
 using System.Runtime.CompilerServices;
 using PK.PkUtils.Interfaces;
+
 
 namespace PK.PkUtils.Extensions;
 

@@ -1,4 +1,4 @@
-﻿// Ignore Spelling: Utils, ctrl
+﻿// Ignore Spelling: CCA, Utils
 //
 using System;
 using System.Collections.Generic;
@@ -282,6 +282,18 @@ public static class TreeViewExtensions
     {
         ArgumentNullException.ThrowIfNull(tn);
         return tn.IsLeaf() && !tn.IsRoot();
+    }
+
+    /// <summary>
+    /// Returns the specified node and all its descendant nodes in a depth-first order.
+    /// </summary>
+    /// <param name="tn">The starting <see cref="TreeNode"/>. Must not be <c>null</c>.</param>
+    /// <returns>An <see cref="IEnumerable{TreeNode}"/> containing the node itself and all its descendants.</returns>
+    /// <exception cref="ArgumentNullException">Thrown if <paramref name="tn"/> is <c>null</c>.</exception>
+    public static IEnumerable<TreeNode> EnumerateSelfAndDescendants(this TreeNode tn)
+    {
+        ArgumentNullException.ThrowIfNull(tn);
+        return tn.FromSingle().Concat(tn.Nodes.GetAllNodes());
     }
 
     /// <summary>

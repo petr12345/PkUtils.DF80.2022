@@ -4,9 +4,10 @@ using System.Linq;
 using System.Windows.Forms;
 using PK.PkUtils.UI.General;
 
-#pragma warning disable IDE0305 // Collection initialization can be simplified
 
 namespace PK.PkUtils.Extensions;
+
+#pragma warning disable IDE0305 // Collection initialization can be simplified
 
 
 /// <summary>
@@ -15,7 +16,6 @@ namespace PK.PkUtils.Extensions;
 public static class MultiSelectTreeViewExtensions
 {
     #region Methods
-
     /// <summary>  Returns all selected nodes paths. </summary>
     /// <param name="treeView"> The treeView to act on. Can't be null. </param>
     /// <returns> The array of selected nodes paths, sorted alphabetically. </returns>
