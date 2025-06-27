@@ -10,7 +10,7 @@ using PK.PkUtils.UI.Utils;
 using PK.PkUtils.Utils;
 using PK.PkUtils.WinApi;
 using TestMultiSelectTreeView.Properties;
-using static PK.PkUtils.UI.General.MultiSelectTreeView;
+using static PK.PkUtils.UI.Controls.MultiSelectTreeView;
 using static PK.PkUtils.WinApi.User32;
 
 #pragma warning disable IDE0090 // Use 'new(...)'

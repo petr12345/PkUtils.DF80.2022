@@ -10,7 +10,7 @@ using PK.PkUtils.Extensions;
 
 #pragma warning disable IDE0290     // Use primary constructor
 
-namespace PK.PkUtils.UI.General;
+namespace PK.PkUtils.UI.Controls;
 
 
 public partial class MultiSelectTreeView : TreeView

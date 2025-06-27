@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Windows.Forms;
-using PK.PkUtils.UI.General;
+using PK.PkUtils.UI.Controls;
 
 
 namespace PK.PkUtils.Extensions;

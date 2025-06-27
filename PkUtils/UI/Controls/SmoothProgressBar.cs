@@ -16,7 +16,7 @@ using System.Drawing;
 using System.Windows.Forms;
 using PK.PkUtils.Utils;
 
-namespace PK.PkUtils.UI.General;
+namespace PK.PkUtils.UI.Controls;
 
 /// <summary>
 /// SmoothProgressBar works as a WinForms progress meter, but with modified painting.

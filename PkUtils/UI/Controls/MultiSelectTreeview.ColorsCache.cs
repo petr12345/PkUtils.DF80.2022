@@ -6,7 +6,7 @@ using System.Windows.Forms;
 using System.Windows.Forms.VisualStyles;
 using PK.PkUtils.Extensions;
 
-namespace PK.PkUtils.UI.General;
+namespace PK.PkUtils.UI.Controls;
 
 /// <summary> Represents a TreeView control that supports multiple selection of nodes. </summary>
 /// <seealso href="https://www.codeproject.com/Articles/20581/Multiselect-TreeView-Implementation/">

@@ -1,10 +1,10 @@
 ﻿// Ignore Spelling: Utils
 // 
 
-namespace PK.PkUtils.UI.General
+namespace PK.PkUtils.UI.Controls;
+
+partial class SmoothProgressBar
 {
-  partial class SmoothProgressBar
-  {
     /// <summary>
     /// Required designer variable.
     /// </summary>
@@ -18,10 +18,9 @@ namespace PK.PkUtils.UI.General
     /// </summary>
     private void InitializeComponent()
     {
-      components = new System.ComponentModel.Container();
-      this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+        components = new System.ComponentModel.Container();
+        this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
     }
 
     #endregion
-  }
 }

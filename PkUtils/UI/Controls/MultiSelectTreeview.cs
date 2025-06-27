@@ -10,7 +10,9 @@ using PK.PkUtils.DataStructures;
 using PK.PkUtils.Extensions;
 using PK.PkUtils.WinApi;
 
-namespace PK.PkUtils.UI.General;
+
+namespace PK.PkUtils.UI.Controls;
+
 
 #pragma warning disable IDE0290     // Use primary constructor
 
@@ -29,7 +31,7 @@ public partial class MultiSelectTreeView : TreeView
     private bool _suppressRightClickHighlight = true;
     private readonly HashSet<TreeNode> _selectedNodes = [];
     // A dictionary of TreeNode to Color, mapping nodes with custom foreground colors
-    private readonly Dictionary<TreeNode, Color> _foreColors = [];
+    private readonly Dictionary<TreeNode, Color> _nodeForeColors = [];
     #endregion // Fields
 
     #region Constructor(s)
@@ -166,7 +168,7 @@ public partial class MultiSelectTreeView : TreeView
         // Set the foreground color for the node
         node.ForeColor = foreColor;
         // Cache the foreground color for later use
-        _foreColors[node] = foreColor;
+        _nodeForeColors[node] = foreColor;
     }
 
     /// <summary>
@@ -383,7 +385,7 @@ public partial class MultiSelectTreeView : TreeView
             {
                 TreeNode current = stack.Pop();
 
-                _foreColors.Remove(current);
+                _nodeForeColors.Remove(current);
                 stack.PushRange(current.Nodes.Cast<TreeNode>());
             }
         }
@@ -409,6 +411,50 @@ public partial class MultiSelectTreeView : TreeView
         return node;
     }
 
+    /// <summary>
+    /// Adds or removes the specified <see cref="TreeNode"/> from the selection set, depending on <paramref name="selectNode"/>.
+    /// </summary>
+    /// <param name="node">The <see cref="TreeNode"/> to select or unselect. 
+    ///                    If <c>null</c>, the method returns <c>false</c> and does nothing.</param>
+    /// <param name="selectNode">
+    /// If <c>true</c>, the node is added to the selection set and becomes the active <see cref="SelectedNode"/>.
+    /// If <c>false</c>, the node is removed from the selection set and, if it was the active <see cref="SelectedNode"/>, clears the active selection.
+    /// </param>
+    /// <returns>
+    /// <c>true</c> if the selection state of the node was changed; otherwise, <c>false</c>.
+    /// </returns>
+    protected virtual bool ToggleNode(TreeNode node, bool selectNode)
+    {
+        // Should not be called for any null node; only to be on the safe side
+        if (node is null) return false;
+
+        bool result;
+
+        if (selectNode)
+        {
+            if (result = ((SelectedNode != node) || !IsSelected(node)))
+            {
+                _selectedNode = node;
+                _selectedNodes.Add(node);
+            }
+        }
+        else if (result = _selectedNodes.Remove(node))
+        {
+            if (ReferenceEquals(SelectedNode, node))
+            {
+                _selectedNode = null;
+            }
+        }
+
+        if (result)
+        {
+            EnforceNodeColor(node, selectNode);
+            MarkSelectionChanged();
+        }
+
+        return result;
+    }
+
     /// <summary>  Enforce node color to be selected or unselected; depending <paramref name="selectNode"/>. </summary>
     /// <param name="node"> The <see cref="TreeNode"/> to be modified. Can't be null. </param>
     /// <param name="selectNode"> True to use select, false unselected node color. </param>
@@ -421,11 +467,7 @@ public partial class MultiSelectTreeView : TreeView
         }
         else
         {
-            DetermineUnselectedNodeColor(out Color bgColor, out Color fgColor);
-            if (_foreColors.TryGetValue(node, out Color cached))
-            {
-                fgColor = cached;
-            }
+            DetermineUnselectedNodeColor(node, out Color bgColor, out Color fgColor);
             node.BackColor = bgColor;
             node.ForeColor = fgColor;
         }
@@ -447,6 +489,27 @@ public partial class MultiSelectTreeView : TreeView
             // Visual styles disabled - inherit from TreeView
             bgColor = this.BackColor;
             fgColor = this.ForeColor;
+        }
+    }
+
+    /// <summary>
+    /// Determines the background and foreground colors for an unselected <see cref="TreeNode"/>.
+    /// </summary>
+    /// <param name="node">The <see cref="TreeNode"/> for which to determine colors. Must not be <c>null</c>.</param>
+    /// <param name="bgColor">[out] The background color to use for the unselected node.</param>
+    /// <param name="fgColor">[out] The foreground color to use for the unselected node.</param>
+    protected virtual void DetermineUnselectedNodeColor(TreeNode node, out Color bgColor, out Color fgColor)
+    {
+        // Validate input
+        ArgumentNullException.ThrowIfNull(node);
+
+        // Get the default unselected node colors
+        DetermineUnselectedNodeColor(out bgColor, out fgColor);
+
+        // If a custom foreground color is cached for this node, use it
+        if (_nodeForeColors.TryGetValue(node, out Color cached))
+        {
+            fgColor = cached;
         }
     }
     #endregion // Selection_change_related
@@ -1025,7 +1088,7 @@ public partial class MultiSelectTreeView : TreeView
             foreach (TreeNode node in SelectedNodes)
             {
                 node.BackColor = bgColor;
-                if (_foreColors.TryGetValue(node, out Color cached))
+                if (_nodeForeColors.TryGetValue(node, out Color cached))
                     node.ForeColor = cached;
                 else
                     node.ForeColor = fgColor;
@@ -1056,38 +1119,6 @@ public partial class MultiSelectTreeView : TreeView
             ToggleNode(node, true);
             node.EnsureVisible();
         }
-    }
-
-    private bool ToggleNode(TreeNode node, bool selectNode)
-    {
-        // Should not be called for any null node; only to be on the safe side
-        if (node is null) return false;
-
-        bool result;
-
-        if (selectNode)
-        {
-            if (result = ((SelectedNode != node) || !IsSelected(node)))
-            {
-                _selectedNode = node;
-                _selectedNodes.Add(node);
-            }
-        }
-        else if (result = _selectedNodes.Remove(node))
-        {
-            if (ReferenceEquals(SelectedNode, node))
-            {
-                _selectedNode = null;
-            }
-        }
-
-        if (result)
-        {
-            EnforceNodeColor(node, selectNode);
-            MarkSelectionChanged();
-        }
-
-        return result;
     }
     #endregion // Other_Private_Helper_Methods
     #endregion // Methods

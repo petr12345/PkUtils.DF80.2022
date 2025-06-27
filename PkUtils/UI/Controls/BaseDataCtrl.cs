@@ -7,7 +7,7 @@ using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
 
-namespace PK.PkUtils.UI.General;
+namespace PK.PkUtils.UI.Controls;
 
 /// <summary>
 /// A base for use control containing data of type <typeparamref name="D"/>

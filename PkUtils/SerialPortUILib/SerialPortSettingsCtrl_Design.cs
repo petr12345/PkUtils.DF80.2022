@@ -13,7 +13,7 @@
 //
 using System;
 using PK.PkUtils.SerialPortLib;
-using PK.PkUtils.UI.General;
+using PK.PkUtils.UI.Controls;
 
 namespace PK.PkUtils.SerialPortUILib;
 
