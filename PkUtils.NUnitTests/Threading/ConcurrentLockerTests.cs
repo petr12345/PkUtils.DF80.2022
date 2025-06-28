@@ -1,7 +1,6 @@
 ﻿// Ignore Spelling: Utils
 
 using System.Data;
-using System.Data.Entity.Core;
 using PK.PkUtils.Interfaces;
 using PK.PkUtils.Threading;
 using PK.PkUtils.Utils;
@@ -218,7 +217,7 @@ public class ConcurrentLockerTests
         // The block below throws an exception, because the first task who manages to acquire the lock
         // releases it only after 'sleepMs', which is bigger than 'msTimeout' the other thread can wait.
         // 
-        Assert.ThrowsAsync<OptimisticConcurrencyException>(async () =>
+        Assert.ThrowsAsync<ConcurrencyConflictException>(async () =>
         {
             await Task.WhenAll(
                 RunLockWithFiniteTimeoutAndFiniteSleep(locker, _constLockId, counter, msTimeout, sleepMs),
@@ -304,7 +303,7 @@ public class ConcurrentLockerTests
         // The block below throws an exception, because the first task who manages to acquire the lock
         // releases it only after 'sleepMs', which is bigger than 'msTimeout' the other thread can wait.
         // 
-        Assert.ThrowsAsync<OptimisticConcurrencyException>(async () =>
+        Assert.ThrowsAsync<ConcurrencyConflictException>(async () =>
         {
             await Task.WhenAll(
                 RunLockWithFiniteTimeoutAndTokenAndSleep(locker, _constLockId, msTimeout, token, sleepMs),
@@ -330,7 +329,7 @@ public class ConcurrentLockerTests
         // The block below throws an exception, because the first task who manages to acquire the lock
         // releases it only after 'sleepMs', which is bigger than 'msTokenTimeout' the other thread can wait.
         // 
-        Assert.ThrowsAsync<OptimisticConcurrencyException>(async () =>
+        Assert.ThrowsAsync<ConcurrencyConflictException>(async () =>
         {
             await Task.WhenAll(
                 RunLockWithFiniteTimeoutAndTokenAndSleep(locker, _constLockId, _dayTimeout, token, sleepMs),

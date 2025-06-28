@@ -10,9 +10,7 @@ using PK.PkUtils.DataStructures;
 using PK.PkUtils.Extensions;
 using PK.PkUtils.WinApi;
 
-
 namespace PK.PkUtils.UI.Controls;
-
 
 #pragma warning disable IDE0290     // Use primary constructor
 
@@ -133,12 +131,13 @@ public partial class MultiSelectTreeView : TreeView
     #endregion // Properties
 
     #region Methods
-
     #region Public Methods
 
-    /// <summary> Gets selected nodes information, as output string. </summary>
-    /// <param name="selectedNodes"> The selected nodes. Must not be null. </param>
-    /// <returns>   The selected nodes information. </returns>
+    /// <summary> Gets selected nodes information as an output string. </summary>
+    /// <param name="selectedNodes">The selected nodes collection. Must not be null.</param>
+    /// <returns>
+    /// A string describing the number of selected nodes and their names or text, if any are selected.
+    /// </returns>
     public static string GetSelectedNodesInfo(IReadOnlyCollection<TreeNode> selectedNodes)
     {
         ArgumentNullException.ThrowIfNull(selectedNodes);
@@ -149,18 +148,25 @@ public partial class MultiSelectTreeView : TreeView
         return countInfo + detailsInfo;
     }
 
-    /// <summary> Query if <paramref name="node"/> is one of selected nodes. </summary>
-    /// <param name="node"> The <see cref="TreeNode"/> to be examined. It can be null. </param>
-    /// <returns> True if <paramref name="node"/> is part of selection, false if not. </returns>
+    /// <summary>
+    /// Determines whether the specified <paramref name="node"/> is one of the selected nodes.
+    /// </summary>
+    /// <param name="node">The <see cref="TreeNode"/> to examine. Can be null.</param>
+    /// <returns> <c>true</c> if <paramref name="node"/> is part of the selection; otherwise, <c>false</c>.</returns>
     public bool IsSelected(TreeNode node)
     {
         return (node is not null) && SelectedNodes.Contains(node);
     }
 
-    /// <summary> Adds a colored node to '_foreColors' dictionary. </summary>
-    /// <remarks> Note, it does NOT add the node to the tree view. but caller should do so.</remarks>
-    /// <param name="node"> The <see cref="TreeNode"/> to remove from the control. </param>
-    /// <param name="foreColor"> The foreground color. </param>
+    /// <summary>
+    /// Adds a colored node to the internal foreground colors dictionary.
+    /// </summary>
+    /// <remarks>
+    /// Note, this does NOT add the node to the tree view. 
+    /// The caller should add the node to the tree view separately, before or after.
+    /// </remarks>
+    /// <param name="node">The <see cref="TreeNode"/> to assign a foreground color to. Must not be null.</param>
+    /// <param name="foreColor">The foreground color to assign to the node.</param>
     public void AddColoredNode(TreeNode node, Color foreColor)
     {
         ArgumentNullException.ThrowIfNull(node);
@@ -172,18 +178,30 @@ public partial class MultiSelectTreeView : TreeView
     }
 
     /// <summary>
+    /// Determines whether the specified <see cref="TreeNode"/> has a custom foreground color assigned via <see cref="AddColoredNode"/>.
+    /// </summary>
+    /// <param name="node"> The <see cref="TreeNode"/> to check. Must not be null. </param>
+    /// <param name="foreColor"> [out] The foreground color of the node. </param>
+    /// <returns>   <c>true</c> if the node has a custom foreground color; otherwise, <c>false</c>. </returns>
+    public bool IsColoredNode(TreeNode node, out Color foreColor)
+    {
+        ArgumentNullException.ThrowIfNull(node);
+        return _nodeForeColors.TryGetValue(node, out foreColor);
+    }
+
+    /// <summary>
     /// Removes the specified <see cref="TreeNode"/> from the <see cref="TreeView"/>,
     /// and ensures that the internal selection set remains consistent by removing the node
-    /// and all of its descendant nodes from <see cref="_selectedNodes"/> collection.
+    /// and all of its descendant nodes from the <see cref="_selectedNodes"/> collection.
     /// </summary>
-    /// <param name="node">The <see cref="TreeNode"/> to remove from the control.</param>
-    /// <remarks> The standard <see cref="TreeNode.Remove"/> method does not raise any event or callback
+    /// <param name="node">The <see cref="TreeNode"/> to remove from the control. May be null.</param>
+    /// <remarks>
+    /// The standard <see cref="TreeNode.Remove"/> method does not raise any event or callback
     /// that would allow the control to react to the removal of a node. If a selected node is removed directly,
     /// it would remain in the internal <see cref="_selectedNodes"/> set, leading to inconsistencies
     /// such as invalid selection states, rendering errors, or exceptions.
-    ///
     /// To avoid this, the <c>RemoveNode</c> method provides a safe and consistent way to remove a node.
-    /// Always use this method instead of calling TreeNode.Remove() directly, to preserve selection integrity.
+    /// Always use this method instead of calling <see cref="TreeNode.Remove"/> directly, to preserve selection integrity.
     /// </remarks>
     public void RemoveNode(TreeNode node)
     {
@@ -198,12 +216,12 @@ public partial class MultiSelectTreeView : TreeView
         }
     }
 
-    /// <summary> 
-    /// Clears the cache retrieved by <see cref="InitializeColorsCache()"/>. 
+    /// <summary>
+    /// Clears the cache retrieved by <see cref="InitializeColorsCache"/>.
     /// Should be called if the system color settings or visual styles have changed.
     /// </summary>
     /// <seealso cref="InitializeColorsCache"/>
-    public void ResetColorsCache()
+    public virtual void ResetColorsCache()
     {
         _colorsCache = null;
     }
@@ -307,9 +325,8 @@ public partial class MultiSelectTreeView : TreeView
     /// <remarks>
     /// This is an attempt to address the odd behavior of the tree view, namely that it selects some of the nodes 
     /// you added and draws them that way, despite the SelectedNode property still returns null.
-    /// So, this method is the attempt to unify the initial displayed selection
-    /// and SelectedNodes property. See also
-    /// https://stackoverflow.com/questions/11310912/how-to-disable-treeview-auto-first-node-select.
+    /// So, this method is the attempt to unify the initial displayed selection and SelectedNodes property.
+    /// See also https://stackoverflow.com/questions/11310912/how-to-disable-treeview-auto-first-node-select.
     /// </remarks>
     /// <param name="selectedNodes"> (Optional) The collection of selected nodes. </param>
     /// <seealso cref="SelectedNodes"/>
@@ -323,9 +340,10 @@ public partial class MultiSelectTreeView : TreeView
 
             // Force a change in the behavior of the standard tree control, which, when there is no selection, 
             // still wants to draw the root as selected
-            if ((SelectedNode is null) && (RootNode is not null))
+            TreeNode root = RootNode;
+            if ((SelectedNode is null) && (root is not null))
             {
-                EnforceNodeColor(RootNode, selectNode: false);
+                EnforceNodeColor(root, selectNode: false);
             }
 
             _selectionInitialized = true;
@@ -377,18 +395,23 @@ public partial class MultiSelectTreeView : TreeView
     /// <param name="node"> The <see cref="TreeNode"/> to remove from fore colors cache. </param>
     /// <param name="includeNode"> If <c>true</c>, the <paramref name="node"/> itself will also be removed
     /// if it is present. </param>
-    protected virtual void RemoveDescendantsFromForeColorsCache(TreeNode node, bool includeNode)
+    /// <returns>The number of nodes removed from foreground colors cache.</returns>
+    protected virtual int RemoveDescendantsFromForeColorsCache(TreeNode node, bool includeNode)
     {
+        int removedCount = 0;
+
         if (node is not null)
         {
             for (var stack = new Stack<TreeNode>(includeNode ? [node] : node.Nodes.Cast<TreeNode>()); stack.Count > 0;)
             {
                 TreeNode current = stack.Pop();
 
-                _nodeForeColors.Remove(current);
+                if (_nodeForeColors.Remove(current))
+                    removedCount++;
                 stack.PushRange(current.Nodes.Cast<TreeNode>());
             }
         }
+        return removedCount;
     }
 
     /// <summary>
@@ -641,7 +664,7 @@ public partial class MultiSelectTreeView : TreeView
         // This mimics the default behavior of the TreeView control.
 
 
-        // Note: For following computation, one should NOT use TreeView.GetNodeAt.
+        // Note: For following computation, one should NOT use TreeView.GetNodeAt, but GetNodeHit.
         // TreeView.GetNodeAt(Point) in Windows Forms returns the nearest node, even if you click on the whitespace 
         // to the far right of a node, outside the actual visible text or icon.
         // This behavior can be misleading if you're trying to only react to true clicks on the node content.
@@ -837,25 +860,27 @@ public partial class MultiSelectTreeView : TreeView
 
     private void HandleLeftArrowKey()
     {
-        if (SelectedNode.IsExpanded && SelectedNode.Nodes.Count > 0)
+        TreeNode selectedNode = SelectedNode;
+        if (selectedNode.IsExpanded && selectedNode.Nodes.Count > 0)
         {
-            SelectedNode.Collapse();
+            selectedNode.Collapse();
         }
-        else if (SelectedNode.Parent != null)
+        else
         {
-            SelectSingleNode(SelectedNode.Parent);
+            SelectSingleNode(selectedNode.Parent); // SelectSingleNode accepts null
         }
     }
 
     private void HandleRightArrowKey()
     {
-        if (!SelectedNode.IsExpanded)
+        TreeNode selectedNode = SelectedNode;
+        if (!selectedNode.IsExpanded)
         {
-            SelectedNode.Expand();
+            selectedNode.Expand();
         }
-        else if (SelectedNode.FirstNode != null)
+        else
         {
-            SelectSingleNode(SelectedNode.FirstNode);
+            SelectSingleNode(selectedNode.FirstNode); // SelectSingleNode accepts null
         }
     }
 
@@ -869,24 +894,23 @@ public partial class MultiSelectTreeView : TreeView
         }
         else
         {
-            SelectSingleNode(Nodes[0]);
+            SelectSingleNode(RootNode);
         }
     }
 
     private void HandleEndKey(bool isShiftPressed)
     {
         if (Nodes.Count == 0) return;
-
         if (isShiftPressed && SelectedNode?.Parent != null)
         {
             SelectNode(SelectedNode.Parent.LastNode);
         }
         else
         {
-            TreeNode nextLastNode, lastNode = Nodes[0].LastNode;
-            while (lastNode.IsExpanded && (nextLastNode = lastNode.LastNode) != null)
+            TreeNode lastNode = RootNode.LastNode;
+            for (; lastNode != null && lastNode.IsExpanded && lastNode.LastNode != null; lastNode = lastNode.LastNode)
             {
-                lastNode = nextLastNode;
+                // Traverse to the deepest last node; loop body intentionally left empty
             }
             SelectSingleNode(lastNode);
         }
@@ -1064,8 +1088,7 @@ public partial class MultiSelectTreeView : TreeView
             }
             else
             {
-                // Just clicked a node, select it
-                SelectSingleNode(node);
+                SelectSingleNode(node); // Just clicked a node, select it
             }
 
             OnAfterSelect(new TreeViewEventArgs(SelectedNode));
@@ -1080,18 +1103,15 @@ public partial class MultiSelectTreeView : TreeView
     private void ClearSelectedNodes()
     {
         // early return to avoid unnecessary call of MarkSelectionChanged
-        if ((_selectedNodes.Count == 0) && (_selectedNode is null)) return;
+        if ((SelectedNodes.Count == 0) && (SelectedNode is null)) return;
 
         try
         {
-            DetermineUnselectedNodeColor(out Color bgColor, out Color fgColor);
             foreach (TreeNode node in SelectedNodes)
             {
+                DetermineUnselectedNodeColor(node, out Color bgColor, out Color fgColor);
                 node.BackColor = bgColor;
-                if (_nodeForeColors.TryGetValue(node, out Color cached))
-                    node.ForeColor = cached;
-                else
-                    node.ForeColor = fgColor;
+                node.ForeColor = fgColor;
             }
         }
         finally

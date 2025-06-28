@@ -133,6 +133,9 @@
     <WarningLevel>7</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <EmbeddedResource Remove="UI\Controls\MultiSelecOwnerDrawTreeView.resx" />
+  </ItemGroup>
+  <ItemGroup>
     <Reference Update="System.Core">
       <RequiredTargetFramework>3.5</RequiredTargetFramework>
     </Reference>
@@ -185,7 +188,6 @@
     <EmbeddedResource Include="UI\Dialogs\PSTaskDialog\green_arrow2.png" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="EntityFramework" Version="6.5.1" />
     <PackageReference Include="Microsoft.VisualStudio.Threading">
       <Version>17.14.15</Version>
     </PackageReference>

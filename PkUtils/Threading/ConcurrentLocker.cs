@@ -2,7 +2,6 @@
 //
 using System;
 using System.Collections.Generic;
-using System.Data.Entity.Core;
 using System.Diagnostics;
 using System.Threading;
 using System.Threading.Tasks;
@@ -175,7 +174,7 @@ public class ConcurrentLocker<TKey> : IConcurrentLocker<TKey>
             }
             else if (millisecondsTimeout == 0)
             {
-                throw new OptimisticConcurrencyException(_fnErrorMessage(key));  // don't bother waiting
+                throw new ConcurrencyConflictException(_fnErrorMessage(key));  // don't bother waiting
             }
 
             // Note that call below still may throw OptimisticConcurrencyException exception of its own
@@ -261,7 +260,7 @@ public class ConcurrentLocker<TKey> : IConcurrentLocker<TKey>
 
     /// <summary> Wait for semaphore asynchronously. </summary>
     ///
-    /// <exception cref="OptimisticConcurrencyException"> Thrown when error condition occurs. </exception>
+    /// <exception cref="ConcurrencyConflictException"> Thrown when error condition occurs. </exception>
     /// <param name="semaphoreWrapper"> The semaphore wrapper. </param>
     /// <param name="millisecondsTimeout"> The milliseconds timeout. </param>
     /// <param name="cancellationToken"> A token that allows processing to be canceled. </param>
@@ -299,7 +298,7 @@ public class ConcurrentLocker<TKey> : IConcurrentLocker<TKey>
         else
         {
             semaphoreWrapper.BaseRelease();  // 'manually' release the reference acquired by new UsageMonitor
-            throw new OptimisticConcurrencyException(_fnErrorMessage(semaphoreWrapper.RelatedKey));
+            throw new ConcurrencyConflictException(_fnErrorMessage(semaphoreWrapper.RelatedKey));
         }
     }
     #endregion // Methods
