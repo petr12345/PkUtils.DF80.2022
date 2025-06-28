@@ -159,15 +159,16 @@ public partial class MultiSelectTreeView : TreeView
     }
 
     /// <summary>
-    /// Adds a colored node to the internal foreground colors dictionary.
+    /// Assigns a custom foreground color to a <see cref="TreeNode"/> and caches it for later use.
     /// </summary>
     /// <remarks>
-    /// Note, this does NOT add the node to the tree view. 
-    /// The caller should add the node to the tree view separately, before or after.
+    /// This method does not add the node to the <see cref="TreeView"/>; it only sets and remembers the node's foreground color.
+    /// The caller is responsible for adding the node to the tree view if desired.
     /// </remarks>
     /// <param name="node">The <see cref="TreeNode"/> to assign a foreground color to. Must not be null.</param>
     /// <param name="foreColor">The foreground color to assign to the node.</param>
-    public void AddColoredNode(TreeNode node, Color foreColor)
+    /// <seealso cref="IsColoredNode(TreeNode, out Color)"/>
+    public void SetNodeForeColor(TreeNode node, Color foreColor)
     {
         ArgumentNullException.ThrowIfNull(node);
 
@@ -178,11 +179,12 @@ public partial class MultiSelectTreeView : TreeView
     }
 
     /// <summary>
-    /// Determines whether the specified <see cref="TreeNode"/> has a custom foreground color assigned via <see cref="AddColoredNode"/>.
+    /// Determines whether the specified <see cref="TreeNode"/> has a custom foreground color assigned via <see cref="SetNodeForeColor(TreeNode, Color)"/>.
     /// </summary>
     /// <param name="node"> The <see cref="TreeNode"/> to check. Must not be null. </param>
     /// <param name="foreColor"> [out] The foreground color of the node. </param>
     /// <returns>   <c>true</c> if the node has a custom foreground color; otherwise, <c>false</c>. </returns>
+    /// <seealso cref="SetNodeForeColor"/>
     public bool IsColoredNode(TreeNode node, out Color foreColor)
     {
         ArgumentNullException.ThrowIfNull(node);

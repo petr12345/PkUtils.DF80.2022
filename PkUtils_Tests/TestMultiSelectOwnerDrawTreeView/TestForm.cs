@@ -2,6 +2,7 @@
 //
 using System.Diagnostics;
 using System.Runtime.InteropServices;
+using PK.PkUtils.Consoles;
 using PK.PkUtils.Dump;
 using PK.PkUtils.Extensions;
 using PK.PkUtils.Interfaces;
@@ -9,7 +10,7 @@ using PK.PkUtils.UI.General;
 using PK.PkUtils.UI.Utils;
 using PK.PkUtils.Utils;
 using PK.PkUtils.WinApi;
-using TestMultiSelectTreeView.Properties;
+using TestMultiSelectOwnerDrawTreeview.Properties;
 using static PK.PkUtils.UI.Controls.MultiSelectTreeView;
 using static PK.PkUtils.WinApi.User32;
 
@@ -17,7 +18,7 @@ using static PK.PkUtils.WinApi.User32;
 #pragma warning disable IDE0305 // Collection initialization can be simplified
 
 
-namespace TestMultiSelectTreeView;
+namespace TestMultiSelectOwnerDrawTreeview;
 
 public partial class TestForm : FormWithLayoutPersistence, IDumper
 {
@@ -27,6 +28,9 @@ public partial class TestForm : FormWithLayoutPersistence, IDumper
     private Color _treeviewForeColor;
     private LockRedraw _treeLockRedraw;
     private DumperCtrlTextBoxWrapper _wrapper;
+    private Font _italicFont;
+
+    private readonly string[] _specialNodestNames = ["Node0", "Node1", "Node2", "Node3"];
     private const bool _showCallStack = false;
     private const int _maxMsgHistoryItems = 2048;
     private const int _aboutMenuItem_ID = 1234;
@@ -45,11 +49,13 @@ public partial class TestForm : FormWithLayoutPersistence, IDumper
     {
         InitializeComponent();
         InitializeAdditionalTreeNodes();
+        InitializeNodesColors();
         InitializeTreeViewHandlers();
         InitializeFromSettings();
 
         LoadLayout();
         ExtendSystemMenu();
+        this.Icon = ConsoleIconManager.CreateIcon(Resources.text_tree);
         this.KeyPreview = true; // This allows the form to capture key presses even when a control inside it has focus.
     }
     #endregion // Constructor(s)
@@ -61,6 +67,11 @@ public partial class TestForm : FormWithLayoutPersistence, IDumper
     protected override IDumper Dumper
     {
         get { return (_wrapper ??= new DumperCtrlTextBoxWrapper(_dumpTextBox, _maxMsgHistoryItems)); }
+    }
+
+    protected Font ItalicFont
+    {
+        get { return (_italicFont ??= new Font(_treeView.Font, FontStyle.Italic)); }
     }
     #endregion // Properties
 
@@ -133,10 +144,12 @@ public partial class TestForm : FormWithLayoutPersistence, IDumper
 
     protected void InitializeFromSettings()
     {
+        _checkBxIndicateProjectedSelection.Checked = Settings.Default.DisplayProjectedSelection;
         _checkBoxShowLog.Checked = Settings.Default.ShowLog;
         _checkBoxUseImages.Checked = Settings.Default.UseImages;
         _checkBoxCustomColors.Checked = Settings.Default.UseCustomColors;
 
+        OnCheckBxIndicateProjectedSelection_CheckedChanged(this, EventArgs.Empty);
         InitializeTreeViewTextLogger(_checkBoxShowLog.Checked);
         AdjustAllNodesImages();
         AdjustCustomColors();
@@ -144,6 +157,7 @@ public partial class TestForm : FormWithLayoutPersistence, IDumper
 
     protected void SaveSettings()
     {
+        Settings.Default.DisplayProjectedSelection = _checkBxIndicateProjectedSelection.Checked;
         Settings.Default.ShowLog = _checkBoxShowLog.Checked;
         Settings.Default.UseImages = _checkBoxUseImages.Checked;
         Settings.Default.UseCustomColors = _checkBoxCustomColors.Checked;
@@ -276,6 +290,23 @@ public partial class TestForm : FormWithLayoutPersistence, IDumper
         _treeView.Nodes.AddRange([node1, node2, node3]);
         _treeView.GetAllNodes().ForEach(node => node.Name = node.Text);
     }
+
+    private void InitializeNodesColors()
+    {
+        List<TreeNode> redNodes = _treeView.GetAllNodes()
+            .Where(node => node.Name.Contains("1"))
+            .ToList();
+        List<TreeNode> blueNodes = _treeView.GetAllNodes()
+            .Where(node => node.Name.Contains("2"))
+            .ToList();
+
+        redNodes.ForEach(node => _treeView.SetNodeForeColor(node, Color.Red));
+        foreach (TreeNode node in blueNodes)
+        {
+            _treeView.SetNodeForeColor(node, Color.Blue);
+            node.NodeFont = ItalicFont;
+        }
+    }
     #endregion // Updating_tree_nodes
 
     #region Updating_tree_selection_info
@@ -315,24 +346,6 @@ public partial class TestForm : FormWithLayoutPersistence, IDumper
         UpdateClearSelectionButton();
     }
     #endregion // Updating_Buttons
-
-    #region Handling_menu
-
-    protected void ShowAboutDialogBox()
-    {
-        using Form aboutBox = new AboutBox();
-        aboutBox.ShowDialog(this);
-    }
-
-    protected override void WndProc(ref Message m)
-    {
-        base.WndProc(ref m);
-        if ((m.Msg == (int)Win32.WM.WM_SYSCOMMAND) && ((int)m.WParam == _aboutMenuItem_ID))
-        {
-            ShowAboutDialogBox();
-        }
-    }
-    #endregion // Handling_menu
     #endregion // Methods
 
     #region Event_handlers
@@ -347,14 +360,6 @@ public partial class TestForm : FormWithLayoutPersistence, IDumper
         DumpTreeSelectionInfo(_treeView.SelectedNodes, "Initially", null);
     }
 
-    private void TestForm_KeyDown(object sender, KeyEventArgs e)
-    {
-        if (e.KeyCode == Keys.F1)
-        {
-            ShowAboutDialogBox();
-            e.Handled = true;
-        }
-    }
     private void TestForm_FormClosing(object sender, FormClosingEventArgs e)
     {
         SaveSettings();
@@ -366,37 +371,6 @@ public partial class TestForm : FormWithLayoutPersistence, IDumper
     {
         DumpTreeSelectionInfo(args.SelectedNodes, null, args.StackTrace);
         UpdateClearSelectionButton();
-    }
-
-    private void OnMultiSelectTreeView_RightClick(object sender, TreeViewRightClickArgs args)
-    {
-        if (sender is Control treeView)
-        {
-            TreeNode clickedNode = args.ClickedNode;
-            IReadOnlyCollection<TreeNode> selectedNodes = _treeView.SelectedNodes;
-            // Convert point from treeView-relative to screen coordinates, then form-relative coordinates
-            Point formPoint = PointToClient(treeView.PointToScreen(args.Location));
-
-            if (clickedNode is null)
-            {    // No node was clicked, so show the context menu for the whole tree
-                _contextMenuWholeTreeStrip.Show(this, formPoint);
-            }
-            else if (!selectedNodes.Contains(clickedNode))
-            {    // A node was clicked, but it is not selected, nothing like 
-                string infoSelected = (selectedNodes.Count == 0) ? "none" : $" ({selectedNodes.Join(", ", x => x.Name.NullIfEmpty() ?? x.Text)})";
-                string errorMessage = $"A node '{clickedNode.Text}' was clicked, but it is not in selected nodes: {infoSelected}";
-                MessageBox.Show(errorMessage, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-            }
-            else if (selectedNodes.Count == 1)
-            {    // A node was clicked, and it is single node selected, so show the context menu for that node
-                _contextMenuSingleNodeChoices.Show(this, formPoint);
-            }
-            else
-            {
-                // A single node from multiple nodes so show the context menu for that node
-                _contextMenuMultipleNodesChoices.Show(this, formPoint);
-            }
-        }
     }
     #endregion // Tree_Events
 
@@ -427,9 +401,8 @@ public partial class TestForm : FormWithLayoutPersistence, IDumper
 
     private void OnButton_SelectNodes(object sender, EventArgs args)
     {
-        string[] targetNames = ["Node0", "Node1", "Node2", "Node3"];
         List<TreeNode> list = _treeView.Nodes.Cast<TreeNode>()
-            .Where(node => targetNames.Contains(node.Name))
+            .Where(node => _specialNodestNames.Contains(node.Name))
             .ToList();
 
         _treeView.SelectedNodes = list;
@@ -459,6 +432,7 @@ public partial class TestForm : FormWithLayoutPersistence, IDumper
         using (IDisposable _ = new UsageMonitor(_treeLockRedraw))
         {
             InitializeAdditionalTreeNodes();
+            InitializeNodesColors();
             AdjustAllNodesImages();
             _treeView.Refresh();
         }
@@ -484,6 +458,11 @@ public partial class TestForm : FormWithLayoutPersistence, IDumper
     private void OnCheckBoxUseImages_CheckedChanged(object sender, EventArgs args)
     {
         AdjustAllNodesImages();
+    }
+
+    private void OnCheckBxIndicateProjectedSelection_CheckedChanged(object sender, EventArgs e)
+    {
+        _treeView.ProjectedSelectionFrameThickness = _checkBxIndicateProjectedSelection.Checked ? 1 : 0;
     }
 
     private void OnButton_Exit_Click(object sender, EventArgs args)

@@ -2,7 +2,9 @@
 using System.ComponentModel;
 using System.Drawing;
 using System.Windows.Forms;
+using PK.PkUtils.DataStructures;
 using PK.PkUtils.Extensions;
+using PK.PkUtils.Interfaces;
 
 namespace PK.PkUtils.UI.Controls;
 
@@ -16,8 +18,9 @@ public partial class MultiSelectOwnerDrawTreeView : MultiSelectTreeView
 {
     #region Fields
 
-    private const int _defaultNodeFrameThickness = 0;
+    private readonly ISizeLimitedCache<Color, SolidBrush> _cacheBrushes;
     private int _nodeFrameThickness = _defaultNodeFrameThickness;
+    private const int _defaultNodeFrameThickness = 0;
     #endregion // Fields
 
     #region Constructor(s)
@@ -27,6 +30,7 @@ public partial class MultiSelectOwnerDrawTreeView : MultiSelectTreeView
     {
         DrawMode = TreeViewDrawMode.OwnerDrawText;
         this.DoubleBuffered = true; // Enable double buffering for smoother rendering
+        _cacheBrushes = new SizeLimitedCache<Color, SolidBrush>(maxSize: 8);
     }
     #endregion // Constructor(s)
 
@@ -133,18 +137,16 @@ public partial class MultiSelectOwnerDrawTreeView : MultiSelectTreeView
     }
 
     /// <summary>
-    /// Overrides the default drawing behavior of tree nodes to provide custom visuals
-    /// for selection and ancestor relationships.
+    /// Customizes the drawing of tree nodes to provide enhanced visual feedback for node states.
     /// <para>
-    /// Selected nodes are rendered with a highlighted background. Nodes that are not directly selected,
-    /// but have a selected ancestor (i.e., their parent or higher ancestor is selected), are considered
-    /// "projected selections" and are visually indicated by drawing a rectangle around their text area.
+    /// - Directly selected nodes are rendered with a highlighted background and foreground color.
+    /// - Nodes that are not directly selected, but have a selected ancestor (i.e., their parent or higher ancestor is selected),
+    ///   are considered "projected selections" and are visually indicated by drawing a colored rectangle around their text area.
     /// </para>
     /// </summary>
-    /// <param name="args">A <see cref="DrawTreeNodeEventArgs"/> that contains the event data for the node to be drawn.</param>
+    /// <param name="args"> A <see cref="DrawTreeNodeEventArgs"/> containing the event data for the node to be drawn. </param>
     protected override void OnDrawNode(DrawTreeNodeEventArgs args)
     {
-        // int nodeFrameThickness = NodeFrameThickness;
         Rectangle textBounds = args.Bounds;
         TreeNode currentNode = args.Node;
         Font nodeFont = currentNode.NodeFont;
@@ -154,7 +156,7 @@ public partial class MultiSelectOwnerDrawTreeView : MultiSelectTreeView
         Color backgroundColor = highlightBackgroundColor;
         Color foregroundColor = highlightForegroundColor;
 
-        // If node has custom font, must adjust the bounds from arguments to fit the text currentNode.Text
+        // If the node has a custom font, adjust the bounds to fit the rendered text.
         if (nodeFont is not null)
         {
             textBounds.Size = TextRenderer.MeasureText(currentNode.Text, nodeFont);
@@ -162,17 +164,21 @@ public partial class MultiSelectOwnerDrawTreeView : MultiSelectTreeView
 
         if (isNodeSelected)
         {
+            // Fill the background for selected nodes using the system highlight color.
             args.Graphics.FillRectangle(SystemBrushes.Highlight, textBounds);
         }
         else
         {
+            // Determine the background and foreground colors for unselected nodes.
             DetermineUnselectedNodeColor(currentNode, out backgroundColor, out foregroundColor);
-            using (var backgroundBrush = new SolidBrush(backgroundColor)) // ##FIX## cache brush
-            {
-                args.Graphics.FillRectangle(backgroundBrush, textBounds);
-            }
+
+            // Retrieve or create a cached SolidBrush for the background color.
+            if (_cacheBrushes.TryGetValue(backgroundColor, out SolidBrush backgroundBrush) is false)
+                _cacheBrushes[backgroundColor] = backgroundBrush = new SolidBrush(backgroundColor);
+            args.Graphics.FillRectangle(backgroundBrush, textBounds);
         }
 
+        // Draw the node's text using the appropriate font and foreground color.
         TextRenderer.DrawText(
             args.Graphics,
             currentNode.Text,
@@ -181,17 +187,37 @@ public partial class MultiSelectOwnerDrawTreeView : MultiSelectTreeView
             foregroundColor,
             TextFormatFlags.VerticalCenter | TextFormatFlags.Left);
 
+        // Draw a projected selection frame if enabled, the node is not selected, and it has a selected ancestor.
         if (PaintProjectedSelections && !isNodeSelected && IsAncestorSelected(currentNode))
         {
             int nodeFrameThickness = ProjectedSelectionFrameThickness;
-            Rectangle textRectangle = textBounds; /* GetNodeTextBounds(currentNode); */
+            Rectangle textRectangle = textBounds; // Optionally, use GetNodeTextBounds(currentNode) for more precise bounds.
 
+            // Shrink the rectangle by the frame thickness to ensure the frame is drawn inside the text area.
             textRectangle.Inflate(-nodeFrameThickness, -nodeFrameThickness);
+
+            // Note: Pens are lightweight in GDI+ and do not require caching like SolidBrushes.
+            // Creating a new Pen for each draw is acceptable and avoids cache invalidation issues 
+            // in case of ProjectedSelectionFrameThickness value changes.
+            // 
             using Pen framePen = new(highlightBackgroundColor, nodeFrameThickness);
             args.Graphics.DrawRectangle(framePen, textRectangle);
         }
 
+        // Call the base implementation to ensure any additional drawing logic is executed.
         base.OnDrawNode(args);
+    }
+
+    /// <summary> Releases the unmanaged resources and optionally releases the managed resources. </summary>
+    /// <param name="disposing"> true to release both managed and unmanaged resources; false to release only
+    /// unmanaged resources. </param>
+    protected override void Dispose(bool disposing)
+    {
+        if (disposing)
+        {
+            _cacheBrushes.Dispose();
+        }
+        base.Dispose(disposing);
     }
     #endregion // Protected_Overrides
     #endregion // Methods

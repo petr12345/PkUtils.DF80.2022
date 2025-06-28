@@ -2,7 +2,7 @@
 //
 using PK.PkUtils.UI.Controls;
 
-namespace TestMultiSelectTreeView;
+namespace TestMultiSelectOwnerDrawTreeview;
 
 partial class TestForm
 {
@@ -33,9 +33,9 @@ partial class TestForm
     private void InitializeComponent()
     {
         components = new System.ComponentModel.Container();
-        TreeNode treeNode1 = new TreeNode("Node0");
+        TreeNode treeNode2 = new TreeNode("Node0");
         System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(TestForm));
-        _treeView = new MultiSelectTreeView();
+        _treeView = new MultiSelectOwnerDrawTreeView();
         _treeImageList = new ImageList(components);
         _btnSelectNodes = new Button();
         _btnClearSelection = new Button();
@@ -48,41 +48,32 @@ partial class TestForm
         _btnClearLog = new Button();
         _btnDeleteNodes = new Button();
         _btnInsertNodes = new Button();
-        _contextMenuWholeTreeStrip = new ContextMenuStrip(components);
-        _menuItemExpandAllNodes = new ToolStripMenuItem();
-        _menuItemCollapseNodes = new ToolStripMenuItem();
-        _contextMenuSingleNodeChoices = new ContextMenuStrip(components);
-        _menuItemOpenTheNode = new ToolStripMenuItem();
-        _contextMenuMultipleNodesChoices = new ContextMenuStrip(components);
-        _menuItemUnselectAllNodes = new ToolStripMenuItem();
+        _checkBxIndicateProjectedSelection = new CheckBox();
         ((System.ComponentModel.ISupportInitialize)_splitContainer).BeginInit();
         _splitContainer.Panel1.SuspendLayout();
         _splitContainer.Panel2.SuspendLayout();
         _splitContainer.SuspendLayout();
-        _contextMenuWholeTreeStrip.SuspendLayout();
-        _contextMenuSingleNodeChoices.SuspendLayout();
-        _contextMenuMultipleNodesChoices.SuspendLayout();
         SuspendLayout();
         // 
         // _treeView
         // 
         _treeView.Dock = DockStyle.Fill;
+        _treeView.DrawMode = TreeViewDrawMode.OwnerDrawText;
         _treeView.ImageIndex = 0;
         _treeView.ImageList = _treeImageList;
         _treeView.Location = new Point(0, 0);
         _treeView.Margin = new Padding(4);
         _treeView.Name = "_treeView";
-        treeNode1.BackColor = Color.White;
-        treeNode1.ForeColor = Color.Black;
-        treeNode1.Name = "Node0";
-        treeNode1.Text = "Node0";
-        _treeView.Nodes.AddRange(new TreeNode[] { treeNode1 });
+        treeNode2.BackColor = Color.White;
+        treeNode2.ForeColor = Color.Black;
+        treeNode2.Name = "Node0";
+        treeNode2.Text = "Node0";
+        _treeView.Nodes.AddRange(new TreeNode[] { treeNode2 });
         _treeView.SelectedImageIndex = 0;
         _treeView.SelectedNodes = (IReadOnlyCollection<TreeNode>)resources.GetObject("_treeView.SelectedNodes");
-        _treeView.Size = new Size(374, 236);
+        _treeView.Size = new Size(374, 248);
         _treeView.TabIndex = 0;
         _treeView.SelectionChanged += OnMultiSelectTreeView_SelectionChanged;
-        _treeView.TreeRightClick += OnMultiSelectTreeView_RightClick;
         // 
         // _treeImageList
         // 
@@ -99,11 +90,11 @@ partial class TestForm
         // _btnSelectNodes
         // 
         _btnSelectNodes.Anchor = AnchorStyles.Bottom | AnchorStyles.Right;
-        _btnSelectNodes.Location = new Point(278, 437);
+        _btnSelectNodes.Location = new Point(278, 487);
         _btnSelectNodes.Margin = new Padding(4);
         _btnSelectNodes.Name = "_btnSelectNodes";
         _btnSelectNodes.Size = new Size(110, 26);
-        _btnSelectNodes.TabIndex = 7;
+        _btnSelectNodes.TabIndex = 8;
         _btnSelectNodes.Text = "Select 4 Nodes";
         _btnSelectNodes.UseVisualStyleBackColor = true;
         _btnSelectNodes.Click += OnButton_SelectNodes;
@@ -111,11 +102,11 @@ partial class TestForm
         // _btnClearSelection
         // 
         _btnClearSelection.Anchor = AnchorStyles.Bottom | AnchorStyles.Right;
-        _btnClearSelection.Location = new Point(278, 405);
+        _btnClearSelection.Location = new Point(278, 455);
         _btnClearSelection.Margin = new Padding(4);
         _btnClearSelection.Name = "_btnClearSelection";
         _btnClearSelection.Size = new Size(110, 26);
-        _btnClearSelection.TabIndex = 6;
+        _btnClearSelection.TabIndex = 7;
         _btnClearSelection.Text = "Clear Selection";
         _btnClearSelection.UseVisualStyleBackColor = true;
         _btnClearSelection.Click += OnButton_ClearSelection_Click;
@@ -124,11 +115,11 @@ partial class TestForm
         // 
         _btnExit.Anchor = AnchorStyles.Bottom | AnchorStyles.Right;
         _btnExit.Font = new Font("Segoe UI", 9F, FontStyle.Bold, GraphicsUnit.Point, 238);
-        _btnExit.Location = new Point(278, 469);
+        _btnExit.Location = new Point(278, 519);
         _btnExit.Margin = new Padding(4);
         _btnExit.Name = "_btnExit";
         _btnExit.Size = new Size(110, 26);
-        _btnExit.TabIndex = 8;
+        _btnExit.TabIndex = 9;
         _btnExit.Text = "Exit";
         _btnExit.UseVisualStyleBackColor = true;
         _btnExit.Click += OnButton_Exit_Click;
@@ -137,11 +128,11 @@ partial class TestForm
         // 
         _checkBoxCustomColors.Anchor = AnchorStyles.Bottom | AnchorStyles.Left;
         _checkBoxCustomColors.AutoSize = true;
-        _checkBoxCustomColors.Location = new Point(18, 443);
+        _checkBoxCustomColors.Location = new Point(18, 492);
         _checkBoxCustomColors.Margin = new Padding(3, 2, 3, 2);
         _checkBoxCustomColors.Name = "_checkBoxCustomColors";
         _checkBoxCustomColors.Size = new Size(123, 19);
-        _checkBoxCustomColors.TabIndex = 1;
+        _checkBoxCustomColors.TabIndex = 2;
         _checkBoxCustomColors.Text = "Use custom colors";
         _checkBoxCustomColors.UseVisualStyleBackColor = true;
         _checkBoxCustomColors.CheckedChanged += OnCheckBoxBackgroundImage_CheckedChanged;
@@ -150,11 +141,11 @@ partial class TestForm
         // 
         _checkBoxUseImages.Anchor = AnchorStyles.Bottom | AnchorStyles.Left;
         _checkBoxUseImages.AutoSize = true;
-        _checkBoxUseImages.Location = new Point(18, 474);
+        _checkBoxUseImages.Location = new Point(18, 523);
         _checkBoxUseImages.Margin = new Padding(3, 2, 3, 2);
         _checkBoxUseImages.Name = "_checkBoxUseImages";
         _checkBoxUseImages.Size = new Size(86, 19);
-        _checkBoxUseImages.TabIndex = 2;
+        _checkBoxUseImages.TabIndex = 3;
         _checkBoxUseImages.Text = "Use images";
         _checkBoxUseImages.UseVisualStyleBackColor = true;
         _checkBoxUseImages.CheckedChanged += OnCheckBoxUseImages_CheckedChanged;
@@ -177,8 +168,8 @@ partial class TestForm
         // 
         _splitContainer.Panel2.Controls.Add(_dumpTextBox);
         _splitContainer.Panel2MinSize = 64;
-        _splitContainer.Size = new Size(374, 380);
-        _splitContainer.SplitterDistance = 236;
+        _splitContainer.Size = new Size(374, 400);
+        _splitContainer.SplitterDistance = 248;
         _splitContainer.TabIndex = 0;
         // 
         // _dumpTextBox
@@ -190,18 +181,18 @@ partial class TestForm
         _dumpTextBox.Name = "_dumpTextBox";
         _dumpTextBox.ReadOnly = true;
         _dumpTextBox.ScrollBars = ScrollBars.Both;
-        _dumpTextBox.Size = new Size(374, 140);
+        _dumpTextBox.Size = new Size(374, 148);
         _dumpTextBox.TabIndex = 0;
         // 
         // _checkBoxShowLog
         // 
         _checkBoxShowLog.Anchor = AnchorStyles.Bottom | AnchorStyles.Left;
         _checkBoxShowLog.AutoSize = true;
-        _checkBoxShowLog.Location = new Point(18, 411);
+        _checkBoxShowLog.Location = new Point(18, 461);
         _checkBoxShowLog.Margin = new Padding(3, 2, 3, 2);
         _checkBoxShowLog.Name = "_checkBoxShowLog";
         _checkBoxShowLog.Size = new Size(78, 19);
-        _checkBoxShowLog.TabIndex = 0;
+        _checkBoxShowLog.TabIndex = 1;
         _checkBoxShowLog.Text = "Show Log";
         _checkBoxShowLog.UseVisualStyleBackColor = true;
         _checkBoxShowLog.CheckedChanged += OnCheckBoxShowLog_CheckedChanged;
@@ -209,11 +200,11 @@ partial class TestForm
         // _btnClearLog
         // 
         _btnClearLog.Anchor = AnchorStyles.Bottom | AnchorStyles.Right;
-        _btnClearLog.Location = new Point(155, 470);
+        _btnClearLog.Location = new Point(155, 520);
         _btnClearLog.Margin = new Padding(4);
         _btnClearLog.Name = "_btnClearLog";
         _btnClearLog.Size = new Size(110, 26);
-        _btnClearLog.TabIndex = 5;
+        _btnClearLog.TabIndex = 6;
         _btnClearLog.Text = "Clear Log Text";
         _btnClearLog.UseVisualStyleBackColor = true;
         _btnClearLog.Click += OnButtonClearLog_Click;
@@ -221,11 +212,11 @@ partial class TestForm
         // _btnDeleteNodes
         // 
         _btnDeleteNodes.Anchor = AnchorStyles.Bottom | AnchorStyles.Right;
-        _btnDeleteNodes.Location = new Point(155, 406);
+        _btnDeleteNodes.Location = new Point(155, 456);
         _btnDeleteNodes.Margin = new Padding(4);
         _btnDeleteNodes.Name = "_btnDeleteNodes";
         _btnDeleteNodes.Size = new Size(110, 26);
-        _btnDeleteNodes.TabIndex = 3;
+        _btnDeleteNodes.TabIndex = 4;
         _btnDeleteNodes.Text = "Delete Nodes";
         _btnDeleteNodes.UseVisualStyleBackColor = true;
         _btnDeleteNodes.Click += OnButtonDeleteNodes_Click;
@@ -233,66 +224,34 @@ partial class TestForm
         // _btnInsertNodes
         // 
         _btnInsertNodes.Anchor = AnchorStyles.Bottom | AnchorStyles.Right;
-        _btnInsertNodes.Location = new Point(155, 438);
+        _btnInsertNodes.Location = new Point(155, 488);
         _btnInsertNodes.Margin = new Padding(4);
         _btnInsertNodes.Name = "_btnInsertNodes";
         _btnInsertNodes.Size = new Size(110, 26);
-        _btnInsertNodes.TabIndex = 4;
+        _btnInsertNodes.TabIndex = 5;
         _btnInsertNodes.Text = "Insert Nodes";
         _btnInsertNodes.UseVisualStyleBackColor = true;
         _btnInsertNodes.Click += OnBtnInsertNodes_Click;
         // 
-        // _contextMenuWholeTreeStrip
+        // _checkBxIndicateProjectedSelection
         // 
-        _contextMenuWholeTreeStrip.Items.AddRange(new ToolStripItem[] { _menuItemExpandAllNodes, _menuItemCollapseNodes });
-        _contextMenuWholeTreeStrip.Name = "contextMenuStrip1";
-        _contextMenuWholeTreeStrip.Size = new Size(164, 48);
-        // 
-        // _menuItemExpandAllNodes
-        // 
-        _menuItemExpandAllNodes.Name = "_menuItemExpandAllNodes";
-        _menuItemExpandAllNodes.Size = new Size(163, 22);
-        _menuItemExpandAllNodes.Text = "Expand all nodes";
-        _menuItemExpandAllNodes.Click += OnMenuItemExpandAllNodes_Click;
-        // 
-        // _menuItemCollapseNodes
-        // 
-        _menuItemCollapseNodes.Name = "_menuItemCollapseNodes";
-        _menuItemCollapseNodes.Size = new Size(163, 22);
-        _menuItemCollapseNodes.Text = "Collapse nodes";
-        _menuItemCollapseNodes.Click += OnMenuItemCollapseNodes_Click;
-        // 
-        // _contextMenuSingleNodeChoices
-        // 
-        _contextMenuSingleNodeChoices.Items.AddRange(new ToolStripItem[] { _menuItemOpenTheNode });
-        _contextMenuSingleNodeChoices.Name = "_contextMenuSingleNodeChoices";
-        _contextMenuSingleNodeChoices.Size = new Size(154, 26);
-        // 
-        // _menuItemOpenTheNode
-        // 
-        _menuItemOpenTheNode.Name = "_menuItemOpenTheNode";
-        _menuItemOpenTheNode.Size = new Size(153, 22);
-        _menuItemOpenTheNode.Text = "Open the node";
-        _menuItemOpenTheNode.Click += OnMenuItemOpenTheNode_Click;
-        // 
-        // _contextMenuMultipleNodesChoices
-        // 
-        _contextMenuMultipleNodesChoices.Items.AddRange(new ToolStripItem[] { _menuItemUnselectAllNodes });
-        _contextMenuMultipleNodesChoices.Name = "contextMenuStrip1";
-        _contextMenuMultipleNodesChoices.Size = new Size(170, 26);
-        // 
-        // _menuItemUnselectAllNodes
-        // 
-        _menuItemUnselectAllNodes.Name = "_menuItemUnselectAllNodes";
-        _menuItemUnselectAllNodes.Size = new Size(169, 22);
-        _menuItemUnselectAllNodes.Text = "Unselect all nodes";
-        _menuItemUnselectAllNodes.Click += OnMenuItemUnselectAllNodes_Click;
+        _checkBxIndicateProjectedSelection.Anchor = AnchorStyles.Bottom | AnchorStyles.Left;
+        _checkBxIndicateProjectedSelection.AutoSize = true;
+        _checkBxIndicateProjectedSelection.Location = new Point(18, 430);
+        _checkBxIndicateProjectedSelection.Margin = new Padding(3, 2, 3, 2);
+        _checkBxIndicateProjectedSelection.Name = "_checkBxIndicateProjectedSelection";
+        _checkBxIndicateProjectedSelection.Size = new Size(220, 19);
+        _checkBxIndicateProjectedSelection.TabIndex = 0;
+        _checkBxIndicateProjectedSelection.Text = "Indicate projected selection of nodes";
+        _checkBxIndicateProjectedSelection.UseVisualStyleBackColor = true;
+        _checkBxIndicateProjectedSelection.CheckedChanged += OnCheckBxIndicateProjectedSelection_CheckedChanged;
         // 
         // TestForm
         // 
         AutoScaleDimensions = new SizeF(7F, 15F);
         AutoScaleMode = AutoScaleMode.Font;
-        ClientSize = new Size(406, 511);
+        ClientSize = new Size(406, 561);
+        Controls.Add(_checkBxIndicateProjectedSelection);
         Controls.Add(_btnInsertNodes);
         Controls.Add(_btnDeleteNodes);
         Controls.Add(_btnClearLog);
@@ -305,26 +264,22 @@ partial class TestForm
         Controls.Add(_btnSelectNodes);
         Icon = (Icon)resources.GetObject("$this.Icon");
         Margin = new Padding(4);
-        MinimumSize = new Size(422, 550);
+        MinimumSize = new Size(422, 600);
         Name = "TestForm";
-        Text = "Test MultiSelect Tree View";
+        Text = "Test MultiSelect OwnerDraw Tree View";
         FormClosing += TestForm_FormClosing;
         Load += TestForm_Load;
-        KeyDown += TestForm_KeyDown;
         _splitContainer.Panel1.ResumeLayout(false);
         _splitContainer.Panel2.ResumeLayout(false);
         _splitContainer.Panel2.PerformLayout();
         ((System.ComponentModel.ISupportInitialize)_splitContainer).EndInit();
         _splitContainer.ResumeLayout(false);
-        _contextMenuWholeTreeStrip.ResumeLayout(false);
-        _contextMenuSingleNodeChoices.ResumeLayout(false);
-        _contextMenuMultipleNodesChoices.ResumeLayout(false);
         ResumeLayout(false);
         PerformLayout();
     }
     #endregion
 
-    private MultiSelectTreeView _treeView;
+    private MultiSelectOwnerDrawTreeView _treeView;
     private SplitContainer _splitContainer;
     private TextBox _dumpTextBox;
     private ImageList _treeImageList;
@@ -339,15 +294,6 @@ partial class TestForm
     private Button _btnSelectNodes;
     private Button _btnClearSelection;
     private Button _btnExit;
-
-    private ContextMenuStrip _contextMenuWholeTreeStrip;
-    private ToolStripMenuItem _menuItemExpandAllNodes;
-    private ToolStripMenuItem _menuItemCollapseNodes;
-
-    private ContextMenuStrip  _contextMenuSingleNodeChoices;
-    private ToolStripMenuItem _menuItemOpenTheNode;
-
-    private ContextMenuStrip _contextMenuMultipleNodesChoices;
-    private ToolStripMenuItem _menuItemUnselectAllNodes;
+    private CheckBox _checkBxIndicateProjectedSelection;
 }
 
