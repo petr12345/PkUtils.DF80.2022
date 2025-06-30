@@ -1,7 +1,7 @@
-﻿TestMultiSelectOwnerDrawTreeview 
+﻿TestMultiSelectOwnerDraw
 --------------------------------------
 
-Project TestMultiSelectOwnerDrawTreeview demonstrates a specialized TreeView control 
+Project TestMultiSelectOwnerDraw demonstrates a specialized TreeView control MultiSelectOwnerDrawTreeView,
 that extends multi-selection functionality of base MultiSelectTreeView with owner-drawn rendering. 
 
 The control MultiSelectOwnerDrawTreeView not only supports selection of multiple nodes 
