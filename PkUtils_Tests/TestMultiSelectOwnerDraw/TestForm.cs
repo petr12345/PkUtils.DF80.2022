@@ -1,7 +1,6 @@
 // Ignore Spelling: TreeView
 //
 using System.Diagnostics;
-using System.Runtime.InteropServices;
 using PK.PkUtils.Consoles;
 using PK.PkUtils.Dump;
 using PK.PkUtils.Extensions;
@@ -9,10 +8,8 @@ using PK.PkUtils.Interfaces;
 using PK.PkUtils.UI.General;
 using PK.PkUtils.UI.Utils;
 using PK.PkUtils.Utils;
-using PK.PkUtils.WinApi;
 using TestMultiSelectOwnerDrawTreeview.Properties;
 using static PK.PkUtils.UI.Controls.MultiSelectTreeView;
-using static PK.PkUtils.WinApi.User32;
 
 #pragma warning disable IDE0090 // Use 'new(...)'
 #pragma warning disable IDE0305 // Collection initialization can be simplified

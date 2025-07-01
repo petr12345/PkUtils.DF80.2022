@@ -227,6 +227,29 @@ public partial class MultiSelectTreeView : TreeView
     {
         _colorsCache = null;
     }
+
+    /// <summary> Performs a hit test on the TreeView at the specified point and returns the associated TreeNode
+    /// if the hit location matches the provided criteria. </summary>
+    /// <remarks>
+    /// This method fixes the behavior of <see cref="TreeView.GetNodeAt(Point)"/> in Windows Forms, 
+    /// which returns the nearest node even if you click on the whitespace to the far right of a node,
+    /// outside the actual visible text or icon. 
+    /// That behavior is misleading if you're trying to only react to true clicks on the node content.
+    /// </remarks>
+    /// <param name="point">The point to perform the hit test at, in client coordinates.</param>
+    /// <param name="locations">  Optional collection of <see cref="TreeViewHitTestLocations"/> values to match against.
+    /// If null, only <see cref="TreeViewHitTestLocations.Label"/> is considered a match. </param>
+    /// <returns> The TreeNode at the specified point if the hit location matches; otherwise, null. </returns>
+    public virtual TreeNode GetNodeHit(Point point, IEnumerable<TreeViewHitTestLocations> locations = null)
+    {
+        TreeViewHitTestInfo hitTest = HitTest(point);
+        bool isMatch = (locations == null)
+            ? (hitTest.Location == TreeViewHitTestLocations.Label)
+            : locations.Contains(hitTest.Location);
+        TreeNode node = isMatch ? hitTest.Node : null;
+
+        return node;
+    }
     #endregion // Public Methods
 
     #region Protected Methods
@@ -414,26 +437,6 @@ public partial class MultiSelectTreeView : TreeView
             }
         }
         return removedCount;
-    }
-
-    /// <summary>
-    /// Performs a hit test on the TreeView at the specified point and returns the associated TreeNode if the hit
-    /// location matches the provided criteria.
-    /// </summary>
-    /// <param name="point"> The point to perform the hit test at, in client coordinates. </param>
-    /// <param name="locations"> (Optional)
-    /// Optional collection of <see cref="TreeViewHitTestLocations"/> values to match against. 
-    /// If null, only <see cref="TreeViewHitTestLocations.Label"/> is considered a match. </param>
-    /// <returns> The TreeNode at the specified point if the hit location matches; otherwise, null. </returns>
-    protected virtual TreeNode GetNodeHit(Point point, IEnumerable<TreeViewHitTestLocations> locations = null)
-    {
-        TreeViewHitTestInfo hitTest = HitTest(point);
-        bool isMatch = (locations == null)
-            ? (hitTest.Location == TreeViewHitTestLocations.Label)
-            : locations.Contains(hitTest.Location);
-        TreeNode node = isMatch ? hitTest.Node : null;
-
-        return node;
     }
 
     /// <summary>
