@@ -1,6 +1,7 @@
 ﻿using System;
 using System.ComponentModel;
 using System.Drawing;
+using System.Linq;
 using System.Windows.Forms;
 using PK.PkUtils.DataStructures;
 using PK.PkUtils.Extensions;
@@ -110,8 +111,16 @@ public partial class MultiSelectOwnerDrawTreeView : MultiSelectTreeView
     /// <param name="node">The root <see cref="TreeNode"/> to invalidate.</param>
     protected void InvalidateNodeAndDescendants(TreeNode node)
     {
-        ArgumentNullException.ThrowIfNull(node);
-        node.EnumerateSelfAndDescendants().ForEach(InvalidateNode);
+        // node.EnumerateSelfAndDescendants().ForEach(InvalidateNode);
+        // The commented code above is shorter, but it is a performnce hit to enumerate quite all descendants
+        if (node.IsVisible)
+        {
+            InvalidateNode(node);
+            if (node.IsExpanded)
+            {
+                node.Nodes.Cast<TreeNode>().ForEach(InvalidateNodeAndDescendants);
+            }
+        }
     }
     #endregion // Protected Methods
 
@@ -147,61 +156,69 @@ public partial class MultiSelectOwnerDrawTreeView : MultiSelectTreeView
     /// <param name="args"> A <see cref="DrawTreeNodeEventArgs"/> containing the event data for the node to be drawn. </param>
     protected override void OnDrawNode(DrawTreeNodeEventArgs args)
     {
+        // For some reason, this method is caleld for invisible nodes as well,
+        // so we need to check if the node is visible not to waste time on rendering.
+        // Checking the bound is the most effectivbe way to do this,
+        // as they are prepered already in the input args.
         Rectangle textBounds = args.Bounds;
-        TreeNode currentNode = args.Node;
-        Font nodeFont = currentNode.NodeFont;
-        bool isNodeSelected = IsSelected(currentNode);
-        Color highlightBackgroundColor = SystemColors.Highlight;
-        Color highlightForegroundColor = SystemColors.HighlightText;
-        Color backgroundColor = highlightBackgroundColor;
-        Color foregroundColor = highlightForegroundColor;
 
-        // If the node has a custom font, adjust the bounds to fit the rendered text.
-        if (nodeFont is not null)
+        if ((textBounds.Width > 0) && (textBounds.Height > 0))
         {
-            textBounds.Size = TextRenderer.MeasureText(currentNode.Text, nodeFont);
-        }
+            TreeNode currentNode = args.Node;
+            Font nodeFont = currentNode.NodeFont;
+            bool isNodeSelected = IsSelected(currentNode);
+            Color highlightBackgroundColor = SystemColors.Highlight;
+            Color highlightForegroundColor = SystemColors.HighlightText;
+            Color backgroundColor = highlightBackgroundColor;
+            Color foregroundColor = highlightForegroundColor;
 
-        if (isNodeSelected)
-        {
-            // Fill the background for selected nodes using the system highlight color.
-            args.Graphics.FillRectangle(SystemBrushes.Highlight, textBounds);
-        }
-        else
-        {
-            // Determine the background and foreground colors for unselected nodes.
-            DetermineUnselectedNodeColor(currentNode, out backgroundColor, out foregroundColor);
+            // If the node has a custom font, adjust the bounds to fit the rendered text.
+            if (nodeFont is not null)
+            {
+                textBounds.Size = TextRenderer.MeasureText(currentNode.Text, nodeFont);
+            }
 
-            // Retrieve or create a cached SolidBrush for the background color.
-            if (_cacheBrushes.TryGetValue(backgroundColor, out SolidBrush backgroundBrush) is false)
-                _cacheBrushes[backgroundColor] = backgroundBrush = new SolidBrush(backgroundColor);
-            args.Graphics.FillRectangle(backgroundBrush, textBounds);
-        }
+            if (isNodeSelected)
+            {
+                // Fill the background for selected nodes using the system highlight color.
+                args.Graphics.FillRectangle(SystemBrushes.Highlight, textBounds);
+            }
+            else
+            {
+                // Determine the background and foreground colors for unselected nodes.
+                DetermineUnselectedNodeColor(currentNode, out backgroundColor, out foregroundColor);
 
-        // Draw the node's text using the appropriate font and foreground color.
-        TextRenderer.DrawText(
-            args.Graphics,
-            currentNode.Text,
-            nodeFont ?? this.Font,
-            textBounds,
-            foregroundColor,
-            TextFormatFlags.VerticalCenter | TextFormatFlags.Left);
+                // Retrieve or create a cached SolidBrush for the background color.
+                if (_cacheBrushes.TryGetValue(backgroundColor, out SolidBrush backgroundBrush) is false)
+                    _cacheBrushes[backgroundColor] = backgroundBrush = new SolidBrush(backgroundColor);
+                args.Graphics.FillRectangle(backgroundBrush, textBounds);
+            }
 
-        // Draw a projected selection frame if enabled, the node is not selected, and it has a selected ancestor.
-        if (PaintProjectedSelections && !isNodeSelected && IsAncestorSelected(currentNode))
-        {
-            int nodeFrameThickness = ProjectedSelectionFrameThickness;
-            Rectangle textRectangle = textBounds; // Optionally, use GetNodeTextBounds(currentNode) for more precise bounds.
+            // Draw the node's text using the appropriate font and foreground color.
+            TextRenderer.DrawText(
+                args.Graphics,
+                currentNode.Text,
+                nodeFont ?? this.Font,
+                textBounds,
+                foregroundColor,
+                TextFormatFlags.VerticalCenter | TextFormatFlags.Left);
 
-            // Shrink the rectangle by the frame thickness to ensure the frame is drawn inside the text area.
-            textRectangle.Inflate(-nodeFrameThickness, -nodeFrameThickness);
+            // Draw a projected selection frame if enabled, the node is not selected, and it has a selected ancestor.
+            if (PaintProjectedSelections && !isNodeSelected && IsAncestorSelected(currentNode))
+            {
+                int nodeFrameThickness = ProjectedSelectionFrameThickness;
+                Rectangle textRectangle = textBounds; // Optionally, use GetNodeTextBounds(currentNode) for more precise bounds.
 
-            // Note: Pens are lightweight in GDI+ and do not require caching like SolidBrushes.
-            // Creating a new Pen for each draw is acceptable and avoids cache invalidation issues 
-            // in case of ProjectedSelectionFrameThickness value changes.
-            // 
-            using Pen framePen = new(highlightBackgroundColor, nodeFrameThickness);
-            args.Graphics.DrawRectangle(framePen, textRectangle);
+                // Shrink the rectangle by the frame thickness to ensure the frame is drawn inside the text area.
+                textRectangle.Inflate(-nodeFrameThickness, -nodeFrameThickness);
+
+                // Note: Pens are lightweight in GDI+ and do not require caching like SolidBrushes.
+                // Creating a new Pen for each draw is acceptable and avoids cache invalidation issues 
+                // in case of ProjectedSelectionFrameThickness value changes.
+                // 
+                using Pen framePen = new(highlightBackgroundColor, nodeFrameThickness);
+                args.Graphics.DrawRectangle(framePen, textRectangle);
+            }
         }
 
         // Call the base implementation to ensure any additional drawing logic is executed.
