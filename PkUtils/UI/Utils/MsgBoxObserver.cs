@@ -1,4 +1,4 @@
-﻿// Ignore Spelling: Utils, Dict
+﻿// Ignore Spelling: Dict, Stackoverflow
 //
 using System;
 using System.Collections.Generic;
@@ -8,31 +8,25 @@ using System.Runtime.InteropServices;
 using PK.PkUtils.SystemEx;
 using PK.PkUtils.WinApi;
 
-#pragma warning disable IDE0290 // Use primary constructor
-
 namespace PK.PkUtils.UI.Utils;
 
 /// <summary>
-/// This class "spies" the system for any creation of system MessageBox, 
-/// and consequent destroying of it, keeping internally the list of created message boxes 
-/// ( their window handles ).
-/// Note the code handles the TaskDialog(s) (new in Vista, Win 7 etc.) too, 
-/// since TaskDialog and MessageBox has the same window class name "#32770". <br/>
-/// 
-/// Unfortunately, there is no functionality in WinForms for this 
-/// ( there are methods Application.OpenForms, Form.ActiveForm and Control.FromHandle,
-/// but nothing of this relates to plain system MessageBox. <br/>
-/// 
-/// One can check whether there is any MessageBox currently displayed
-/// by checking the property IsAnyMsgBox.<br/>
+///  This class "spies" on the system for the creation and destruction of native MessageBoxes and TaskDialogs,
+/// maintaining an internal list of their window handles.
+/// <br/>
+/// Note that TaskDialogs (introduced in Windows Vista / 7) are handled as well,
+/// since both TaskDialogs and MessageBoxes use the same window class name: "#32770". 
+/// <br/><br/>
+/// Unfortunately, WinForms does not provide any built-in support for detecting such dialogs
+/// (e.g., <c>Application.OpenForms</c>, <c>Form.ActiveForm</c>, or <c>Control.FromHandle</c> do not apply to native MessageBoxes or TaskDialogs).
+/// <br/><br/>
+/// You can check if any such dialog is currently displayed by reading the <c>IsAnyMsgBox</c> property.
 /// </summary>
 /// 
 /// <remarks>
-/// The implementation uses the functionality of the base class WindowsSystemHookBase,
-/// creating and installing a specific hook WH_CALLWNDPROCRET, 
-/// in the hook callback method watching for messages WM_CREATE and WM_DESTROY.
+/// The implementation relies on the base class <c>WindowsSystemHookBase</c>, which installs a system hook of type <c>WH_CALLWNDPROCRET</c>.
+/// The hook callback listens for <c>WM_CREATE</c> and <c>WM_DESTROY</c> messages to track the life cycle of relevant windows.
 /// </remarks>
-[CLSCompliant(false)]
 public class MsgBoxObserver : SystemEventObserver<MsgBoxObserver.EventMsgBoxActionEventArgs>
 {
     #region Typedefs
@@ -49,21 +43,14 @@ public class MsgBoxObserver : SystemEventObserver<MsgBoxObserver.EventMsgBoxActi
         /// The MessageBox title. </summary>
         protected readonly string _title;
 
-        /// <summary>
-        /// A constructor
-        /// </summary>
+        /// <summary> Two-arguments constructor </summary>
         /// <param name="hwnd">The MessageBox handle. </param>
         /// <param name="title">The MessageBox title. </param>
         internal MsgBoxInfo(IntPtr hwnd, string title)
           : this(hwnd, title, null)
-        {
-            _hwnd = hwnd;
-            _title = title;
-        }
+        { }
 
-        /// <summary>
-        ///  A constructor
-        /// </summary>
+        /// <summary> Three-arguments constructor </summary>
         /// <param name="hwnd">The MessageBox handle. </param>
         /// <param name="title">The MessageBox title. </param>
         /// <param name="text">The MessageBox text. </param>
@@ -75,16 +62,11 @@ public class MsgBoxObserver : SystemEventObserver<MsgBoxObserver.EventMsgBoxActi
         }
 
         /// <summary> Returns the MessageBox handle. </summary>
-        public IntPtr Hwnd
-        {
-            get { return _hwnd; }
-        }
+        public IntPtr Hwnd { get => _hwnd; }
 
         /// <summary> Returns the MessageBox title. </summary>
-        public string Title
-        {
-            get { return _title; }
-        }
+        public string Title { get => _title; }
+
 
         /// <summary> The text of MessageBox </summary>
         public string Text { get; protected internal set; }
@@ -103,20 +85,17 @@ public class MsgBoxObserver : SystemEventObserver<MsgBoxObserver.EventMsgBoxActi
         /// </summary>
         public enum MsgBoxAction
         {
-            /// <summary>
-            /// Used when MessageBox is being created
-            /// </summary>
+            /// <summary> Used when MessageBox is being created </summary>
             Creating = 0,
 
-            /// <summary>
-            /// Used when MessageBox is being activated
-            /// </summary>
+            /// <summary> Used when MessageBox is being activated </summary>
             Activating = 1,
 
-            /// <summary>
-            /// Used when MessageBox is being destroyed
-            /// </summary>
-            Destroying = 2,
+            /// <summary> Used when MessageBox gets WM_WINDOWPOSCHANGED. </summary>
+            PositionChanged = 2,
+
+            /// <summary> Used when MessageBox is being destroyed </summary>
+            Destroying = 3,
         }
 
         /// <summary>
@@ -141,7 +120,7 @@ public class MsgBoxObserver : SystemEventObserver<MsgBoxObserver.EventMsgBoxActi
         public MsgBoxInfo Info { get; protected set; }
 
         /// <summary> Returns the MessageBox handle. </summary>
-        public IntPtr Hwnd { get { return Info.Hwnd; } }
+        public IntPtr Hwnd { get => Info.Hwnd; }
     }
     #endregion // Typedefs
 
@@ -169,7 +148,9 @@ public class MsgBoxObserver : SystemEventObserver<MsgBoxObserver.EventMsgBoxActi
     {
         _filterFunc = new User32.HookProc(this.FnCallWndProcHook);
         if (install)
+        {
             Install();
+        }
     }
     #endregion // Constructor(s)
 
@@ -183,21 +164,13 @@ public class MsgBoxObserver : SystemEventObserver<MsgBoxObserver.EventMsgBoxActi
         get { lock (Locker) { return DictOfMsgBoxes.Count; } }
     }
 
-    /// <summary>
-    /// Is there any message box created ?
-    /// </summary>
-    public bool IsAnyMsgBox
-    {
-        get { return CountOfCreatedMsgBoxes > 0; }
-    }
+    /// <summary> Is there any message box created ? </summary>
+    public bool IsAnyMsgBox { get => CountOfCreatedMsgBoxes > 0; }
 
     /// <summary>
-    /// Get the list of currently created message boxes ( their window handles )
+    /// Get the dictionary of currently created message boxes, with keys their window handles.
     /// </summary>
-    protected IDictionary<IntPtr, MsgBoxInfo> DictOfMsgBoxes
-    {
-        get { return _dictMsgBoxes; }
-    }
+    protected IDictionary<IntPtr, MsgBoxInfo> DictOfMsgBoxes { get => _dictMsgBoxes; }
 
     /// <summary> Sync object. </summary>
     protected object Locker { get => _locker; }
@@ -282,15 +255,12 @@ public class MsgBoxObserver : SystemEventObserver<MsgBoxObserver.EventMsgBoxActi
     }
 
     /// <summary>
-    /// Making an opposite action to <see cref="AddNewMessageBox"/> - removing a MessageBox handle from internal
-    /// dictionary,.
+    /// Performs an opposite action to <see cref="AddNewMessageBox"/> - removing a MessageBox handle from
+    /// internal dictionary.
     /// </summary>
-    ///
-    /// <remarks> Derived class could overwrite this method in case any additional functionality needed. </remarks>
-    ///
+    /// <remarks>   Derived class could overwrite this method in case any additional functionality needed. </remarks>
     /// <param name="hWnd"> The MessageBox handle. </param>
-    ///
-    /// <returns> True if valid handle from the dictionary has been provided, false otherwise. </returns>
+    /// <returns>   True if valid handle from the dictionary has been provided, false otherwise. </returns>
     protected virtual bool RemoveMessageBox(IntPtr hWnd)
     {
         lock (Locker)
@@ -416,15 +386,23 @@ public class MsgBoxObserver : SystemEventObserver<MsgBoxObserver.EventMsgBoxActi
                     }
                     break;
 
-                case (int)Win32.WM.WM_DESTROY:
+                case (int)Win32.WM.WM_WINDOWPOSCHANGED:
+                    lock (Locker)
                     {
-                        lock (Locker)
+                        if (DictOfMsgBoxes.ContainsKey(hWnd))
                         {
-                            if (DictOfMsgBoxes.ContainsKey(hWnd))
-                            {
-                                RaiseEventMsgBoxAction(EventMsgBoxActionEventArgs.MsgBoxAction.Destroying, hWnd);
-                                RemoveMessageBox(hWnd);
-                            }
+                            RaiseEventMsgBoxAction(EventMsgBoxActionEventArgs.MsgBoxAction.PositionChanged, hWnd);
+                        }
+                    }
+                    break;
+
+                case (int)Win32.WM.WM_DESTROY:
+                    lock (Locker)
+                    {
+                        if (DictOfMsgBoxes.ContainsKey(hWnd))
+                        {
+                            RaiseEventMsgBoxAction(EventMsgBoxActionEventArgs.MsgBoxAction.Destroying, hWnd);
+                            RemoveMessageBox(hWnd);
                         }
                     }
                     break;

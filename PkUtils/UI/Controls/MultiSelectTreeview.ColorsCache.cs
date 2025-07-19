@@ -1,4 +1,4 @@
-// Ignore Spelling: Ctrl, TreeView, treeview, Multiselect, unselects, Bg, Fg
+// Ignore Spelling: Ctrl, TreeView, treeview, unselects, Bg, Fg
 //
 using System;
 using System.Drawing;
@@ -8,9 +8,6 @@ using PK.PkUtils.Extensions;
 
 namespace PK.PkUtils.UI.Controls;
 
-/// <summary> Represents a TreeView control that supports multiple selection of nodes. </summary>
-/// <seealso href="https://www.codeproject.com/Articles/20581/Multiselect-TreeView-Implementation/">
-/// Multiselect TreeView Implementation.</seealso>
 public partial class MultiSelectTreeView : TreeView
 {
     #region Typedefs
@@ -126,8 +123,10 @@ public partial class MultiSelectTreeView : TreeView
 
             if (IsInitialized && !enforceRefresh) return true;
 
-            static bool IsNotRootAndNotSelected(TreeNode tn) => tn.Level > 0 && !tn.IsSelected;
-            TreeNode node = treeView.FindNode(IsNotRootAndNotSelected);
+            // Find not selected node to build colors from.
+            // When all nodes are selected, I can't initialize the colors cache this way
+            // But I should not needed colors of unselected nodes in that case.
+            TreeNode node = treeView.FindNode(x => !x.IsSelected);
             bool result = node is not null;
 
             if (result)
@@ -139,9 +138,7 @@ public partial class MultiSelectTreeView : TreeView
             return result;
         }
 
-        /// <summary>
-        /// Attempts to retrieve themed colors for a tree view using the visual style renderer.
-        /// </summary>
+        /// <summary> Attempts to retrieve themed colors for a tree view using the visual style renderer. </summary>
         /// <param name="bgColor"> The retrieved background color. </param>
         /// <param name="fgColor"> The retrieved foreground color. </param>
         /// <returns> True if colors were successfully retrieved; otherwise, false. </returns>
