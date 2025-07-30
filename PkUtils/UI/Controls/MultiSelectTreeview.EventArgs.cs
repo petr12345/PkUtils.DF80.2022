@@ -8,7 +8,6 @@ using System.Linq;
 using System.Windows.Forms;
 using PK.PkUtils.Extensions;
 
-#pragma warning disable IDE0290     // Use primary constructor
 
 namespace PK.PkUtils.UI.Controls;
 

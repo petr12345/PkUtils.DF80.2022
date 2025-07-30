@@ -1,13 +1,19 @@
 // Ignore Spelling: Ctrl, TreeView, treeview, Multiselect, Sel, unselects, bg, fg
 //
+
+// Define following symbol if you want to enable call stack dumping:
+// #define DUMP_CALL_STACK
+
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Drawing;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Windows.Forms;
 using PK.PkUtils.DataStructures;
 using PK.PkUtils.Extensions;
+using PK.PkUtils.Interfaces;
 using PK.PkUtils.WinApi;
 
 namespace PK.PkUtils.UI.Controls;
@@ -22,14 +28,20 @@ public partial class MultiSelectTreeView : TreeView
     #region Fields
 
     private ColorsCache _colorsCache;
+    private bool _visualStylesLogged;
     private int _selectionChangeDepth;
     private bool _selectionChangedPending;
     private TreeNode _selectedNode;
+    private IDumper _dumper;
     private bool _selectionInitialized;
     private bool _suppressRightClickHighlight = true;
     private readonly HashSet<TreeNode> _selectedNodes = [];
     // A dictionary of TreeNode to Color, mapping nodes with custom foreground colors
-    private readonly Dictionary<TreeNode, Color> _nodeForeColors = [];
+    private readonly Dictionary<TreeNode, Color> _nodesForeColors = [];
+
+    private const string _infoPrefix = "[INFO] ";
+    private const string _warnPrefix = "[WARN] ";
+    private const string _errorPrefix = "[ERROR] ";
     #endregion // Fields
 
     #region Constructor(s)
@@ -45,7 +57,7 @@ public partial class MultiSelectTreeView : TreeView
     #region Public Properties
 
     /// <summary> Gets the root node, if there is any. </summary>
-    public TreeNode RootNode => Nodes.Count > 0 ? Nodes[0] : null;
+    public TreeNode RootNode { get => Nodes.Count > 0 ? Nodes[0] : null; }
 
     /// <summary> Gets or sets the collection of selected nodes. </summary>
     [Browsable(false)]
@@ -69,7 +81,11 @@ public partial class MultiSelectTreeView : TreeView
         }
     }
 
-    /// <summary>  Gets or sets a value indicating whether the suppress temporary highlight ( see more in description ). </summary>
+    /// <summary>   Gets or sets the dumper. The actual value could be null. </summary>
+    [Browsable(false)]
+    public IDumper Dumper { get => _dumper; set => _dumper = value; }
+
+    /// <summary> Gets or sets a value indicating whether the suppress temporary highlight ( see more in description ). </summary>
     [Browsable(true)]
     [Category("Configuration")]
     [Description("Suppress annoying temporary highlighting of unselected node at same vertical level after right-click")]
@@ -119,6 +135,9 @@ public partial class MultiSelectTreeView : TreeView
         get => Application.RenderWithVisualStyles;
     }
 
+    /// <summary> Gets a value indicating whether visual styles usage has already been logged for this control. </summary>
+    protected bool VisualStylesLogged { get => _visualStylesLogged; }
+
     /// <summary> Gets the visual styles colors cache (if any has been initialized). </summary>
     protected ColorsCache VisualStylesColorsCache { get => _colorsCache; }
 
@@ -127,6 +146,15 @@ public partial class MultiSelectTreeView : TreeView
 
     /// <summary>   Gets a value indicating whether the selection initialized. </summary>
     protected bool SelectionInitialized { get => _selectionInitialized; }
+
+    /// <summary> Gets the info prefix string for dump output, including the type name. </summary>
+    protected virtual string DumpInfoPrefix { get => $"{_infoPrefix}{GetType().Name}:"; }
+
+    /// <summary> Gets the warning prefix string for dump output, including the type name. </summary>
+    protected virtual string DumpWarnPrefix { get => $"{_warnPrefix}{GetType().Name}:"; }
+
+    /// <summary> Gets the error prefix string for dump output, including the type name. </summary>
+    protected virtual string DumpErrorPrefix { get => $"{_errorPrefix}{GetType().Name}:"; }
     #endregion // Protected Properties
     #endregion // Properties
 
@@ -158,16 +186,15 @@ public partial class MultiSelectTreeView : TreeView
         return (node is not null) && SelectedNodes.Contains(node);
     }
 
-    /// <summary>
-    /// Assigns a custom foreground color to a <see cref="TreeNode"/> and caches it for later use.
-    /// </summary>
+    /// <summary> Assigns a custom foreground color to a <see cref="TreeNode"/> and caches it for later use. </summary>
     /// <remarks>
     /// This method does not add the node to the <see cref="TreeView"/>; it only sets and remembers the node's foreground color.
     /// The caller is responsible for adding the node to the tree view if desired.
     /// </remarks>
     /// <param name="node">The <see cref="TreeNode"/> to assign a foreground color to. Must not be null.</param>
     /// <param name="foreColor">The foreground color to assign to the node.</param>
-    /// <seealso cref="IsColoredNode(TreeNode, out Color)"/>
+    /// <seealso cref="IsForeColoredNode(TreeNode, out Color)"/>
+    /// <seealso cref="RemoveNodeForeColor"/>
     public void SetNodeForeColor(TreeNode node, Color foreColor)
     {
         ArgumentNullException.ThrowIfNull(node);
@@ -175,20 +202,27 @@ public partial class MultiSelectTreeView : TreeView
         // Set the foreground color for the node
         node.ForeColor = foreColor;
         // Cache the foreground color for later use
-        _nodeForeColors[node] = foreColor;
+        _nodesForeColors[node] = foreColor;
     }
 
-    /// <summary>
-    /// Determines whether the specified <see cref="TreeNode"/> has a custom foreground color assigned via <see cref="SetNodeForeColor(TreeNode, Color)"/>.
-    /// </summary>
+    /// <summary> Determines whether the specified <see cref="TreeNode"/> has a custom foreground color assigned
+    /// via <see cref="SetNodeForeColor(TreeNode, Color)"/>. </summary>
     /// <param name="node"> The <see cref="TreeNode"/> to check. Must not be null. </param>
     /// <param name="foreColor"> [out] The foreground color of the node. </param>
     /// <returns>   <c>true</c> if the node has a custom foreground color; otherwise, <c>false</c>. </returns>
     /// <seealso cref="SetNodeForeColor"/>
-    public bool IsColoredNode(TreeNode node, out Color foreColor)
+    public bool IsForeColoredNode(TreeNode node, out Color foreColor)
     {
         ArgumentNullException.ThrowIfNull(node);
-        return _nodeForeColors.TryGetValue(node, out foreColor);
+        return _nodesForeColors.TryGetValue(node, out foreColor);
+    }
+
+
+    /// <seealso cref="SetNodeForeColor"/>
+    public bool RemoveNodeForeColor(TreeNode node)
+    {
+        ArgumentNullException.ThrowIfNull(node);
+        return _nodesForeColors.Remove(node);
     }
 
     /// <summary>
@@ -218,14 +252,29 @@ public partial class MultiSelectTreeView : TreeView
         }
     }
 
-    /// <summary>
-    /// Clears the cache retrieved by <see cref="InitializeColorsCache"/>.
-    /// Should be called if the system color settings or visual styles have changed.
-    /// </summary>
+    /// <summary> Clears the cache retrieved by <see cref="InitializeColorsCache"/>.
+    /// Should be called if the system color settings or visual styles have changed. </summary>
+    /// <param name="cause"> The cause of the call, will be for instance "Win32.WM.WM_SYSCOLORCHANGE". </param>
     /// <seealso cref="InitializeColorsCache"/>
-    public virtual void ResetColorsCache()
+    public virtual void ResetColorsCache(Win32.WM cause)
     {
-        _colorsCache = null;
+        const string me = nameof(ResetColorsCache);
+        string callStack = string.Empty;
+#if DUMP_CALL_STACK
+        callStack = Diagnostics.StackTraceWrapper.GetStackTraceString();
+        callStack = callStack.AsNameValue();
+#endif
+
+        if (VisualStylesColorsCache is null)
+        {   // No cache to reset
+            Dumper?.DumpLine($"{DumpInfoPrefix} In {me}, colors cache is already null. {cause.AsNameValue()} {callStack}");
+        }
+        else
+        {
+            _colorsCache = null;
+            _visualStylesLogged = false; // Reset the flag to log visual styles usage again
+            Dumper?.DumpLine($"{DumpInfoPrefix} In {me}, colors cache has been reset to null. {cause.AsNameValue()} {callStack}");
+        }
     }
 
     /// <summary> Performs a hit test on the TreeView at the specified point and returns the associated TreeNode
@@ -255,29 +304,86 @@ public partial class MultiSelectTreeView : TreeView
     #region Protected Methods
     #region Colors_cache_related
 
+    /// <summary>   Dumps a visual styles usage. </summary>
+    /// <param name="enforce"> True to enforce dumping. </param>
+    /// <param name="memberName"> (Optional) Name of the caller. Automatically provided by the compiler. </param>
+    protected virtual void DumpVisualStylesUsage(bool enforce, [CallerMemberName] string memberName = "")
+    {
+        if (enforce || !VisualStylesLogged)
+        {
+            Dumper?.DumpLine($"{DumpInfoPrefix} {memberName} executes with {IsUsingVisualStyles.AsNameValue()}");
+            _visualStylesLogged = true;
+        }
+    }
+
     /// <summary>
     /// Initializes and retrieves the visual styles colors cache. If the cache has not been initialized, it is
     /// created and populated with the appropriate colors.
     /// </summary>
     /// <remarks>
-    /// This method should be called only if visual styles are enabled. It initializes a new instance of <see cref="ColorsCache"/>
-    /// and attempts to populate it with colors from existing tree node;
-    /// if that fails, it falls back to default initialization.
+    /// This method should be called only if visual styles are enabled. It creates a new instance of <see cref="ColorsCache"/>
+    /// and attempts to populate it with colors from existing tree nodes.
+    /// If that fails, it falls back to default initialization using system-defined colors.
     /// </remarks>
-    /// <returns>   The initialized <see cref="ColorsCache"/> instance. </returns>
+    /// <returns> The initialized <see cref="ColorsCache"/> instance. </returns>
     /// <seealso cref="ResetColorsCache"/>
     protected virtual ColorsCache InitializeColorsCache()
     {
-        if (VisualStylesColorsCache is null)
+        const string me = nameof(InitializeColorsCache);
+        ColorsCache result = VisualStylesColorsCache;
+
+        if (result is null)
         {
-            _colorsCache = new ColorsCache();
-            if (!_colorsCache.InitializeFromNodes(this))
+            bool colorsInitialized;
+            string callStack = string.Empty;
+#if DUMP_CALL_STACK
+            callStack = Diagnostics.StackTraceWrapper.GetStackTraceString();
+            callStack = callStack.AsNameValue();
+#endif
+            _colorsCache = new ColorsCache(Dumper);
+            DumpVisualStylesUsage(enforce: true);
+
+            if (colorsInitialized = VisualStylesColorsCache.InitializeFromTreeNodes(this))
             {
-                _colorsCache.Initialize();
+                Dumper?.DumpLine($"{DumpInfoPrefix} {me} initialized the cache from existing nodes. {callStack}");
             }
+
+            // Despite trying various variants of the code below, I never could receive 
+            // both colors ForeColor and BackColor from the node correctly.
+            /*
+            if (!colorsInitialized && SelectedNodes.Count > 0)
+            {
+                // Attempt to unselect a node to retrieve its unselected colors.
+                // To be completely correct, the method would require additional parameter or member field to indicate
+                // that it's safe to unselect nodes, since the selection is about to be reset anyway.
+                //
+                const int TVM_SELECTITEM = (int)Win32.WM.WM_USER + 11;
+                const int TVGN_CARET = 0x0009;
+
+                // Attempt to manually unselect the root node and try to get its colors.
+                // For more details on cancelling node selection, see:
+                // https://learn.microsoft.com/en-us/windows/win32/controls/tvm-selectitem
+                TreeNode rootNode = this.RootNode;
+                User32.SendMessage(this.Handle, TVM_SELECTITEM, TVGN_CARET, IntPtr.Zero);
+                rootNode.ForeColor = Color.Empty;
+                rootNode.BackColor = Color.Empty;
+                base.SelectedNode = null;
+
+                colorsInitialized = VisualStylesColorsCache.InitColorsFromNode(rootNode);
+                if (colorsInitialized) Dumper?.DumpLine($"{DumpInfoPrefix} {me} initialized the cache from unselected node. {callStack}");
+            }
+            */
+
+            if (!colorsInitialized)
+            {
+                // If the cache could not be initialized from existing nodes, initialize it from system-defined colors
+                VisualStylesColorsCache.InitColorsFromSystem();
+                Dumper?.DumpWarning($"{DumpWarnPrefix} {me} could initialize the cache only from system-defined colors. {callStack} {Environment.NewLine}");
+            }
+            result = VisualStylesColorsCache;
         }
 
-        return VisualStylesColorsCache;
+        return result;
     }
     #endregion // Colors_cache_related
 
@@ -289,10 +395,8 @@ public partial class MultiSelectTreeView : TreeView
         _selectionChangeDepth++;
     }
 
-    /// <summary>
-    /// Ends selection change, decrementing selection change depth. If that depth becomes zero, and selection
-    /// change is pending, calls <see cref="OnSelectionChanged"/>.
-    /// </summary>
+    /// <summary> Ends selection change, decrementing selection change depth. If that depth becomes zero,
+    /// and if selection change is pending, calls <see cref="OnSelectionChanged"/>. </summary>
     /// <exception cref="InvalidOperationException"> Thrown when the requested operation is invalid. </exception>
     protected void EndSelectionChange()
     {
@@ -431,7 +535,7 @@ public partial class MultiSelectTreeView : TreeView
             {
                 TreeNode current = stack.Pop();
 
-                if (_nodeForeColors.Remove(current))
+                if (RemoveNodeForeColor(current))
                     removedCount++;
                 stack.PushRange(current.Nodes.Cast<TreeNode>());
             }
@@ -439,18 +543,16 @@ public partial class MultiSelectTreeView : TreeView
         return removedCount;
     }
 
-    /// <summary>
-    /// Adds or removes the specified <see cref="TreeNode"/> from the selection set, depending on <paramref name="selectNode"/>.
-    /// </summary>
-    /// <param name="node">The <see cref="TreeNode"/> to select or unselect. 
-    ///                    If <c>null</c>, the method returns <c>false</c> and does nothing.</param>
+    /// <summary> Adds or removes the specified <see cref="TreeNode"/> from the selection set,
+    /// depending on <paramref name="selectNode"/>. </summary>
+    /// <param name="node"> The <see cref="TreeNode"/> to select or unselect. 
+    /// If <c>null</c>, the method returns <c>false</c> and does nothing.
+    /// </param>
     /// <param name="selectNode">
     /// If <c>true</c>, the node is added to the selection set and becomes the active <see cref="SelectedNode"/>.
     /// If <c>false</c>, the node is removed from the selection set and, if it was the active <see cref="SelectedNode"/>, clears the active selection.
     /// </param>
-    /// <returns>
-    /// <c>true</c> if the selection state of the node was changed; otherwise, <c>false</c>.
-    /// </returns>
+    /// <returns> true if the selection state of the node was changed; otherwise, false. </returns>
     protected virtual bool ToggleNode(TreeNode node, bool selectNode)
     {
         // Should not be called for any null node; only to be on the safe side
@@ -483,7 +585,7 @@ public partial class MultiSelectTreeView : TreeView
         return result;
     }
 
-    /// <summary>  Enforce node color to be selected or unselected; depending <paramref name="selectNode"/>. </summary>
+    /// <summary>  Enforce node color to be selected or unselected; depending on <paramref name="selectNode"/>. </summary>
     /// <param name="node"> The <see cref="TreeNode"/> to be modified. Can't be null. </param>
     /// <param name="selectNode"> True to use select, false unselected node color. </param>
     protected virtual void EnforceNodeColor(TreeNode node, bool selectNode)
@@ -501,7 +603,7 @@ public partial class MultiSelectTreeView : TreeView
         }
     }
 
-    /// <summary>   Determine unselected node color. </summary>
+    /// <summary> Determine unselected node color for general node, not considering <see cref="_nodesForeColors"/>. </summary>
     /// <param name="bgColor"> [out] The background color. </param>
     /// <param name="fgColor"> [out] The foreground color. </param>
     protected virtual void DetermineUnselectedNodeColor(out Color bgColor, out Color fgColor)
@@ -514,7 +616,11 @@ public partial class MultiSelectTreeView : TreeView
         }
         else
         {
-            // Visual styles disabled - inherit from TreeView
+            // Visual styles disabled - inherit colors from TreeView
+            if (!VisualStylesLogged)
+            {
+                DumpVisualStylesUsage(enforce: false);
+            }
             bgColor = this.BackColor;
             fgColor = this.ForeColor;
         }
@@ -535,7 +641,7 @@ public partial class MultiSelectTreeView : TreeView
         DetermineUnselectedNodeColor(out bgColor, out fgColor);
 
         // If a custom foreground color is cached for this node, use it
-        if (_nodeForeColors.TryGetValue(node, out Color cached))
+        if (_nodesForeColors.TryGetValue(node, out Color cached))
         {
             fgColor = cached;
         }
@@ -606,7 +712,7 @@ public partial class MultiSelectTreeView : TreeView
             // System colors or visual styles have changed. Reset any cached colors, and request a repaint
             case (int)Win32.WM.WM_SYSCOLORCHANGE:
             case (int)Win32.WM.WM_THEMECHANGED:
-                ResetColorsCache();
+                ResetColorsCache((Win32.WM)m.Msg);
                 Invalidate();
                 break;
         }
@@ -657,21 +763,22 @@ public partial class MultiSelectTreeView : TreeView
     /// <inheritdoc/>
     protected override void OnMouseUp(MouseEventArgs args)
     {
-        // I/ In case of the left click:
+        // I/ In case of the Left click:
         // If the user clicks a node that WAS already selected,
         // reselect it to clear all other selections.
         // For example: A, B, C, D are selected, the user clicks B — now only B remains selected.
         // 
-        // II/ In case of the right click:
+        // II/ In case of the Right click:
         // Do NOT modify that behavior based on Ctrl.
         // Do NOT modify selection if node was already selected. That includes possible multi-selection.
         // If it was NOT selected, the clicked node becomes the only selected one.
         // This mimics the default behavior of the TreeView control.
 
 
-        // Note: For following computation, one should NOT use TreeView.GetNodeAt, but GetNodeHit.
-        // TreeView.GetNodeAt(Point) in Windows Forms returns the nearest node, even if you click on the whitespace 
-        // to the far right of a node, outside the actual visible text or icon.
+        // Note: In following computation, one should NOT use TreeView.GetNodeAt, but GetNodeHit.
+        // TreeView.GetNodeAt(Point) in Windows Forms returns the nearest node, 
+        // even if you click on the whitespace to the far right of a node,
+        // outside the actual visible text or icon.
         // This behavior can be misleading if you're trying to only react to true clicks on the node content.
         //
         TreeNode node = GetNodeHit(args.Location);
@@ -708,7 +815,7 @@ public partial class MultiSelectTreeView : TreeView
             if (selectionChangeStarted) { EndSelectionChange(); }
             if (rightClick)
             {
-                // Raise the right-click event asynchronously to allow any events from EndSelectionChange
+                // Raise the right-click event asynchronously, to allow any events from EndSelectionChange
                 // to be processed first.
                 BeginInvoke(new Action(() =>
                 {
@@ -788,7 +895,7 @@ public partial class MultiSelectTreeView : TreeView
         // Handle keyboard navigation and selection for the control.
         base.OnKeyDown(args);
 
-        // PetrK 2025/04/02: added missed return for Keys.ControlKey
+        // Needs imemdiate return for Keys.ShiftKey and Keys.ControlKey
         if (args.KeyCode == Keys.ShiftKey || args.KeyCode == Keys.ControlKey) return;
 
         // Start updating the tree view to optimize UI performance
@@ -854,7 +961,6 @@ public partial class MultiSelectTreeView : TreeView
         }
         finally
         {
-            // End updating to refresh UI
             EndUpdate();
         }
     }
@@ -1105,13 +1211,24 @@ public partial class MultiSelectTreeView : TreeView
         }
     }
 
+    /// <summary>
+    /// Clears _selectedNodes, clears  _selectedNode, and changes the color of all previous selected nodes.
+    /// </summary>
     private void ClearSelectedNodes()
     {
-        // early return to avoid unnecessary call of MarkSelectionChanged
+        // Early return to avoid unnecessary call of MarkSelectionChanged
         if ((SelectedNodes.Count == 0) && (SelectedNode is null)) return;
+
+        Dumper?.DumpLine($"{DumpInfoPrefix} {nameof(ClearSelectedNodes)} runs, {SelectedNodes.Count} nodes, {SelectedNode.AsNameValue()}.");
 
         try
         {
+            // The foreach cycle below would invokes InitializeColorsCache (indirectly) as well, 
+            // but lets do it explicitly here now for clarity.
+            if (IsUsingVisualStyles && (VisualStylesColorsCache is null))
+            {
+                InitializeColorsCache();
+            }
             foreach (TreeNode node in SelectedNodes)
             {
                 DetermineUnselectedNodeColor(node, out Color bgColor, out Color fgColor);
