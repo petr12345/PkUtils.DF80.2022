@@ -8,26 +8,23 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using PK.PkUtils.Comparers;
 using PK.PkUtils.IO;
 
-namespace PK.PkUtils.UnitTests.ComparersTest
-{
 #pragma warning disable IDE0039  // suppress "use local functions" warning
 
+namespace PK.PkUtils.UnitTests.ComparersTest
+{
     /// <summary>
     /// This is a test class for FunctionalComparer generic
     ///</summary>
     [TestClass()]
     public class FunctionalComparerTest
     {
-        #region Tests
-
         /// <summary>
         /// A test for FunctionalComparer constructor
         /// </summary>
         [TestMethod()]
-        [ExpectedException(typeof(ArgumentNullException))]
         public void FunctionalComparer_Constructor_01()
         {
-            new FunctionalComparer<int>(null);
+            Assert.ThrowsExactly<ArgumentNullException>(() => new FunctionalComparer<int>(null));
         }
 
         /// <summary>
@@ -83,11 +80,10 @@ namespace PK.PkUtils.UnitTests.ComparersTest
         /// A test for FunctionalComparer.CreateNullSafeComparer
         /// </summary>
         [TestMethod()]
-        [ExpectedException(typeof(ArgumentNullException))]
         public void FunctionalComparer_CreateNullSafeComparerTest_01()
         {
             Comparison<string> f = null!;
-            FunctionalComparer.CreateNullSafeComparer(f);
+            Assert.ThrowsExactly<ArgumentNullException>(() => FunctionalComparer.CreateNullSafeComparer(f));
         }
 
         /// <summary>
@@ -109,7 +105,6 @@ namespace PK.PkUtils.UnitTests.ComparersTest
             Assert.IsTrue(0 > comparer.Compare(null!, string.Empty));
             Assert.IsTrue(0 < comparer.Compare(string.Empty, null!));
         }
-        #endregion // Tests
     }
 #pragma warning restore IDE0039
 }

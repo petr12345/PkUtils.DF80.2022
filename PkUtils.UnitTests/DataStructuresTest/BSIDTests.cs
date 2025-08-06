@@ -6,6 +6,8 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using PK.PkUtils.Cloning.Binary;
 using PK.PkUtils.DataStructures;
 
+#pragma warning disable 1718
+
 
 namespace PK.PkUtils.UnitTests.DataStructuresTest
 {
@@ -21,31 +23,35 @@ namespace PK.PkUtils.UnitTests.DataStructuresTest
         #endregion // Fields
 
         #region Tests
-#pragma warning disable 1718   // Suppress locally the warning CS1718: Comparison made to same variable; did you mean to compare something else?
-
         #region Tests_constructors
 
         [TestMethod]
-        [ExpectedException(typeof(ArgumentNullException))]
         public void BSID_Constructor_01()
         {
             string nullString = null!;
-            var id = new BSID(nullString);
+            Assert.ThrowsExactly<ArgumentNullException>(() =>
+            {
+                var id = new BSID(nullString);
+            });
         }
 
         [TestMethod]
-        [ExpectedException(typeof(ArgumentException))]
         public void BSID_Constructor_02()
         {
-            var id = new BSID(string.Empty);
+            Assert.ThrowsExactly<ArgumentException>(() =>
+            {
+                var id = new BSID(string.Empty);
+            });
         }
 
         [TestMethod]
-        [ExpectedException(typeof(ArgumentNullException))]
         public void BSID_Constructor_03()
         {
             BSID nullID = null!;
-            var id = new BSID(nullID);
+            Assert.ThrowsExactly<ArgumentNullException>(() =>
+            {
+                var id = new BSID(nullID);
+            });
         }
 
         [TestMethod]
@@ -127,17 +133,14 @@ namespace PK.PkUtils.UnitTests.DataStructuresTest
 
             Assert.AreEqual(true, id_1st.Equals(id_2nd));
         }
-        #endregion // Tests_Serialization
-
-        #region Tests_Static_Operators
-        #region Tests_Static_Operators_Conversions
-
         [TestMethod]
-        [ExpectedException(typeof(ArgumentNullException))]
         public void BSID_operator_FromStringToId_01()
         {
             string nullStr = null!;
-            var id = new BSID(nullStr);
+            Assert.ThrowsExactly<ArgumentNullException>(() =>
+            {
+                var id = new BSID(nullStr);
+            });
         }
 
         [TestMethod]
@@ -160,6 +163,7 @@ namespace PK.PkUtils.UnitTests.DataStructuresTest
         }
         #endregion // Tests_Static_Operators_Conversions
 
+        #region  Tests_Static_Operators
         #region Tests_Static_Operators_Comparisons
 
         [TestMethod]
@@ -240,18 +244,16 @@ namespace PK.PkUtils.UnitTests.DataStructuresTest
             Assert.AreEqual(true, id_2nd.Equals(id_2nd));
             Assert.AreEqual(true, id_2nd.Equals(id_1st));
         }
-        #endregion // Tests_IEquatable_BSID
-
-        #region Tests_IComparable_BSID
-
         [TestMethod]
-        [ExpectedException(typeof(ArgumentException))]
         public void BSID_IComparable_00()
         {
             BSID id_dummy = new(_sDummy);
             object objGuid = Guid.NewGuid();
 
-            (id_dummy as IComparable).CompareTo(objGuid);
+            Assert.ThrowsExactly<ArgumentException>(() =>
+            {
+                (id_dummy as IComparable).CompareTo(objGuid);
+            });
         }
 
         [TestMethod]
@@ -286,7 +288,7 @@ namespace PK.PkUtils.UnitTests.DataStructuresTest
             Assert.IsTrue(id_dummy.CompareTo(id_1st) > 0);
         }
         #endregion // Tests_IComparable_BSID
-#pragma warning restore 1718
         #endregion // Tests
     }
+#pragma warning restore 1718
 }

@@ -31,14 +31,13 @@ namespace PK.PkUtils.UnitTests.ExtensionsTests
         }
 
         [TestMethod()]
-        [ExpectedException(typeof(ArgumentException))]
         public void HashSetExtension_RemoveExistingTest_02()
         {
             HashSet<int> hashSet = [];
             var listInts = Enumerable.Repeat(0, 5).Select((n, i) => i).ToList();
 
             listInts.ForEach(n => hashSet.Add(n));
-            hashSet.RemoveExisting(122);
+            Assert.ThrowsExactly<ArgumentException>(() => hashSet.RemoveExisting(122));
         }
 
         [TestMethod()]
@@ -51,13 +50,15 @@ namespace PK.PkUtils.UnitTests.ExtensionsTests
         }
 
         [TestMethod()]
-        [ExpectedException(typeof(ArgumentException))]
         public void HashSetExtension_AddNewTest_02()
         {
             HashSet<int> hashSet = [];
             var listInts = Enumerable.Repeat(0, 5).ToList();
 
-            listInts.ForEach(n => hashSet.AddNew(n));
+            Assert.ThrowsExactly<ArgumentException>(() =>
+            {
+                listInts.ForEach(n => hashSet.AddNew(n));
+            });
         }
         #endregion // Tests
 

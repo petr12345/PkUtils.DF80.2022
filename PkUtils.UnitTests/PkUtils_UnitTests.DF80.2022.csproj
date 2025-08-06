@@ -31,10 +31,10 @@
       <Version>17.14.1</Version>
     </PackageReference>
     <PackageReference Include="MSTest.TestAdapter">
-      <Version>3.9.3</Version>
+      <Version>3.10.1</Version>
     </PackageReference>
     <PackageReference Include="MSTest.TestFramework">
-      <Version>3.9.3</Version>
+      <Version>3.10.1</Version>
     </PackageReference>
   </ItemGroup>
   <ItemGroup>

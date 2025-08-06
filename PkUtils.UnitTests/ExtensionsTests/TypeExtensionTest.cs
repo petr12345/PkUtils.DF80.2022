@@ -25,17 +25,11 @@ namespace PK.PkUtils.UnitTests.ExtensionsTests
         public class FormWrapperPlainDerived<TForm> : StackedFormWrapper<TForm> where TForm : Form { };
         public class MainStackedFormWrapper<TForm> : StackedFormWrapper<TForm> where TForm : Form { }
         public class FormWrapperMainDerived<TForm> : MainStackedFormWrapper<TForm> where TForm : Form { }
-        #endregion // Auxiliary_code_for_tests
-
-        #region Tests
-        #region Tests_GetGenericTypeName
-
         [TestMethod()]
-        [ExpectedException(typeof(ArgumentNullException))]
         public void GetGenericTypeName_Test_01()
         {
             Type t = null!;
-            t.GetGenericTypeName();
+            Assert.ThrowsExactly<ArgumentNullException>(() => t.GetGenericTypeName());
         }
 
         [TestMethod()]
@@ -58,6 +52,8 @@ namespace PK.PkUtils.UnitTests.ExtensionsTests
             Assert.AreEqual(expected, actual);
         }
         #endregion // Tests_GetGenericTypeName
+
+        #region Tests
 
         /// <summary>
         /// A test for HasTheInterface

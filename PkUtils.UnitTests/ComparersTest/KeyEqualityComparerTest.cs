@@ -17,23 +17,27 @@ namespace PK.PkUtils.UnitTests.ComparersTest
         #region Tests
 
         /// <summary>
-        /// A test for KeyEqualityComparer constructor, which should succeed
+        /// A test for KeyEqualityComparer constructor, which should throw ArgumentNullException
         /// </summary>
         [TestMethod()]
-        [ExpectedException(typeof(ArgumentNullException))]
         public void KeyEqualityComparer_Constructor_01()
         {
-            var comparer = new KeyEqualityComparer<int, int>(null);
+            Assert.ThrowsExactly<ArgumentNullException>(() =>
+            {
+                var comparer = new KeyEqualityComparer<int, int>(null);
+            });
         }
 
         /// <summary>
         /// A test for KeyEqualityComparer constructor, which should throw ArgumentNullException
         /// </summary>
         [TestMethod()]
-        [ExpectedException(typeof(ArgumentNullException))]
         public void KeyEqualityComparer_Constructor_02()
         {
-            var comparer = new KeyEqualityComparer<string, int>(null, null);
+            Assert.ThrowsExactly<ArgumentNullException>(() =>
+            {
+                var comparer = new KeyEqualityComparer<string, int>(null, null);
+            });
         }
 
         /// <summary>

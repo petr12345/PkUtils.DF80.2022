@@ -57,11 +57,13 @@ namespace PK.PkUtils.UnitTests.ExtensionsTests
         /// A test for AddNew
         /// </summary>
         [TestMethod()]
-        [ExpectedException(typeof(ArgumentException))]
         public void KeyedCollection_AddNewTest_02()
         {
             MyIntKeyedCollection coll = [];
-            Enumerable.Repeat(0, 5).ToList().ForEach(k => AddNewTestHelper(coll, k));
+            Assert.ThrowsExactly<ArgumentException>(() =>
+            {
+                Enumerable.Repeat(0, 5).ToList().ForEach(k => AddNewTestHelper(coll, k));
+            });
         }
         #endregion // Tests
 

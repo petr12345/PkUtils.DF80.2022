@@ -57,29 +57,30 @@ public class SharedMemoryTest
             }
         }
     }
-    #endregion // Methods
-
-    #region Tests
     #region Tests_constructors
 
     /// <summary>
     /// A test for Segment constructor, which should fail with ArgumentNullException
     /// </summary>
     [TestMethod()]
-    [ExpectedException(typeof(ArgumentNullException))]
     public void Segment_Constructor_01()
     {
-        new Segment(null, SharedMemoryCreationFlag.Create, 20, true);
+        Assert.ThrowsExactly<ArgumentNullException>(() =>
+        {
+            new Segment(null, SharedMemoryCreationFlag.Create, 20, true);
+        });
     }
 
     /// <summary>
     /// A test for Segment constructor, which should fail with ArgumentException
     /// </summary>
     [TestMethod()]
-    [ExpectedException(typeof(ArgumentException))]
     public void Segment_Constructor_02()
     {
-        new Segment(string.Empty, SharedMemoryCreationFlag.Create, 20, true);
+        Assert.ThrowsExactly<ArgumentException>(() =>
+        {
+            new Segment(string.Empty, SharedMemoryCreationFlag.Create, 20, true);
+        });
     }
 
     /// <summary>
@@ -106,22 +107,26 @@ public class SharedMemoryTest
     /// longer than <see cref="Segment.MaxMappingNameLength"/>.
     /// </summary>
     [TestMethod()]
-    [ExpectedException(typeof(ArgumentException))]
     public void Segment_Constructor_04()
     {
         int maxMappingNameLength = Segment.MaxMappingNameLength;
         string mappingName = new('x', maxMappingNameLength + 1);
-        new Segment(mappingName, SharedMemoryCreationFlag.Create, 20, true);
+        Assert.ThrowsExactly<ArgumentException>(() =>
+        {
+            new Segment(mappingName, SharedMemoryCreationFlag.Create, 20, true);
+        });
     }
 
     /// <summary>
     /// A test for Segment constructor, which should fail with ArgumentException
     /// </summary>
     [TestMethod()]
-    [ExpectedException(typeof(ArgumentOutOfRangeException))]
     public void Segment_Constructor_05()
     {
-        new Segment("abc", SharedMemoryCreationFlag.Create, -3, true);
+        Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
+        {
+            new Segment("abc", SharedMemoryCreationFlag.Create, -3, true);
+        });
     }
     #endregion // Tests_constructors
 
@@ -225,7 +230,6 @@ public class SharedMemoryTest
     /// because attaching to non-existing file mapping.
     /// </summary>
     [TestMethod()]
-    [ExpectedException(typeof(SharedMemoryException))]
     public void Segment_WriteRead_SingleThread_04()
     {
         // Following should throw SharedMemoryException from the constructor
@@ -240,10 +244,13 @@ public class SharedMemoryTest
 
         using (Segment s1 = new(mappingName1, p1, true))
         {
-            using (Segment s2 = new(mappingName2, true))
+            Assert.ThrowsExactly<SharedMemoryException>(() =>
             {
-                p2 = (PersonData)s2.GetData();
-            }
+                using (Segment s2 = new(mappingName2, true))
+                {
+                    p2 = (PersonData)s2.GetData();
+                }
+            });
         }
     }
     #endregion // Tests_write_read_singlethread
@@ -335,7 +342,6 @@ public class SharedMemoryTest
     /// Should throw AbandonedMutexException.
     /// </summary>
     [TestMethod()]
-    [ExpectedException(typeof(AbandonedMutexException))]
     public void Segment_WriteRead_MultiThread_03()
     {
         string mappingName = Guid.NewGuid().ToString();
@@ -377,10 +383,13 @@ public class SharedMemoryTest
                 threadLockUnlock.Join();
 
                 // perform reading the person data from shared memory, creating attached segment
-                using (Segment segmentAttached = new(mappingName, true))
+                Assert.ThrowsExactly<AbandonedMutexException>(() =>
                 {
-                    personRead = (PersonData)segmentAttached.GetData();
-                }
+                    using (Segment segmentAttached = new(mappingName, true))
+                    {
+                        personRead = (PersonData)segmentAttached.GetData();
+                    }
+                });
             }
         }
     }

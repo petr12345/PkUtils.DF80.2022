@@ -191,12 +191,14 @@ namespace PK.PkUtils.UnitTests.ReflectionTests
         /// hence failing with System.Reflection.AmbiguousMatchException
         /// </summary>
         [TestMethod()]
-        [ExpectedException(typeof(System.Reflection.AmbiguousMatchException))]
         public void MethodsUtils_RunStaticMethodTestOverloads_01()
         {
             // -- Demonstrates that without using additional type arguments, 
             // calling overloaded method will cause AmbiguousMatchException
-            RunStaticMethodTestHelper<int>(typeof(C), "StatOverload", new object[] { 15 }, 15);
+            Assert.ThrowsExactly<System.Reflection.AmbiguousMatchException>(() =>
+            {
+                RunStaticMethodTestHelper<int>(typeof(C), "StatOverload", new object[] { 15 }, 15);
+            });
         }
 
         /// <summary>
@@ -446,12 +448,14 @@ namespace PK.PkUtils.UnitTests.ReflectionTests
         /// hence failing with System.Reflection.AmbiguousMatchException
         /// </summary>
         [TestMethod()]
-        [ExpectedException(typeof(System.Reflection.AmbiguousMatchException))]
         public void MethodsUtils_RunInstanceMethodTestOverloads_02()
         {
             ZZ zz = new(100);
 
-            RunInstanceMethodTestHelper<Z, int>(zz, "Suma", null, new object[] { 25, 15 }, 40);
+            Assert.ThrowsExactly<System.Reflection.AmbiguousMatchException>(() =>
+            {
+                RunInstanceMethodTestHelper<Z, int>(zz, "Suma", null, new object[] { 25, 15 }, 40);
+            });
         }
 
         protected delegate string DumpDelegate(decimal x, decimal y);
@@ -534,11 +538,13 @@ namespace PK.PkUtils.UnitTests.ReflectionTests
         /// which should fail with ArgumentNullException
         /// </summary>
         [TestMethod()]
-        [ExpectedException(typeof(ArgumentNullException))]
         public void MethodsUtils_GetAllMethodsTest_02()
         {
             BindingFlags flags = BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance;
-            IEnumerable<MethodInfo> actualMethods = MethodsUtils.GetAllMethods(null!, "DumpIntegers", flags);
+            Assert.ThrowsExactly<ArgumentNullException>(() =>
+            {
+                IEnumerable<MethodInfo> actualMethods = MethodsUtils.GetAllMethods(null!, "DumpIntegers", flags);
+            });
         }
 
         /// <summary>

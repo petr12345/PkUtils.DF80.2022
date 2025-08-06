@@ -13,10 +13,9 @@ namespace PK.PkUtils.UnitTests.DataStructuresTest
         #region Tests_constructors
 
         [TestMethod]
-        [ExpectedException(typeof(ArgumentNullException))]
         public void Repository_Constructor_01()
         {
-            new Repository<string>(null!);
+            Assert.ThrowsExactly<ArgumentNullException>(() => new Repository<string>(null!));
         }
 
         [TestMethod]
@@ -60,7 +59,6 @@ namespace PK.PkUtils.UnitTests.DataStructuresTest
             Assert.IsFalse(rep.IsAttached);
             Assert.AreEqual(default, rep.Data);
         }
-
         #endregion // Tests_constructors
 
         #region Tests_Equals

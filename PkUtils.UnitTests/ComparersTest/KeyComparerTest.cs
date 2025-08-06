@@ -8,28 +8,25 @@ using PK.PkUtils.Comparers;
 
 namespace PK.PkUtils.UnitTests.ComparersTest
 {
+    #region Tests
     /// <summary>
     /// This is a test class for KeyComparer generic
     ///</summary>
     [TestClass()]
     public class KeyComparerTest
     {
-        #region Tests
-
         [TestMethod()]
-        [ExpectedException(typeof(ArgumentNullException))]
         [Description("A test for KeyComparer constructor, which should throw ArgumentNullException")]
         public void KeyComparer_Constructor_01()
         {
-            new KeyComparer<int, int>(null);
+            Assert.ThrowsExactly<ArgumentNullException>(() => new KeyComparer<int, int>(null));
         }
 
         [TestMethod()]
-        [ExpectedException(typeof(ArgumentNullException))]
         [Description("A test for KeyComparer constructor, which should throw ArgumentNullException")]
         public void KeyComparer_Constructor_02()
         {
-            new KeyComparer<string, int>(null, null);
+            Assert.ThrowsExactly<ArgumentNullException>(() => new KeyComparer<string, int>(null, null));
         }
 
         [TestMethod()]

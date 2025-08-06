@@ -5,10 +5,11 @@ using System.Linq;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using PK.PkUtils.Comparers;
 
+#pragma warning disable IDE0039  // suppress "use local functions" warning
 
 namespace PK.PkUtils.UnitTests.ComparersTest
 {
-#pragma warning disable IDE0039  // suppress "use local functions" warning
+    #region Tests
 
     /// <summary>
     /// This is a test class for FunctionalEqualityComparer generic
@@ -16,26 +17,28 @@ namespace PK.PkUtils.UnitTests.ComparersTest
     [TestClass()]
     public class FuncEqualityComparerTest
     {
-        #region Tests
-
         /// <summary>
         /// A test for FunctionalEqualityComparer constructor
         /// </summary>
         [TestMethod()]
-        [ExpectedException(typeof(ArgumentNullException))]
         public void FuncEqualityComparer_Constructor_01()
         {
-            new FunctionalEqualityComparer<int>(null);
+            Assert.ThrowsExactly<ArgumentNullException>(() =>
+            {
+                new FunctionalEqualityComparer<int>(null);
+            });
         }
 
         /// <summary>
         /// A test for FunctionalEqualityComparer constructor
         /// </summary>
         [TestMethod()]
-        [ExpectedException(typeof(ArgumentNullException))]
         public void FuncEqualityComparer_Constructor_02()
         {
-            new FunctionalEqualityComparer<int>((x, y) => x == y, null);
+            Assert.ThrowsExactly<ArgumentNullException>(() =>
+            {
+                new FunctionalEqualityComparer<int>((x, y) => x == y, null);
+            });
         }
 
         /// <summary>
@@ -81,12 +84,14 @@ namespace PK.PkUtils.UnitTests.ComparersTest
         /// A test for FunctionalEqualityComparer.CreateNullSafeComparer
         /// </summary>
         [TestMethod()]
-        [ExpectedException(typeof(ArgumentNullException))]
         public void FuncEqualityComparer_CreateNullSafeComparerTest_01()
         {
             Func<string, string, bool> f = null!;
             Func<string, int> h = null!;
-            FunctionalEqualityComparer.CreateNullSafeComparer<string>(f, h);
+            Assert.ThrowsExactly<ArgumentNullException>(() =>
+            {
+                FunctionalEqualityComparer.CreateNullSafeComparer<string>(f, h);
+            });
         }
 
         /// <summary>

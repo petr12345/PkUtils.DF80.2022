@@ -37,25 +37,29 @@ namespace PK.PkUtils.UnitTests.ExtensionsTests
         /// A test for DisposableExtension.CheckNotDisposed
         /// </summary>
         [TestMethod()]
-        [ExpectedException(typeof(ArgumentNullException))]
         public void DisposableExtension_CheckNotDisposedTest_01()
         {
             IDisposableEx obj = null!;
 
-            obj.CheckNotDisposed(nameof(obj));
+            Assert.ThrowsExactly<ArgumentNullException>(() =>
+            {
+                obj.CheckNotDisposed(nameof(obj));
+            });
         }
 
         /// <summary>
         /// A test for DisposableExtension.CheckNotDisposed
         /// </summary>
         [TestMethod()]
-        [ExpectedException(typeof(System.ObjectDisposedException))]
         public void DisposableExtension_CheckNotDisposedTest_02()
         {
             IDisposableEx form = new MySpecificForm();
 
             form.Dispose();
-            form.CheckNotDisposed("form");
+            Assert.ThrowsExactly<ObjectDisposedException>(() =>
+            {
+                form.CheckNotDisposed("form");
+            });
         }
 
         /// <summary>

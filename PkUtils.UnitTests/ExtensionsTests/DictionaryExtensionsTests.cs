@@ -71,17 +71,12 @@ namespace PK.PkUtils.UnitTests.ExtensionsTests
             Assert.AreEqual(expected, actual);
             Assert.IsFalse(dictionary.ContainsKey(key));
         }
-        #endregion // Auxiliary_methods
-
-        #region Tests_IDictionary_extensions
-
         [TestMethod]
-        [ExpectedException(typeof(ArgumentNullException))]
         public void DictionaryExtension_GetValueOrDefaultTest_01()
         {
             IDictionary<int, int> dict = null!;
 
-            dict.ValueOrDefault(5);
+            Assert.ThrowsExactly<ArgumentNullException>(() => dict.ValueOrDefault(5));
         }
 
         [TestMethod]
@@ -96,12 +91,11 @@ namespace PK.PkUtils.UnitTests.ExtensionsTests
         }
 
         [TestMethod]
-        [ExpectedException(typeof(ArgumentNullException))]
         public void DictionaryExtension_GetValueOrNew_Test_01()
         {
             IDictionary<int, int> dict = null!;
 
-            dict.GetValueOrNew(5);
+            Assert.ThrowsExactly<ArgumentNullException>(() => dict.GetValueOrNew(5));
         }
 
         [TestMethod]
@@ -116,12 +110,11 @@ namespace PK.PkUtils.UnitTests.ExtensionsTests
         }
 
         [TestMethod]
-        [ExpectedException(typeof(ArgumentNullException))]
         public void DictionaryExtension_AddNewTest_01()
         {
             IDictionary<int, int> dict = null!;
 
-            dict.AddNew(1, 1);
+            Assert.ThrowsExactly<ArgumentNullException>(() => dict.AddNew(1, 1));
         }
 
         [TestMethod]
@@ -134,23 +127,23 @@ namespace PK.PkUtils.UnitTests.ExtensionsTests
         }
 
         [TestMethod]
-        [ExpectedException(typeof(ArgumentException))]
         public void DictionaryExtension_AddNewTest_03()
         {
             var couples = Enumerable.Repeat(0, 6).Select((n, index) => new { index, n }).ToList();
             IDictionary<int, int> dict = new Dictionary<int, int>();
 
-            couples.SafeForEach(couple => AddNewTestHelper(dict, couple.n, couple.index));
+            Assert.ThrowsExactly<ArgumentException>(() =>
+                couples.SafeForEach(couple => AddNewTestHelper(dict, couple.n, couple.index))
+            );
         }
 
         [TestMethod]
-        [ExpectedException(typeof(ArgumentNullException))]
         public void DictionaryExtension_AddRange_Test_01()
         {
             IDictionary<int, string> dict_a = new Dictionary<int, string>();
             IDictionary<int, string> dict_b = null!;
 
-            dict_a.AddRange(dict_b);
+            Assert.ThrowsExactly<ArgumentNullException>(() => dict_a.AddRange(dict_b));
         }
 
         [TestMethod]
@@ -182,7 +175,6 @@ namespace PK.PkUtils.UnitTests.ExtensionsTests
         /// A test for RemoveExisting
         /// </summary>
         [TestMethod()]
-        [ExpectedException(typeof(ArgumentException))]
         public void DictionaryExtension_RemoveExistingTest_02()
         {
             const int count = 6;
@@ -190,7 +182,7 @@ namespace PK.PkUtils.UnitTests.ExtensionsTests
             // fill dictionary
             Enumerable.Repeat(0, count).Select((n, i) => i).ToList().ForEach(k => dict.Add(k, k));
             // test removing
-            RemoveExistingTestHelper<int, int>(dict, 100);
+            Assert.ThrowsExactly<ArgumentException>(() => RemoveExistingTestHelper<int, int>(dict, 100));
         }
 
         /// <summary>
@@ -227,12 +219,11 @@ namespace PK.PkUtils.UnitTests.ExtensionsTests
         }
 
         [TestMethod]
-        [ExpectedException(typeof(ArgumentNullException))]
         public void DictionaryExtension_ToStringEx_Test_01()
         {
             IDictionary<int, int> dict = null!;
 
-            dict.ToStringEx();
+            Assert.ThrowsExactly<ArgumentNullException>(() => dict.ToStringEx());
         }
 
         [TestMethod]
@@ -246,12 +237,11 @@ namespace PK.PkUtils.UnitTests.ExtensionsTests
         }
 
         [TestMethod]
-        [ExpectedException(typeof(ArgumentNullException))]
         public void DictionaryExtension_CompareDictionary_Test_01()
         {
             IDictionary<int, int> dict = null!;
 
-            dict.MemberwiseEqual(new Dictionary<int, int>());
+            Assert.ThrowsExactly<ArgumentNullException>(() => dict.MemberwiseEqual(new Dictionary<int, int>()));
         }
 
         [TestMethod]
@@ -269,12 +259,11 @@ namespace PK.PkUtils.UnitTests.ExtensionsTests
         }
 
         [TestMethod]
-        [ExpectedException(typeof(ArgumentNullException))]
         public void DictionaryExtension_DictionaryHashCode_Test_01()
         {
             IDictionary<int, int> dict = null!;
 
-            dict.DictionaryHashCode();
+            Assert.ThrowsExactly<ArgumentNullException>(() => dict.DictionaryHashCode());
         }
 
         [TestMethod]

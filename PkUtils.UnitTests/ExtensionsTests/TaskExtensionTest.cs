@@ -23,19 +23,17 @@ namespace PK.PkUtils.UnitTests.ExtensionsTests
         /// A test for TaskExtensions.ExecuteSynchronously
         /// </summary>
         [TestMethod()]
-        [ExpectedException(typeof(ArgumentNullException))]
         public void ExecuteSynchronously_Test_01()
         {
             Task<int> t = null!;
 
-            TaskEx.ExecuteSynchronously(t);
+            Assert.ThrowsExactly<ArgumentNullException>(() => TaskEx.ExecuteSynchronously(t));
         }
 
         /// <summary>
         /// A test for TaskExtensions.ExecuteSynchronously
         /// </summary>
         [TestMethod()]
-        [ExpectedException(typeof(InvalidOperationException))]
         public void ExecuteSynchronously_Test_02()
         {
             static int FnGetInt()
@@ -43,15 +41,8 @@ namespace PK.PkUtils.UnitTests.ExtensionsTests
                 throw new InvalidOperationException("April Fools' Day");
             }
 
-            try
-            {
-                Task<int> testedTask = Task.Run(() => FnGetInt());
-                int result = TaskEx.ExecuteSynchronously(testedTask);
-            }
-            catch (SystemException)
-            {
-                throw;
-            }
+            Task<int> testedTask = Task.Run(() => FnGetInt());
+            Assert.ThrowsExactly<InvalidOperationException>(() => TaskEx.ExecuteSynchronously(testedTask));
         }
 
         /// <summary>

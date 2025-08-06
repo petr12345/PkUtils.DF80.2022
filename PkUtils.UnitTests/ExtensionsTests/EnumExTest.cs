@@ -47,21 +47,11 @@ namespace PK.PkUtils.UnitTests.ExtensionsTests
                 ConvertedVal = hue;
             }
         }
-        #endregion // Auxiliary_types
-
-        #region Tests
-
-        #region Getting_values
-        #endregion // Getting_values
-
-        #region Checking_values
-
         [TestMethod]
-        [ExpectedException(typeof(ArgumentException))]
         public void EnumEx_CheckIsDefinedValue_throws()
         {
             MessageBoxButtons invalid = (MessageBoxButtons)666;
-            invalid.CheckIsDefinedValue();
+            Assert.ThrowsExactly<ArgumentException>(() => invalid.CheckIsDefinedValue());
         }
 
         [TestMethod()]
@@ -74,22 +64,21 @@ namespace PK.PkUtils.UnitTests.ExtensionsTests
 
 
         [TestMethod()]
-        [ExpectedException(typeof(ArgumentException))]
         public void EnumEx_CheckIsValidFlagsCombination_throws()
         {
             MultiHue invalid = (MultiHue)666;
-            invalid.CheckIsValidFlagsCombination();
+            Assert.ThrowsExactly<ArgumentException>(() => invalid.CheckIsValidFlagsCombination());
         }
 
         [TestMethod()]
-        [ExpectedException(typeof(ArgumentException))]
         public void EnumEx_CheckIsValidEnum_throws()
         {
             MessageBoxButtons invalid = (MessageBoxButtons)123;
-            invalid.CheckIsValidEnum();
+            Assert.ThrowsExactly<ArgumentException>(() => invalid.CheckIsValidEnum());
         }
         #endregion // Checking_values
 
+        #region Tests
         #region Conversions
 
         #region Tests_GetValues_SimpleEnum

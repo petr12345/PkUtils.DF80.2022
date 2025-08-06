@@ -410,17 +410,17 @@ public class FilePathHelperTest
     public void FilePathHelper_CheckIsValidFolderStringTest_02()
     {
         string[] arrPath = new string[] {
-     @"\",
-     @"/",
-     @"c:\",
-     @"c:/",
-     @":\",
-     @":/",
-     @"c:",
-     @"c:\Tools\M602",
-     @"c:\Tools\M602\",
-     @"c:\Tools\M602/",
-  };
+         @"\",
+        @"/",
+        @"c:\",
+        @"c:/",
+        @":\",
+        @":/",
+        @"c:",
+        @"c:\Tools\M602",
+        @"c:\Tools\M602\",
+        @"c:\Tools\M602/",
+        };
 
         int nDim0 = arrPath.GetLength(0);
         for (int ii = 0; ii < nDim0; ii++)
@@ -434,30 +434,29 @@ public class FilePathHelperTest
     /// A test for CheckIsValidFolderString which should fail with exception ArgumentNullException.
     /// </summary>
     [TestMethod()]
-    [ExpectedException(typeof(ArgumentNullException))]
     public void FilePathHelper_CheckIsValidFolderStringTest_03()
     {
-        FilePathHelper.CheckIsValidFolderString(null);
+        Assert.ThrowsExactly<ArgumentNullException>(() => FilePathHelper.CheckIsValidFolderString(null));
     }
 
     /// <summary>
     /// A test for CheckIsValidFolderString which should fail with ArgumentException
     /// </summary>
-    [TestMethod(), ExpectedException(typeof(ArgumentException))]
+    [TestMethod()]
     public void FilePathHelper_CheckIsValidFolderStringTest_04()
     {
-        FilePathHelper.CheckIsValidFolderString(string.Empty);
+        Assert.ThrowsExactly<ArgumentException>(() => FilePathHelper.CheckIsValidFolderString(string.Empty));
     }
 
 
     /// <summary>
     /// A test for CheckIsValidFolderString which should fail with ArgumentException
     /// </summary>
-    [TestMethod(), ExpectedException(typeof(ArgumentException))]
+    [TestMethod()]
     public void FilePathHelper_CheckIsValidFolderStringTest_05()
     {
         string strArg = string.Join(" ", Path.GetInvalidPathChars());
-        FilePathHelper.CheckIsValidFolderString(strArg);
+        Assert.ThrowsExactly<ArgumentException>(() => FilePathHelper.CheckIsValidFolderString(strArg));
     }
 
     /// <summary>
@@ -749,22 +748,26 @@ public class FilePathHelperTest
         Assert.AreEqual(expectedRelative, actual);
     }
 
+    #endregion // CheckIsValidFolderStringTest
+
+    #region GetRelativePathTest
+
     /// <summary>
     /// A test for GetRelativePath which should fail with ArgumentException
     ///</summary>
-    [TestMethod(), ExpectedException(typeof(ArgumentException))]
+    [TestMethod()]
     public void FilePathHelper_GetRelativePath_03()
     {
-        FilePathHelper.GetRelativePath(string.Empty, @"C:\Tmp3\");
+        Assert.ThrowsExactly<ArgumentException>(() => FilePathHelper.GetRelativePath(string.Empty, @"C:\Tmp3\"));
     }
 
     /// <summary>
     /// A test for GetRelativePath which should fail with ArgumentNullException
     ///</summary>
-    [TestMethod(), ExpectedException(typeof(ArgumentNullException))]
+    [TestMethod()]
     public void FilePathHelper_GetRelativePath_04()
     {
-        FilePathHelper.GetRelativePath(null, @"C:\Tmp3\");
+        Assert.ThrowsExactly<ArgumentNullException>(() => FilePathHelper.GetRelativePath(null, @"C:\Tmp3\"));
     }
     #endregion // GetRelativePathTest
 
@@ -790,22 +793,26 @@ public class FilePathHelperTest
         Assert.AreEqual(expected, actual);
     }
 
+    #endregion // GetRelativePathTest
+
+    #region CombineNoChecksTest
+
     /// <summary>
     /// A test for CombineNoChecks which should fail with ArgumentNullException
     ///</summary>
-    [TestMethod(), ExpectedException(typeof(ArgumentNullException))]
+    [TestMethod()]
     public void FilePathHelper_CombineNoChecks_02()
     {
-        FilePathHelper.CombineNoChecks(null, @"C:\Tmp3\");
+        Assert.ThrowsExactly<ArgumentNullException>(() => FilePathHelper.CombineNoChecks(null, @"C:\Tmp3\"));
     }
 
     /// <summary>
     /// A test for CombineNoChecks which should fail with ArgumentNullException
     ///</summary>
-    [TestMethod(), ExpectedException(typeof(ArgumentNullException))]
+    [TestMethod()]
     public void FilePathHelper_CombineNoChecks_03()
     {
-        FilePathHelper.CombineNoChecks(@"C:\Tmp3\", null);
+        Assert.ThrowsExactly<ArgumentNullException>(() => FilePathHelper.CombineNoChecks(@"C:\Tmp3\", null));
     }
 
     /// <summary>
@@ -845,35 +852,29 @@ public class FilePathHelperTest
     /// A test for LongPathTolerantGetDirectoryName which should fail with ArgumentException
     /// </summary>
     [TestMethod()]
-    [ExpectedException(typeof(ArgumentException))]
     public void FilePathHelper_LongPathTolerantGetDirectoryNameTest_01()
     {
-        // the case of path with invalid character or characters
         string s = "\x1A_XYZ";
-        FilePathHelper.LongPathTolerantGetDirectoryName(s);
+        Assert.ThrowsExactly<ArgumentException>(() => FilePathHelper.LongPathTolerantGetDirectoryName(s));
     }
 
     /// <summary>
     /// A test for LongPathTolerantGetDirectoryName which should fail with ArgumentException
     /// </summary>
     [TestMethod()]
-    [ExpectedException(typeof(ArgumentException))]
     public void FilePathHelper_LongPathTolerantGetDirectoryNameTest_02()
     {
-        // the case of path which is empty
-        FilePathHelper.LongPathTolerantGetDirectoryName(string.Empty);
+        Assert.ThrowsExactly<ArgumentException>(() => FilePathHelper.LongPathTolerantGetDirectoryName(string.Empty));
     }
 
     /// <summary>
     /// A test for LongPathTolerantGetDirectoryName which should fail with ArgumentException
     /// </summary>
     [TestMethod()]
-    [ExpectedException(typeof(ArgumentException))]
     public void FilePathHelper_LongPathTolerantGetDirectoryNameTest_03()
     {
-        // the case of path which contains only white spaces
         string s = "   ";
-        FilePathHelper.LongPathTolerantGetDirectoryName(s);
+        Assert.ThrowsExactly<ArgumentException>(() => FilePathHelper.LongPathTolerantGetDirectoryName(s));
     }
 
     /// <summary>

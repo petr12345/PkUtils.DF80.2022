@@ -16,36 +16,6 @@ namespace PK.PkUtils.UnitTests.UtilsTests;
 [TestClass()]
 public class ControlExtensionTest
 {
-    #region Additional test attributes
-    // 
-    //You can use the following additional attributes as you write your tests:
-    //
-    //Use ClassInitialize to run code before running the first test in the class
-    //[ClassInitialize()]
-    //public static void MyClassInitialize(TestContext testContext)
-    //{
-    //}
-    //
-    //Use ClassCleanup to run code after all tests in a class have run
-    //[ClassCleanup()]
-    //public static void MyClassCleanup()
-    //{
-    //}
-    //
-    //Use TestInitialize to run code before running each test
-    //[TestInitialize()]
-    //public void MyTestInitialize()
-    //{
-    //}
-    //
-    //Use TestCleanup to run code after each test has run
-    //[TestCleanup()]
-    //public void MyTestCleanup()
-    //{
-    //}
-    //
-    #endregion
-
     #region Tests
 
     /// <summary>
@@ -75,25 +45,23 @@ public class ControlExtensionTest
     /// A test for ControlExtension.CheckNotDisposed
     /// </summary>
     [TestMethod()]
-    [ExpectedException(typeof(ArgumentNullException))]
     public void ControlExtension_CheckNotDisposedTest_01()
     {
         Control ctrl = null!;
 
-        ctrl.CheckNotDisposed(nameof(ctrl));
+        Assert.ThrowsExactly<ArgumentNullException>(() => ctrl.CheckNotDisposed(nameof(ctrl)));
     }
 
     /// <summary>
     /// A test for ControlExtension.CheckNotDisposed
     ///</summary>
     [TestMethod()]
-    [ExpectedException(typeof(System.ObjectDisposedException))]
     public void ControlExtension_CheckNotDisposedTest_02()
     {
         Control ctrl = new Form();
 
         ctrl.Dispose();
-        ctrl.CheckNotDisposed("ctrl");
+        Assert.ThrowsExactly<ObjectDisposedException>(() => ctrl.CheckNotDisposed("ctrl"));
     }
 
     /// <summary>

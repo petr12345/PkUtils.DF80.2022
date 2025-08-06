@@ -583,7 +583,6 @@ namespace PK.PkUtils.UnitTests.ReflectionTests
         /// Why does IsAssignableFrom() not work for int and double?</see>
         /// </summary>
         [TestMethod()]
-        [ExpectedException(typeof(InvalidOperationException))]
         public void FieldsUtils_SetInstanceFieldValueExTest_01()
         {
             D d = new();
@@ -596,7 +595,10 @@ namespace PK.PkUtils.UnitTests.ReflectionTests
             Assert.IsFalse(f.FieldType.IsAssignableFrom(typeof(int)));
             Assert.IsFalse(typeof(double).IsAssignableFrom(typeof(int)));
 
-            d.SetInstanceFieldValueEx(strFieldName, 101);
+            Assert.ThrowsExactly<InvalidOperationException>(() =>
+            {
+                d.SetInstanceFieldValueEx(strFieldName, 101);
+            });
         }
 
         /// <summary> A test for SetInstanceFieldValueEx, which should succeed. 
@@ -638,12 +640,14 @@ namespace PK.PkUtils.UnitTests.ReflectionTests
 
         /// <summary> A test for SetInstanceFieldValueEx, which should fail. </summary>
         [TestMethod()]
-        [ExpectedException(typeof(InvalidOperationException))]
         public void FieldsUtils_SetInstanceFieldValueExTest_03()
         {
             Owner owner = new();
             // should fail, since A_VeryBase is neither of type B_Derived, nor derived from it
-            owner.SetInstanceFieldValueEx("_b", new A_VeryBase());
+            Assert.ThrowsExactly<InvalidOperationException>(() =>
+            {
+                owner.SetInstanceFieldValueEx("_b", new A_VeryBase());
+            });
         }
 
         /// <summary> A test for SetInstanceFieldValueEx, which should succeed. </summary>
@@ -660,16 +664,18 @@ namespace PK.PkUtils.UnitTests.ReflectionTests
 
         /// <summary> A test for SetInstanceFieldValueEx, which should fail. </summary>
         [TestMethod()]
-        [ExpectedException(typeof(InvalidOperationException))]
         public void FieldsUtils_SetInstanceFieldValueExTest_05()
         {
             Owner owner = new();
             C_MoreDerived c = new();
 
             // should fail, since Owner does not contain any field of type C_MoreDerived
-            owner.SetInstanceFieldValueEx("_b", c);
-            C_MoreDerived actual = owner.GetInstanceFieldValueEx<C_MoreDerived>("_b");
-            Assert.AreEqual(c, actual);
+            Assert.ThrowsExactly<InvalidOperationException>(() =>
+            {
+                owner.SetInstanceFieldValueEx("_b", c);
+                C_MoreDerived actual = owner.GetInstanceFieldValueEx<C_MoreDerived>("_b");
+                Assert.AreEqual(c, actual);
+            });
         }
 
         /// <summary> A test for SetInstanceFieldValueEx, which should succeed. </summary>

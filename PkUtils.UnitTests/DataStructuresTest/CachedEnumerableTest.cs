@@ -27,22 +27,19 @@ namespace PK.PkUtils.UnitTests.DataStructuresTest
             var enumerab = new CachedEnumerable<int>(null);
             Assert.AreEqual(ParseStatus.ParseNotInitialized, enumerab.Status);
         }
-        #endregion // Tests_Constructor
-
-        #region Tests_Parsing
-
         /// <summary> A test for CachedEnumerable parsing, which should throw InvalidOperationException. </summary>
         [TestMethod()]
-        [ExpectedException(typeof(InvalidOperationException))]
         public void CachedEnumerable_Parsing_01()
         {
-            CachedEnumerable<int> enumerab = new(null);
-            bool bTemp = enumerab.Any();
+            Assert.ThrowsExactly<InvalidOperationException>(() =>
+            {
+                CachedEnumerable<int> enumerab = new(null);
+                bool bTemp = enumerab.Any();
+            });
         }
 
         /// <summary> A test for CachedEnumerable parsing, which should throw ObjectDisposedException. </summary>
         [TestMethod()]
-        [ExpectedException(typeof(ObjectDisposedException))]
         public void CachedEnumerable_Parsing_02()
         {
             string[] arrInput = Enumerable.Range(0, 3).Select(i => i.ToString()).ToArray();
@@ -52,7 +49,10 @@ namespace PK.PkUtils.UnitTests.DataStructuresTest
             Assert.AreEqual(ParseStatus.Parsing, enumerab.Status);
 
             enumerab.Dispose();
-            bool bAny = enumerab.Any();
+            Assert.ThrowsExactly<ObjectDisposedException>(() =>
+            {
+                bool bAny = enumerab.Any();
+            });
         }
 
         /// <summary> A test for CachedEnumerable parsing, which should succeed. </summary>
@@ -110,14 +110,16 @@ namespace PK.PkUtils.UnitTests.DataStructuresTest
         /// since CachedEnumerable object has been disposed.
         /// </summary>
         [TestMethod()]
-        [ExpectedException(typeof(ObjectDisposedException))]
         public void CachedEnumerable_Parsing_06()
         {
             int[] arrInput = Enumerable.Range(0, 10).ToArray();
             CachedEnumerable<int> enumerab = new(arrInput);
             IPeekAbleEnumerator<int> en = enumerab.GetPeekAbleEnumerator();
             enumerab.Dispose();
-            int nVal = en.Current;
+            Assert.ThrowsExactly<ObjectDisposedException>(() =>
+            {
+                int nVal = en.Current;
+            });
         }
 
         /// <summary>
@@ -125,13 +127,15 @@ namespace PK.PkUtils.UnitTests.DataStructuresTest
         /// since CachedEnumerable have not started parsing yet
         /// </summary>
         [TestMethod()]
-        [ExpectedException(typeof(InvalidOperationException))]
         public void CachedEnumerable_Parsing_07()
         {
             int[] arrInput = Enumerable.Range(0, 10).ToArray();
             CachedEnumerable<int> enumerab = new(arrInput);
             IPeekAbleEnumerator<int> en = enumerab.GetPeekAbleEnumerator();
-            int nVal = en.Current;
+            Assert.ThrowsExactly<InvalidOperationException>(() =>
+            {
+                int nVal = en.Current;
+            });
         }
 
         /// <summary>
@@ -139,7 +143,6 @@ namespace PK.PkUtils.UnitTests.DataStructuresTest
         /// since the second enumerator did not call MoveNext
         /// </summary>
         [TestMethod()]
-        [ExpectedException(typeof(InvalidOperationException))]
         public void CachedEnumerable_Parsing_08()
         {
             int[] arrInput = Enumerable.Range(0, 10).ToArray();
@@ -148,7 +151,10 @@ namespace PK.PkUtils.UnitTests.DataStructuresTest
             IPeekAbleEnumerator<int> enB = enumerab.GetPeekAbleEnumerator();
 
             int dummyA = enA.Peek;
-            int dummyB = enB.Current;
+            Assert.ThrowsExactly<InvalidOperationException>(() =>
+            {
+                int dummyB = enB.Current;
+            });
         }
         #endregion // Tests_Parsing
 
@@ -235,21 +241,19 @@ namespace PK.PkUtils.UnitTests.DataStructuresTest
                 enumerab.ResetCache();
             }
         }
-        #endregion // Tests_ResetCache
-
-        #region Tests_FillBuffer
-
         /// <summary>
         /// A test for CachedEnumerable.FillBuffer, which should fail
         /// </summary>
         [TestMethod()]
-        [ExpectedException(typeof(ArgumentOutOfRangeException))]
         public void CachedEnumerable_FillBuffer_01()
         {
             string[] arrInput = Enumerable.Range(0, 10).Select(i => i.ToString()).ToArray();
             CachedEnumerable<string> enumerab = new(arrInput);
 
-            enumerab.FillBuffer(-2);
+            Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
+            {
+                enumerab.FillBuffer(-2);
+            });
         }
 
         /// <summary>
@@ -401,21 +405,19 @@ namespace PK.PkUtils.UnitTests.DataStructuresTest
             Assert.AreEqual(false, en.CanPeek);
             Assert.AreEqual(false, en.MoveNext());
         }
-        #endregion // Tests_PeekAbleEnumerator
-
-        #region Tests_Diposing
-
         /// <summary>
         /// A single-thread test for CachedEnumerable usage, which should throw ObjectDisposedException,
         /// since CachedEnumerable object has been disposed
         /// </summary>
         [TestMethod()]
-        [ExpectedException(typeof(ObjectDisposedException))]
         public void CachedEnumerable_Disposing_01()
         {
             CachedEnumerable<int> enumerab = new(Enumerable.Range(0, 10));
             enumerab.Dispose();
-            IPeekAbleEnumerator<int> en = enumerab.GetPeekAbleEnumerator();
+            Assert.ThrowsExactly<ObjectDisposedException>(() =>
+            {
+                IPeekAbleEnumerator<int> en = enumerab.GetPeekAbleEnumerator();
+            });
         }
 
         /// <summary>
@@ -423,13 +425,15 @@ namespace PK.PkUtils.UnitTests.DataStructuresTest
         /// since CachedEnumerable object has been disposed
         /// </summary>
         [TestMethod()]
-        [ExpectedException(typeof(ObjectDisposedException))]
         public void CachedEnumerable_Disposing_02()
         {
             CachedEnumerable<int> enumerab = new(Enumerable.Range(0, 10));
             IPeekAbleEnumerator<int> en = enumerab.GetPeekAbleEnumerator();
             enumerab.Dispose();
-            int nVal = en.Current;
+            Assert.ThrowsExactly<ObjectDisposedException>(() =>
+            {
+                int nVal = en.Current;
+            });
         }
 
         /// <summary>

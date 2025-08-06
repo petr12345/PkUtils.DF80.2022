@@ -20,16 +20,14 @@ namespace PK.PkUtils.UnitTests.DataStructuresTest
         #region Fields
 
         private const int _addDelayMs = 24; // delay needed so the cache will distinguish timestamps
-        #endregion // Fields
-
-        #region Tests_constructors
-
         [TestMethod]
-        [ExpectedException(typeof(ArgumentOutOfRangeException))]
         public void SizeLimitedCache_Constructor_01()
         {
-            // ACT
-            new SizeLimitedCache<int, string>(-12);
+            // ACT + ASSERT
+            Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
+            {
+                new SizeLimitedCache<int, string>(-12);
+            });
         }
 
         [TestMethod]
@@ -137,23 +135,19 @@ namespace PK.PkUtils.UnitTests.DataStructuresTest
                 Assert.IsTrue(IsMutextIsDisposed(x.SynchroMutex), "Mutex should be disposed now");
             }
         }
-        #endregion // Tests_disposing_cache
-
-        #region Tests_MaxSize
-
         [TestMethod]
         [DataRow(0)]
         [DataRow(-2)]
         [DataRow(-22)]
-        [ExpectedException(typeof(ArgumentOutOfRangeException))]
         public void SizeLimitedCache_MaxSize_01(int invalidSize)
         {
             // ARRANGE
-            ISizeLimitedCache<int, string> cache = new SizeLimitedCache<int, string>(12)
+            ISizeLimitedCache<int, string> cache = new SizeLimitedCache<int, string>(12);
+            // ACT + ASSERT
+            Assert.ThrowsExactly<ArgumentOutOfRangeException>(() =>
             {
-                // ACT
-                MaxSize = invalidSize
-            };
+                cache.MaxSize = invalidSize;
+            });
         }
 
         [TestMethod]
@@ -251,7 +245,6 @@ namespace PK.PkUtils.UnitTests.DataStructuresTest
         [TestMethod]
         [DataRow(12, 3)]
         [DataRow(200, 230)]
-        [ExpectedException(typeof(KeyNotFoundException))]
         public void SizeLimitedCache_Indexer_ThrowsKeyNotFoundException(int firstValue, int addedItems)
         {
             int notPresentKey = firstValue + addedItems;
@@ -262,7 +255,10 @@ namespace PK.PkUtils.UnitTests.DataStructuresTest
                 cache[x] = x.ToString();
             }
 
-            var v = cache[notPresentKey];
+            Assert.ThrowsExactly<KeyNotFoundException>(() =>
+            {
+                var v = cache[notPresentKey];
+            });
         }
         #endregion // Tests_Indexer
 

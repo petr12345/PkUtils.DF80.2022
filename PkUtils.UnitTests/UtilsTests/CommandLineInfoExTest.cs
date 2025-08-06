@@ -21,21 +21,25 @@ public class CommandLineInfoExTest
     /// A test for CommandLineInfoEx constructor, which should fail with ArgumentNullException
     /// </summary>
     [TestMethod()]
-    [ExpectedException(typeof(ArgumentNullException))]
     public void CommandLineInfoEx_Constructor_01()
     {
-        CommandLineInfoEx info = new(null);
+        Assert.ThrowsExactly<ArgumentNullException>(() =>
+        {
+            CommandLineInfoEx info = new(null);
+        });
     }
 
     /// <summary>
     /// A test for CommandLineInfoEx constructor, which should fail with ArgumentException
     /// </summary>
     [TestMethod()]
-    [ExpectedException(typeof(ArgumentException))]
     public void CommandLineInfoEx_Constructor_02()
     {
         var args = new string[] { "doc1.rtf", null!, "doc2.rtf" };
-        CommandLineInfoEx info = new(args);
+        Assert.ThrowsExactly<ArgumentException>(() =>
+        {
+            CommandLineInfoEx info = new(args);
+        });
     }
 
     /// <summary>

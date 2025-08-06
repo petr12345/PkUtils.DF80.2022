@@ -122,27 +122,21 @@ namespace PK.PkUtils.UnitTests.ExtensionsTests
         ///A test for ObjectExtension.CheckNotDisposed
         /// </summary>
         [TestMethod()]
-        [ExpectedException(typeof(ArgumentNullException))]
         public void CheckNotDisposedTest_21()
         {
             object obj = null!;
-
-            /* ObjectExtension.CheckNotDisposed(obj, "obj"); */
-            obj.CheckNotDisposed(nameof(obj));
+            Assert.ThrowsExactly<ArgumentNullException>(() => obj.CheckNotDisposed(nameof(obj)));
         }
 
         /// <summary>
         ///A test for ObjectExtension.CheckNotDisposed
         /// </summary>
         [TestMethod()]
-        [ExpectedException(typeof(System.ObjectDisposedException))]
         public void CheckNotDisposedTest_22()
         {
             object obj = new MyDisposableClass();
-
             (obj as IDisposable)!.Dispose();
-            /* ObjectExtension.CheckNotDisposed(obj, "obj");  */
-            obj.CheckNotDisposed(nameof(obj));
+            Assert.ThrowsExactly<ObjectDisposedException>(() => obj.CheckNotDisposed(nameof(obj)));
         }
 
         /// <summary>
@@ -152,8 +146,6 @@ namespace PK.PkUtils.UnitTests.ExtensionsTests
         public void CheckNotDisposedTest_23()
         {
             object obj = new MyDisposableClass();
-
-            /* ObjectExtension.CheckNotDisposed(obj, "obj");  */
             obj.CheckNotDisposed(nameof(obj));
         }
 
@@ -164,8 +156,6 @@ namespace PK.PkUtils.UnitTests.ExtensionsTests
         public void CheckNotDisposedTest_24()
         {
             object obj = new MyDisposableStruct();
-
-            /* ObjectExtension.CheckNotDisposed(obj, "obj");  */
             obj.CheckNotDisposed(nameof(obj));
         }
 
@@ -173,13 +163,10 @@ namespace PK.PkUtils.UnitTests.ExtensionsTests
         ///A test for ObjectExtension.CheckArgNotNull
         /// </summary>
         [TestMethod()]
-        [ExpectedException(typeof(ArgumentNullException))]
         public void ObjectExtension_CheckArgNotNullTest_01()
         {
             System.Windows.Forms.Form f = null!;
-
-            /* ObjectExtension.CheckArgNotNull<System.Windows.Forms.Form>(f, "f"); */
-            f.CheckArgNotNull("f");
+            Assert.ThrowsExactly<ArgumentNullException>(() => f.CheckArgNotNull("f"));
         }
 
         /// <summary>
@@ -189,9 +176,7 @@ namespace PK.PkUtils.UnitTests.ExtensionsTests
         public void ObjectExtension_CheckArgNotNullTest_02()
         {
             Form f = new();
-
-            /* ObjectExtension.CheckArgNotNull<Form>(f, "f"); */
-            f.CheckArgNotNull("f");
+            f.CheckArgNotNull();
         }
 
         /*
@@ -208,17 +193,11 @@ namespace PK.PkUtils.UnitTests.ExtensionsTests
         }
         */
 
-        /// <summary>
-        /// A test for ObjectExtension.CheckNotNull
-        /// </summary>
         [TestMethod()]
-        [ExpectedException(typeof(System.InvalidOperationException))]
         public void ObjectExtension_CheckNotNullTest_01()
         {
             Form f = null!;
-
-            /* ObjectExtension.CheckNotNull<System.Windows.Forms.Form>(f, "f"); */
-            f.CheckNotNull(nameof(f));
+            Assert.ThrowsExactly<InvalidOperationException>(() => f.CheckNotNull(nameof(f)));
         }
 
         /// <summary>
@@ -228,8 +207,6 @@ namespace PK.PkUtils.UnitTests.ExtensionsTests
         public void ObjectExtension_CheckNotNullTest_02()
         {
             Form f = new();
-
-            /* ObjectExtension.CheckNotNull<Form>(f, "f"); */
             f.CheckNotNull("f");
         }
 

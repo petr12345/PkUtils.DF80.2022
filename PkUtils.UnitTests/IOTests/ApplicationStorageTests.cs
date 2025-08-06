@@ -34,25 +34,29 @@ public sealed class ApplicationStorageTests
     /// A test for ApplicationStorage constructor, which should fail with ArgumentNullException
     /// </summary>
     [TestMethod()]
-    [ExpectedException(typeof(ArgumentNullException))]
     public void ApplicationStorage_Constructor_02()
     {
-        ApplicationStorage<string> storage = new(
-            ApplicationStorage<string>.DefaultStorageScope, true, null);
+        Assert.ThrowsExactly<ArgumentNullException>(() =>
+        {
+            ApplicationStorage<string> storage = new(
+                ApplicationStorage<string>.DefaultStorageScope, true, null);
+        });
     }
 
     /// <summary>
     /// A test for ApplicationStorage constructor, which should fail with ArgumentNullException
     /// </summary>
     [TestMethod()]
-    [ExpectedException(typeof(ArgumentNullException))]
     public void ApplicationStorage_Constructor_03()
     {
         const string fileNameSuffix = "abc";
         Dictionary<string, string> data = null!;
 
-        ApplicationStorage<string> storage = new(
-            ApplicationStorage<string>.DefaultStorageScope, data, fileNameSuffix);
+        Assert.ThrowsExactly<ArgumentNullException>(() =>
+        {
+            ApplicationStorage<string> storage = new(
+                ApplicationStorage<string>.DefaultStorageScope, data, fileNameSuffix);
+        });
     }
 
     /// <summary>
