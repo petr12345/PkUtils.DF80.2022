@@ -172,6 +172,7 @@ public static class TaskDialogWrapper
     /// <param name="text"> The text. </param>
     /// <param name="icon"> (Optional) Icon to display. If null, TaskDialogIcon.Information will be used. </param>
     /// <param name="defaultButton"> (Optional) Button to focus. </param>
+    /// <param name="moreDetails"> (Optional) Technical details to be optionally displayed by TaskDialogExpander. </param>
     /// <returns>
     /// A tuple where Item1 is a DialogResult: Abort, Retry, or Ignore (used for both Ignore and Ignore All),
     /// and Item2 is a boolean indicating whether the user selected Ignore All (true) or not (false).
@@ -182,12 +183,14 @@ public static class TaskDialogWrapper
         string heading,
         string text,
         TaskDialogIcon icon = null,
-        DialogResult defaultButton = DialogResult.Retry)
+        DialogResult defaultButton = DialogResult.Retry,
+        string moreDetails = null)
     {
         TaskDialogButtonCollection buttons = CreateButtons(MessageBoxButtons.AbortRetryIgnore);
         TaskDialogButton ignoreAllButton = new("Ignore All") { Tag = DialogResult.Ignore };
         buttons.Add(ignoreAllButton);
-        TaskDialogButton buttonResult = ShowDialogWithButtons(owner, caption, heading, text, icon ?? QuestionIcon, buttons, defaultButton);
+        TaskDialogButton buttonResult = ShowDialogWithButtons(
+            owner, caption, heading, text, icon ?? QuestionIcon, buttons, defaultButton, moreDetails);
         bool isIgnoreAll = ReferenceEquals(buttonResult, ignoreAllButton);
         DialogResult result = buttonResult.Tag is DialogResult dr ? dr : defaultButton;
 
@@ -239,7 +242,82 @@ public static class TaskDialogWrapper
 
         return (result, applyIgnoreToAll);
     }
-    #endregion // Question_methods
+    /// <summary>
+    /// Shows a task dialog with custom TaskDialogCommandLinkButton buttons, optional Cancel button 
+    /// and optional "Don't show this choice again" checkbox, and optionally displays more details information.
+    /// </summary>
+    /// <param name="owner">Owner window.</param>
+    /// <param name="caption">Caption text for the dialog.</param>
+    /// <param name="heading">Heading text.</param>
+    /// <param name="text">Main text of the dialog.</param>
+    /// <param name="commands">An array of tuples where Item1 is button text and Item2 is an arbitrary tag value.</param>
+    /// <param name="doNotShowAgainCheckboxText"> The text for checkbox "Don't show this choice again". If null, no chcckbox will be created.</param>
+    /// <param name="moreDetails">Optional string to display as expandable "More Details" information. If null or empty, not shown.</param>
+    /// <param name="defaultButtonIndex">Index of the default button in the commands array. -1 for no default.</param>
+    /// <param name="icon">Optional TaskDialogIcon to use.</param>
+    /// <returns>Tuple with selected command's tag (or null if Cancel was pressed) and checkbox state (false if checkbox not shown).</returns>
+    public static (object SelectedTag, bool DoNotShowAgain) ShowCustomCommandDialog(
+        IWin32Window owner,
+        string caption,
+        string heading,
+        string text,
+        (string Text, string DescriptionText, object Tag)[] commands,
+        string doNotShowAgainCheckboxText = "Don't show this choice again",
+        string moreDetails = null,
+        int defaultButtonIndex = -1,
+        TaskDialogIcon icon = null)
+    {
+        if (commands == null || commands.Length == 0)
+            throw new ArgumentException("At least one command button must be specified.", nameof(commands));
+
+        TaskDialogButtonCollection buttons = new();
+        TaskDialogButton defaultButton = null;
+        TaskDialogVerificationCheckBox checkbox = null;
+
+        for (int ii = 0, numCommands = commands.Length; ii < numCommands; ii++)
+        {
+            var cmd = commands[ii];
+            TaskDialogCommandLinkButton btn = new(cmd.Text, cmd.DescriptionText) { Tag = cmd.Tag };
+            buttons.Add(btn);
+            if (ii == defaultButtonIndex)
+                defaultButton = btn;
+        }
+
+        if (doNotShowAgainCheckboxText is not null)
+        {
+            checkbox = new TaskDialogVerificationCheckBox(doNotShowAgainCheckboxText);
+        }
+
+        DialogResult defaultResult = defaultButton?.Tag as DialogResult? ?? DialogResult.None;
+        TaskDialogIcon finalIcon = icon ?? QuestionIcon;
+        TaskDialogPage page = new()
+        {
+            Caption = caption,
+            SizeToContent = true,
+            Heading = heading,
+            Text = text,
+            Icon = finalIcon,
+            Buttons = buttons,
+            DefaultButton = defaultButton,
+            Verification = checkbox
+        };
+
+        if (!string.IsNullOrEmpty(moreDetails))
+        {
+            page.Expander = new TaskDialogExpander(moreDetails)
+            {
+                ExpandedButtonText = "Hide more details",
+                CollapsedButtonText = "Show more detail",
+                Position = TaskDialogExpanderPosition.AfterFootnote
+            };
+        }
+
+        TaskDialogButton result = TaskDialog.ShowDialog(owner, page);
+        bool checkboxChecked = checkbox?.Checked ?? false;
+
+        return (result?.Tag, checkboxChecked);
+    }
+    #endregion // CustomCommand
 
     #region Information_methods
 
@@ -393,6 +471,7 @@ public static class TaskDialogWrapper
         TaskDialogIcon icon,
         TaskDialogButtonCollection buttons,
         DialogResult defaultButton,
+        string moreDetails = null,
         bool allowCancel = false,
         TaskDialogVerificationCheckBox verification = null)
     {
@@ -408,6 +487,17 @@ public static class TaskDialogWrapper
             AllowCancel = allowCancel,
             Verification = verification
         };
+
+        // Add expandable section if applicable
+        if (!string.IsNullOrWhiteSpace(moreDetails))
+        {
+            page.Expander = new TaskDialogExpander
+            {
+                Text = moreDetails.Trim(),
+                ExpandedButtonText = "Hide technical details",
+                CollapsedButtonText = "Show technical detail"
+            };
+        }
 
         return TaskDialog.ShowDialog(owner, page);
     }
