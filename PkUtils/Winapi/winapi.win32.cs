@@ -1,19 +1,8 @@
-/***************************************************************************************************************
-*
-* FILE NAME:   .\Winapi\winapi.win32.cs
-*
-* AUTHOR:      Petr Kodet
-*
-* DESCRIPTION:  The Winapi functions and constants
-*
-**************************************************************************************************************/
-
-// Ignore Spelling: Utils, Api, Winapi, CLICKACTIVE LLKHF GETITEMHEIGHT GETTOPINDEX GETDROPPEDCONTROLRECT
-//
 using System;
 using System.Diagnostics;
 using System.Runtime.InteropServices;
 using System.Text;
+
 
 namespace PK.PkUtils.WinApi;
 
@@ -21,6 +10,7 @@ namespace PK.PkUtils.WinApi;
 #pragma warning disable 1591        // Missing XML comment for publicly visible type or member...
 #pragma warning disable CA1069      // The enum member ... has the same constant value as member ...
 #pragma warning disable CA1401      // P/Invoke method should not be visible
+#pragma warning disable IDE0130     // Namespace "..." does not match folder structure
 #pragma warning disable SYSLIB1054  // Use 'LibraryImportAttribute' instead of 'DllImportAttribute' to generate P/Invoke marshalling code at compile time
 
 /// <summary> Basic Win32 definitions. </summary>
@@ -822,6 +812,7 @@ public static class Win32
         /// compatibility with earlier versions of the system. Applications should use the WM_SETTINGCHANGE message.
         /// </summary>
         WM_WININICHANGE = 0x001A,
+        WM_SETTINGCHANGE = WM_WININICHANGE,
 
         /// <summary>
         /// The WM_DEVMODECHANGE message is sent to all top-level windows whenever the user changes device-mode settings. 
@@ -3852,6 +3843,7 @@ public static class Win32
     /// <returns> The return value is the high-order word of the specified value. </returns>
     public static ushort HIWORD(int l) { return HIWORD((uint)(l)); }
 
+
     /// <summary> Retrieves the x-coordinate from the specified LPARAM value. </summary>
     /// <remarks>
     /// Do NOT use the LOWORD or HIWORD macros to extract the x- and y- coordinates of the cursor position
@@ -3881,7 +3873,7 @@ public static class Win32
         return new User32.POINT(GET_X_LPARAM(lParam), GET_Y_LPARAM(lParam));
     }
 
-    /// <summary> Gets point from l-parameter. </summary>
+    /// <summary>   Gets point from l-parameter. </summary>
     /// <param name="lParam"> The value to be converted, usually Message.LParam. </param>
     /// <returns>   The point from l-parameter. </returns>
     public static System.Drawing.Point GetPointFromLParam(int lParam)
@@ -3954,6 +3946,7 @@ public static class Win32
 }
 
 #pragma warning restore SYSLIB1054
+#pragma warning restore IDE0130
 #pragma warning restore CA1401
 #pragma warning restore CA1069
 #pragma warning restore 1591

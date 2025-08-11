@@ -1,13 +1,3 @@
-/***************************************************************************************************************
-*
-* FILE NAME:   .\Winapi\winapi.kernel32.cs
-*
-* AUTHOR:      Petr Kodet
-*
-* DESCRIPTION: The Winapi functions and constants
-*
-**************************************************************************************************************/
-
 // Ignore Spelling: Utils, Api, Winapi, Ctrl, Unmap, memset, ull, bufsize, FNAME, LCID, DAC, MEMORYSTATUS, MEMORYSTATUSEX, OSVERSIONINFOEX, LOCKFILE, EXCED, INTPTR, programmatically
 // 
 using System;

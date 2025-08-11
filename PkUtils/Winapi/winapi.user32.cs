@@ -1,13 +1,3 @@
-/***************************************************************************************************************
-*
-* FILE NAME:   .\Winapi\winapi.user32.cs
-*
-* AUTHOR:      Petr Kodet
-*
-* DESCRIPTION: The Winapi functions and constants
-*
-**************************************************************************************************************/
-
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -17,21 +7,23 @@ using System.Runtime.InteropServices;
 using System.Text;
 using System.Windows.Forms;
 
+#pragma warning disable IDE0130 // Namespace "..." does not match folder structure
+
+
 namespace PK.PkUtils.WinApi;
 
-#pragma warning disable VSSpell001  // Spell Check
+
+#pragma warning disable VSSpell001
 #pragma warning disable 1591        // Missing XML comment for publicly visible type or member...
 #pragma warning disable IDE0251     // Member can be made 'readonly'	
-#pragma warning disable IDE0290     // Use primary constructor
 #pragma warning disable CA1069      // The enum member ... has the same constant value as member ...
 #pragma warning disable CA1401      // P/Invoke method should not be visible
 #pragma warning disable CA1806      // The HRESULT of some API is not used
 #pragma warning disable SYSLIB1054  // Use 'LibraryImportAttribute' instead of 'DllImportAttribute' to generate P/Invoke marshalling code at compile time
 
 
-/// <summary>
-/// Helper class containing User32 API functions
-/// </summary>
+/// <summary> Helper class containing User32 API functions. </summary>
+[CLSCompliant(false)]
 public static class User32
 {
     #region Nested types
@@ -378,17 +370,16 @@ public static class User32
         /// <summary> Specifies the immediate position of a scroll box that the user is dragging. </summary>
         public int nTrackPos;
 
-        /// <summary>
-        /// Gets the default (empty) value.
-        /// </summary>
+        /// <summary> Gets the default (empty) value. </summary>
         public static SCROLLINFO Default
         {
-            get
-            {
-                SCROLLINFO result = new();
-                result.cbSize = (uint)Marshal.SizeOf(result);
-                return result;
-            }
+            get => new SCROLLINFO();
+        }
+
+        /// <summary> Initializes a new instance of the <see cref="SCROLLINFO"/> struct. </summary>
+        public SCROLLINFO()
+        {
+            cbSize = (uint)Marshal.SizeOf(this);
         }
     }
 
@@ -430,7 +421,7 @@ public static class User32
 
     [Serializable]
     [StructLayout(LayoutKind.Sequential)]
-    internal struct WINDOWPLACEMENT
+    public struct WINDOWPLACEMENT
     {
         /// <summary>
         /// The length of the structure, in bytes. Before calling the GetWindowPlacement or SetWindowPlacement functions, set this member to sizeof(WINDOWPLACEMENT).
@@ -465,19 +456,18 @@ public static class User32
         /// </summary>
         public RECT NormalPosition;
 
-        /// <summary>
-        /// Gets the default (empty) value.
-        /// </summary>
+        /// <summary> Gets the default (empty) value. </summary>
         public static WINDOWPLACEMENT Default
         {
-            get
-            {
-                WINDOWPLACEMENT result = new();
-                result.Length = Marshal.SizeOf(result);
-                return result;
-            }
+            get => new WINDOWPLACEMENT();
         }
-    };
+
+        /// <summary> Initializes a new instance of the <see cref="WINDOWPLACEMENT"/> struct. </summary>
+        public WINDOWPLACEMENT()
+        {
+            Length = Marshal.SizeOf(this);
+        }
+    }
 
     /// <summary>
     /// The PAINTSTRUCT structure contains information that can be used to paint the client area 
@@ -2579,23 +2569,35 @@ public static class User32
     /// Retrieves the show state and the restored, minimized, and maximized positions of the specified window.
     /// </summary>
     /// <param name="hWnd">
-    /// A handle to the window.
+    /// A handle to the window whose placement information is to be retrieved.
     /// </param>
     /// <param name="lpwndpl">
-    /// A pointer to the WINDOWPLACEMENT structure that receives the show state and position information.
-    /// <para>
-    /// Before calling GetWindowPlacement, set the length member to sizeof(WINDOWPLACEMENT). GetWindowPlacement fails if lpwndpl-> length is not set correctly.
-    /// </para>
+    /// A reference to a <see cref="WINDOWPLACEMENT"/> structure that receives the show state and position information.
+    /// Before calling <c>GetWindowPlacement</c>, set the <c>Length</c> member of the structure to <c>sizeof(WINDOWPLACEMENT)</c>.
+    /// The function fails if this member is not set correctly.
     /// </param>
     /// <returns>
-    /// If the function succeeds, the return value is nonzero.
-    /// <para>
-    /// If the function fails, the return value is zero. To get extended error information, call GetLastError.
-    /// </para>
+    /// <c>true</c> if the function succeeds; otherwise, <c>false</c>.
+    /// To get extended error information, call <c>Marshal.GetLastWin32Error()</c>.
     /// </returns>
     [DllImport("user32", SetLastError = true)]
     [return: MarshalAs(UnmanagedType.Bool)]
-    internal static extern bool GetWindowPlacement(IntPtr hWnd, ref WINDOWPLACEMENT lpwndpl);
+    public static extern bool GetWindowPlacement(IntPtr hWnd, ref WINDOWPLACEMENT lpwndpl);
+
+    /// <summary>
+    /// Sets the show state and the restored, minimized, and maximized positions of the specified window.
+    /// </summary>
+    /// <param name="hWnd">
+    /// A handle to the window whose placement information is to be set.
+    /// </param>
+    /// <param name="lpwndpl">
+    /// A reference to a <see cref="WINDOWPLACEMENT"/> structure that specifies the new show state and position information.
+    /// Before calling <c>SetWindowPlacement</c>, set the <c>Length</c> member of the structure to <c>sizeof(WINDOWPLACEMENT)</c>.
+    /// The function fails if this member is not set correctly.
+    /// </param>
+    /// <returns> <c>true</c> if the function succeeds; otherwise, <c>false</c>. </returns>
+    [DllImport("user32", SetLastError = true)]
+    public static extern bool SetWindowPlacement(IntPtr hWnd, [In] ref WINDOWPLACEMENT lpwndpl);
 
     /// <summary>
     /// Retrieves the identifier of the thread that created the specified window, and optionally the
@@ -3308,12 +3310,12 @@ public static class User32
     /// <see href="https://msdn.microsoft.com/en-us/library/system.windows.forms.iwin32window(v=vs.110).aspx">
     /// IWin32Window </see> interface.
     /// </summary>
-    /// <param name="win32Window"> An interface exposing Win32 HWND handles. </param>
+    /// <param name="iWnd"> An interface exposing Win32 HWND handles. </param>
     /// <returns> True on success, false on failure. </returns>
-    public static bool ActivateWnd(IWin32Window win32Window)
+    public static bool ActivateWnd(IWin32Window iWnd)
     {
-        ArgumentNullException.ThrowIfNull(win32Window);
-        return ActivateWnd(win32Window.Handle);
+        ArgumentNullException.ThrowIfNull(iWnd);
+        return ActivateWnd(iWnd.Handle);
     }
 
     /// <summary> Activates the top-level window, given the window handle. </summary>
@@ -3609,7 +3611,7 @@ public static class User32
     private static bool WindowFirstMatchCallback(IntPtr hWnd, ref WindowSearchData matchData)
     {
         string strText;
-        bool processMatch, textMatch;
+        bool bProcessMatch, bTextMatch;
 
 #pragma warning disable IDE0059 // Unnecessary assignment of a value
         // Initialize ProcessId. Whatever GetWindowThreadProcessId does with output, better safe than sorry
@@ -3617,20 +3619,20 @@ public static class User32
 #pragma warning restore IDE0059 // Unnecessary assignment of a value
         bool bContinueEnumeration = true;
 
-        if (!(processMatch = (matchData.ProcessId == WindowSearchData.NoProcessId)))
+        if (!(bProcessMatch = (matchData.ProcessId == WindowSearchData.NoProcessId)))
         {
             GetWindowThreadProcessId(hWnd, out dwProcessId);
-            processMatch = (matchData.ProcessId == dwProcessId);
+            bProcessMatch = (matchData.ProcessId == dwProcessId);
         }
-        if (processMatch)
+        if (bProcessMatch)
         {
-            if (!(textMatch = (matchData.WindowText == null)))
+            if (!(bTextMatch = (matchData.WindowText == null)))
             {
                 strText = GetWindowText(hWnd);
-                textMatch = string.Equals(strText, matchData.WindowText, StringComparison.Ordinal);
+                bTextMatch = string.Equals(strText, matchData.WindowText, StringComparison.Ordinal);
             }
 
-            if (textMatch)
+            if (bTextMatch)
             {
                 // match has been found
                 matchData.FoundWindows.Add(hWnd);
@@ -3671,11 +3673,11 @@ public static class User32
 
     #endregion // Constructor(s)
 }
+
 #pragma warning restore SYSLIB1054
 #pragma warning restore CA1806
 #pragma warning restore CA1401
 #pragma warning restore CA1069
-#pragma warning restore IDE0290
-#pragma warning restore IDE0251
+#pragma warning restore IDE0251   
 #pragma warning restore 1591
 #pragma warning restore VSSpell001

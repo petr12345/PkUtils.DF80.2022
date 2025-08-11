@@ -1,13 +1,3 @@
-/***************************************************************************************************************
-*
-* FILE NAME:   .\Winapi\winapi.gdi32.cs
-*
-* AUTHOR:      Petr Kodet
-*
-* DESCRIPTION: The Winapi functions and constants
-*
-**************************************************************************************************************/
-
 // Ignore Spelling: Utils, Api, Winapi, Ctrl, clr, Unmap, memset, ull, bufsize, FNAME, LCID, DAC, COLORREF Gdi FW LOGFONT PHYSICALOFFSETX PHYSICALOFFSETY DONTCARE EXTRALIGHT SEMIBOLD EXTRABOLD ULTRABOLD DEMIBOLD lf TEXTMETRIC Pels LOGPIXELSX LOGPIXELSY BITMAPINFOHEADER Rgn CLIPFORMAT Dest Rop Pel Enh Org RGB lpv hemf lplf Argb BKMODE Viewport
 //
 using System;
