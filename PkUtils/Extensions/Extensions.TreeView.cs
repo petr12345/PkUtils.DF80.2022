@@ -1,4 +1,4 @@
-﻿// Ignore Spelling: CCA, Utils
+﻿// Ignore Spelling: PK, Utils
 //
 using System;
 using System.Collections.Generic;
@@ -282,6 +282,23 @@ public static class TreeViewExtensions
     {
         ArgumentNullException.ThrowIfNull(tn);
         return tn.IsLeaf() && !tn.IsRoot();
+    }
+
+    /// <summary>
+    /// Returns the direct child nodes of the specified <see cref="TreeNode"/> as an enumerable sequence.
+    /// </summary>
+    /// <remarks>
+    /// This extension provides a convenient way to enumerate children, since existing <see cref="TreeNode.Nodes"/>
+    /// returns a <see cref="TreeNodeCollection"/>, which is just untyped collection and not <see cref="IEnumerable{TreeNode}"/>.
+    /// </remarks>
+    /// <param name="tn">The tree node whose children are to be returned. Must not be <c>null</c>.</param>
+    /// <returns>An <see cref="IEnumerable{TreeNode}"/> containing the direct child nodes.</returns>
+    /// <exception cref="ArgumentNullException">Thrown if <paramref name="tn"/> is null.</exception>
+
+    public static IEnumerable<TreeNode> GetChildren(this TreeNode tn)
+    {
+        ArgumentNullException.ThrowIfNull(tn);
+        return tn.Nodes.Cast<TreeNode>();
     }
 
     /// <summary>

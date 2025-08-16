@@ -1,4 +1,4 @@
-﻿// Ignore Spelling: CCA, rhs, Sel, Stackoverflow, Utils
+﻿// Ignore Spelling: PK, rhs, Sel, Stackoverflow, Utils
 //
 using System;
 using System.Diagnostics;

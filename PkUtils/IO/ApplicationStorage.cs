@@ -432,7 +432,7 @@ public class ApplicationStorage<T> : Dictionary<string, T>
     /// <param name="fileNameSuffix"> A string that should be used as part of the file name (a suffix).
     /// May be empty, but not null. </param>
     ///
-    /// <returns> Resulting value file name. For instance "CCA.TestHooking.dtt". </returns>
+    /// <returns> Resulting value file name. </returns>
     protected virtual string GenerateSettingsFileName(string fileNameSuffix)
     {
         ArgumentNullException.ThrowIfNull(fileNameSuffix);

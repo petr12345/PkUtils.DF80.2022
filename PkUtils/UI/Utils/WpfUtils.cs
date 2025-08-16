@@ -1,4 +1,4 @@
-﻿// Ignore Spelling: CCA, Utils
+﻿// Ignore Spelling: PK, Utils
 //
 using System;
 using System.Windows.Interop;

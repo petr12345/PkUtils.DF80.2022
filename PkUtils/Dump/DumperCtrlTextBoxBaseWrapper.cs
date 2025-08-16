@@ -1,4 +1,4 @@
-﻿// Ignore Spelling: CCA, Ctrl, Preprocess, sel, Utils
+﻿// Ignore Spelling: PK, Ctrl, Preprocess, sel, Utils
 //
 
 using System;
