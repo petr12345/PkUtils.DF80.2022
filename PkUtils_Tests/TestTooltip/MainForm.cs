@@ -1,7 +1,7 @@
 using System;
 using System.Drawing;
 using System.Windows.Forms;
-using PK.PkUtils.UI.General;
+using PK.PkUtils.UI.Layout;
 using PK.PkUtils.UI.TipHandlers;
 
 namespace PK.TestTooltip;

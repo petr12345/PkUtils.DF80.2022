@@ -6,7 +6,7 @@ using System.Linq;
 using System.Windows.Forms;
 using PK.PkUtils.Dump;
 using PK.PkUtils.Interfaces;
-using PK.PkUtils.UI.General;
+using PK.PkUtils.UI.Layout;
 using PK.PkUtils.Utils;
 using TestBinding.Properties;
 using TestDataDef;

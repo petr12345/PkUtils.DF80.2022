@@ -7,7 +7,7 @@ using System.Windows.Forms;
 using PK.PkUtils.Dump;
 using PK.PkUtils.Interfaces;
 using PK.PkUtils.LogTimingStatistic;
-using PK.PkUtils.UI.General;
+using PK.PkUtils.UI.Layout;
 using PK.PkUtils.UI.Utils;
 using PK.PkUtils.Utils;
 using PK.TestComparers.Properties;

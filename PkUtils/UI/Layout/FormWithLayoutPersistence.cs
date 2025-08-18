@@ -6,11 +6,10 @@ using System.Runtime.Serialization;
 using System.Windows.Forms;
 using PK.PkUtils.Extensions;
 using PK.PkUtils.Interfaces;
-using PK.PkUtils.UI.Layout;
 using PK.PkUtils.UI.Utils;
 using static PK.PkUtils.UI.Layout.FormLayoutPersister;
 
-namespace PK.PkUtils.UI.General;
+namespace PK.PkUtils.UI.Layout;
 
 /// <summary>
 /// A Windows Forms base class that supports layout persistence.

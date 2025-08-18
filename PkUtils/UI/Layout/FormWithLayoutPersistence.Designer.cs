@@ -1,4 +1,4 @@
-﻿namespace PK.PkUtils.UI.General;
+﻿namespace PK.PkUtils.UI.Layout;
 
 /// <summary>
 /// A Windows Forms base class that supports layout persistence.
