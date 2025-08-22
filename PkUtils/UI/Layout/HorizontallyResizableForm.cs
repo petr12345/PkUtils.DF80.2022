@@ -6,7 +6,7 @@ using PK.PkUtils.WinApi;
 using static PK.PkUtils.WinApi.User32;
 using static PK.PkUtils.WinApi.Win32;
 
-namespace ACMCodeGen.CCA.UI.Layout;
+namespace PK.PkUtils.UI.Layout;
 
 /// <summary>
 /// A Windows Form that is resizable only horizontally. 

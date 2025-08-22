@@ -25,6 +25,40 @@ namespace PK.PkUtils.UI.Controls;
 /// Multiselect TreeView Implementation.</seealso>
 public partial class MultiSelectTreeView : TreeView
 {
+    #region Typedefs
+
+    /// <summary>
+    /// Provides data for the <see cref="MultiSelectTreeView.ColorCacheInitialized"/> event.
+    /// Contains information about the color cache and whether it was initialized from tree nodes.
+    /// </summary>
+    public class ColorCacheInitializedEventArgs : EventArgs
+    {
+        /// <summary>
+        /// Gets the <see cref="ColorsCache"/> instance that was initialized.
+        /// </summary>
+        public IColorsCache ColorsCache { get; }
+
+        /// <summary>
+        /// Gets a value indicating whether the color cache was initialized from tree nodes.
+        /// </summary>
+        public bool InitializedFromNodes { get; }
+
+        /// <summary>   Initializes a new instance of the <see cref="ColorCacheInitializedEventArgs"/> class. </summary>
+        /// <exception cref="ArgumentNullException"> Thrown when one or more required arguments are null. </exception>
+        /// <param name="colorsCache"> Gets the <see cref="ColorsCache"/> instance that was initialized. </param>    
+        public ColorCacheInitializedEventArgs(IColorsCache colorsCache)
+        {
+            ColorsCache = colorsCache ?? throw new ArgumentNullException(nameof(colorsCache));
+        }
+    }
+    #endregion // Typedefs
+
+    #region Events
+
+    /// <summary> Event queue for all listeners interested in ColorCacheInitialized events. </summary>
+    public event EventHandler<ColorCacheInitializedEventArgs> ColorCacheInitialized;
+    #endregion // Events
+
     #region Fields
 
     private ColorsCache _colorsCache;
@@ -334,8 +368,9 @@ public partial class MultiSelectTreeView : TreeView
 
         if (result is null)
         {
-            bool colorsInitialized;
+            bool colorsInitialized, initializedFromNodes;
             string callStack = string.Empty;
+
 #if DUMP_CALL_STACK
             callStack = Diagnostics.StackTraceWrapper.GetStackTraceString();
             callStack = callStack.AsNameValue();
@@ -343,7 +378,7 @@ public partial class MultiSelectTreeView : TreeView
             _colorsCache = new ColorsCache(Dumper);
             DumpVisualStylesUsage(enforce: true);
 
-            if (colorsInitialized = VisualStylesColorsCache.InitializeFromTreeNodes(this))
+            if (initializedFromNodes = colorsInitialized = VisualStylesColorsCache.InitializeFromTreeNodes(this))
             {
                 Dumper?.DumpLine($"{DumpInfoPrefix} {me} initialized the cache from existing nodes. {callStack}");
             }
@@ -381,9 +416,31 @@ public partial class MultiSelectTreeView : TreeView
                 Dumper?.DumpWarning($"{DumpWarnPrefix} {me} could initialize the cache only from system-defined colors. {callStack} {Environment.NewLine}");
             }
             result = VisualStylesColorsCache;
+            OnColorCacheInitialized(result, initializedFromNodes);
         }
 
         return result;
+    }
+
+    /// <summary>
+    /// Raises the <see cref="ColorCacheInitialized"/> event after the color cache has been initialized.
+    /// </summary>
+    /// <param name="cache">The <see cref="ColorsCache"/> instance that was initialized.</param>
+    /// <param name="initializedFromNodes">
+    /// Indicates whether the color cache was initialized from tree nodes (<c>true</c>), or from system-defined colors (<c>false</c>).
+    /// </param>
+    protected virtual void OnColorCacheInitialized(ColorsCache cache, bool initializedFromNodes)
+    {
+        ColorCacheInitialized?.Invoke(this, new ColorCacheInitializedEventArgs(cache));
+    }
+
+    /// <summary>
+    /// Handles system color or theme change messages by resetting the colors cache and invalidating the control.
+    /// </summary>
+    protected virtual void HandleSystemColorOrThemeChanged(Message m)
+    {
+        ResetColorsCache((Win32.WM)m.Msg);
+        Invalidate();
     }
     #endregion // Colors_cache_related
 
@@ -503,7 +560,7 @@ public partial class MultiSelectTreeView : TreeView
             using IDisposable deferred = DeferSelectionChange();
 
             // Use a stack for depth-first traversal to avoid recursion; start either from the root or child nodes
-            for (var stack = new Stack<TreeNode>(includeNode ? [node] : node.Nodes.Cast<TreeNode>()); stack.Count > 0;)
+            for (var stack = new Stack<TreeNode>(includeNode ? [node] : node.GetChildren()); stack.Count > 0;)
             {
                 TreeNode current = stack.Pop();
 
@@ -513,7 +570,7 @@ public partial class MultiSelectTreeView : TreeView
                     MarkSelectionChanged();
                 }
 
-                stack.PushRange(current.Nodes.Cast<TreeNode>());
+                stack.PushRange(current.GetChildren());
             }
         }
 
@@ -531,13 +588,13 @@ public partial class MultiSelectTreeView : TreeView
 
         if (node is not null)
         {
-            for (var stack = new Stack<TreeNode>(includeNode ? [node] : node.Nodes.Cast<TreeNode>()); stack.Count > 0;)
+            for (var stack = new Stack<TreeNode>(includeNode ? [node] : node.GetChildren()); stack.Count > 0;)
             {
                 TreeNode current = stack.Pop();
 
                 if (RemoveNodeForeColor(current))
                     removedCount++;
-                stack.PushRange(current.Nodes.Cast<TreeNode>());
+                stack.PushRange(current.GetChildren());
             }
         }
         return removedCount;
@@ -712,8 +769,7 @@ public partial class MultiSelectTreeView : TreeView
             // System colors or visual styles have changed. Reset any cached colors, and request a repaint
             case (int)Win32.WM.WM_SYSCOLORCHANGE:
             case (int)Win32.WM.WM_THEMECHANGED:
-                ResetColorsCache((Win32.WM)m.Msg);
-                Invalidate();
+                HandleSystemColorOrThemeChanged(m);
                 break;
         }
 

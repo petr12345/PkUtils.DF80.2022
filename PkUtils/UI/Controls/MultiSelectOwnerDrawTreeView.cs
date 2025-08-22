@@ -1,7 +1,6 @@
 ﻿using System;
 using System.ComponentModel;
 using System.Drawing;
-using System.Linq;
 using System.Windows.Forms;
 using PK.PkUtils.DataStructures;
 using PK.PkUtils.Extensions;
@@ -15,7 +14,7 @@ namespace PK.PkUtils.UI.Controls;
 /// but have a selected ancestor (i.e., their parent or higher ancestor is selected). Such nodes are treated as
 /// "projected selections" and are rendered with a distinct indicator (see <see cref="OnDrawNode(DrawTreeNodeEventArgs)"/>).
 /// </summary>
-public partial class MultiSelectOwnerDrawTreeView : MultiSelectTreeView
+public class MultiSelectOwnerDrawTreeView : MultiSelectTreeView
 {
     #region Fields
 
@@ -118,7 +117,7 @@ public partial class MultiSelectOwnerDrawTreeView : MultiSelectTreeView
             InvalidateNode(node);
             if (node.IsExpanded)
             {
-                node.Nodes.Cast<TreeNode>().ForEach(InvalidateNodeAndDescendants);
+                node.GetChildren().ForEach(InvalidateNodeAndDescendants);
             }
         }
     }
