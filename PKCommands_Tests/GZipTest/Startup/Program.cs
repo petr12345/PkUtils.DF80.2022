@@ -48,7 +48,7 @@ public class Program : Singleton<Program>, IDisposableEx
 
     private readonly ILogger _logger;
     private readonly IConsoleDisplay _consoleDisplay;
-    private readonly Lazy<ICommandsInputProcessorEx<ExitCode>> _lazyInputProcessor;
+    private readonly Lazy<ICommandsInputProcessor<ExitCode>> _lazyInputProcessor;
     private IGZipTestCommandsRegister _cmndsRegister;
     private CancellationTokenSource _cancellationTokenSource;
     private string _readPrompt;
@@ -72,8 +72,8 @@ public class Program : Singleton<Program>, IDisposableEx
         _cancellationTokenSource = new CancellationTokenSource();
 
         // lazy initialize input processor
-        _lazyInputProcessor = new Lazy<ICommandsInputProcessorEx<ExitCode>>(
-            () => new DualFormatInputProcessorEx<IGZipTestCommand, ExitCode>(
+        _lazyInputProcessor = new Lazy<ICommandsInputProcessor<ExitCode>>(
+            () => new DualFormatInputProcessor<IGZipTestCommand, ExitCode>(
                 this.Logger,
                 this.ConsoleDisplay,
                 this.CommandsRegister));
@@ -110,7 +110,7 @@ public class Program : Singleton<Program>, IDisposableEx
         get { return (CancellationTokenSource != null) ? CancellationTokenSource.Token : CancellationToken.None; }
     }
 
-    private ICommandsInputProcessorEx<ExitCode> InputProcessor
+    private ICommandsInputProcessor<ExitCode> InputProcessor
     {
         get { /* Debug.Assert(_lazyInputProcessor.IsValueCreated); */ return _lazyInputProcessor.Value; }
     }
@@ -228,8 +228,14 @@ public class Program : Singleton<Program>, IDisposableEx
         string consoleInput;
         bool shouldContinue;
         IComplexErrorResult<ExitCode> processsed;
-
         ExitCode result = ExitCode.Success; //  ok so far
+
+        // Local static method for error handling
+        static ExitCode HandleErrorResult(IComplexErrorResult<ExitCode> processed)
+        {
+            var res = processed.ErrorDetails;
+            return res.IsOK() ? ExitCode.UnknownError : res;
+        }
 
         try
         {
@@ -241,13 +247,12 @@ public class Program : Singleton<Program>, IDisposableEx
                 // Handle the weird case a newline comes from Visual Studio project properties ( Debug / Command Line Arguments )
                 /* consoleInput = args.Join(" "); */
                 consoleInput = args.FilterOutNewlines().JoinToCommandLine();
-
                 processsed = InputProcessor.ProcessNextInput(consoleInput, out shouldContinue);
-                if (!processsed.Success && (!((result = InputProcessor.GetLastError()).IsOK())))
-                {
-                    result = ExitCode.UnknownError;
-                }
 
+                if (!processsed.Success)
+                {
+                    result = HandleErrorResult(processsed);
+                }
                 if (!result.IsOK())
                 {
                     Thread.Sleep(_msSleepBeforeErrorExit);
@@ -276,9 +281,10 @@ public class Program : Singleton<Program>, IDisposableEx
                     {
                         Logger.Info("Processing input: " + consoleInput);
                         processsed = InputProcessor.ProcessNextInput(consoleInput, out shouldContinue);
-                        if (!processsed.Success && (!((result = InputProcessor.GetLastError()).IsOK())))
+
+                        if (!processsed.Success)
                         {
-                            result = ExitCode.UnknownError;
+                            result = HandleErrorResult(processsed);
                         }
                     }
                 }
