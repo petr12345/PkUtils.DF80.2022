@@ -38,10 +38,10 @@ internal class ClearCommand(ILogger logger) : BaseCommandEx<ClearCommand.ClearOp
     public override string Usage { get => Name; }
 
     /// <inheritdoc/>
-    public override IComplexResult Execute()
+    public override IComplexErrorResult<ExitCode> Execute()
     {
         Console.Clear();
-        return ComplexResult.OK;
+        return ComplexErrorResult<ExitCode>.OK;
     }
     #endregion // ICommand Members
 }

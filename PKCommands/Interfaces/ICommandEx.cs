@@ -7,7 +7,7 @@ namespace PK.Commands.Interfaces;
 ///
 /// <typeparam name="TErrorCode"> The command execution error code, that extends error information. </typeparam>
 [CLSCompliant(true)]
-public interface ICommandEx<out TErrorCode> : ICommand
+public interface ICommandEx<out TErrorCode> : ICommand<TErrorCode>
 {
     /// <summary>   Gets the validated arguments, that were passed to <see cref="ICommand.Validate"/>. </summary>
     IReadOnlyDictionary<string, string> ValidatedArguments { get; }

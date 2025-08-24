@@ -14,8 +14,9 @@ namespace PK.Commands.BaseCommands;
 /// <summary>   A base command class, implementing <see cref="ICommand"/>. </summary>
 ///
 /// <typeparam name="TOptions"> Type of the options used. </typeparam>
+/// <typeparam name="TErrorCode">Type of error details.</typeparam>
 [CLSCompliant(true)]
-public abstract class BaseCommand<TOptions> : ICommand
+public abstract class BaseCommand<TOptions, TErrorCode> : ICommand<TErrorCode>
     where TOptions : ICommandOptions, new()
 {
     #region Constructor(s)
@@ -86,8 +87,8 @@ public abstract class BaseCommand<TOptions> : ICommand
     public abstract ICommandOptions GetCommandOptions();
 
     /// <summary>   Executes this command. </summary>
-    /// <returns>   An IComplexResult, describing success or possible error. </returns>
-    public abstract IComplexResult Execute();
+    /// <returns>   An IComplexErrorResult, describing success or possible error. </returns>
+    public abstract IComplexErrorResult<TErrorCode> Execute();
 
     /// <summary>   Show help for command. </summary>
     /// 

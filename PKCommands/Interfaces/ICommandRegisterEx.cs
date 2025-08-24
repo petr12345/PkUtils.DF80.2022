@@ -11,7 +11,7 @@ namespace PK.Commands.Interfaces;
 /// <typeparam name="TErrorCode"> The command execution error code, that extends error
 /// information. </typeparam>
 [CLSCompliant(true)]
-public interface ICommandRegisterEx<TCommand, TErrorCode> : ICommandRegister<TCommand>
+public interface ICommandRegisterEx<TCommand, TErrorCode> : ICommandRegister<TCommand, TErrorCode>
     where TCommand : class, ICommandEx<TErrorCode>
 {
     /// <summary>

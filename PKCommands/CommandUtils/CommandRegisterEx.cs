@@ -23,7 +23,7 @@ namespace PK.Commands.CommandUtils;
 /// <typeparam name="TErrorCode">   Type of the error code. </typeparam>
 [CLSCompliant(true)]
 public class CommandRegisterEx<TCommand, TErrorCode> :
-    CommandRegister<TCommand>,
+    CommandRegister<TCommand, TErrorCode>,
     ICommandRegisterEx<TCommand, TErrorCode> where TCommand : class, ICommandEx<TErrorCode>
 {
     #region Fields
@@ -80,7 +80,7 @@ public class CommandRegisterEx<TCommand, TErrorCode> :
     }
 
     /// <inheritdoc/>
-    public override IComplexResult Execute(
+    public override IComplexErrorResult<TErrorCode> Execute(
         string cmdName,
         IReadOnlyDictionary<string, string> parsedArgs,
         IConsoleDisplay display)
@@ -140,18 +140,19 @@ public class CommandRegisterEx<TCommand, TErrorCode> :
         finally
         {
             // The result will be still null if and only if command syntax validation failed by exception
-            SetLastErrorFromCommand(command, result);
+            // SetLastErrorFromCommand(command, result);
+            // ##FIX## Set last error not needed, whole  override not needed
         }
         return result;
     }
 
     /// <inheritdoc/>
-    protected override IComplexResult ExecuteValidatedCommand(TCommand command)
+    protected override IComplexErrorResult<TErrorCode> ExecuteValidatedCommand(TCommand command)
     {
         _lastExecuted = command ?? throw new ArgumentNullException(nameof(command));
 
         TErrorCode errorCode;
-        IComplexResult result = null;
+        IComplexErrorResult<TErrorCode> result = null;
 
         try
         {
@@ -162,6 +163,7 @@ public class CommandRegisterEx<TCommand, TErrorCode> :
         finally
         {
             SetLastErrorFromCommand(command, result);
+            // ##FIX## Sert last error not needed
         }
 
         return result;
@@ -191,7 +193,7 @@ public class CommandRegisterEx<TCommand, TErrorCode> :
         return result;
     }
 
-    private void SetLastErrorFromCommand(TCommand command, IComplexResult result)
+    private void SetLastErrorFromCommand(TCommand command, IComplexErrorResult<TErrorCode> result)
     {
         if ((result == null) || result.Failed())
         {

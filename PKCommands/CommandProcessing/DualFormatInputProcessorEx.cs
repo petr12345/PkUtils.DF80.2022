@@ -20,7 +20,7 @@ namespace PK.Commands.CommandProcessing;
 /// <typeparam name="TCommand">     Type of the command. </typeparam>
 /// <typeparam name="TErrorCode">   Type of the error code. </typeparam>
 [CLSCompliant(true)]
-public class DualFormatInputProcessorEx<TCommand, TErrorCode> : DualFormatInputProcessor<TCommand>,
+public class DualFormatInputProcessorEx<TCommand, TErrorCode> : DualFormatInputProcessor<TCommand, TErrorCode>,
     ICommandsInputProcessorEx<TErrorCode>
     where TCommand : class, ICommandEx<TErrorCode>
 {

@@ -14,7 +14,7 @@ namespace PK.Commands.BaseCommands;
 /// <typeparam name="TOptions"> Type of the options used. </typeparam>
 /// <typeparam name="TErrorCode"> The command execution error code, that extends error information. </typeparam>
 [CLSCompliant(true)]
-public abstract class BaseCommandEx<TOptions, TErrorCode> : BaseCommand<TOptions>, ICommandEx<TErrorCode>
+public abstract class BaseCommandEx<TOptions, TErrorCode> : BaseCommand<TOptions, TErrorCode>, ICommandEx<TErrorCode>
     where TOptions : ICommandOptions, new()
 {
     #region Fields

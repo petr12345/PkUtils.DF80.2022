@@ -87,8 +87,8 @@ public static class CommandHelper
     /// Null if there was only one argument, help option "h". Such arguments are ok, but processing should not continue.
     /// Failed IComplexResult if arguments validation failed, and command processing should stop.
     /// </returns>
-    public static IComplexResult ValidateCommand(
-        ICommand cmd,
+    public static IComplexResult ValidateCommand<TErrorCode>(
+        ICommand<TErrorCode> cmd,
         IReadOnlyDictionary<string, string> parsedArgs,
         ICommandOptions commandOption,
         IConsoleDisplay display)

@@ -49,7 +49,7 @@ internal abstract class FileProcessingBaseCommand<TProcessingOptions> :
     private ManualResetEvent _queueCanConsume;
     private AutoResetEvent _writingBlockReady;
     private CancellationTokenSource _tokenSource;
-    private IComplexResult _executionResult;
+    private IComplexErrorResult<ExitCode> _executionResult;
     private IConsoleDisplay _consoleDisplay;
 
     private const int _thresholdMemoryLoadPercent = 90;
@@ -139,23 +139,23 @@ internal abstract class FileProcessingBaseCommand<TProcessingOptions> :
     /// <param name="mode"> The file mode. </param>
     /// <param name="access"> The file access mode. </param>
     /// <returns>   A complex result indicating success or failure. </returns>
-    protected static IComplexResult OpenStream(
+    protected static IComplexErrorResult<ExitCode> OpenStream(
         ref FileStream stream,
         string filePath,
         FileMode mode,
         FileAccess access)
     {
         if (stream != null)
-            return ComplexResult.OK;
+            return ComplexErrorResult<ExitCode>.OK;
 
         try
         {
             stream = new FileStream(filePath, mode, access);
-            return ComplexResult.OK;
+            return ComplexErrorResult<ExitCode>.OK;
         }
         catch (SystemException ex)
         {
-            return ComplexResult.CreateFailed(ex);
+            return ComplexErrorResult<ExitCode>.CreateFailed(ex);
         }
     }
 
@@ -209,17 +209,17 @@ internal abstract class FileProcessingBaseCommand<TProcessingOptions> :
         AdjustQueueConsumingEvent();
     }
 
-    protected IComplexResult OpenSource() =>
+    protected IComplexErrorResult<ExitCode> OpenSource() =>
         OpenStream(ref _sourceStream, SourceFilePath, FileMode.Open, FileAccess.Read);
 
-    protected IComplexResult OpenTarget() =>
+    protected IComplexErrorResult<ExitCode> OpenTarget() =>
         OpenStream(ref _targetStream, TargetFilePath, FileMode.OpenOrCreate, FileAccess.Write);
 
     /// <summary> Opens source file and target file </summary>
     /// <returns> A ExitCode. </returns>
-    protected IComplexResult OpenSourceAndTarget()
+    protected IComplexErrorResult<ExitCode> OpenSourceAndTarget()
     {
-        IComplexResult result = OpenSource();
+        IComplexErrorResult<ExitCode> result = OpenSource();
         return result.Success ? OpenTarget() : result;
     }
     #endregion // Initialization-related
@@ -283,7 +283,7 @@ internal abstract class FileProcessingBaseCommand<TProcessingOptions> :
     /// <summary>   Sets the execution result if not already set. </summary>
     /// <param name="result"> The result to set. </param>
     /// <exception cref="InvalidOperationException"> Thrown if the execution result is already set. </exception>
-    protected void SetExecutionResult(IComplexResult result)
+    protected void SetExecutionResult(IComplexErrorResult<ExitCode> result)
     {
         result.CheckArgNotNull(nameof(result));
 
@@ -322,9 +322,9 @@ internal abstract class FileProcessingBaseCommand<TProcessingOptions> :
     /// <exception cref="InvalidOperationException">  Thrown when the requested operation is invalid. </exception>
     /// <param name="stream"> The stream to act on. </param>
     /// <returns>  An IComplexResult </returns>
-    protected static IComplexResult CheckedClose(FileStream stream)
+    protected static IComplexErrorResult<ExitCode> CheckedClose(FileStream stream)
     {
-        IComplexResult result = ComplexResult.OK;
+        IComplexErrorResult<ExitCode> result = ComplexErrorResult<ExitCode>.OK;
 
         if (stream != null)
         {
@@ -334,7 +334,7 @@ internal abstract class FileProcessingBaseCommand<TProcessingOptions> :
             }
             catch (SystemException ex)
             {
-                result = ComplexResult<ExitCode>.CreateFailed(ex);
+                result = ComplexErrorResult<ExitCode>.CreateFailed(ex);
             }
         }
 
@@ -343,7 +343,7 @@ internal abstract class FileProcessingBaseCommand<TProcessingOptions> :
 
     /// <summary>   Closes the target stream safely. </summary>
     /// <returns>   A complex result indicating success or failure. </returns>
-    protected IComplexResult CheckedCloseTarget()
+    protected IComplexErrorResult<ExitCode> CheckedCloseTarget()
     {
         return CheckedClose(_targetStream);
     }
@@ -406,9 +406,10 @@ internal abstract class FileProcessingBaseCommand<TProcessingOptions> :
     }
 
     /// <inheritdoc/>
-    public override IComplexResult Execute()
+    public override IComplexErrorResult<ExitCode> Execute()
     {
-        IComplexResult result, opening;
+        IComplexErrorResult<ExitCode> opening;
+        IComplexErrorResult<ExitCode> result;
 
         try
         {
@@ -464,7 +465,7 @@ internal abstract class FileProcessingBaseCommand<TProcessingOptions> :
     public AutoResetEvent EventWritingBlockReady { get => _writingBlockReady; }
 
     /// <inheritdoc/>
-    public IComplexResult ExecutionResult { get => _executionResult; }
+    public IComplexErrorResult<ExitCode> ExecutionResult { get => _executionResult; }
 
     /// <inheritdoc/>
     public bool ReadingThreadIsAlive { get => _readingThread.NullSafe(x => x.IsAlive); }
@@ -476,7 +477,7 @@ internal abstract class FileProcessingBaseCommand<TProcessingOptions> :
     public long QueuedBytes { get => _queueBytesSuma; }
 
     /// <inheritdoc/>
-    public void SetExecutionError(IComplexResult result)
+    public void SetExecutionError(IComplexErrorResult<ExitCode> result)
     {
         SetExecutionResult(result);
         EventError.Set();
@@ -485,7 +486,7 @@ internal abstract class FileProcessingBaseCommand<TProcessingOptions> :
     /// <inheritdoc/>
     public void SetExecutionCanceled()
     {
-        SetExecutionResult(ComplexResult<ExitCode>.CreateSuccessful(ExitCode.ExecutionHasBeenCanceled));
+        SetExecutionResult(ComplexErrorResult<ExitCode>.CreateSuccessful());
         _tokenSource.Cancel();
     }
 

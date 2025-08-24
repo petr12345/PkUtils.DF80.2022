@@ -41,15 +41,17 @@ namespace PK.Commands.CommandProcessing;
 /// "/Env:LOCAL /BackupPath:C:\Backup" where the command is implicitly derived from the first argument.
 /// </example>
 /// </summary>
-public class CommandsInputProcessor<TCommand> : ICommandsInputProcessor
-    where TCommand : class, ICommand
+/// <typeparam name="TCommand">Type of supported commands.</typeparam>
+/// <typeparam name="TErrorCode">Type of error details.</typeparam>
+public class CommandsInputProcessor<TCommand, TErrorCode> : ICommandsInputProcessor<TErrorCode>
+    where TCommand : class, ICommand<TErrorCode>
 {
     #region Fields
 
     private bool _finished;
     private bool _initialized;
 
-    private readonly ICommandRegister<TCommand> _commandRegister;
+    private readonly ICommandRegister<TCommand, TErrorCode> _commandRegister;
     private readonly IConsoleDisplay _displayProgress;
     private readonly ILogger _logger;
     private readonly bool _commandNamePrecedes;
@@ -70,14 +72,14 @@ public class CommandsInputProcessor<TCommand> : ICommandsInputProcessor
     public CommandsInputProcessor(
         ILogger logger,
         IConsoleDisplay display,
-        ICommandRegister<TCommand> commandRegister = null,
+        ICommandRegister<TCommand, TErrorCode> commandRegister = null,
         bool commandNamePrecedes = true)
     {
         ArgumentNullException.ThrowIfNull(logger);
 
         _displayProgress = display;
         _logger = logger;
-        _commandRegister = commandRegister ?? new CommandRegister<TCommand>();
+        _commandRegister = commandRegister ?? new CommandRegister<TCommand, TErrorCode>();
         _commandNamePrecedes = commandNamePrecedes;
     }
     #endregion // Constructor(s)
@@ -172,18 +174,20 @@ public class CommandsInputProcessor<TCommand> : ICommandsInputProcessor
     /// <param name="shouldContinue"> [out] True if should continue, false otherwise. </param>
     /// <returns>   An IComplexResult. </returns>
     /// <seealso cref="OnNext"/>
-    public virtual IComplexResult ProcessNextInput(string input, out bool shouldContinue)
+    public virtual IComplexErrorResult<TErrorCode> ProcessNextInput(
+        string input,
+        out bool shouldContinue)
     {
         ArgumentNullException.ThrowIfNull(input);
 
         CheckHasBeenInitialized();
         CheckConsumerHasNotFinishedYet();
 
-        IComplexResult result;
+        IComplexErrorResult<TErrorCode> result;
 
         if (string.IsNullOrEmpty(input))
         {
-            result = ComplexResult.OK;
+            result = ComplexErrorResult<TErrorCode>.OK;
             shouldContinue = false;
         }
         else
@@ -201,14 +205,16 @@ public class CommandsInputProcessor<TCommand> : ICommandsInputProcessor
     /// <param name="shouldContinue">   [out] True if should continue, false otherwise. </param>
     ///
     /// <returns>   An IComplexResult. </returns>
-    public virtual IComplexResult ProcessNextInput(IEnumerable<string> args, out bool shouldContinue)
+    public virtual IComplexErrorResult<TErrorCode> ProcessNextInput(
+        IEnumerable<string> args,
+        out bool shouldContinue)
     {
         ArgumentNullException.ThrowIfNull(args);
 
         CheckHasBeenInitialized();
         CheckConsumerHasNotFinishedYet();
 
-        IComplexResult result = ComplexResult.OK;
+        IComplexErrorResult<TErrorCode> result = ComplexErrorResult<TErrorCode>.OK;
 
         if (args.IsEmpty())
             shouldContinue = false;
@@ -222,7 +228,7 @@ public class CommandsInputProcessor<TCommand> : ICommandsInputProcessor
     #region Properties
 
     /// <summary>   Gets the command register. </summary>
-    protected ICommandRegister<TCommand> CommandRegister
+    protected ICommandRegister<TCommand, TErrorCode> CommandRegister
     {
         get { Debug.Assert(_commandRegister != null); return _commandRegister; }
     }
@@ -337,7 +343,9 @@ public class CommandsInputProcessor<TCommand> : ICommandsInputProcessor
     /// <param name="shouldContinue">   [out] True if the caller should continue processing. </param>
     ///
     /// <returns>   An IComplexResult. </returns>
-    protected virtual IComplexResult RunCommand(IEnumerable<string> args, out bool shouldContinue)
+    protected virtual IComplexErrorResult<TErrorCode> RunCommand(
+        IEnumerable<string> args,
+        out bool shouldContinue)
     {
         ArgumentNullException.ThrowIfNull(args);
         if (args.IsEmpty()) { throw new ArgumentException("Arguments can't be empty", nameof(args)); }
@@ -347,7 +355,7 @@ public class CommandsInputProcessor<TCommand> : ICommandsInputProcessor
         Exception exToDisplay = null;
         string commandName = args.First();
         string cmdLower = commandName.ToLowerInvariant();
-        IComplexResult result = ComplexResult.OK;
+        IComplexErrorResult<TErrorCode> result = ComplexErrorResult<TErrorCode>.OK;
 
         shouldContinue = true;
         try
@@ -359,7 +367,7 @@ public class CommandsInputProcessor<TCommand> : ICommandsInputProcessor
             else
             {
                 IReadOnlyDictionary<string, string> parsedArgs = ParseInputArgs(args, out commandName);
-                IComplexResult cmdResult = CommandRegister.Execute(commandName, parsedArgs, DisplayProgress);
+                IComplexErrorResult<TErrorCode> cmdResult = CommandRegister.Execute(commandName, parsedArgs, DisplayProgress);
 
                 if (cmdResult == null)
                 {
@@ -392,7 +400,7 @@ public class CommandsInputProcessor<TCommand> : ICommandsInputProcessor
         }
         catch (CommandValidationException ex)
         {
-            result = ComplexResult.CreateFailed(ex);
+            result = ComplexErrorResult<TErrorCode>.CreateFailed(ex);
             if (ex.AlreadyDisplayed)
             {
                 // Do NOT assign exToDisplay here if AlreadyDisplayed, to avoid messages duplicating.
@@ -405,7 +413,7 @@ public class CommandsInputProcessor<TCommand> : ICommandsInputProcessor
         }
         catch (Exception ex)
         {
-            result = ComplexResult.CreateFailed(exToDisplay = ex);
+            result = ComplexErrorResult<TErrorCode>.CreateFailed(exToDisplay = ex);
         }
 
 

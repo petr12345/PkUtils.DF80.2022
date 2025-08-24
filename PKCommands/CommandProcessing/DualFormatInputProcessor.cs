@@ -28,8 +28,9 @@ namespace PK.Commands.CommandProcessing;
 /// </remarks>
 /// 
 /// <typeparam name="TCommand">The type of command to process.</typeparam>
-public class DualFormatInputProcessor<TCommand> : CommandsInputProcessor<TCommand>
-    where TCommand : class, ICommand
+/// <typeparam name="TErrorCode">Type of error details.</typeparam>
+public class DualFormatInputProcessor<TCommand, TErrorCode> : CommandsInputProcessor<TCommand, TErrorCode>
+    where TCommand : class, ICommand<TErrorCode>
 {
     #region Constructor(s)
 
@@ -45,7 +46,7 @@ public class DualFormatInputProcessor<TCommand> : CommandsInputProcessor<TComman
     public DualFormatInputProcessor(
         ILogger logger,
         IConsoleDisplay display,
-        ICommandRegister<TCommand> commandRegister = null,
+        ICommandRegister<TCommand, TErrorCode> commandRegister = null,
         bool commandNamePrecedes = true)
         : base(logger, display, commandRegister, commandNamePrecedes)
     { }

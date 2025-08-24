@@ -25,8 +25,9 @@ namespace PK.Commands.CommandUtils;
 /// </remarks>
 /// 
 /// <typeparam name="TCommand"> Generic argument representing type of supported commands. </typeparam>
-public class CommandRegister<TCommand> : NotifyPropertyChanged, ICommandRegister<TCommand>
-    where TCommand : class, ICommand
+/// <typeparam name="TErrorCode">Type of error details.</typeparam>
+public class CommandRegister<TCommand, TErrorCode> : NotifyPropertyChanged, ICommandRegister<TCommand, TErrorCode>
+    where TCommand : class, ICommand<TErrorCode>
 {
     #region Fields
 
@@ -34,7 +35,7 @@ public class CommandRegister<TCommand> : NotifyPropertyChanged, ICommandRegister
     private bool _commandsRegistrationSucceeded;
     private TCommand _currentCommand;
 
-    private readonly CommandRegistry<TCommand> _commandRegistry = new();
+    private readonly CommandRegistry<TCommand, TErrorCode> _commandRegistry = new();
     private static readonly string[] _helpCommandVariants = ["?", "h", "help"];
     private static readonly string[] _quitCommandVariants = ["q", "quit", "exit"];
     #endregion // Fields
@@ -167,7 +168,7 @@ public class CommandRegister<TCommand> : NotifyPropertyChanged, ICommandRegister
     }
 
     /// <inheritdoc/>
-    public virtual IComplexResult Execute(
+    public virtual IComplexErrorResult<TErrorCode> Execute(
         string cmdName,
         IReadOnlyDictionary<string, string> parsedArgs,
         IConsoleDisplay display)
@@ -176,7 +177,7 @@ public class CommandRegister<TCommand> : NotifyPropertyChanged, ICommandRegister
         ArgumentNullException.ThrowIfNull(parsedArgs);
 
         string cmdLower = cmdName.ToLowerInvariant();
-        IComplexResult result = null;
+        IComplexErrorResult<TErrorCode> result = null;
 
         if (IsListCommand(cmdLower))
         {
@@ -197,7 +198,7 @@ public class CommandRegister<TCommand> : NotifyPropertyChanged, ICommandRegister
             }
             else if (!v.Success)
             {
-                result = ComplexResult.CreateFailed(Invariant($"Invalid arguments of command '{command.Name}'. {v.ErrorMessage}"));
+                result = new ComplexErrorResult<TErrorCode>(Invariant($"Invalid arguments of command '{command.Name}'. {v.ErrorMessage}"));
             }
             else
             {
@@ -215,7 +216,7 @@ public class CommandRegister<TCommand> : NotifyPropertyChanged, ICommandRegister
 
     #region Properties
 
-    private CommandRegistry<TCommand> CommandRegistry => _commandRegistry;
+    private CommandRegistry<TCommand, TErrorCode> CommandRegistry => _commandRegistry;
     #endregion // Properties
 
     #region Methods
@@ -252,12 +253,12 @@ public class CommandRegister<TCommand> : NotifyPropertyChanged, ICommandRegister
     ///
     /// <param name="command"> The command to be executed. Can't be null. </param>
     ///
-    /// <returns> An IComplexResult </returns>
-    protected virtual IComplexResult ExecuteValidatedCommand(TCommand command)
+    /// <returns> An IComplexErrorResult </returns>
+    protected virtual IComplexErrorResult<TErrorCode> ExecuteValidatedCommand(TCommand command)
     {
         ArgumentNullException.ThrowIfNull(command);
 
-        IComplexResult result = null;
+        IComplexErrorResult<TErrorCode> result = null;
 
         try
         {
@@ -332,7 +333,8 @@ public class CommandRegister<TCommand> : NotifyPropertyChanged, ICommandRegister
     {
         if (!ImplementsICommand(tp))
         {
-            string errorMessage = Invariant($"The type {tp.TypeToReadable()} does not implement {typeof(ICommand).TypeToReadable()}");
+            string typeNeeded = typeof(ICommand<TErrorCode>).TypeToReadable();
+            string errorMessage = Invariant($"The type {tp.TypeToReadable()} does not implement {typeNeeded}");
             throw new ArgumentException(errorMessage, nameof(tp));
         }
     }
@@ -344,7 +346,7 @@ public class CommandRegister<TCommand> : NotifyPropertyChanged, ICommandRegister
     {
         ArgumentNullException.ThrowIfNull(tp);
 
-        bool result = (tp.GetInterfaces().Contains(typeof(ICommand)));
+        bool result = (tp.GetInterfaces().Contains(typeof(ICommand<TErrorCode>)));
         return result;
     }
 

@@ -16,8 +16,8 @@ public class CommandsInputProcessorTest
 {
     private Mock<ILogger> _mockLogger;
     private Mock<IConsoleDisplay> _mockDisplay;
-    private Mock<ICommandRegister<ICommand>> _mockCommandRegister;
-    private CommandsInputProcessor<ICommand> _processor;
+    private Mock<ICommandRegister<ICommand<int>, int>> _mockCommandRegister;
+    private CommandsInputProcessor<ICommand<int>, int> _processor;
 
     /// <summary>
     /// Setup method to initialize mocks and the tested object before each test.
@@ -27,8 +27,8 @@ public class CommandsInputProcessorTest
     {
         _mockLogger = new Mock<ILogger>();
         _mockDisplay = new Mock<IConsoleDisplay>();
-        _mockCommandRegister = new Mock<ICommandRegister<ICommand>>();
-        _processor = new CommandsInputProcessor<ICommand>(_mockLogger.Object, _mockDisplay.Object, _mockCommandRegister.Object);
+        _mockCommandRegister = new Mock<ICommandRegister<ICommand<int>, int>>();
+        _processor = new CommandsInputProcessor<ICommand<int>, int>(_mockLogger.Object, _mockDisplay.Object, _mockCommandRegister.Object);
     }
 
     #region Tests
@@ -40,7 +40,7 @@ public class CommandsInputProcessorTest
     [Test, Description("Constructor throws ArgumentNullException if logger is null.")]
     public void Constructor_ThrowsArgumentNullException_IfLoggerIsNull()
     {
-        Assert.Throws<ArgumentNullException>(() => new CommandsInputProcessor<ICommand>(null, _mockDisplay.Object));
+        Assert.Throws<ArgumentNullException>(() => new CommandsInputProcessor<ICommand<int>, int>(null, _mockDisplay.Object));
     }
 
     /// <summary>
@@ -159,7 +159,7 @@ public class CommandsInputProcessorTest
         IReadOnlyCollection<string> expected = ["arg1", "arg2", "arg3"];
 
         // Act
-        IReadOnlyCollection<string> result = CommandsInputProcessor<ICommand>.SplitCommandLine(input);
+        IReadOnlyCollection<string> result = CommandsInputProcessor<ICommand<int>, int>.SplitCommandLine(input);
 
         // Assert
         Assert.That(result, Is.EqualTo(expected));
@@ -173,7 +173,7 @@ public class CommandsInputProcessorTest
         IReadOnlyCollection<string> expected = ["arg1", "arg2 arg3", "arg4"];
 
         // Act
-        IReadOnlyCollection<string> result = CommandsInputProcessor<ICommand>.SplitCommandLine(input);
+        IReadOnlyCollection<string> result = CommandsInputProcessor<ICommand<int>, int>.SplitCommandLine(input);
 
         // Assert
         Assert.That(result, Is.EqualTo(expected));
@@ -187,7 +187,7 @@ public class CommandsInputProcessorTest
         IReadOnlyCollection<string> expected = ["arg1 arg2", "arg3 arg4"];
 
         // Act
-        IReadOnlyCollection<string> result = CommandsInputProcessor<ICommand>.SplitCommandLine(input);
+        IReadOnlyCollection<string> result = CommandsInputProcessor<ICommand<int>, int>.SplitCommandLine(input);
 
         // Assert
         Assert.That(result, Is.EqualTo(expected));
@@ -201,7 +201,7 @@ public class CommandsInputProcessorTest
         IReadOnlyCollection<string> expected = ["arg1", "arg2 arg3", "arg4", "arg5 arg6"];
 
         // Act
-        IReadOnlyCollection<string> result = CommandsInputProcessor<ICommand>.SplitCommandLine(input);
+        IReadOnlyCollection<string> result = CommandsInputProcessor<ICommand<int>, int>.SplitCommandLine(input);
 
         // Assert
         Assert.That(result, Is.EqualTo(expected));
@@ -215,7 +215,7 @@ public class CommandsInputProcessorTest
         IReadOnlyCollection<string> expected = ["arg1", "arg2", "arg3  arg4"];
 
         // Act
-        IReadOnlyCollection<string> result = CommandsInputProcessor<ICommand>.SplitCommandLine(input);
+        IReadOnlyCollection<string> result = CommandsInputProcessor<ICommand<int>, int>.SplitCommandLine(input);
 
         // Assert
         Assert.That(result, Is.EqualTo(expected));
@@ -232,7 +232,7 @@ public class CommandsInputProcessorTest
         IReadOnlyCollection<string> expected = [];
 
         // Act
-        IReadOnlyCollection<string> result = CommandsInputProcessor<ICommand>.SplitCommandLine(input);
+        IReadOnlyCollection<string> result = CommandsInputProcessor<ICommand<int>, int>.SplitCommandLine(input);
 
         // Assert
         Assert.That(result, Is.EqualTo(expected));
@@ -246,7 +246,7 @@ public class CommandsInputProcessorTest
         IReadOnlyCollection<string> expected = [];
 
         // Act
-        IReadOnlyCollection<string> result = CommandsInputProcessor<ICommand>.SplitCommandLine(input);
+        IReadOnlyCollection<string> result = CommandsInputProcessor<ICommand<int>, int>.SplitCommandLine(input);
 
         // Assert
         Assert.That(result, Is.EqualTo(expected));
@@ -260,7 +260,7 @@ public class CommandsInputProcessorTest
         IReadOnlyCollection<string> expected = ["arg1 arg2"];
 
         // Act
-        IReadOnlyCollection<string> result = CommandsInputProcessor<ICommand>.SplitCommandLine(input);
+        IReadOnlyCollection<string> result = CommandsInputProcessor<ICommand<int>, int>.SplitCommandLine(input);
 
         // Assert
         Assert.That(result, Is.EqualTo(expected));
@@ -274,7 +274,7 @@ public class CommandsInputProcessorTest
         IReadOnlyCollection<string> expected = ["arg1", "arg2 arg3"]; // Assumes implicit closing
 
         // Act
-        IReadOnlyCollection<string> result = CommandsInputProcessor<ICommand>.SplitCommandLine(input);
+        IReadOnlyCollection<string> result = CommandsInputProcessor<ICommand<int>, int>.SplitCommandLine(input);
 
         // Assert
         Assert.That(result, Is.EqualTo(expected));
@@ -288,7 +288,7 @@ public class CommandsInputProcessorTest
         IReadOnlyCollection<string> expected = ["", "arg1 arg2", ""];
 
         // Act
-        IReadOnlyCollection<string> result = CommandsInputProcessor<ICommand>.SplitCommandLine(input);
+        IReadOnlyCollection<string> result = CommandsInputProcessor<ICommand<int>, int>.SplitCommandLine(input);
 
         // Assert
         Assert.That(result, Is.EqualTo(expected));
@@ -301,7 +301,7 @@ public class CommandsInputProcessorTest
     public void SplitCommandLine_NullInput_ThrowsException()
     {
         // Act + Assert
-        Assert.Throws<ArgumentNullException>(() => CommandsInputProcessor<ICommand>.SplitCommandLine(null));
+        Assert.Throws<ArgumentNullException>(() => CommandsInputProcessor<ICommand<int>, int>.SplitCommandLine(null));
     }
     #endregion // SplitCommandLine_Error_Cases
     #endregion // SplitCommandLine Tests

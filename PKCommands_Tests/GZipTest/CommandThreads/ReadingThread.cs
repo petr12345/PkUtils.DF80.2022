@@ -78,9 +78,9 @@ public class ReadingThread : ProcessingThread
                 case ReadingWaitCheck.GotOK2Read:
                     if (BytesReadSoFar < BytesInStream)
                     {
-                        IComplexResult<ExitCode> read = ReadNextBlock(out FileBlock dataBlock);
+                        IComplexErrorResult<ExitCode> read = ReadNextBlock(out FileBlock dataBlock);
 
-                        if (!read.FullSuccess())
+                        if (!read.Success)
                         {
                             ProcessingQueue.SetExecutionError(read);
                             endThread = true;
@@ -103,11 +103,11 @@ public class ReadingThread : ProcessingThread
         }
     }
 
-    protected IComplexResult<ExitCode> ReadNextBlock(out FileBlock dataBlock)
+    protected IComplexErrorResult<ExitCode> ReadNextBlock(out FileBlock dataBlock)
     {
         string description = $"{ME}.{nameof(ReadNextBlock)}";
         long remaining = BytesRemaining;
-        IComplexResult<ExitCode> result = ComplexResult<ExitCode>.CreateSuccessful(ExitCode.Success); // ok so far
+        IComplexErrorResult<ExitCode> result = ComplexErrorResult<ExitCode>.OK; // ok so far
 
         if (remaining <= 0)
         {
@@ -136,9 +136,9 @@ public class ReadingThread : ProcessingThread
         }
 
         if (gotException != null)
-            result = ComplexResult<ExitCode>.CreateFailed(gotException);
+            result = ComplexErrorResult<ExitCode>.CreateFailed(gotException);
         else if (gotNow < countToRead)
-            result = new ComplexResult<ExitCode>(ExitCode.IOError);
+            result = ComplexErrorResult<ExitCode>.CreateFailed("IOError", ExitCode.IOError);
         else
             dataBlock = newBlock.ChangeStatus(FileBlock.BlockStatus.ReadDone);
 

@@ -5,11 +5,13 @@ using PK.PkUtils.Interfaces;
 
 namespace PK.Commands.Interfaces;
 
+
 /// <summary>
 /// Defines a command interface with execution, validation, and help functionality.
 /// </summary>
+/// <typeparam name="TErrorCode">Type of error details.</typeparam>
 [CLSCompliant(true)]
-public interface ICommand
+public interface ICommand<out TErrorCode>
 {
     /// <summary>
     /// Gets the name of the command.
@@ -52,11 +54,11 @@ public interface ICommand
     /// <returns>An instance of <see cref="ICommandOptions"/> representing the command options.</returns>
     ICommandOptions GetCommandOptions();
 
-    /// <summary>   Executes the command. </summary>
+    /// <summary> Executes the command. </summary>
     /// <returns>
-    /// An <see cref="IComplexResult"/> indicating success or providing details about a possible error.
+    /// An <see cref="IComplexErrorResult"/> indicating success or providing details about a possible error.
     /// </returns>
-    IComplexResult Execute();
+    IComplexErrorResult<TErrorCode> Execute();
 
     /// <summary>
     /// Displays help information for the command.

@@ -10,8 +10,9 @@ namespace PK.Commands.Interfaces;
 /// <summary>  A utility class helping with registering commands etc. </summary>
 /// 
 /// <typeparam name="TCommand"> Generic argument representing type of supported commands. </typeparam>
+/// <typeparam name="TErrorCode">Type of error details.</typeparam>
 [CLSCompliant(true)]
-public interface ICommandRegister<TCommand> where TCommand : class, ICommand
+public interface ICommandRegister<TCommand, TErrorCode> where TCommand : class, ICommand<TErrorCode>
 {
     #region Properties
 
@@ -109,11 +110,11 @@ public interface ICommandRegister<TCommand> where TCommand : class, ICommand
     /// <param name="display">     The callback interface with displaying capability. May be null. </param>
     ///
     /// <returns>
-    /// An IComplexResult, describing success or possible error. 
-    /// As an exception from usual returning IComplexResult, returned value may be also null,
+    /// An IComplexErrorResult, describing success or possible error.
+    /// As an exception from usual returning IComplexErrorResult, returned value may be also null,
     /// indicating there was no command execution, but no error as well, only help for the command has been displayed.
     /// </returns>
-    IComplexResult Execute(
+    IComplexErrorResult<TErrorCode> Execute(
         string cmdName,
         IReadOnlyDictionary<string, string> parsedArgs,
         IConsoleDisplay display);

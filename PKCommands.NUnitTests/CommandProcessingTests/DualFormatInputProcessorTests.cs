@@ -15,7 +15,7 @@ namespace PK.Commands.NUnitTests.CommandProcessingTests;
 [TestFixture]
 public class DualFormatInputProcessorTests
 {
-    private CommandsInputProcessor<ICommand> _processor;
+    private CommandsInputProcessor<ICommand<int>, int> _processor;
     private Mock<ILogger> _mockLogger;
     private Mock<IConsoleDisplay> _mockDisplay;
 
@@ -25,7 +25,7 @@ public class DualFormatInputProcessorTests
     {
         _mockLogger = new Mock<ILogger>();
         _mockDisplay = new Mock<IConsoleDisplay>();
-        _processor = new DualFormatInputProcessor<ICommand>(_mockLogger.Object, _mockDisplay.Object);
+        _processor = new DualFormatInputProcessor<ICommand<int>, int>(_mockLogger.Object, _mockDisplay.Object);
     }
 
     #region ParseInputArgs Tests

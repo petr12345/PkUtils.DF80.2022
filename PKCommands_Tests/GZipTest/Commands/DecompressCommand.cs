@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using GZipTest.Infrastructure;
+using PK.Commands.CommandProcessing;
 using PK.Commands.CommandUtils;
 using PK.PkUtils.DataStructures;
 using PK.PkUtils.Extensions;
@@ -82,10 +83,10 @@ internal class DecompressCommand(ILogger logger) :
     }
 
     /// <inheritdoc/>
-    public override IComplexResult Execute()
+    public override IComplexErrorResult<ExitCode> Execute()
     {
-        IComplexResult copyRes = PerformDecompress();
-        IComplexResult result = copyRes;
+        IComplexErrorResult<ExitCode> copyRes = PerformDecompress();
+        IComplexErrorResult<ExitCode> result = copyRes;
 
         return result;
     }
@@ -97,10 +98,10 @@ internal class DecompressCommand(ILogger logger) :
     /// <summary>   An auxiliary method called from <see cref="Execute"/> . </summary>
     ///
     /// <returns>   An ExitCode. </returns>
-    protected IComplexResult PerformDecompress()
+    protected IComplexErrorResult<ExitCode> PerformDecompress()
     {
         Logger.Info("Running PerformDecompress");
-        return ComplexResult.OK;
+        return ComplexErrorResult<ExitCode>.OK;
     }
     #endregion // Methods
 }

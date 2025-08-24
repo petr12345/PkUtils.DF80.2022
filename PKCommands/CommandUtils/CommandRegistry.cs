@@ -11,7 +11,8 @@ namespace PK.Commands.CommandUtils;
 /// <summary>  A command registry. Internal utility class, encapsulated by <see cref="CommandRegister{TCommand}"/>. </summary>
 ///
 /// <typeparam name="TCommand"> Generic argument representing type of supported commands. </typeparam>
-internal class CommandRegistry<TCommand> where TCommand : ICommand
+/// <typeparam name="TErrorCode">Type of error details.</typeparam>
+internal class CommandRegistry<TCommand, TErrorCode> where TCommand : ICommand<TErrorCode>
 {
     #region Fields
 

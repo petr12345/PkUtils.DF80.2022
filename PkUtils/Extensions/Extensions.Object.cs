@@ -175,8 +175,10 @@ public static class ObjectExtension
     /// <param name="obj"> The object being checked. </param>
     /// <param name="objectName"> The name of the object ( for instance the name 
     /// of formal argument in the calling code). </param>
+    /// <returns> The original value of <paramref name="obj"/>, if that's not null.</returns>
     /// <seealso cref="CheckArgNotNull"/>
-    public static void CheckNotNull<T>(
+
+    public static T CheckNotNull<T>(
         this T obj,
         [CallerArgumentExpression(nameof(obj))] string objectName = "obj") where T : class
     {
@@ -187,6 +189,7 @@ public static class ObjectExtension
 
             throw new InvalidOperationException($"The object '{objectName}' is null");
         }
+        return obj;
     }
 
     /// <summary>
@@ -198,9 +201,10 @@ public static class ObjectExtension
     /// <exception cref="ArgumentNullException"> Thrown when a supplied object is null. </exception>
     /// <exception cref="ObjectDisposedException"> Thrown when a supplied object has been disposed. </exception>
     /// <param name="obj"> The object being checked. </param>
-    public static void CheckNotDisposed(this object obj)
+    /// <returns> The original value of <paramref name="obj"/>, if that's not null or disposed.</returns>
+    public static object CheckNotDisposed(this object obj)
     {
-        CheckNotDisposed(obj, null);
+        return CheckNotDisposed(obj, null);
     }
 
     /// <summary> 
@@ -219,7 +223,7 @@ public static class ObjectExtension
     /// <param name="objectName"> The object name (usually the argument or 
     /// variable name the object has in the calling code).
     /// Will be used for the exception message creation. </param>
-    public static void CheckNotDisposed(
+    public static object CheckNotDisposed(
         this object obj,
         [CallerArgumentExpression(nameof(obj))] string objectName = null)
     {
@@ -228,6 +232,7 @@ public static class ObjectExtension
         {
             DisposableExtension.CheckNotDisposed(iDisp, objectName);
         }
+        return obj;
     }
     #endregion // Methods
 }

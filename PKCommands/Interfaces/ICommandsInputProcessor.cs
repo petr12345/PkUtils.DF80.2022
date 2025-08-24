@@ -10,6 +10,7 @@ namespace PK.Commands.Interfaces;
 /// A class implementing this interface is a text input consumer; 
 /// i.e. IObserver performing the functionality it is asked for.
 /// </summary>
+/// <typeparam name="TErrorCode">Type of error details.</typeparam>
 /// 
 /// <remarks>
 /// 
@@ -27,7 +28,7 @@ namespace PK.Commands.Interfaces;
 /// Reactive Programming for .NET Developers
 /// </seealso>
 [CLSCompliant(true)]
-public interface ICommandsInputProcessor : IObserver<string>
+public interface ICommandsInputProcessor<out TErrorCode> : IObserver<string>
 {
     /// <summary>
     /// Gets a value indicating whether this object has been initialized by any of InitializeCommandContainer overloads.
@@ -59,14 +60,14 @@ public interface ICommandsInputProcessor : IObserver<string>
     /// <param name="input">            The input, either from the command line or anywhere else. </param>
     /// <param name="shouldContinue">   [out] True if should continue, false otherwise. </param>
     ///
-    /// <returns>   An IComplexResult. </returns>
-    IComplexResult ProcessNextInput(string input, out bool shouldContinue);
+    /// <returns>   An IComplexErrorResult wrapping possible errors. </returns>
+    IComplexErrorResult<TErrorCode> ProcessNextInput(string input, out bool shouldContinue);
 
     /// <summary>   Process the next input of already separated command-line arguments. </summary>
     ///
     /// <param name="args"> The command arguments, including command name as first. Can't be null.</param>
     /// <param name="shouldContinue">   [out] True if should continue, false otherwise. </param>
     ///
-    /// <returns>   An IComplexResult. </returns>
-    IComplexResult ProcessNextInput(IEnumerable<string> args, out bool shouldContinue);
+    /// <returns>   An IComplexErrorResult wrapping possible errors. </returns>
+    IComplexErrorResult<TErrorCode> ProcessNextInput(IEnumerable<string> args, out bool shouldContinue);
 }

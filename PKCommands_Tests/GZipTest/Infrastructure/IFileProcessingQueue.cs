@@ -1,4 +1,5 @@
 ﻿using System.Threading;
+using PK.Commands.CommandProcessing;
 using PK.PkUtils.Interfaces;
 
 namespace GZipTest.Infrastructure;
@@ -21,7 +22,7 @@ public interface IFileProcessingQueue
     AutoResetEvent EventWritingBlockReady { get; }
 
     /// <summary> Gets the current execution result ( if any ). </summary>
-    IComplexResult ExecutionResult { get; }
+    IComplexErrorResult<ExitCode> ExecutionResult { get; }
 
     /// <summary> Gets a value indicating whether the reading thread is alive. </summary>
     bool ReadingThreadIsAlive { get; }
@@ -39,7 +40,7 @@ public interface IFileProcessingQueue
     /// <summary>  Sets execution result. </summary>
     ///
     /// <param name="result"> The result of execution.  Can't be null. </param>
-    void SetExecutionError(IComplexResult result);
+    void SetExecutionError(IComplexErrorResult<ExitCode> result);
 
     /// <summary>  Sets execution canceled. </summary>
     void SetExecutionCanceled();

@@ -227,7 +227,7 @@ public class Program : Singleton<Program>, IDisposableEx
     {
         string consoleInput;
         bool shouldContinue;
-        IComplexResult processsed;
+        IComplexErrorResult<ExitCode> processsed;
 
         ExitCode result = ExitCode.Success; //  ok so far
 
