@@ -4,7 +4,6 @@ using System.Drawing;
 using System.Windows.Forms;
 using PK.PkUtils.DataStructures;
 using PK.PkUtils.Extensions;
-using PK.PkUtils.Interfaces;
 
 namespace PK.PkUtils.UI.Controls;
 
@@ -18,7 +17,7 @@ public class MultiSelectOwnerDrawTreeView : MultiSelectTreeView
 {
     #region Fields
 
-    private readonly ISizeLimitedCache<Color, SolidBrush> _cacheBrushes;
+    private readonly SizeLimitedCache<Color, SolidBrush> _cacheBrushes;
     private int _nodeFrameThickness = _defaultNodeFrameThickness;
     private const int _defaultNodeFrameThickness = 0;
     #endregion // Fields

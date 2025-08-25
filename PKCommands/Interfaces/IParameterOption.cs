@@ -23,7 +23,7 @@ public interface IParameterOption<T> : IParameterBase
     /// <summary>  
     /// Gets or sets the value of this option.  
     /// </summary>
-    public T optionValue { get; init; }
+    T optionValue { get; init; }
 }
 
 

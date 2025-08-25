@@ -95,7 +95,7 @@ public class HorizontallyResizableForm : Form
                 MousePositionCode.HTTOPLEFT or MousePositionCode.HTBOTTOMLEFT => MousePositionCode.HTLEFT,
                 MousePositionCode.HTTOPRIGHT or MousePositionCode.HTBOTTOMRIGHT => MousePositionCode.HTRIGHT,
                 MousePositionCode.HTTOP or MousePositionCode.HTBOTTOM => MousePositionCode.HTNOWHERE,
-                var code => (MousePositionCode)(int)m.Result
+                _ => (MousePositionCode)(int)m.Result
             });
         }
     }

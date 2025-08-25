@@ -9,7 +9,7 @@ namespace PK.Commands.Interfaces;
 [CLSCompliant(true)]
 public interface ICommandEx<out TErrorCode> : ICommand<TErrorCode>
 {
-    /// <summary>   Gets the validated arguments, that were passed to <see cref="ICommand.Validate"/>. </summary>
+    /// <summary>   Gets the validated arguments, that were passed to <see cref="ICommand{TErrorCode}.Validate"/>. </summary>
     IReadOnlyDictionary<string, string> ValidatedArguments { get; }
 
     /// <summary>   Gets the last error that occurred during either validation or execution ( if any ). </summary>
@@ -19,6 +19,7 @@ public interface ICommandEx<out TErrorCode> : ICommand<TErrorCode>
     /// For more details, see CommandRegister.Execute, that calls first ValidateCommand, then ExecuteValidatedCommand.
     /// </remarks>
     ///
-    /// <returns> The last error of either <see cref="ICommand.Validate"/> or <see cref="ICommand.Execute"/>. </returns>
+    /// <returns> The last error of either <see cref="ICommand{TErrorCode}.Validate"/> 
+    /// or <see cref="ICommand{TErrorCode}.Execute"/>. </returns>
     TErrorCode GetLastError();
 }

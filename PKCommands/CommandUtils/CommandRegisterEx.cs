@@ -15,13 +15,13 @@ using ILogger = log4net.ILog;
 
 namespace PK.Commands.CommandUtils;
 
-/// <summary>  Class implementing more specialized <see cref="CommandRegister{TCommand}"/>. 
-///            Supports only such commands that implement ICommandEx{TErrorCode}.
+/// <summary>
+/// Class implementing more specialized <see cref="CommandRegister{TCommand, TErrorCode}"/>.
+/// Supports only such commands that implement ICommandEx{TErrorCode}.
 ///</summary>
 ///
-/// <typeparam name="TCommand">     Type of the command. </typeparam>
-/// <typeparam name="TErrorCode">   Type of the error code. </typeparam>
-[CLSCompliant(true)]
+/// <typeparam name="TCommand"> Type of the command. </typeparam>
+/// <typeparam name="TErrorCode"> Type of the error code. </typeparam>
 public class CommandRegisterEx<TCommand, TErrorCode> :
     CommandRegister<TCommand, TErrorCode>,
     ICommandRegisterEx<TCommand, TErrorCode> where TCommand : class, ICommandEx<TErrorCode>
@@ -91,16 +91,10 @@ public class CommandRegisterEx<TCommand, TErrorCode> :
     #endregion // ICommandRegister Members
 
     /// <inheritdoc/>
-    public TCommand LastValidatedCommand
-    {
-        get { return _lastValidated; }
-    }
+    public TCommand LastValidatedCommand { get => _lastValidated; }
 
     /// <inheritdoc/>
-    public TCommand LastExecutedCommand
-    {
-        get { return _lastExecuted; }
-    }
+    public TCommand LastExecutedCommand { get => _lastExecuted; }
 
     /// <inheritdoc/>
     public TErrorCode GetLastError()
@@ -140,8 +134,7 @@ public class CommandRegisterEx<TCommand, TErrorCode> :
         finally
         {
             // The result will be still null if and only if command syntax validation failed by exception
-            // SetLastErrorFromCommand(command, result);
-            // ##FIX## Set last error not needed, whole  override not needed
+            SetLastErrorFromCommand(command, null);
         }
         return result;
     }
@@ -163,7 +156,6 @@ public class CommandRegisterEx<TCommand, TErrorCode> :
         finally
         {
             SetLastErrorFromCommand(command, result);
-            // ##FIX## Sert last error not needed
         }
 
         return result;

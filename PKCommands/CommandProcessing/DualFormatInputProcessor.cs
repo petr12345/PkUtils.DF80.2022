@@ -15,7 +15,8 @@ using ILogger = log4net.ILog;
 namespace PK.Commands.CommandProcessing;
 
 /// <summary>
-/// Processes command-line arguments using DualFormat syntax, extending <see cref="CommandsInputProcessor{TCommand}"/>.
+/// Processes command-line arguments using DualFormat syntax, 
+/// extending <see cref="CommandsInputProcessor{TCommand, TErrorCode}"/>.
 /// </summary>
 /// 
 /// <remarks>

@@ -8,8 +8,10 @@ using PK.Commands.Interfaces;
 using PK.PkUtils.Consoles;
 using ILogger = log4net.ILog;
 
+
 namespace PK.Commands.NUnitTests.CommandProcessingTests;
 
+/// <summary> Unit Test Fixture implementing tests of CommandsInputProcessor. </summary>
 /// <summary>   (Unit Test Fixture) implementing tests of CommandsInputProcessor. </summary>
 [TestFixture]
 public class CommandsInputProcessorTest
@@ -151,6 +153,9 @@ public class CommandsInputProcessorTest
     #region SplitCommandLine Tests
     #region SplitCommandLine_Valid_Inputs
 
+    /// <summary>
+    /// Tests that splits a simple command line with space-separated arguments.
+    /// </summary>
     [Test, Description("Splits a simple command line with space-separated arguments.")]
     public void SplitCommandLine_SimpleArguments_ReturnsExpectedList()
     {
@@ -165,6 +170,9 @@ public class CommandsInputProcessorTest
         Assert.That(result, Is.EqualTo(expected));
     }
 
+    /// <summary>
+    /// Tests that handles quoted arguments as single tokens.
+    /// </summary>
     [Test, Description("Handles quoted arguments as single tokens.")]
     public void SplitCommandLine_QuotedArgument_ReturnsExpectedList()
     {
@@ -179,6 +187,9 @@ public class CommandsInputProcessorTest
         Assert.That(result, Is.EqualTo(expected));
     }
 
+    /// <summary>
+    /// Tests that handles multiple quoted arguments.
+    /// </summary>
     [Test, Description("Handles multiple quoted arguments.")]
     public void SplitCommandLine_MultipleQuotedArguments_ReturnsExpectedList()
     {
@@ -193,6 +204,9 @@ public class CommandsInputProcessorTest
         Assert.That(result, Is.EqualTo(expected));
     }
 
+    /// <summary>
+    /// Tests that handles mixed quoted and unquoted arguments.
+    /// </summary>
     [Test, Description("Handles mixed quoted and unquoted arguments.")]
     public void SplitCommandLine_MixedQuotedAndUnquotedArguments_ReturnsExpectedList()
     {
@@ -207,6 +221,9 @@ public class CommandsInputProcessorTest
         Assert.That(result, Is.EqualTo(expected));
     }
 
+    /// <summary>
+    /// Tests that handles extra spaces between arguments.
+    /// </summary>
     [Test, Description("Handles extra spaces between arguments.")]
     public void SplitCommandLine_ExtraSpaces_IgnoresExtraSpaces()
     {
@@ -224,6 +241,9 @@ public class CommandsInputProcessorTest
 
     #region SplitCommandLine_Edge_Cases
 
+    /// <summary>
+    /// Tests that returns an empty list for an empty input string.
+    /// </summary>
     [Test, Description("Returns an empty list for an empty input string.")]
     public void SplitCommandLine_EmptyString_ReturnsEmptyList()
     {
@@ -238,6 +258,9 @@ public class CommandsInputProcessorTest
         Assert.That(result, Is.EqualTo(expected));
     }
 
+    /// <summary>
+    /// Tests that handles input with only spaces.
+    /// </summary>
     [Test, Description("Handles input with only spaces.")]
     public void SplitCommandLine_OnlySpaces_ReturnsEmptyList()
     {
@@ -252,6 +275,9 @@ public class CommandsInputProcessorTest
         Assert.That(result, Is.EqualTo(expected));
     }
 
+    /// <summary>
+    /// Tests that handles an input containing only a quoted string.
+    /// </summary>
     [Test, Description("Handles an input containing only a quoted string.")]
     public void SplitCommandLine_OnlyQuotedString_ReturnsSingleElement()
     {
@@ -266,6 +292,9 @@ public class CommandsInputProcessorTest
         Assert.That(result, Is.EqualTo(expected));
     }
 
+    /// <summary>
+    /// Tests that handles an input with an unclosed quote.
+    /// </summary>
     [Test, Description("Handles an input with an unclosed quote.")]
     public void SplitCommandLine_UnclosedQuote_ReturnsIncompleteParsing()
     {
@@ -280,6 +309,9 @@ public class CommandsInputProcessorTest
         Assert.That(result, Is.EqualTo(expected));
     }
 
+    /// <summary>
+    /// Tests that handles input with consecutive quotes.
+    /// </summary>
     [Test, Description("Handles input with consecutive quotes.")]
     public void SplitCommandLine_ConsecutiveQuotes_ReturnsEmptyStrings()
     {
@@ -297,6 +329,9 @@ public class CommandsInputProcessorTest
 
     #region SplitCommandLine_Error_Cases
 
+    /// <summary>
+    /// Tests that throws an exception for null input.
+    /// </summary>
     [Test, Description("Throws an exception for null input.")]
     public void SplitCommandLine_NullInput_ThrowsException()
     {

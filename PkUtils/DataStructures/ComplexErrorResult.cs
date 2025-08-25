@@ -108,17 +108,18 @@ public class ComplexErrorResult<TError> : IComplexErrorResult<TError>
     {
         get
         {
-            if (Success) return null;
+            string result;
 
-            // Prefer the explicitly set raw message
-            if (!string.IsNullOrEmpty(RawErrorMessage))
-                return RawErrorMessage;
-
-            // If the typed error is an Exception, mimic legacy formatting
-            if (TryGetException(out var ex))
-                return GetDetailedExceptionMessage(ex);
-
-            return string.Empty;
+            if (Success)
+            {
+                result = null;
+            }
+            else if (string.IsNullOrEmpty(result = RawErrorMessage)) // Prefer the explicitly set raw message
+            {
+                // If no raw message, and if the typed error is an Exception, mimic legacy formatting
+                result = TryGetException(out Exception ex) ? GetDetailedExceptionMessage(ex) : string.Empty;
+            }
+            return result;
         }
     }
     #endregion // IComplexErrorResult<TError> members
@@ -167,7 +168,7 @@ public class ComplexErrorResult<TError> : IComplexErrorResult<TError>
     public static IComplexErrorResult<TError> CreateFailed(IComplexErrorResult<TError> rhs)
     {
         CheckIsFailed(rhs);
-        ComplexErrorResult<TError> result = new ComplexErrorResult<TError>(rhs);
+        ComplexErrorResult<TError> result = new(rhs);
         Debug.Assert(!result.Success);
         return result;
     }

@@ -8,7 +8,9 @@ using PK.Commands.Interfaces;
 
 namespace PK.Commands.CommandUtils;
 
-/// <summary>  A command registry. Internal utility class, encapsulated by <see cref="CommandRegister{TCommand}"/>. </summary>
+/// <summary>  A command registry. Internal utility class, 
+///            encapsulated by <see cref="CommandRegister{TCommand, TErrorCode}"/>.
+/// </summary>
 ///
 /// <typeparam name="TCommand"> Generic argument representing type of supported commands. </typeparam>
 /// <typeparam name="TErrorCode">Type of error details.</typeparam>

@@ -226,20 +226,11 @@ public class Program : Singleton<Program>, IDisposableEx
     private ExitCode ProcessIncomingCommands(IEnumerable<string> args)
     {
         string consoleInput;
-        bool shouldContinue;
-        IComplexErrorResult<ExitCode> processsed;
+        IComplexErrorResult<ExitCode> processed;
         ExitCode result = ExitCode.Success; //  ok so far
-
-        // Local static method for error handling
-        static ExitCode HandleErrorResult(IComplexErrorResult<ExitCode> processed)
-        {
-            var res = processed.ErrorDetails;
-            return res.IsOK() ? ExitCode.UnknownError : res;
-        }
 
         try
         {
-            // see what command is there, if any
             if (args.Any())
             {
                 // Run command directly
@@ -247,47 +238,38 @@ public class Program : Singleton<Program>, IDisposableEx
                 // Handle the weird case a newline comes from Visual Studio project properties ( Debug / Command Line Arguments )
                 /* consoleInput = args.Join(" "); */
                 consoleInput = args.FilterOutNewlines().JoinToCommandLine();
-                processsed = InputProcessor.ProcessNextInput(consoleInput, out shouldContinue);
+                processed = InputProcessor.ProcessNextInput(consoleInput, out _);
 
-                if (!processsed.Success)
+                if (!processed.Success)
                 {
-                    result = HandleErrorResult(processsed);
-                }
-                if (!result.IsOK())
-                {
-                    Thread.Sleep(_msSleepBeforeErrorExit);
+                    result = ResolveExitCodeFromErrorResult(processed);
+                    if (!result.IsOK())
+                        Thread.Sleep(_msSleepBeforeErrorExit);
                 }
             }
             else
             {
-                this.RunningCommandsFromConsole = true;
+                RunningCommandsFromConsole = true;
                 Console.Clear();
                 DisplayWaitMessage(DefaultWaitForCommandMessage());
 
-                // read any next command, and run till the end
-                // 
-                for (shouldContinue = true; shouldContinue;)
+                ExitCode lastResult = ExitCode.Success;
+                for (bool shouldContinue = true; shouldContinue;)
                 {
-                    if (null != (consoleInput = ReadFromConsole()))
-                    {
-                        consoleInput = consoleInput.Trim();
-                    }
+                    consoleInput = ReadFromConsole()?.Trim();
                     if (string.IsNullOrEmpty(consoleInput))
                     {
-                        result = ExitCode.Success;
+                        lastResult = ExitCode.Success;
                         shouldContinue = false;
                     }
                     else
                     {
                         Logger.Info("Processing input: " + consoleInput);
-                        processsed = InputProcessor.ProcessNextInput(consoleInput, out shouldContinue);
-
-                        if (!processsed.Success)
-                        {
-                            result = HandleErrorResult(processsed);
-                        }
+                        processed = InputProcessor.ProcessNextInput(consoleInput, out shouldContinue);
+                        lastResult = ResolveExitCodeFromErrorResult(processed);
                     }
                 }
+                result = lastResult;
             }
         }
         catch (Exception ex)
@@ -299,10 +281,8 @@ public class Program : Singleton<Program>, IDisposableEx
         {
             InputProcessor.OnCompleted();
         }
-
         return result;
     }
-
 
     /// <summary>   Implements IDisposable; releases all resources used by the object. </summary>
     /// <param name="disposing"> True to release both managed and unmanaged resources; false to release only
@@ -383,6 +363,27 @@ public class Program : Singleton<Program>, IDisposableEx
     private static string DefaultWaitForCommandMessage()
     {
         return Invariant($"{ProgramName} started. Enter valid command, or press <Ctrl + Break> to terminate");
+    }
+
+    /// <summary>
+    /// Processes the result of a command execution and determines the appropriate exit code.
+    /// If the result indicates failure and the error details are not set, returns <see cref="ExitCode.UnknownError"/>.
+    /// Otherwise, returns the error details or <see cref="ExitCode.Success"/>.
+    /// </summary>
+    /// <param name="errorResult">The result object containing error details.</param>
+    /// <returns>The resolved <see cref="ExitCode"/> based on the error result.</returns>
+    private static ExitCode ResolveExitCodeFromErrorResult(IComplexErrorResult<ExitCode> errorResult)
+    {
+        ExitCode exitCode = ExitCode.Success;
+
+        if (errorResult.Failed())
+        {
+            // If the error details are not set, treat as unknown error.
+            if ((exitCode = errorResult.ErrorDetails).IsOK())
+                exitCode = ExitCode.UnknownError;
+        }
+
+        return exitCode;
     }
 
     private string WaitConsoleMessage()

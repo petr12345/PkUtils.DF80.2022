@@ -15,7 +15,7 @@ namespace PK.Commands.Interfaces;
 /// <remarks>
 /// 
 /// - The first important concept here is that a message consumer knows nothing about how messages are produced.
-/// The consumer simply reacts to one of the three events (not CLR events) of <see cref="IObserver"/>.
+/// The consumer simply reacts to one of the three events (not CLR events) of <see cref="IObserver{T}"/>.
 /// 
 /// - Besides this, some kind of logic and cross-event ability is available within the consumer itself.
 /// If a complete message puts the consumer in a finished state (by signaling the finished flag),

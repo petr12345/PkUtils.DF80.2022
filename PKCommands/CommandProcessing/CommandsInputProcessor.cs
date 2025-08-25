@@ -21,10 +21,13 @@ using ILogger = log4net.ILog;
 namespace PK.Commands.CommandProcessing;
 
 /// <summary>
-/// A concrete implementation of <see cref="ICommandsInputProcessor"/> that processes command-line input and executes corresponding commands.
-/// This class parses command-line arguments and maps them to registered commands, providing an interface for handling both command input and progress display.
+/// A concrete implementation of <see cref="ICommandsInputProcessor{TErrorCode}"/> that processes command-line input 
+/// and executes corresponding commands.
+/// This class parses command-line arguments and maps them to registered commands, 
+/// providing an interface for handling both command input and progress display.
 ///
-/// The generic type <typeparamref name="TCommand"/> represents the type of commands supported by this processor, which must implement <see cref="ICommand"/>.
+/// The generic type <typeparamref name="TCommand"/> represents the type of commands supported by this processor, 
+/// which must implement <see cref="ICommand{TErrorCode}"/>.
 /// 
 /// <example>
 /// Example usage:

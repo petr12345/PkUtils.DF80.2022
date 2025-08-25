@@ -371,10 +371,7 @@ public static class User32
         public int nTrackPos;
 
         /// <summary> Gets the default (empty) value. </summary>
-        public static SCROLLINFO Default
-        {
-            get => new SCROLLINFO();
-        }
+        public static SCROLLINFO Default { get => new(); }
 
         /// <summary> Initializes a new instance of the <see cref="SCROLLINFO"/> struct. </summary>
         public SCROLLINFO()
@@ -457,10 +454,7 @@ public static class User32
         public RECT NormalPosition;
 
         /// <summary> Gets the default (empty) value. </summary>
-        public static WINDOWPLACEMENT Default
-        {
-            get => new WINDOWPLACEMENT();
-        }
+        public static WINDOWPLACEMENT Default { get => new(); }
 
         /// <summary> Initializes a new instance of the <see cref="WINDOWPLACEMENT"/> struct. </summary>
         public WINDOWPLACEMENT()

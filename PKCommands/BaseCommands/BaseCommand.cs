@@ -9,9 +9,9 @@ using static System.FormattableString;
 
 #pragma warning disable IDE0090 // Use 'new(...)'
 
-namespace PK.Commands.BaseCommands;
+namespace ACMCodeGen.CCA.Commands.BaseCommands;
 
-/// <summary>   A base command class, implementing <see cref="ICommand"/>. </summary>
+/// <summary> A base command class, implementing <see cref="ICommand{TErrorCode}"/>. </summary>
 ///
 /// <typeparam name="TOptions"> Type of the options used. </typeparam>
 /// <typeparam name="TErrorCode">Type of error details.</typeparam>

@@ -10,8 +10,9 @@ using ILogger = log4net.ILog;
 
 namespace PK.Commands.NUnitTests.CommandProcessingTests;
 
-
-/// <summary>   (Unit Test Fixture) a of class DualFormatInputProcessor. </summary>
+/// <summary>
+/// (Unit Test Fixture) a of class DualFormatInputProcessor.
+/// </summary>
 [TestFixture]
 public class DualFormatInputProcessorTests
 {
@@ -60,6 +61,8 @@ public class DualFormatInputProcessorTests
         });
     }
 
+    /// <summary>   ParseInputArgs should throw ArgumentNullException on null argument. </summary>
+    /// <exception cref="ArgumentNullException"> Thrown when one or more required arguments are null. </exception>
     [Test, Description("ParseInputArgs should throw ArgumentNullException on null argument.")]
     public void ParseInputArgs_ThrowsArgumentNullException()
     {
@@ -67,6 +70,8 @@ public class DualFormatInputProcessorTests
         Assert.Throws<ArgumentNullException>(() => _processor.ParseInputArgs(null, out _));
     }
 
+    /// <summary>   ParseInputArgs should throw ArgumentException on empty argument. </summary>
+    /// <exception cref="ArgumentException"> Thrown when one or more arguments have unsupported or illegal values. </exception>
     [Test, Description("ParseInputArgs should throw ArgumentException on empty argument.")]
     public void ParseInputArgs_ThrowsArgumentException()
     {
@@ -79,6 +84,11 @@ public class DualFormatInputProcessorTests
 
 #pragma warning disable IDE0060  // Remove unused parameter 'comment' if it is not part of a shipped public API
 
+    /// <summary>   ParseInputArgs should throw InputLineValidationException on specific input cases. </summary>
+    /// <exception cref="InputLineValidationException"> Thrown when an Input Line Validation error condition
+    /// occurs. </exception>
+    /// <param name="inputArgs"> The input arguments. </param>
+    /// <param name="comment"> The comment. </param>
     [Test, Description("ParseInputArgs should throw InputLineValidationException on specific input cases.")]
     [TestCase(new string[] { "convert", "-inputLibrary", "value1", "-inputLibrary", "value2" }, "command with duplicated arguments")]
     [TestCase(new string[] { "convert", "-", "value1" }, "case of empty argument name")]

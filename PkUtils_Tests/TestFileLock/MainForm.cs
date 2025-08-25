@@ -321,7 +321,7 @@ namespace PK.TesFileLock
             {
                 List<Process> processes = ProcessUtils.WhoIsLocking(filename);
 
-                if (!processes.Any())
+                if (processes.Count == 0)
                 {
                     MessageBox.Show("No locking process found", null, MessageBoxButtons.OK, MessageBoxIcon.Information);
                 }
