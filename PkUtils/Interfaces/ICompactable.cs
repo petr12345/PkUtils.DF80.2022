@@ -1,14 +1,4 @@
-﻿/***************************************************************************************************************
-*
-* FILE NAME:   .\Interfaces\ICompactable.cs
-*
-* AUTHOR:      Petr Kodet
-*
-* DESCRIPTION: The file contains definition of ICompactable interface
-*
-**************************************************************************************************************/
-
-// Ignore Spelling: Compactable, Utils
+﻿// Ignore Spelling: Compactable, Utils
 //
 using System;
 

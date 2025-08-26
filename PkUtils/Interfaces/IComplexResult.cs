@@ -1,5 +1,6 @@
-﻿// Ignore Spelling: Utils
+﻿// Ignore Spelling: CCA
 //
+
 using System;
 
 namespace PK.PkUtils.Interfaces;
@@ -14,7 +15,7 @@ public interface IComplexResult : IComplexErrorResult<object>
 }
 
 /// <summary>
-/// Represents a Represents a legacy version of <see cref="IComplexErrorResult{T, TError}"/>
+/// Represents a legacy version of <see cref="IComplexErrorResult{T, TError}"/>
 /// with customizable content and untyped error details.
 /// </summary>
 /// <typeparam name="T">The type of the content.</typeparam>

@@ -5,13 +5,14 @@ using System.Diagnostics;
 using PK.PkUtils.Extensions;
 using PK.PkUtils.Interfaces;
 
+#pragma warning disable IDE0130 // Namespace "..." does not match folder structure
+
 namespace PK.PkUtils.DataStructures;
 
 /// <summary>
 /// Typed-error base implementation of <see cref="IComplexErrorResult{TError}"/>.
 /// Mirrors the behavior of <see cref="ComplexResult"/> but with a strongly-typed <c>ErrorDetails</c>.
 /// </summary>
-[CLSCompliant(true)]
 public class ComplexErrorResult<TError> : IComplexErrorResult<TError>
 {
     #region Fields
@@ -25,7 +26,8 @@ public class ComplexErrorResult<TError> : IComplexErrorResult<TError>
 
     /// <summary> Default success constructor. </summary>
     public ComplexErrorResult()
-        : this(success: true, errorMessage: null, errorDetails: default) { }
+        : this(success: true, errorMessage: null, errorDetails: default)
+    { }
 
     /// <summary> Failure constructor with message and typed error details. </summary>
     /// <param name="errorMessage">Message describing the error. Can't be null or empty.</param>
@@ -53,7 +55,7 @@ public class ComplexErrorResult<TError> : IComplexErrorResult<TError>
         }
         else
         {
-            // If TError is not Exception, we can't assign _errorDetails.
+            // If TError is not Exception or object, we can't assign _errorDetails.
             // Just use the exception's message.
             this._errorMessage = exceptionCaught.Message;
         }
@@ -68,9 +70,7 @@ public class ComplexErrorResult<TError> : IComplexErrorResult<TError>
     { }
 
 
-    /// <summary>
-    /// Core constructor used by other overloads.
-    /// </summary>
+    /// <summary> Core constructor used by other overloads. </summary>
     /// <param name="success">Indicates success or failure.</param>
     /// <param name="errorMessage">Message describing the error.</param>
     /// <param name="errorDetails">The typed error details.</param>
@@ -89,6 +89,7 @@ public class ComplexErrorResult<TError> : IComplexErrorResult<TError>
     /// <summary>
     /// Gets the "raw" message, as initialized by constructor. Note the difference from <see cref="ErrorMessage"/>.
     /// </summary>
+    /// <seealso cref="ErrorMessage"/>
     protected string RawErrorMessage
     {
         get { return _errorMessage; }
@@ -103,7 +104,8 @@ public class ComplexErrorResult<TError> : IComplexErrorResult<TError>
     /// <summary>  Gets the error details. </summary>
     public TError ErrorDetails { get => _errorDetails; }
 
-    /// <summary>   Gets a message describing the error. </summary>
+    /// <summary> Gets a message describing the error. </summary>
+    /// <seealso cref="RawErrorMessage"/>
     public virtual string ErrorMessage
     {
         get
@@ -251,7 +253,6 @@ public class ComplexErrorResult<TError> : IComplexErrorResult<TError>
 /// </summary>
 /// <typeparam name="T">Type of the content.</typeparam>
 /// <typeparam name="TError">Type of error details.</typeparam>
-[CLSCompliant(true)]
 public class ComplexErrorResult<T, TError> : ComplexErrorResult<TError>, IComplexErrorResult<T, TError>
 {
     #region Fields

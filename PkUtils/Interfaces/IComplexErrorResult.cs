@@ -2,6 +2,7 @@
 //
 using System;
 
+
 namespace PK.PkUtils.Interfaces;
 
 /// <summary> 
@@ -46,7 +47,6 @@ public interface IComplexErrorResult<out TError>
 /// ]]>
 /// </code>
 /// </remarks>
-[CLSCompliant(true)]
 public interface IComplexErrorResult<out T, out TError> : IComplexErrorResult<TError>
 {
     /// <summary> Gets the content. </summary>
@@ -54,12 +54,9 @@ public interface IComplexErrorResult<out T, out TError> : IComplexErrorResult<TE
 }
 
 /// <summary> Static class that implements extension methods for IComplexErrorResult. </summary>
-[CLSCompliant(true)]
 public static class ComplexErrorResultExtensions
 {
-    /// <summary> 
-    /// Extension method that queries if 'result' has failed. 
-    /// </summary>
+    /// <summary> Extension method that queries if 'result' has failed. </summary>
     /// <typeparam name="TError">Type of error details.</typeparam>
     /// <param name="result">The instance to act on. Can't be null.</param>
     /// <returns>True if result.Success is false, otherwise false.</returns>
