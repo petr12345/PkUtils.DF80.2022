@@ -71,7 +71,7 @@ public static class CompositeComparer
     /// <typeparam name="T"> Generic type parameter. </typeparam>
     /// <param name="firstComparer"> The primary comparer used for the initial comparison. </param>
     /// <param name="secondComparer"> The secondary comparer used if the primary comparison results in equality. </param>
-    /// <returns>   The new null safe comparer. </returns>
+    /// <returns> The new null safe comparer. </returns>
     public static CompositeComparer<T> CreateNullSafeComparer<T>(
         IComparer<T> firstComparer,
         IComparer<T> secondComparer) where T : class

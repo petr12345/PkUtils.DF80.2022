@@ -119,7 +119,7 @@ public class CustomCollectionEditor<T> : CollectionEditor
     /// In older .NET versions, the field was called 'dirty'.
     /// </remarks>
     /// <param name="collectionForm"> The collection form. </param>
-    /// <returns>   True if collection form dirty, false if not. </returns>
+    /// <returns> True if collection form dirty, false if not. </returns>
     public static bool IsCollectionFormDirty(Form collectionForm)
     {
         bool result = false;
@@ -204,7 +204,7 @@ public class CustomCollectionEditor<T> : CollectionEditor
     }
 
     /// <summary> Searches for the first parent collection form. </summary>
-    /// <returns>   The found parent collection form, or null if none found. </returns>
+    /// <returns> The found parent collection form, or null if none found. </returns>
     protected virtual CollectionForm FindParentCollectionForm()
     {
         CollectionForm currentForm = HookedCollectionForm;
@@ -284,7 +284,7 @@ public class CustomCollectionEditor<T> : CollectionEditor
     }
 
     /// <summary> Validates the items taken from hooked CollectionForm. </summary>
-    /// <returns>   True if it succeeds, false if it fails. </returns>
+    /// <returns> True if it succeeds, false if it fails. </returns>
     protected virtual bool ValidateCollectionFormItems()
     {
         IReadOnlyList<T> listItems = GetCollectionFormItems();
@@ -320,7 +320,7 @@ public class CustomCollectionEditor<T> : CollectionEditor
     }
 
     /// <summary> Unhook previously hooked collection form. </summary>
-    /// <returns>  True if it succeeds, false if it fails. </returns>
+    /// <returns> True if it succeeds, false if it fails. </returns>
     protected virtual bool UnhookCollectionForm()
     {
         CollectionForm form;

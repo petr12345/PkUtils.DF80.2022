@@ -115,7 +115,7 @@ public class UsageMonitor : IDisposableEx
     /// <summary> Implementation helper called by constructor. Locks given lock counter, if not locked already. </summary>
     /// <param name="aCounter"> The utilized usage counter. </param>
     /// <param name="firstTimeOnly">    True to first time only. </param>
-    /// <returns>   True if it succeeds, false if it fails. </returns>
+    /// <returns> True if it succeeds, false if it fails. </returns>
     protected bool AcquireUse(IUsageCounter aCounter, bool firstTimeOnly)
     {
         Debug.Assert(null == _counter);

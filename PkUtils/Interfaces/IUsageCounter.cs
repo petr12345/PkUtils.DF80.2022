@@ -25,6 +25,6 @@ public interface IUsageCounter
     int AddReference();
 
     /// <summary> Release usage please. </summary>
-    /// <returns>   The amount of remaining references. </returns>
+    /// <returns> The amount of remaining references. </returns>
     int Release();
 }

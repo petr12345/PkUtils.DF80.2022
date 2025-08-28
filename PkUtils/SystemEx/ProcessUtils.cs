@@ -132,7 +132,7 @@ public static class ProcessUtils
     /// <param name="ppBuffer">         [out] The buffer. </param>
     /// <param name="pBytesReturned">   [out] The bytes returned. </param>
     ///
-    /// <returns>   True if it succeeds, false if it fails. </returns>
+    /// <returns> True if it succeeds, false if it fails. </returns>
     [DllImport("Wtsapi32.dll")]
     [return: MarshalAs(UnmanagedType.Bool)]
     private static extern bool WTSQuerySessionInformationW(

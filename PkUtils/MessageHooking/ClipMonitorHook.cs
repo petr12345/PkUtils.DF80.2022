@@ -101,7 +101,7 @@ public class ClipMonitorHook : ControlMessageHook
 
     /// <summary> Registers the clipboard viewer, if it has not been registered yet. </summary>
     ///
-    /// <returns>   true if it succeeds, false if it fails. </returns>
+    /// <returns> true if it succeeds, false if it fails. </returns>
     /// <seealso cref="UnregisterClipboardViewer"/>
     protected bool RegisterClipboardViewer()
     {
@@ -117,7 +117,7 @@ public class ClipMonitorHook : ControlMessageHook
 
     /// <summary> Unregisters the clipboard viewer if it has been registered. </summary>
     ///
-    /// <returns>   true if it succeeds, false if it fails. </returns>
+    /// <returns> true if it succeeds, false if it fails. </returns>
     /// <seealso cref="RegisterClipboardViewer"/>
     protected bool UnregisterClipboardViewer()
     {

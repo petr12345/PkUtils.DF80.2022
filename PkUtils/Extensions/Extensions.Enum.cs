@@ -20,7 +20,7 @@ public static class EnumExtension
     /// <summary> Gets the individual flags of this enum value, assuming that T is an enum with flags. </summary>
     /// <typeparam name="T"> Generic type parameter - the type of the enum. </typeparam>
     /// <param name="value"> The input enum value. </param>
-    /// <returns>  Collection o values of flags that are present in <paramref name="value"/>. </returns>
+    /// <returns> Collection o values of flags that are present in <paramref name="value"/>. </returns>
     public static IEnumerable<T> GetFlags<T>(T value) where T : Enum
     {
         CheckIsFlagsEnumType<T>(nameof(value));
@@ -63,7 +63,7 @@ public static class EnumExtension
     /// <typeparam name="T">    Generic type parameter. </typeparam>
     /// <param name="value">    The value to be checked. </param>
     ///
-    /// <returns>   True if valid flag combination, false if not. </returns>
+    /// <returns> True if valid flag combination, false if not. </returns>
     public static bool IsValidFlagsCombination<T>(this T value) where T : Enum
     {
         CheckIsFlagsEnumType<T>(nameof(value));
@@ -138,7 +138,7 @@ public static class EnumExtension
     /// <param name="ignoreCase">   (Optional) True to ignore case. </param>
     /// <remarks> By default, ignoreCase = false, because an enum can contain values which differ only in case. </remarks>
     ///
-    /// <returns>   A resulting T value. </returns>
+    /// <returns> A resulting T value. </returns>
     public static T Parse<T>(string value, bool ignoreCase = false) where T : Enum
     {
         // Parse throws ArgumentNullException, ArgumentException, OverflowException
@@ -160,7 +160,7 @@ public static class EnumExtension
     /// <param name="ignoreCase"> (Optional) True to ignore case. </param>
     /// <remarks> By default, ignoreCase = false, because an enum can contain values which differ only in case. </remarks>
     ///
-    /// <returns>   A resulting T value. </returns>
+    /// <returns> A resulting T value. </returns>
     public static T ToEnum<T>(
         string value, T fallBackValue = default, bool ignoreCase = false) where T : struct, Enum
     {

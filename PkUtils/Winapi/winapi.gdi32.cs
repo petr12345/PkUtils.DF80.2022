@@ -1190,7 +1190,7 @@ public static class Gdi32
     /// <param name="nWidth">       The width of the pen, in logical units. </param>
     /// <param name="crColor">      A color reference for the pen color. </param>
     ///
-    /// <returns>   The new pen handle. </returns>
+    /// <returns> The new pen handle. </returns>
     [DllImport("gdi32")]
     internal static extern IntPtr CreatePen(
       int fnPenStyle,
@@ -1388,7 +1388,7 @@ public static class GDI
     /// <param name="nWidth">       The width of the pen, in logical units. </param>
     /// <param name="crColor">      A color reference for the pen color. </param>
     ///
-    /// <returns>   The new pen handle. </returns>
+    /// <returns> The new pen handle. </returns>
     public static IntPtr CreatePen(
       int fnPenStyle,
       int nWidth,

@@ -215,7 +215,7 @@ public class PopupTooltip : Control, IPopupText
     /// <param name="foreColor">        [out] The foreground color. </param>
     /// <param name="backColor">        [out] The back color. </param>
     ///
-    /// <returns>   True if it succeeds, false if it fails. </returns>
+    /// <returns> True if it succeeds, false if it fails. </returns>
     protected virtual bool GetTextColors(bool drawHighlighted, out Color foreColor, out Color backColor)
     {
         GetDefaultTextColors(drawHighlighted, out foreColor, out backColor);

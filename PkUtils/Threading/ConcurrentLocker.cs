@@ -45,7 +45,7 @@ public class ConcurrentLocker<TKey> : IConcurrentLocker<TKey>
         }
 
         /// <summary> Unlock that please, releasing semaphore first. </summary>
-        /// <returns>   The amount of remaining references. </returns>
+        /// <returns> The amount of remaining references. </returns>
         public override int Release()
         {
             SemaphoreSlim.Release();
@@ -204,7 +204,7 @@ public class ConcurrentLocker<TKey> : IConcurrentLocker<TKey>
 
     /// <summary> Removes the key from internal dictionary. </summary>
     /// <param name="key">  The identifier. </param>
-    /// <returns>   True if it succeeds, false if it fails. </returns>
+    /// <returns> True if it succeeds, false if it fails. </returns>
     protected internal bool RemoveKey(TKey key)
     {
         using (new SlimLockWriterGuard(_readerWriterLock))
@@ -246,7 +246,7 @@ public class ConcurrentLocker<TKey> : IConcurrentLocker<TKey>
 
     /// <summary> Wait for semaphore asynchronously. </summary>
     /// <param name="semaphoreWrapper"> The semaphore wrapper. </param>
-    /// <returns>   The disposable lock object. </returns>
+    /// <returns> The disposable lock object. </returns>
     protected async Task<IDisposable> WaitForSemaphoreAsync(SemaphoreWrapper semaphoreWrapper)
     {
         // Note, the returned UsageMonitor will on release calls SemaphoreWrapper.Release(),

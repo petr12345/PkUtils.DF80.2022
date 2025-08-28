@@ -41,7 +41,7 @@ public class Win32Window(IntPtr handle) : IWin32Window, System.Windows.Interop.I
     nint System.Windows.Interop.IWin32Window.Handle => _handle;
 
     /// <summary> Gets focused window, if there is any. </summary>
-    /// <returns>  The IWin32Window representing focused window handle. </returns>
+    /// <returns> The IWin32Window representing focused window handle. </returns>
     public static IWin32Window GetFocusedWindow()
     {
         return (User32.GetFocusedControl() as IWin32Window) ?? new Win32Window(User32.GetFocus());

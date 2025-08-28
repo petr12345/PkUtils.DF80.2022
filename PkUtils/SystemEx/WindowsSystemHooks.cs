@@ -63,7 +63,7 @@ public class WindowsSystemHookMouse : WindowsSystemHookBase
     ///
     /// <param name="m"> A MOUSEHOOKSTRUCT structure, containing information about a mouse event passed to a
     ///   WH_MOUSE hook procedure. </param>
-    /// <returns>  True if the message has been completely handled by this hook instance, 
+    /// <returns> True if the message has been completely handled by this hook instance, 
     ///            and the caller should NOT proceed passing it to other hooks in the chain; 
     ///            false otherwise. Use 'true' value with care! </returns>
     protected virtual bool MouseHookMeth(WinApi.Win32.MOUSEHOOKSTRUCT m)
@@ -151,7 +151,7 @@ public class WindowsSystemHookKeyboard : WindowsSystemHookBase
     /// <seealso href="http://msdn.microsoft.com/en-us/library/windows/desktop/ms646267(v=vs.85).aspx#_win32_Keystroke_Message_Flags">
     /// Keystroke Message Flags
     /// </seealso>
-    /// <returns>  True if the message has been completely handled by this hook instance, 
+    /// <returns> True if the message has been completely handled by this hook instance, 
     ///            and the caller should NOT proceed passing it to other hooks in the chain; 
     ///            false otherwise. Use 'true' value with care! </returns>
     protected virtual bool KeyboardHookMeth(IntPtr wParam, IntPtr lParam)
@@ -247,7 +247,7 @@ public class WindowsSystemHookMouseLL : WindowsSystemHookBase
     /// </summary>
     /// <param name="wParam"> The identifier of the mouse message. </param>
     /// <param name="mss">A structure containing information about a low-level mouse input event.</param>
-    /// <returns>  True if the message has been completely handled by this hook instance, 
+    /// <returns> True if the message has been completely handled by this hook instance, 
     ///            and the caller should NOT proceed passing it to other hooks in the chain; 
     ///            false otherwise. Use 'true' value with care! </returns>
     protected virtual bool MouseLLHookMeth(IntPtr wParam, Win32.MSLLHOOKSTRUCT mss)
@@ -344,7 +344,7 @@ public class WindowsSystemHookKbLL : WindowsSystemHookBase
     /// In a derived class you will overwrite this method.
     /// </summary>
     /// <param name="kbs">A structure containing information about a low-level keyboard input event.</param>
-    /// <returns>  True if the message has been completely handled by this hook instance, 
+    /// <returns> True if the message has been completely handled by this hook instance, 
     ///            and the caller should NOT proceed passing it to other hooks in the chain; 
     ///            false otherwise. Use 'true' value with care! </returns>
     protected virtual bool KeyboardLLHookMeth(WinApi.Win32.KBDLLHOOKSTRUCT kbs)
@@ -426,7 +426,7 @@ public class WindowsSystemHookCallWndProcRet : WindowsSystemHookBase
     /// <summary> A virtual method called by a delegate <see cref="CoreWndProcRetHookProc"/>.
     /// In a derived class you will overwrite this method. </summary>
     /// <param name="msg"> Message parameters passed to a WH_CALLWNDPROCRET hook procedure. </param>
-    /// <returns>  True if the message has been completely handled by this hook instance, 
+    /// <returns> True if the message has been completely handled by this hook instance, 
     ///            and the caller should NOT proceed passing it to other hooks in the chain; 
     ///            false otherwise. Use 'true' value with care! </returns>
     /// <remarks> For more details, see

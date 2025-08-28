@@ -77,7 +77,7 @@ public static class StringExtension
     /// <param name="ignoreCase"> (Optional) True to ignore case. </param>
     /// <remarks> By default, ignoreCase = false, because an enum can contain values which differ only in case. </remarks>
     ///
-    /// <returns>   If succeeded, returns converted value of <paramref name="value"/> to T. </returns>
+    /// <returns> If succeeded, returns converted value of <paramref name="value"/> to T. </returns>
     public static T Parse<T>(this string value, bool ignoreCase = false)
         where T : Enum
     {
@@ -98,7 +98,7 @@ public static class StringExtension
     /// <param name="fallBackValue">    The fall-back value. </param>
     /// <param name="ignoreCase">   (Optional) True to ignore case. </param>
     ///
-    /// <returns>   If succeeded, returns converted value of <paramref name="value"/> to T. </returns>
+    /// <returns> If succeeded, returns converted value of <paramref name="value"/> to T. </returns>
     public static T ToEnum<T>(this string value, T fallBackValue, bool ignoreCase = false)
         where T : struct, Enum
     {
@@ -112,7 +112,7 @@ public static class StringExtension
     ///
     /// <param name="str">  The string to be converted. </param>
     ///
-    /// <returns>   Str as a T. </returns>
+    /// <returns> Str as a T. </returns>
     public static T ToType<T>(this string str)
     {
         TypeConverter converter = TypeDescriptor.GetConverter(typeof(T));
@@ -125,7 +125,7 @@ public static class StringExtension
     /// <param name="str">              The string to be converted. </param>
     /// <param name="fallBackValue">    The fallback value. </param>
     ///
-    /// <returns>   Str as a T. </returns>
+    /// <returns> Str as a T. </returns>
     public static T ToType<T>(this string str, T fallBackValue)
     {
         try
@@ -144,7 +144,7 @@ public static class StringExtension
     /// <param name="str">      The examined string. </param>
     /// <param name="value">    [out] The value. </param>
     ///
-    /// <returns>   True if it succeeds, false if it fails. </returns>
+    /// <returns> True if it succeeds, false if it fails. </returns>
     public static bool TryToType<T>(this string str, out T value)
     {
         TypeConverter converter = TypeDescriptor.GetConverter(typeof(T));
@@ -170,7 +170,7 @@ public static class StringExtension
     ///
     /// <param name="str">  The examined string. </param>
     ///
-    /// <returns>   True if null or whitespace, false if not. </returns>
+    /// <returns> True if null or whitespace, false if not. </returns>
     public static bool IsNullOrWhitespace(this string str)
     {
         return (str == null) || string.IsNullOrWhiteSpace(str);
@@ -181,7 +181,7 @@ public static class StringExtension
     /// <remarks> For null or empty string returns true. </remarks>
     /// <param name="str">    The examined string. </param>
     ///
-    /// <returns>   True if just alpha numeric or underscore, false if not. </returns>
+    /// <returns> True if just alpha numeric or underscore, false if not. </returns>
     public static bool IsAlphaNumericOrUnderscore(this string str)
     {
         return (string.IsNullOrEmpty(str) || str.All(ch => ch.IsAlphaNumericOrUnderscore()));
@@ -226,7 +226,7 @@ public static class StringExtension
     /// <param name="str">              The string to be converted. Can be null or empty. </param>
     /// <param name="characterList">    Sequence of characters to be removed. Can be null or empty. </param>
     ///
-    /// <returns>   A string. </returns>
+    /// <returns> A string. </returns>
     public static string RemoveCharacters(this string str, IEnumerable<char> characterList)
     {
         string result;
@@ -358,7 +358,7 @@ public static class StringExtension
     /// <param name="newValue">     The string to replace all occurrences of oldValue. </param>
     /// <param name="comparison">   The string comparison to be used. </param>
     ///
-    /// <returns>   A new string after replace. </returns>
+    /// <returns> A new string after replace. </returns>
     ///
     /// <exception cref="ArgumentNullException"> Thrown when any of input string arguments is null.</exception>
     /// <exception cref="ArgumentException"> Thrown when the argument <paramref name="comparison"/> has invalid value.</exception>/// 

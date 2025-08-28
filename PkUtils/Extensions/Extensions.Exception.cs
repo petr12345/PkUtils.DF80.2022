@@ -25,7 +25,7 @@ public static class ExceptionExtension
     /// <param name="ex">  The exception this is all about. Can be null. </param>
     /// <param name="includeThisOne"> (Optional) True to include, false to exclude this <paramref name="ex"/>. </param>
     ///
-    /// <returns>   An enumerator that allows foreach to be used to process all inner exceptions. </returns>
+    /// <returns> An enumerator that allows foreach to be used to process all inner exceptions. </returns>
     public static IEnumerable<Exception> AllInnerExceptions(this Exception ex, bool includeThisOne = true)
     {
         // iterates only over items required by the caller
@@ -62,7 +62,7 @@ public static class ExceptionExtension
     /// <param name="includeStackTrace"> If true, the output text will contain stack trace of this exception and
     /// all involved inner exceptions. </param>
     ///
-    /// <returns>   The text representation of the exception and inner exceptions. </returns>
+    /// <returns> The text representation of the exception and inner exceptions. </returns>
     public static string ExceptionDetails(this Exception ex, bool includeStackTrace)
     {
         string strType, strMsg;

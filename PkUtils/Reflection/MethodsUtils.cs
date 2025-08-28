@@ -180,7 +180,7 @@ public static class MethodsUtils
     /// <param name="methodName"> The name of the method. </param>
     /// <param name="args"> An array of objects that are the arguments to pass to the method represented, or null,
     /// if the method represented does not require arguments. </param>
-    /// <returns>   Returns the result of method invocation. </returns>
+    /// <returns> Returns the result of method invocation. </returns>
     public static object? CallBaseBase<TD>(
         this object obj,
         string methodName,
@@ -231,7 +231,7 @@ public static class MethodsUtils
     /// <param name="methodName"> The name of the method. </param>
     /// <param name="args"> An array of objects that are the arguments to pass to the method represented, or null,
     /// if the method represented does not require arguments. </param>
-    /// <returns>   Returns the result of method invocation. </returns>
+    /// <returns> Returns the result of method invocation. </returns>
     public static TResult CallBaseBase<TD, TResult>(
         this object obj,
         string methodName,

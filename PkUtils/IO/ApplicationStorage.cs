@@ -447,7 +447,7 @@ public class ApplicationStorage<T> : Dictionary<string, T>
 
     /// <summary> A virtual method that creates underlying IsolatedStorageFile for either reading or writing. </summary>
     ///
-    /// <returns>  The created IsolatedStorageFile file. </returns>
+    /// <returns> The created IsolatedStorageFile file. </returns>
     protected virtual IsolatedStorageFile GetStorageFile()
     {
         IsolatedStorageFile isoStore = IsolatedStorageFile.GetStore(this.Scope, null, null);

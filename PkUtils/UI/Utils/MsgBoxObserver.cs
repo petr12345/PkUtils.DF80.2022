@@ -260,7 +260,7 @@ public class MsgBoxObserver : SystemEventObserver<MsgBoxObserver.EventMsgBoxActi
     /// </summary>
     /// <remarks>   Derived class could overwrite this method in case any additional functionality needed. </remarks>
     /// <param name="hWnd"> The MessageBox handle. </param>
-    /// <returns>   True if valid handle from the dictionary has been provided, false otherwise. </returns>
+    /// <returns> True if valid handle from the dictionary has been provided, false otherwise. </returns>
     protected virtual bool RemoveMessageBox(IntPtr hWnd)
     {
         lock (Locker)
@@ -297,7 +297,7 @@ public class MsgBoxObserver : SystemEventObserver<MsgBoxObserver.EventMsgBoxActi
 
     /// <summary> Implementation helper determining if the window has text, and is not Button. </summary>
     /// <param name="hWnd"> A given window handle. </param>
-    /// <returns>   True if yes, false if no. </returns>
+    /// <returns> True if yes, false if no. </returns>
     private static bool HasText(IntPtr hWnd)
     {
         string strText;

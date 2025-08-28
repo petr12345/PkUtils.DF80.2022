@@ -38,7 +38,7 @@ namespace PK.PkUtils.UI.TipHandlers
             ///
             /// <param name="wParam">   The identifier of the mouse message. </param>
             /// <param name="mss">      A structure containing information about a low-level mouse input event. </param>
-            /// <returns>  True if the message has been completely handled by this hook instance, 
+            /// <returns> True if the message has been completely handled by this hook instance, 
             ///            and the caller should NOT proceed passing it to other hooks in the chain; 
             ///            false otherwise. Use 'true' value with care! </returns>
             protected override bool MouseLLHookMeth(IntPtr wParam, Win32.MSLLHOOKSTRUCT mss)

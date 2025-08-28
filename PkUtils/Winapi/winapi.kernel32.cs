@@ -1290,7 +1290,7 @@ public static class Kernel32
     /// inherited by child processes.
     /// </summary>
     ///
-    /// <returns>   The current thread. </returns>
+    /// <returns> The current thread. </returns>
     [DllImport("kernel32", SetLastError = true)]
     public static extern IntPtr GetCurrentThread();
 
@@ -1316,7 +1316,7 @@ public static class Kernel32
     /// <param name="dwExitCode">   The exit code for the thread. 
     ///                             Use the GetExitCodeThread function to retrieve a thread's exit value. </param>
     ///
-    /// <returns>   True if it succeeds, false if it fails. </returns>
+    /// <returns> True if it succeeds, false if it fails. </returns>
     [DllImport("kernel32", SetLastError = true)]
     public static extern bool TerminateThread(
         IntPtr hThread,
@@ -1338,7 +1338,7 @@ public static class Kernel32
     /// <param name="hProcess"> A handle to the process to be terminated. </param>
     /// <param name="uExitCode"> The exit code for the process and all threads. </param>
     ///
-    /// <returns>   True if it succeeds, false if it fails. </returns>
+    /// <returns> True if it succeeds, false if it fails. </returns>
     ///
     /// <seealso href="https://docs.microsoft.com/en-us/windows/win32/api/processthreadsapi/nf-processthreadsapi-terminateprocess">
     /// MSDN about TerminateProcess function.
@@ -1778,7 +1778,7 @@ public static class Kernel32
     public static extern IntPtr GetCurrentProcess();
 
     /// <summary> Retrieves the process identifier of the calling process. </summary>
-    /// <returns>   The current process identifier. </returns>
+    /// <returns> The current process identifier. </returns>
     [DllImport("kernel32", SetLastError = true)]
     private static extern uint GetCurrentProcessId();
 
@@ -2519,7 +2519,7 @@ public static class Kernel32
     /// <param name="add">     If this parameter is true, the handler is added; if it is false, the handler is
     /// removed. </param>
     ///
-    /// <returns>   True if it succeeds, false if it fails. </returns>
+    /// <returns> True if it succeeds, false if it fails. </returns>
     [DllImport("kernel32", SetLastError = true)]
     [return: MarshalAs(UnmanagedType.Bool)]
     public static extern bool SetConsoleCtrlHandler(

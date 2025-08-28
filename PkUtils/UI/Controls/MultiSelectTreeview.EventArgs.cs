@@ -53,11 +53,11 @@ public partial class MultiSelectTreeView : TreeView
         public StackTrace StackTrace { get; }
 
         /// <summary> Gets selected nodes information, as output string. </summary>
-        /// <returns>  The selected nodes information. </returns>
+        /// <returns> The selected nodes information. </returns>
         public string GetSelectedNodesInfo() => MultiSelectTreeView.GetSelectedNodesInfo(SelectedNodes);
 
         /// <summary>   Returns a string that represents the current object. </summary>
-        /// <returns>   A string that represents the current object. </returns>
+        /// <returns> A string that represents the current object. </returns>
         public override string ToString()
         {
             string[] items = [$"TreeView.Name: {TreeView.Name}", $"{GetSelectedNodesInfo()}"];
@@ -91,7 +91,7 @@ public partial class MultiSelectTreeView : TreeView
         public Point Location { get; }
 
         /// <summary>   Returns a string that represents the current object. </summary>
-        /// <returns>   A string that represents the current object. </returns>
+        /// <returns> A string that represents the current object. </returns>
         public override string ToString()
         {
             string clickedNodeInfo = (ClickedNode is null)

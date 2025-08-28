@@ -68,14 +68,14 @@ public class ComplexResult : ComplexErrorResult<object>, IComplexResult
     #region Static_Factory_methods
 
     /// <summary>
-    /// Static factory-like method, creates either a "failed" or "successful"  instance of ComplexResult,
+    /// Static factory-like method, creates either a "failed" or "successful" instance of ComplexResult,
     /// depending on <paramref name="errorMessage"/> argument.
     /// </summary>
     ///
     /// <param name="errorMessage"> Message describing the error. It may be null or empty; in that case a
-    /// successful"  ComplexResult is created; otherwise, failed result is created. </param>
+    /// "successful" ComplexResult is created; otherwise, failed result is created. </param>
     ///
-    /// <returns>   The new ComplexResult instance. </returns>
+    /// <returns> The new ComplexResult instance. </returns>
     public static IComplexResult Create(string errorMessage)
     {
         ComplexResult result;
@@ -123,7 +123,7 @@ public class ComplexResult : ComplexErrorResult<object>, IComplexResult
     ///
     /// <param name="rhs"> The other client result. Can't be null. </param>
     ///
-    /// <returns>   The new failed ComplexResult instance. </returns>
+    /// <returns> The new failed ComplexResult instance. </returns>
     public static IComplexResult CreateFailed(IComplexResult rhs)
     {
         CheckIsFailed(rhs);
@@ -151,7 +151,7 @@ public class ComplexResult : ComplexErrorResult<object>, IComplexResult
     #endregion // Static_Factory_methods
 
     /// <summary> Returns a string that represents the current object. </summary>
-    /// <returns>   A string that represents the current object. </returns>
+    /// <returns> A string that represents the current object. </returns>
     public override string ToString()
     {
         string result;
@@ -238,7 +238,7 @@ public class ComplexResult<T> : ComplexErrorResult<T, object>, IComplexResult<T>
     /// <param name="errorMessage"> Message describing the error. Can't be null or empty. </param>
     /// <param name="errorDetails"> (Optional) The error details, if available. </param>
     ///
-    /// <returns>   The new "failed" instance. </returns>
+    /// <returns> The new "failed" instance. </returns>
     public static new IComplexResult<T> CreateFailed(string errorMessage, object errorDetails = null)
     {
         ComplexResult<T> result = new(errorMessage, errorDetails);
@@ -264,8 +264,8 @@ public class ComplexResult<T> : ComplexErrorResult<T, object>, IComplexResult<T>
     /// </summary>
     /// <exception cref="ArgumentException"> Thrown when argument <paramref name="rhs"/> is not in failed state. </exception>
     /// <exception cref="ArgumentNullException"> Thrown when required argument <paramref name="rhs"/> is null. </exception>
-    /// <param name="rhs"> The other comples result. Can't be null. </param>
-    /// <returns>   The new failed ComplexResult instance. </returns>
+    /// <param name="rhs"> The other complex result. Can't be null. </param>
+    /// <returns> The new failed ComplexResult instance. </returns>
     public static IComplexResult<T> CreateFailed(IComplexResult rhs)
     {
         CheckIsFailed(rhs);

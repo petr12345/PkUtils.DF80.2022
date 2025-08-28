@@ -24,7 +24,7 @@ public interface IConcurrentLocker<in TKey> : IDisposableEx
     /// <param name="millisecondsTimeout"> The number of milliseconds to wait, Infinite (-1) to wait indefinitely,
     /// or zero to test the state of the wait handle and return immediately. </param>
     ///
-    /// <returns>   The acquired lock. </returns>
+    /// <returns> The acquired lock. </returns>
     Task<IDisposable> LockAsync(TKey key, int millisecondsTimeout);
 
     /// <summary> Acquire a lock that is specific for <paramref name="key"/>. </summary>
@@ -34,6 +34,6 @@ public interface IConcurrentLocker<in TKey> : IDisposableEx
     /// or zero to test the state of the wait handle and return immediately. </param>
     /// <param name="cancellationToken">    A token that allows processing to be canceled. </param>
     ///
-    /// <returns>   The acquired lock. </returns>
+    /// <returns> The acquired lock. </returns>
     Task<IDisposable> LockAsync(TKey key, int millisecondsTimeout, CancellationToken cancellationToken);
 }

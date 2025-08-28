@@ -51,7 +51,7 @@ public class FolderNode : IFolderNode
 
     /// <summary> Normalize root path. </summary>
     /// <param name="rootPath"> Full pathname of the root file. Can't be null. </param>
-    /// <returns>   A normalized root path string. </returns>
+    /// <returns> A normalized root path string. </returns>
     public static string NormalizeRootPath(string rootPath)
     {
         ArgumentNullException.ThrowIfNullOrEmpty(rootPath);
@@ -70,7 +70,7 @@ public class FolderNode : IFolderNode
     /// <summary> Builds file tree. </summary>
     /// <param name="files"> The sequence of all files in the tree. Can't be null. </param>
     /// <param name="rootPath"> Full pathname of the root file. Can't be null. </param>
-    /// <returns>   A root FolderNode. </returns>
+    /// <returns> A root FolderNode. </returns>
     public static FolderNode BuildFileTree(IEnumerable<FileInfo> files, string rootPath)
     {
         ArgumentNullException.ThrowIfNull(files);

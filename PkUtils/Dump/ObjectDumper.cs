@@ -237,7 +237,7 @@ public class ObjectDumper
 
     /// <summary> Dumps consequence of bytes into string containing their hexadecimal codes.</summary>
     /// <param name="data"> The data to dump. </param>
-    /// <returns>   A resulting string, like "01 02 03 ". </returns>
+    /// <returns> A resulting string, like "01 02 03 ". </returns>
     public static string DumpHex(IEnumerable<byte> data)
     {
         return (data is null) ? string.Empty : data.Join(" ", b => $"{b:X2}");

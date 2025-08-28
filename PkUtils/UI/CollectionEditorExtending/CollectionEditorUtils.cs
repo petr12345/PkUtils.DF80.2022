@@ -29,7 +29,7 @@ public static class CollectionEditorUtils
     /// <summary> Query if 'hwnd' is collection editor form. </summary>
     /// <param name="hwnd"> The examined window handle. </param>
     /// <param name="form"> [out] The form. </param>
-    /// <returns>   True if collection editor form, false if not. </returns>
+    /// <returns> True if collection editor form, false if not. </returns>
     public static bool IsCollectionEditorForm(IntPtr hwnd, out Form form)
     {
         Control ctrl = Control.FromHandle(hwnd);
@@ -50,7 +50,7 @@ public static class CollectionEditorUtils
 
     /// <summary> Query if <paramref name="form"/> is collection editor form. </summary>
     /// <param name="form"> The examined Form. </param>
-    /// <returns>   True if <paramref name="form"/> is collection editor form, false if not. </returns>
+    /// <returns> True if <paramref name="form"/> is collection editor form, false if not. </returns>
     public static bool IsCollectionEditorForm(Form form)
     {
         return (form != null) && CollectionFormType.IsInstanceOfType(form);
@@ -63,7 +63,7 @@ public static class CollectionEditorUtils
     /// </remarks>
     /// <exception cref="ArgumentNullException"> Thrown when <paramref name="collectionForm"/> is null. </exception>
     /// <param name="collectionForm"> The collection form. Can't be null. </param>
-    /// <returns>   The found property grid, or null. </returns>
+    /// <returns> The found property grid, or null. </returns>
     public static PropertyGrid FindPropertyGrid(Form collectionForm)
     {
         ArgumentNullException.ThrowIfNull(collectionForm);
@@ -78,7 +78,7 @@ public static class CollectionEditorUtils
     /// <exception cref="ArgumentNullException"> Thrown when <paramref name="collectionForm"/> is null. </exception>
     /// <typeparam name="T"> Generic type parameter. </typeparam>
     /// <param name="collectionForm"> The collection form. Can't be null. </param>
-    /// <returns>   The collection form items. </returns>
+    /// <returns> The collection form items. </returns>
     public static IReadOnlyList<T> GetCollectionFormItems<T>(Form collectionForm)
     {
         ArgumentNullException.ThrowIfNull(collectionForm);

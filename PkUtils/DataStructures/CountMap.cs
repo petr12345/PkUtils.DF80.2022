@@ -229,7 +229,7 @@ public class CountMap : Singleton<CountMap>, IDisposable
     /// does not support the interface <see cref="PK.PkUtils.Interfaces.ICountable"/> </exception>
     /// <param name="t"> The type for which the information is modified. </param>
     /// <param name="orderIndex"> [out] Resulting zero-based index (creation index) of a new instance. </param>
-    /// <returns>   Resulting count of instances of given type. </returns>
+    /// <returns> Resulting count of instances of given type. </returns>
     public int IncrementCount(Type t, out int orderIndex)
     {
         ArgumentNullException.ThrowIfNull(t);

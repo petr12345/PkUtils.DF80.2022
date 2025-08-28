@@ -85,7 +85,7 @@ public static class ObjectExtension
     /// <param name="nullSubstitute"> (Optional) The value to be returned when <paramref name="obj"/> is null.
     /// If null, {null} will be used. </param>
     ///
-    /// <returns>  A string. </returns>
+    /// <returns> A string. </returns>
     public static string AsString<T>(this T obj, string nullSubstitute = null)
     {
         string result;
@@ -102,7 +102,7 @@ public static class ObjectExtension
     /// <typeparam name="T"> Generic type parameter. </typeparam>
     /// <param name="obj"> The object to act on. Can be null. </param>
     /// <param name="objName"> (Optional) Name of the object. </param>
-    /// <returns>   A string. </returns>
+    /// <returns> A string. </returns>
     public static string AsNameValue<T>(this T obj, [CallerArgumentExpression(nameof(obj))] string objName = null)
     {
         return $"{objName} = {obj.AsString()}";
@@ -117,7 +117,7 @@ public static class ObjectExtension
     /// <param name="sortAlphabetically">   (Optional) True to sort properties alphabetically. </param>
     /// <param name="nullSubstitute"> (Optional) The value to be returned when <paramref name="obj"/> is null. 
     ///                               If null, {null} will be used. </param>
-    /// <returns>   A list of properties with values, like "Age: 32, Name: Paul". </returns>
+    /// <returns> A list of properties with values, like "Age: 32, Name: Paul". </returns>
     public static string PropertyList<T>(
         this T obj,
         bool sortAlphabetically = false,

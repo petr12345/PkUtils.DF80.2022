@@ -64,7 +64,7 @@ public static class EnumerableExtensions
     /// <summary> An extension method that query if 'source' contains null element. </summary>
     /// <param name="source">   A collection being checked. may be null ( in such case, return value is false). </param>
     /// <typeparam name="T"> The type of the elements of source. </typeparam>
-    /// <returns>  True if there is any null element, false if not. </returns>
+    /// <returns> True if there is any null element, false if not. </returns>
     public static bool ContainsNull<T>(this IEnumerable<T> source) where T : class
     {
         return (source != null) && (source.Any(x => x == null));
@@ -108,7 +108,7 @@ public static class EnumerableExtensions
     /// <param name="source"> A collection being checked. It may be null or empty. </param>
     /// <param name="item"> The single item being compared with first element. </param>
     /// <typeparam name="T"> The type of the elements of source. </typeparam>
-    /// <returns>  True if source starts with given item, false if not. </returns>
+    /// <returns> True if source starts with given item, false if not. </returns>
     public static bool StartsWith<T>(this IEnumerable<T> source, T item)
     {
         bool result;
@@ -223,7 +223,7 @@ public static class EnumerableExtensions
     /// <param name="source">   A collection where matching element is searched. Can't be null. </param>
     /// <param name="predicate">  The predicate used. Can't be null. </param>
     ///
-    /// <returns>   Found index of matching element, or -1 if that value is not found. </returns>
+    /// <returns> Found index of matching element, or -1 if that value is not found. </returns>
     public static int IndexOf<T>(this IEnumerable<T> source, Func<T, bool> predicate)
     {
         ArgumentNullException.ThrowIfNull(source);

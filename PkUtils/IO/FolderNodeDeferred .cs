@@ -67,7 +67,7 @@ public class FolderNodeDeferred : IFolderNode
 
     /// <summary> Normalize root path. </summary>
     /// <param name="rootPath"> Full pathname of the root file. Can't be null. </param>
-    /// <returns>   A normalized root path string. </returns>
+    /// <returns> A normalized root path string. </returns>
     public static string NormalizeRootPath(string rootPath)
     {
         ArgumentNullException.ThrowIfNullOrEmpty(rootPath);

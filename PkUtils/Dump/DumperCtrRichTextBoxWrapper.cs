@@ -46,7 +46,7 @@ public class DumperCtrRichTextBoxWrapper : DumperCtrlTextBoxBaseWrapper<RichText
 
     /// <summary>   Gets color for log entry. </summary>
     /// <param name="entry"> The log entry. Can't be null. </param>
-    /// <returns>   The color for entry. </returns>
+    /// <returns> The color for entry. </returns>
     protected virtual Color? GetColorForEntry(LogEntry entry)
     {
         ArgumentNullException.ThrowIfNull(entry);

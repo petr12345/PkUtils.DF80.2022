@@ -15,7 +15,7 @@ public interface ICmdParametersProvider
     /// <typeparam name="T">    Generic type parameter. </typeparam>
     /// <param name="name"> The parameter name. Can't be null or empty. </param>
     ///
-    /// <returns>   The parameter value. </returns>
+    /// <returns> The parameter value. </returns>
     T GetParameter<T>(string name);
 
     /// <summary> Gets parameter value or default value <paramref name="defaultValue"/>. </summary>
@@ -27,7 +27,7 @@ public interface ICmdParametersProvider
     /// <param name="name"> The parameter name. Can't be null or empty. </param>
     /// <param name="defaultValue"> The default value. </param>
     ///
-    /// <returns>   The retrieved parameter value or default <paramref name="defaultValue"/>. </returns>
+    /// <returns> The retrieved parameter value or default <paramref name="defaultValue"/>. </returns>
     T GetParameterOrDefault<T>(string name, T defaultValue);
 
     /// <summary> Attempts to get parameter value T from the given parameter name. </summary>
@@ -39,6 +39,6 @@ public interface ICmdParametersProvider
     /// <param name="name"> The parameter name. Can't be null or empty. </param>
     /// <param name="value">    [out] The retrieved value. </param>
     ///
-    /// <returns>   True if it succeeds, false if it fails. </returns>
+    /// <returns> True if it succeeds, false if it fails. </returns>
     bool TryGetParameter<T>(string name, out T value);
 }

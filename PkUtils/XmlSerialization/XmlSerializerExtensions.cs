@@ -31,7 +31,7 @@ namespace PK.PkUtils.XmlSerialization
         /// <param name="instance"> The instance which performs serialization. </param>
         /// <param name="xml">      The <see cref="string"/> that contains the XML document to deserialize. </param>
         ///
-        /// <returns>   The deserialized object. </returns>
+        /// <returns> The deserialized object. </returns>
         public static T Deserialize<T>(this XMLSerializerAdapter<T> instance, string xml) where T : new()
         {
             ArgumentNullException.ThrowIfNull(instance);

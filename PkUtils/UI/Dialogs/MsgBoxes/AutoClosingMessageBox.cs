@@ -19,7 +19,7 @@ public class AutoClosingMessageBox
         /// <param name="timeout"> The timeout. </param>
         /// <param name="buttons"> (Optional) The buttons. </param>
         /// <param name="defaultResult"> (Optional) The default result. </param>
-        /// <returns>   A DialogResult. </returns>
+        /// <returns> A DialogResult. </returns>
         DialogResult Show(TimeSpan timeout, MessageBoxButtons buttons = MessageBoxButtons.OK, DialogResult defaultResult = DialogResult.None);
     }
 
@@ -64,7 +64,7 @@ public class AutoClosingMessageBox
     /// <param name="buttons"> (Optional) The buttons. </param>
     /// <param name="icon"> (Optional) The icon. </param>
     /// <param name="defaultResult"> (Optional) The default result. </param>
-    /// <returns>   A DialogResult. </returns>
+    /// <returns> A DialogResult. </returns>
     public static DialogResult Show(
         string text,
         string caption,
@@ -87,7 +87,7 @@ public class AutoClosingMessageBox
     /// <param name="buttons"> (Optional) The buttons. </param>
     /// <param name="icon"> (Optional) The icon. </param>
     /// <param name="defaultResult"> (Optional) The default result. </param>
-    /// <returns>   A DialogResult. </returns>
+    /// <returns> A DialogResult. </returns>
     public static DialogResult Show(
         IWin32Window owner,
         string text,
@@ -107,7 +107,7 @@ public class AutoClosingMessageBox
     /// <exception cref="ArgumentNullException"> Thrown when one or more required arguments are null. </exception>
     /// <param name="showMethod"> The show method. </param>
     /// <param name="caption"> (Optional) The caption. </param>
-    /// <returns>   An IAutoClosingMessageBox. </returns>
+    /// <returns> An IAutoClosingMessageBox. </returns>
     public static IAutoClosingMessageBox Factory(Func<string, MessageBoxButtons, DialogResult> showMethod, string caption = null)
     {
         ArgumentNullException.ThrowIfNull(showMethod);

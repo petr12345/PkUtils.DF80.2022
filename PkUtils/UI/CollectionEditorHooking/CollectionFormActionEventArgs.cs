@@ -50,7 +50,7 @@ public class CollectionFormActionEventArgs : EventArgs
     public IntPtr Hwnd { get { return Info.Hwnd; } }
 
     /// <summary> Returns a string that represents the current object. </summary>
-    /// <returns>   A string that represents the current object. </returns>
+    /// <returns> A string that represents the current object. </returns>
     public override string ToString()
     {
         string[] items = [

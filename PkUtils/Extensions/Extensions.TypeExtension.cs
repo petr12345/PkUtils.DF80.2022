@@ -26,7 +26,7 @@ public static class TypeExtension
     ///
     /// <param name="type"> The type to act on. Can‘t be null. </param>
     ///
-    /// <returns>   The generic type name. </returns>
+    /// <returns> The generic type name. </returns>
     public static string GetGenericTypeName(this Type type)
     {
         ArgumentNullException.ThrowIfNull(type);
@@ -53,7 +53,7 @@ public static class TypeExtension
     ///
     /// <param name="type"> The type to act on. Can't be null. </param>
     ///
-    /// <returns>   The generic type name. </returns>
+    /// <returns> The generic type name. </returns>
     public static string GetGenericTypeFullName(this Type type)
     {
         ArgumentNullException.ThrowIfNull(type);

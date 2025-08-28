@@ -103,7 +103,7 @@ public class UsageCounter : IUsageCounter
     }
 
     /// <summary> Unlock that please. </summary>
-    /// <returns>   The amount of remaining references. </returns>
+    /// <returns> The amount of remaining references. </returns>
     public virtual int Release()
     {
         int nResult;

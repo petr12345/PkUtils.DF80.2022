@@ -54,7 +54,7 @@ public abstract class TipHandler : WindowMessageHook
         /// Overrides a method of the base class to specialize the behaviour
         /// </summary>
         /// <param name="m">The structure used by <see cref="Win32.HookType.WH_MOUSE"/> system hook.</param>
-        /// <returns>  True if the message has been completely handled by this hook instance, 
+        /// <returns> True if the message has been completely handled by this hook instance, 
         ///            and the caller should NOT proceed passing it to other hooks in the chain; 
         ///            false otherwise. Use 'true' value with care! </returns>
         protected override bool MouseHookMeth(Win32.MOUSEHOOKSTRUCT m)
@@ -95,7 +95,7 @@ public abstract class TipHandler : WindowMessageHook
         /// <param name="kbs">
         /// The structure used by <see cref="Win32.HookType.WH_KEYBOARD_LL"/> system hook.
         /// </param>
-        /// <returns>  True if the message has been completely handled by this hook instance, 
+        /// <returns> True if the message has been completely handled by this hook instance, 
         ///            and the caller should NOT proceed passing it to other hooks in the chain; 
         ///            false otherwise. Use 'true' value with care! </returns>
         protected override bool KeyboardLLHookMeth(Win32.KBDLLHOOKSTRUCT kbs)
@@ -378,7 +378,7 @@ public abstract class TipHandler : WindowMessageHook
     }
 
     /// <summary> Returns the index of current item. </summary>
-    /// <returns>   The index of currently selected item, or ItemNumber.cNoItem if no item is selected. </returns>
+    /// <returns> The index of currently selected item, or ItemNumber.cNoItem if no item is selected. </returns>
     public uint GetCurItem()
     {
         return _nCurItem;
@@ -642,7 +642,7 @@ public abstract class TipHandler : WindowMessageHook
     ///
     /// <param name="nItem"> The item about which the information is required. </param>
     /// <param name="nSubItem"> The sub-item of the particular item, about which the information is required.  </param>
-    /// <returns>   The item text. </returns>
+    /// <returns> The item text. </returns>
     protected abstract string GetItemText(uint nItem, uint nSubItem);
 
     /// <summary>
@@ -658,7 +658,7 @@ public abstract class TipHandler : WindowMessageHook
     #region Protected Helpers
 
     /// <summary> Determine if the system has left and right mouse buttons swapped. </summary>
-    /// <returns>  True if mouse buttons swapped, false if not. </returns>
+    /// <returns> True if mouse buttons swapped, false if not. </returns>
     protected static bool AreMouseButtonsSwapped()
     {
         int metrics = User32.GetSystemMetrics(Win32.SM.SM_SWAPBUTTON);

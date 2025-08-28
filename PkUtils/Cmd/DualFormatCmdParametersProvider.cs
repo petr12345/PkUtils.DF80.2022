@@ -189,7 +189,7 @@ public class DualFormatCmdParametersProvider : BaseCmdParametersProvider, ICmdPa
     ///</summary>
     /// 
     /// <param name="key"> The key. Can't be null or empty. </param>
-    /// <returns>   A normalized value of <paramref name="key"/>. </returns>
+    /// <returns> A normalized value of <paramref name="key"/>. </returns>
     protected virtual string NormalizeKey(string key)
     {
         ArgumentNullException.ThrowIfNullOrEmpty(key);

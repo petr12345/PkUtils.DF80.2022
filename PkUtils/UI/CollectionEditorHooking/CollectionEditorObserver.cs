@@ -112,7 +112,7 @@ public class CollectionEditorObserver<T> : SystemEventObserver<CollectionFormAct
     /// derived from EditorInfo.
     /// </remarks>
     /// <param name="collectionForm"> The instance of CollectionForm. </param>
-    /// <returns>   True if new key has been added, false otherwise. </returns>
+    /// <returns> True if new key has been added, false otherwise. </returns>
     protected virtual bool AddNewCollectionForm(Form collectionForm)
     {
         ArgumentNullException.ThrowIfNull(collectionForm);
@@ -137,7 +137,7 @@ public class CollectionEditorObserver<T> : SystemEventObserver<CollectionFormAct
     /// Win32.WM.WM_ACTIVATE message.
     /// </remarks>
     /// <param name="hwnd"> The window handle. </param>
-    /// <returns>   True if valid handle from the dictionary has been provided, false otherwise. </returns>
+    /// <returns> True if valid handle from the dictionary has been provided, false otherwise. </returns>
     protected virtual bool UpdateCollectionFormHook(IntPtr hwnd)
     {
         bool result;
@@ -159,7 +159,7 @@ public class CollectionEditorObserver<T> : SystemEventObserver<CollectionFormAct
     /// </summary>
     /// <remarks>   Derived class could overwrite this method in case any additional functionality needed. </remarks>
     /// <param name="hwnd"> The window handle. </param>
-    /// <returns>   True if valid handle from the dictionary has been provided, false otherwise. </returns>
+    /// <returns> True if valid handle from the dictionary has been provided, false otherwise. </returns>
     protected virtual bool RemoveCollectionForm(IntPtr hwnd)
     {
         lock (Locker)
@@ -173,7 +173,7 @@ public class CollectionEditorObserver<T> : SystemEventObserver<CollectionFormAct
 
     /// <summary> Query if 'collectionForm' is collection editor form the <typeparamref name="T"/>. </summary>
     /// <param name="collectionForm"> The collection form. Can't be null. </param>
-    /// <returns>   True if collection editor form for type T, false if not. </returns>
+    /// <returns> True if collection editor form for type T, false if not. </returns>
     protected virtual bool IsCollectionEditorFormForTargetType(Form collectionForm)
     {
         ArgumentNullException.ThrowIfNull(collectionForm);
@@ -261,7 +261,7 @@ public class CollectionEditorObserver<T> : SystemEventObserver<CollectionFormAct
     }
 
     /// <summary> Validates the collection form items. </summary>
-    /// <returns>   True if it succeeds, false if it fails. </returns>
+    /// <returns> True if it succeeds, false if it fails. </returns>
     protected virtual bool ValidateCollectionFormItems()
     {
         return true;

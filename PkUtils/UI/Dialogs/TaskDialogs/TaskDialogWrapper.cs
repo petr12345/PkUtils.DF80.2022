@@ -61,7 +61,7 @@ public static class TaskDialogWrapper
     /// <param name="text"> The text. </param>
     /// <param name="icon"> Icon to display. </param>
     /// <param name="defaultButton"> (Optional) Button to focus. </param>
-    /// <returns>   true for yes button, false for no button. </returns>
+    /// <returns> true for yes button, false for no button. </returns>
     public static bool Question(
         IWin32Window owner,
         string caption,
@@ -92,7 +92,7 @@ public static class TaskDialogWrapper
     /// <param name="noAction"> The action to be executed on No. Can be null. </param>
     /// <param name="icon"> (Optional) Icon to display. If null, QuestionIcon will be used. </param>
     ///
-    /// <returns>  true for yes button, false for no button. </returns>
+    /// <returns> true for yes button, false for no button. </returns>
     public static bool Question(
         IWin32Window owner,
         string caption,
@@ -147,7 +147,7 @@ public static class TaskDialogWrapper
     /// <param name="text"> The text. </param>
     /// <param name="icon"> (Optional) Icon to display. If null, TaskDialogIcon.Information will be used. </param>
     /// <param name="defaultButton"> (Optional) Button to focus. </param>
-    /// <returns>   A DialogResult.Abort, DialogResult.Retry, or DialogResult.Ignore. </returns>
+    /// <returns> A DialogResult.Abort, DialogResult.Retry, or DialogResult.Ignore. </returns>
     public static DialogResult QuestionAbortRetryIgnore(
         IWin32Window owner,
         string caption,

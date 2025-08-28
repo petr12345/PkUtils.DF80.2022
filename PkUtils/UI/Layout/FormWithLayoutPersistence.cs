@@ -104,7 +104,7 @@ public partial class FormWithLayoutPersistence : Form
     }
 
     /// <summary> Resets the layout persister. </summary>
-    /// <returns>   A new FormLayoutPersister. </returns>
+    /// <returns> A new FormLayoutPersister. </returns>
     protected virtual FormLayoutPersister ResetLayoutPersister()
     {
         _frmLayoutPersister = new FormLayoutPersister(this, Dumper);
