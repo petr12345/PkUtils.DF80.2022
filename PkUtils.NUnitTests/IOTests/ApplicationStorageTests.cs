@@ -1,9 +1,7 @@
-﻿// Ignore Spelling: Utils, Roundtrip
-//
-
+﻿// Ignore Spelling: CCA, Roundtrip
+// 
 using PK.PkUtils.Extensions;
 using PK.PkUtils.IO;
-
 
 namespace PK.PkUtils.NUnitTests.IOTests;
 
@@ -21,7 +19,7 @@ public sealed class ApplicationStorageTests
     [Test()]
     public void ApplicationStorage_Constructor_01()
     {
-        ApplicationStorage<string> storage = new ApplicationStorage<string>(
+        ApplicationStorage<string> storage = new(
             ApplicationStorage<string>.DefaultStorageScope, true, string.Empty);
 
         Assert.That(storage.IsEmpty(), Is.True);

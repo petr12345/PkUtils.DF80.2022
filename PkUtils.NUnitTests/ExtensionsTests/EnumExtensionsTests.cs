@@ -1,10 +1,8 @@
-﻿// Ignore Spelling: PkUtils, Utils
+﻿// Ignore Spelling: Utils
 // 
 using System.Collections.ObjectModel;
 using System.Windows.Forms;
 using PK.PkUtils.Extensions;
-
-#pragma warning disable NUnit2005  // warning NUnit2005: Consider using the constraint model, Assert.That(actual, Is.EqualTo(expected)), instead of the classic model
 
 namespace PK.PkUtils.NUnitTests.UtilsTests;
 
@@ -188,9 +186,8 @@ public class EnumExtensionsTests
     [Description("Verifies that GetValues returns all values of a flags enum.")]
     public void EnumEx_GetValues_FlagsTest()
     {
-        IEnumerable<MultiHue> expected = new MultiHue[] {
-            MultiHue.None, MultiHue.Black, MultiHue.Red, MultiHue.Green, MultiHue.Blue
-        };
+        IEnumerable<MultiHue> expected = [
+            MultiHue.None, MultiHue.Black, MultiHue.Red, MultiHue.Green, MultiHue.Blue];
         IEnumerable<MultiHue> actual = Enum.GetValues<MultiHue>();
 
         Assert.That(actual.ToList(), Is.EqualTo(expected.ToList()));

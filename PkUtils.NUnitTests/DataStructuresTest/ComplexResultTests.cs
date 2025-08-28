@@ -1,13 +1,14 @@
 ﻿// Ignore Spelling: Utils
 //
+
 using PK.PkUtils.DataStructures;
 using PK.PkUtils.Interfaces;
 
-
 namespace PK.PkUtils.NUnitTests.DataStructuresTest;
 
+#pragma warning disable IDE0079   // Remove unnecessary suppressions
+#pragma warning disable CA1859    // Change type of variable ...
 
-/// <summary> Unit Test of class ComplexResult. </summary>
 [TestFixture]
 internal class ComplexResultTests
 {
@@ -31,11 +32,11 @@ internal class ComplexResultTests
         var result = new ComplexResult("Error occurred");
 
         // Assert
-        Assert.Multiple(() =>
+        using (Assert.EnterMultipleScope())
         {
             Assert.That(result.Success, Is.False);
             Assert.That(result.ErrorMessage, Is.EqualTo("Error occurred"));
-        });
+        }
     }
 
     [Test, Description("Tests constructor with exception initializes to failure state")]
@@ -48,11 +49,11 @@ internal class ComplexResultTests
         var result = new ComplexResult(ex);
 
         // Assert
-        Assert.Multiple(() =>
+        using (Assert.EnterMultipleScope())
         {
             Assert.That(result.Success, Is.False);
             Assert.That(result.ErrorDetails, Is.EqualTo(ex));
-        });
+        }
     }
 
     [Test, Description("Tests constructor copying from another IComplexResult")]
@@ -65,11 +66,11 @@ internal class ComplexResultTests
         var copy = new ComplexResult(original);
 
         // Assert
-        Assert.Multiple(() =>
+        using (Assert.EnterMultipleScope())
         {
             Assert.That(copy.Success, Is.False);
             Assert.That(copy.ErrorMessage, Is.EqualTo("Original error"));
-        });
+        }
     }
 
     #endregion // Constructor Tests
@@ -96,11 +97,11 @@ internal class ComplexResultTests
         var result = ComplexResult.CreateFailed(originalFailure);
 
         // Assert
-        Assert.Multiple(() =>
+        using (Assert.EnterMultipleScope())
         {
             Assert.That(result.Success, Is.False);
             Assert.That(result.ErrorMessage, Is.EqualTo(originalFailure));
-        });
+        }
     }
 
     [Test, Description("Tests CreateFailed method with exception initializes correctly")]
@@ -113,11 +114,11 @@ internal class ComplexResultTests
         var result = ComplexResult.CreateFailed(ex);
 
         // Assert
-        Assert.Multiple(() =>
+        using (Assert.EnterMultipleScope())
         {
             Assert.That(result.Success, Is.False);
             Assert.That(result.ErrorDetails, Is.EqualTo(ex));
-        });
+        }
     }
 
     [Test, Description("Tests CreateFailed method with another failed result copies failure")]
@@ -131,11 +132,11 @@ internal class ComplexResultTests
         var newFailed = ComplexResult.CreateFailed(failedResult);
 
         // Assert
-        Assert.Multiple(() =>
+        using (Assert.EnterMultipleScope())
         {
             Assert.That(newFailed.Success, Is.False);
             Assert.That(newFailed.ErrorMessage, Is.EqualTo(originalFailure));
-        });
+        }
     }
     #endregion // Factory Methods Tests
 
@@ -231,3 +232,5 @@ internal class ComplexResultTests
     #endregion // Exception Wrapping Tests
     #endregion // Tests
 }
+#pragma warning restore CA1859    // Change type of variable ...
+#pragma warning restore IDE0079   // Remove unnecessary suppressions

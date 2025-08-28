@@ -1,13 +1,14 @@
-﻿// Ignore Spelling: PkUtils, Utils, Inline
+﻿// Ignore Spelling: CCA, Utils, Inline
 // 
+
 using System.Reflection;
 using PK.PkUtils.Reflection;
 
-#pragma warning disable IDE0079   // Remove unnecessary suppressions
 #pragma warning disable NUnit2045 // Use Assert.Multiple
 #pragma warning disable CA2211    // Non-constant fields should not be visible
-#pragma warning disable IDE0300   // Simplify collection initialization
 #pragma warning disable IDE0018   // Inline variable declaration
+#pragma warning disable IDE0090   // 'new' expression can be simplified
+#pragma warning disable IDE0300   // Simplify collection initialization
 #pragma warning disable IDE0305   // Collection initialization can be simplified
 
 namespace PK.PkUtils.NUnitTests.ReflectionTests;
@@ -22,7 +23,6 @@ public class FieldsUtilsTest
     /// <summary>
     /// An example of base class with static fields.
     /// </summary>
-    [CLSCompliant(false)]
     public class A
     {
         public static int _a_public;
@@ -47,7 +47,6 @@ public class FieldsUtilsTest
     /// <summary>
     /// An example of derived class with static fields.
     /// </summary>
-    [CLSCompliant(false)]
     public class B : A
     {
         public static int _b_public;
@@ -72,7 +71,6 @@ public class FieldsUtilsTest
     /// <summary>
     /// An example of base class with non-static fields.
     /// </summary>
-    [CLSCompliant(false)]
     public class C
     {
         public int _c_public;
@@ -97,7 +95,6 @@ public class FieldsUtilsTest
     /// <summary>
     /// An example of derived class with non-static fields.
     /// </summary>
-    [CLSCompliant(false)]
     public class D : C
     {
         public int _d_public;
@@ -771,9 +768,9 @@ public class FieldsUtilsTest
     #endregion // Accessing_FieldInfo_Full_Scope_tests
 }
 
+#pragma warning restore IDE0018
+#pragma warning restore IDE0090
+#pragma warning restore IDE0300
 #pragma warning restore IDE0305
-#pragma warning restore IDE0018 // Inline variable declaration
-#pragma warning restore IDE0300 // Simplify collection initialization
-#pragma warning restore CA2211 // Non-constant fields should not be visible
-#pragma warning restore NUnit2045 // Use Assert.Multiple
-#pragma warning restore IDE0079
+#pragma warning restore CA2211
+#pragma warning restore NUnit2045

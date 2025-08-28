@@ -1,4 +1,4 @@
-﻿// Ignore Spelling: PK, Subfolder, subfolders, SubfoldersDictionary, Utils
+﻿// Ignore Spelling: CCA, Subfolder, subfolders, SubfoldersDictionary, Utils
 // 
 using PK.PkUtils.Interfaces;
 using PK.PkUtils.IO;
@@ -75,12 +75,12 @@ public class FolderNodeTests
         // Act
         FolderNode result = FolderNode.BuildFileTree([], normalizedRoot);
 
-        Assert.Multiple(() =>
+        using (Assert.EnterMultipleScope())
         {
             Assert.That(result.Name, Is.EqualTo(normalizedRoot));
             Assert.That(result.Files, Is.Empty);
             Assert.That(result.Subfolders, Is.Empty);
-        });
+        }
     }
 
     /// <summary>
@@ -106,14 +106,14 @@ public class FolderNodeTests
         IFolderNode? folderB = subfoldersDict["folderA"].Subfolders.FirstOrDefault(f => f.Name == "folderB");
 
         // Assert
-        Assert.Multiple(() =>
+        using (Assert.EnterMultipleScope())
         {
             Assert.That(subfoldersDict, Contains.Key("folderA"));
             Assert.That(folderB, Is.Not.Null);
             Assert.That(result.Files.Any(f => f.Name == "file1.txt"), Is.True);
             Assert.That(subfoldersDict["folderA"].Files.Select(f => f.Name), Contains.Item("file2.txt"));
             Assert.That(folderB?.Files.Select(f => f.Name), Contains.Item("file3.txt"));
-        });
+        }
     }
 
     /// <summary>
@@ -150,7 +150,7 @@ public class FolderNodeTests
         IFolderNode? folderH = folderG?.Subfolders.FirstOrDefault(f => f.Name == "folderH");
 
         // Assert
-        Assert.Multiple(() =>
+        using (Assert.EnterMultipleScope())
         {
             // Root folder
             Assert.That(result.Files.Any(f => f.Name == "file1.txt"), Is.True);
@@ -179,7 +179,7 @@ public class FolderNodeTests
             // FolderG and its subfolder
             Assert.That(folderG?.Files.Select(f => f.Name), Contains.Item("file8.txt"));
             Assert.That(folderH?.Files.Select(f => f.Name), Contains.Item("file9.txt"));
-        });
+        }
     }
     #endregion // BuildFileTree Tests
     #endregion // Tests

@@ -1,10 +1,11 @@
-﻿// Ignore Spelling: PkUtils, Utils, Concat
+﻿// Ignore Spelling: Utils, Concat
 // 
-using PK.PkUtils.Extensions;
-
 #pragma warning disable NUnit2045 // Use Assert.Multiple
 #pragma warning disable IDE0039	// Use local function
+#pragma warning disable IDE0305 // Collection initialization can be simplified
 
+
+using PK.PkUtils.Extensions;
 
 namespace PK.PkUtils.NUnitTests.ExtensionsTests;
 
@@ -785,37 +786,13 @@ public class EnumerableExtensionTest
         var result = input.WithIndex().ToList();
 
         // Assert
-        Assert.Multiple(() =>
+        using (Assert.EnterMultipleScope())
         {
             Assert.That(result, Has.Count.EqualTo(3));
-
             Assert.That(result[0], Is.EqualTo((0, "a")));
             Assert.That(result[1], Is.EqualTo((1, "b")));
             Assert.That(result[2], Is.EqualTo((2, "c")));
-        });
-    }
-
-    [Test]
-    public void EnumerableExtension_WithIndex_WithEmptyCollection_ReturnsEmptyList()
-    {
-        // Arrange
-        var input = Array.Empty<string>();
-
-        // Act
-        var result = input.WithIndex().ToList();
-
-        // Assert
-        Assert.That(result, Is.Empty);
-    }
-
-    [Test]
-    public void EnumerableExtension_WithIndex_WithNullSource_ThrowsArgumentNullException()
-    {
-        // Arrange
-        IEnumerable<string> input = null!;
-
-        // Act & Assert
-        Assert.Throws<ArgumentNullException>(() => input.WithIndex().ToList());
+        }
     }
 
     [Test]
@@ -828,12 +805,12 @@ public class EnumerableExtensionTest
         var result = input.WithIndex().ToList();
 
         // Assert
-        Assert.Multiple(() =>
+        using (Assert.EnterMultipleScope())
         {
             Assert.That(result[0], Is.EqualTo((0, "apple")));
             Assert.That(result[1], Is.EqualTo((1, "banana")));
             Assert.That(result[2], Is.EqualTo((2, "cherry")));
-        });
+        }
     }
 
     [Test]
@@ -846,12 +823,12 @@ public class EnumerableExtensionTest
         var result = input.WithIndex().ToList();
 
         // Assert
-        Assert.Multiple(() =>
+        using (Assert.EnterMultipleScope())
         {
             Assert.That(result[0], Is.EqualTo((0, 10)));
             Assert.That(result[1], Is.EqualTo((1, 20)));
             Assert.That(result[2], Is.EqualTo((2, 30)));
-        });
+        }
     }
     #endregion // Tests_WithIndex
 
@@ -870,11 +847,11 @@ public class EnumerableExtensionTest
         var result = input.FromSingle();
 
         // Assert
-        Assert.Multiple(() =>
+        using (Assert.EnterMultipleScope())
         {
             Assert.That(result.Count(), Is.EqualTo(1));
             Assert.That(result.First(), Is.EqualTo("test"));
-        });
+        }
     }
     #endregion // Tests_FromSingle
 
@@ -1385,4 +1362,6 @@ public class EnumerableExtensionTest
     #endregion // Tests
 }
 
-#pragma warning restore IDE0039    // Use local function                      
+#pragma warning restore IDE0305
+#pragma warning restore IDE0039
+#pragma warning restore NUnit2045

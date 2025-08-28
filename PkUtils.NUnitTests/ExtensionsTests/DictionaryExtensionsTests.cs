@@ -1,9 +1,8 @@
-﻿// Ignore Spelling: PkUtils, Utils
+﻿// Ignore Spelling: CCA, Utils
 // 
 using PK.PkUtils.Extensions;
 
 namespace PK.PkUtils.NUnitTests.ExtensionsTests;
-
 
 #pragma warning disable CA1859    // Change type of variable ...
 
@@ -26,11 +25,11 @@ public class DictionaryExtensionsTests
         bool after = dictionary.ContainsKey(key);
 
         // Assert
-        Assert.Multiple(() =>
+        using (Assert.EnterMultipleScope())
         {
             Assert.That(actual, Is.EqualTo(expected));
             Assert.That(after, Is.EqualTo(before));
-        });
+        }
     }
 
     /// <summary> A helper method for test of GetValueOrNew </summary>
@@ -44,11 +43,11 @@ public class DictionaryExtensionsTests
         bool after = dictionary.ContainsKey(key);
 
         // Assert
-        Assert.Multiple(() =>
+        using (Assert.EnterMultipleScope())
         {
             Assert.That(actual, Is.EqualTo(expected));
             Assert.That(after, Is.True);
-        });
+        }
     }
 
 
@@ -88,11 +87,11 @@ public class DictionaryExtensionsTests
 
         // Assert
 
-        Assert.Multiple(() =>
+        using (Assert.EnterMultipleScope())
         {
             Assert.That(actual, Is.EqualTo(expected));
             Assert.That(dictionary.ContainsKey(key), Is.False);
-        });
+        }
     }
     #endregion // Auxiliary_methods
 
@@ -320,13 +319,13 @@ public class DictionaryExtensionsTests
         IDictionary<int, string> dict_3rd = new Dictionary<int, string> { { 4, "a" }, { 5, "b" }, { 6, "c" } };
 
         // Assert
-        Assert.Multiple(() =>
+        using (Assert.EnterMultipleScope())
         {
             Assert.That(dict_1st.MemberwiseEqual(dict_0th), Is.False);
             Assert.That(dict_1st.MemberwiseEqual(dict_2nd), Is.False);
             Assert.That(dict_1st.MemberwiseEqual(dict_2nd, StringComparer.InvariantCultureIgnoreCase), Is.True);
             Assert.That(dict_1st.MemberwiseEqual(dict_3rd, StringComparer.InvariantCultureIgnoreCase), Is.False);
-        });
+        }
     }
 
     [Test]
@@ -354,11 +353,11 @@ public class DictionaryExtensionsTests
         int hash4th = dict_4th.DictionaryHashCode();
 
         // Assert
-        Assert.Multiple(() =>
+        using (Assert.EnterMultipleScope())
         {
             Assert.That(hash1st, Is.EqualTo(hash2nd));
             Assert.That(hash3rd, Is.EqualTo(hash4th));
-        });
+        }
     }
     #endregion // Tests_IDictionary_extensions
 

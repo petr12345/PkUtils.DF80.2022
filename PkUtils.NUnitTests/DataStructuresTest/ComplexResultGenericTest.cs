@@ -3,8 +3,8 @@
 using PK.PkUtils.DataStructures;
 using PK.PkUtils.Interfaces;
 
-namespace PK.PkUtils.NUnitTests.DataStructuresTest;
 
+namespace PK.PkUtils.NUnitTests.DataStructuresTest;
 
 /// <summary> Unit Test of generic class ComplexResult{T}. </summary>
 [TestFixture()]
@@ -30,12 +30,12 @@ internal class ComplexResultGenericTests
         ComplexResult<int> iRes = new(nValue);
 
         // Assert
-        Assert.Multiple(() =>
+        using (Assert.EnterMultipleScope())
         {
             Assert.That(iRes.Success, Is.True);
             Assert.That(iRes.Content, Is.EqualTo(nValue));
             Assert.That(iRes.ErrorMessage, Is.Null);
-        });
+        }
     }
 
     [Test, Description("Testing generic ComplexResult constructor for failed state with an error message.")]
@@ -47,11 +47,11 @@ internal class ComplexResultGenericTests
         ComplexResult<int> iRes = new(_errorMessage);
 
         // Assert
-        Assert.Multiple(() =>
+        using (Assert.EnterMultipleScope())
         {
             Assert.That(iRes.Success, Is.False);
             Assert.That(iRes.ErrorMessage, Is.EqualTo(_errorMessage));
-        });
+        }
     }
 
     [Test, Description("Testing generic ComplexResult constructor for failed state with an error message and exception.")]
@@ -63,11 +63,11 @@ internal class ComplexResultGenericTests
         ComplexResult<int> iRes = new(_errorMessage, _exception);
 
         // Assert
-        Assert.Multiple(() =>
+        using (Assert.EnterMultipleScope())
         {
             Assert.That(iRes.Success, Is.False);
             Assert.That(iRes.ErrorMessage, Is.EqualTo(_errorMessage));
-        });
+        }
     }
 
     [Test, Description("Testing generic ComplexResult constructor for failed state with just exception.")]
@@ -79,11 +79,11 @@ internal class ComplexResultGenericTests
         ComplexResult<int> iRes = new(_exception);
 
         // Assert
-        Assert.Multiple(() =>
+        using (Assert.EnterMultipleScope())
         {
             Assert.That(iRes.Success, Is.False);
             Assert.That(iRes.ErrorMessage, Is.EqualTo(_exception.Message));
-        });
+        }
     }
 
     [Test, Description("Testing generic ComplexResult copy-constructor on succeeded state.")]
@@ -97,12 +97,12 @@ internal class ComplexResultGenericTests
         ComplexResult<int> iRes = new(iTmp);
 
         // Assert
-        Assert.Multiple(() =>
+        using (Assert.EnterMultipleScope())
         {
             Assert.That(iRes.Success, Is.True);
             Assert.That(iRes.Content, Is.EqualTo(nValue));
             Assert.That(iRes.ErrorMessage, Is.Null);
-        });
+        }
     }
 
     [Test, Description("Testing generic ComplexResult copy-constructor on failed state.")]
@@ -115,11 +115,11 @@ internal class ComplexResultGenericTests
         ComplexResult<int> iRes = new(iTmp);
 
         // Assert
-        Assert.Multiple(() =>
+        using (Assert.EnterMultipleScope())
         {
             Assert.That(iRes.Success, Is.False);
             Assert.That(iRes.ErrorMessage, Is.EqualTo(_errorMessage));
-        });
+        }
     }
 
     #endregion // Tests_constructors
@@ -191,12 +191,12 @@ internal class ComplexResultGenericTests
         IComplexResult<string> iRes = ComplexResult<string>.CreateSuccessful(_stringRegularValue);
 
         // Assert
-        Assert.Multiple(() =>
+        using (Assert.EnterMultipleScope())
         {
             Assert.That(iRes.Success, Is.True);
             Assert.That(iRes.Content, Is.EqualTo(_stringRegularValue));
             Assert.That(iRes.ErrorMessage, Is.Null);
-        });
+        }
     }
 
     [Test, Description("Testing generic ComplexResult Create method, for failed state.")]
@@ -206,11 +206,11 @@ internal class ComplexResultGenericTests
         IComplexResult<string> iRes = ComplexResult<string>.CreateFailed(_errorMessage);
 
         // Assert
-        Assert.Multiple(() =>
+        using (Assert.EnterMultipleScope())
         {
             Assert.That(iRes.Success, Is.False);
             Assert.That(iRes.ErrorMessage, Is.EqualTo(_errorMessage));
-        });
+        }
     }
     #endregion // Tests_others
     #endregion // Tests

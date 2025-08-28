@@ -1,8 +1,7 @@
-﻿// Ignore Spelling: Utils, Comparers
-//
-using PK.PkUtils.Comparers;
+﻿using PK.PkUtils.Comparers;
 
 namespace PK.PkUtils.NUnitTests.ComparersTest;
+
 
 
 /// <summary>
@@ -43,13 +42,13 @@ public class FuncEqualityComparerTest
     {
         var comparer = new FunctionalEqualityComparer<int>((x, y) => Math.Abs(x) == Math.Abs(y), x => Math.Abs(x));
 
-        foreach (var x in Enumerable.Range(2, 7).ToList())
+        using (Assert.EnterMultipleScope())
         {
-            Assert.Multiple(() =>
+            foreach (var x in Enumerable.Range(2, 7).ToList())
             {
                 Assert.That(comparer.Equals(x, x), Is.True);
                 Assert.That(comparer.Equals(x, -x), Is.True);
-            });
+            }
         }
     }
 
@@ -63,12 +62,12 @@ public class FuncEqualityComparerTest
         int H(string s) => s.Length;
         var comparer = new FunctionalEqualityComparer<string>(F, H);
 
-        Assert.Multiple(() =>
+        using (Assert.EnterMultipleScope())
         {
             Assert.That(comparer.Equals("aaa", "AAA"), Is.True);
             Assert.That(comparer.Equals("aaaa", "wXyZ"), Is.True);
             Assert.That(comparer.Equals("aaa", "w"), Is.False);
-        });
+        }
     }
 
     /// <summary>
@@ -93,7 +92,7 @@ public class FuncEqualityComparerTest
         int H(string s) => s.Length;
         FunctionalEqualityComparer<string> comparer = FunctionalEqualityComparer.CreateNullSafeComparer<string>(F, H);
 
-        Assert.Multiple(() =>
+        using (Assert.EnterMultipleScope())
         {
             Assert.That(comparer.Equals("aaa", "AAA"), Is.True);
             Assert.That(comparer.Equals("aaa", "XYZ"), Is.True);
@@ -104,7 +103,7 @@ public class FuncEqualityComparerTest
             Assert.That(comparer.Equals(null!, null!), Is.True);
             Assert.That(comparer.Equals(null!, string.Empty), Is.False);
             Assert.That(comparer.Equals(string.Empty!, null!), Is.False);
-        });
+        }
     }
     #endregion // Tests
 }

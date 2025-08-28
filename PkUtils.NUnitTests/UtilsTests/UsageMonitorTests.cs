@@ -2,9 +2,9 @@
 //
 using PK.PkUtils.Utils;
 
-
 namespace PK.PkUtils.NUnitTests.UtilsTests;
 
+/// <summary>  Unit Test of <see cref="UsageCounter"/>. </summary>
 [TestFixture()]
 public class UsageMonitorTests
 {
@@ -12,18 +12,18 @@ public class UsageMonitorTests
     public void UsageMonitor_Constructor_Test()
     {
         // Arrange
-        UsageCounter counter = new UsageCounter();
+        UsageCounter counter = new();
 
         // Act
-        UsageMonitor usageWrapper = new UsageMonitor(counter);
+        UsageMonitor usageWrapper = new(counter);
 
-        Assert.Multiple(() =>
+        using (Assert.EnterMultipleScope())
         {
             // Assert
             Assert.That(counter.IsUsed, Is.True);
             Assert.That(counter.AddReference(), Is.EqualTo(2));
             Assert.That(usageWrapper.IsDisposed, Is.False);
-        });
+        }
     }
 
     [Test()]
@@ -33,7 +33,7 @@ public class UsageMonitorTests
         var counter = new UsageCounter();
 
         // Act
-        using (UsageMonitor usageWrapper = new UsageMonitor(counter))
+        using (UsageMonitor usageWrapper = new(counter))
         {
             // Assert
             Assert.That(counter.IsUsed, Is.True);

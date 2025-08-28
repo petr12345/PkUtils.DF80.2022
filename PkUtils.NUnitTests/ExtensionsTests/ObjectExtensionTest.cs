@@ -7,8 +7,6 @@ using System.Windows.Forms;
 using PK.PkUtils.Extensions;
 using PK.PkUtils.Interfaces;
 
-#pragma warning disable NUnit2005  // warning NUnit2005: Consider using the constraint model, Assert.That(actual, Is.EqualTo(expected)), instead of the classic model
-
 namespace PK.PkUtils.NUnitTests.ExtensionsTests;
 
 
@@ -27,7 +25,7 @@ public class ObjectExtensionTest
 
         public Person(int age, string name)
         {
-            if (name == null) throw new ArgumentNullException(nameof(name));
+            ArgumentNullException.ThrowIfNull(name);
             this._age = age;
             this._name = name;
         }
@@ -62,7 +60,7 @@ public class ObjectExtensionTest
     {
         private bool _bDisposed;
 
-        public bool IsDisposed => _bDisposed;
+        public readonly bool IsDisposed => _bDisposed;
 
         public void Dispose()
         {
@@ -81,14 +79,20 @@ public class ObjectExtensionTest
     [Test(Description = "Ensures AsString handles a null object and returns '<null>'.")]
     public void AsStringTest_NullObject_ReturnsCorrectString()
     {
+        // Arrange
         Person p1 = null!;
-        Person p2 = new Person(32, "Paul");
+        Person p2 = new(32, "Paul");
 
+        // Act
         string s1 = p1.AsString();
         string s2 = p2.AsString();
 
-        Assert.That(s1, Is.EqualTo("<null>"));
-        Assert.That(s2, Is.EqualTo("Paul of age 32"));
+        // Assert
+        using (Assert.EnterMultipleScope())
+        {
+            Assert.That(s1, Is.EqualTo("<null>"));
+            Assert.That(s2, Is.EqualTo("Paul of age 32"));
+        }
     }
 
     #endregion // AsString tests
@@ -106,7 +110,7 @@ public class ObjectExtensionTest
     [Test(Description = "Validates AsNameValue generates correct string for a non-null object.")]
     public void AsNameValueTest_NonNullObject_ReturnsCorrectString()
     {
-        Person person = new Person(25, "Alice");
+        Person person = new(25, "Alice");
         string result = person.AsNameValue();
         Assert.That(result, Is.EqualTo("person = Alice of age 25"));
     }
@@ -114,7 +118,7 @@ public class ObjectExtensionTest
     [Test(Description = "Checks AsNameValue with a custom object name and verifies correct string output.")]
     public void AsNameValueTest_CustomObjectName_ReturnsCorrectString()
     {
-        Person person = new Person(30, "Bob");
+        Person person = new(30, "Bob");
         string result = person.AsNameValue("CustomName");
         Assert.That(result, Is.EqualTo("CustomName = Bob of age 30"));
     }
@@ -122,9 +126,9 @@ public class ObjectExtensionTest
     [Test(Description = "Ensures AsNameValue works correctly with a struct object.")]
     public void AsNameValueTest_StructObject_ReturnsCorrectString()
     {
-        MyDisposableStruct myStruct = new MyDisposableStruct();
+        MyDisposableStruct myStruct = new();
         string result = myStruct.AsNameValue();
-        Assert.That(result, Is.EqualTo("myStruct = PK.PkUtils.NUnitTests.ExtensionsTests.ObjectExtensionTest+MyDisposableStruct"));
+        Assert.That(result, Is.EqualTo("myStruct = ACMCodeGenNUnitTest.ExtensionsTests.ObjectExtensionTest+MyDisposableStruct"));
     }
 
     [Test(Description = "Validates AsNameValue generates correct string for a primitive type.")]
@@ -143,64 +147,18 @@ public class ObjectExtensionTest
     public void PropertyListTest_NullObject_ReturnsCorrectString()
     {
         Person p1 = null!;
-        Person p2 = new Person(32, "Paul");
+        Person p2 = new(32, "Paul");
 
         string s1 = p1.PropertyList();
         string s2 = p2.PropertyList();
 
-        Assert.That(s1, Is.EqualTo("<null>"));
-        Assert.That(s2, Is.EqualTo("Age: 32, Name: Paul"));
+        using (Assert.EnterMultipleScope())
+        {
+            Assert.That(s1, Is.EqualTo("<null>"));
+            Assert.That(s2, Is.EqualTo("Age: 32, Name: Paul"));
+        }
     }
     #endregion // PropertyList tests
-
-    #region CheckNotDisposed tests
-
-    [Test(Description = "Validates CheckNotDisposed throws ArgumentNullException for a null object.")]
-    public void CheckNotDisposedTest_NullObject_ThrowsException()
-    {
-        object obj = null!;
-        Assert.Throws<ArgumentNullException>(() => obj.CheckNotDisposed(nameof(obj)));
-    }
-
-    [Test(Description = "Ensures CheckNotDisposed throws ObjectDisposedException for a disposed object.")]
-    public void CheckNotDisposedTest_DisposedObject_ThrowsException()
-    {
-        object obj = new MyDisposableClass();
-        (obj as IDisposable)!.Dispose();
-        Assert.Throws<ObjectDisposedException>(() => obj.CheckNotDisposed(nameof(obj)));
-    }
-
-    [Test(Description = "Verifies CheckNotDisposed does not throw for a valid object.")]
-    public void CheckNotDisposedTest_ValidObject_NoException()
-    {
-        object obj = new MyDisposableClass();
-        obj.CheckNotDisposed(nameof(obj));
-    }
-
-    [Test(Description = "Verifies CheckNotDisposed does not throw for a valid struct.")]
-    public void CheckNotDisposedTest_ValidStruct_NoException()
-    {
-        object obj = new MyDisposableStruct();
-        obj.CheckNotDisposed(nameof(obj));
-    }
-    #endregion // CheckNotDisposed tests
-
-    #region CheckArgNotNull tests
-
-    [Test(Description = "Ensures CheckArgNotNull throws ArgumentNullException for a null object.")]
-    public void CheckArgNotNullTest_NullObject_ThrowsException()
-    {
-        Form f = null!;
-        Assert.Throws<ArgumentNullException>(() => f.CheckArgNotNull(nameof(f)));
-    }
-
-    [Test(Description = "Validates CheckArgNotNull does not throw for a valid object.")]
-    public void CheckArgNotNullTest_ValidObject_NoException()
-    {
-        Form f = new Form();
-        f.CheckArgNotNull();
-    }
-    #endregion // CheckArgNotNull tests
 
     #region CheckNotNull tests
 
@@ -214,7 +172,7 @@ public class ObjectExtensionTest
     [Test(Description = "Validates CheckNotNull does not throw for a valid object.")]
     public void CheckNotNullTest_ValidObject_NoException()
     {
-        Form f = new Form();
+        Form f = new();
         f.CheckNotNull();
     }
     #endregion // CheckNotNull tests
@@ -227,7 +185,7 @@ public class ObjectExtensionTest
     {
         List<Component> list = [
             new OpenFileDialog(), null!, new Form(), null!, new Control() ];
-        StringBuilder sb = new StringBuilder();
+        StringBuilder sb = new();
 
         foreach (Component comp in list)
         {

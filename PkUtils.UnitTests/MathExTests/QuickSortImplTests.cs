@@ -6,7 +6,7 @@ using System.Linq;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using PK.PkUtils.MathEx;
 
-namespace PK.PkUtils.NUnitTests.MathEx;
+namespace PK.PkUtils.NUnitTests.MathExTests;
 
 [TestClass()]
 public class QuickSortImplTests
@@ -36,7 +36,7 @@ public class QuickSortImplTests
         return result;
     }
 
-    private static IReadOnlyList<IReadOnlyList<int>> GenerateAllPermutations(
+    private static List<List<int>> GenerateAllPermutations(
         int n,
         IReadOnlyList<int> availableNumbers)
     {
@@ -85,7 +85,7 @@ public class QuickSortImplTests
     [TestMethod()]
     public void SortArray_0_ElementsTest()
     {
-        int[] arr = new int[] { };
+        int[] arr = Array.Empty<int>();
 
         arr = _sorter.SortArray(arr);
         Assert.IsTrue(IsSorted(arr));

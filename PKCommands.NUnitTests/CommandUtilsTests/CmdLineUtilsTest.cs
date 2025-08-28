@@ -6,18 +6,23 @@ using System.Linq;
 using NUnit.Framework;
 using PK.Commands.CommandUtils;
 
+#pragma warning disable IDE0305 // Collection initialization can be simplified
+
 namespace PK.Commands.NUnitTests.CommandUtilsTests;
 
+/// <summary> (Unit Test Fixture) test class for <see cref="CmdLineUtils"/>. </summary>
 [TestFixture(Description = "Tests of class CmdLineUtils")]
 public class CmdLineUtilsTest
 {
     #region Fields
+    /// <summary> (Immutable) the quote. </summary>
     private const string _strQuote = "\"";
     #endregion // Fields
 
     #region Tests
     #region Tests_Filter0utNewlines
 
+    /// <summary> (Unit Test Method) filter out newlines test 01. </summary>
     [Test(Description = "Tests the CmdLineUtils.FilterOutNewlines, with null input sequence.")]
     public void FilterOutNewlines_Test_01()
     {
@@ -28,6 +33,7 @@ public class CmdLineUtilsTest
         });
     }
 
+    /// <summary> (Unit Test Method) filter out newlines test 02. </summary>
     [Test(Description = "Tests the CmdLineUtils.FilterOutNewlines, with input sequence containing null.")]
     public void FilterOutNewlines_Test_02()
     {
@@ -41,6 +47,7 @@ public class CmdLineUtilsTest
         });
     }
 
+    /// <summary> (Unit Test Method) filter out newlines test 03. </summary>
     [Test(Description = "Tests the CmdLineUtils.FilterOutNewlines, with valid input sequence not containing newlines.")]
     public void FilterOutNewlines_Test_03()
     {
@@ -58,16 +65,18 @@ public class CmdLineUtilsTest
 
     #region Tests_JoinToCommandLine
 
+    /// <summary> (Unit Test Method) join to command line test 01. </summary>
     [Test(Description = "Tests the CmdLineUtils.JoinToCommandLine, with null input sequence.")]
     public void JoinToCommandLine_Test_01()
     {
         // Act & Assert
         Assert.Throws<ArgumentNullException>(delegate ()
-        {
-            CmdLineUtils.JoinToCommandLine(null);
-        });
+       {
+           CmdLineUtils.JoinToCommandLine(null);
+       });
     }
 
+    /// <summary> (Unit Test Method) join to command line test 02. </summary>
     [Test(Description = "Tests the CmdLineUtils.JoinToCommandLine, with input sequence containing null.")]
     public void JoinToCommandLine_Test_02()
     {
@@ -80,6 +89,7 @@ public class CmdLineUtilsTest
         });
     }
 
+    /// <summary> (Unit Test Method) join to command line test 03. </summary>
     [Test(Description = "Tests the CmdLineUtils.JoinToCommandLine, with input sequence containing just empty strings.")]
     public void JoinToCommandLine_Test_03()
     {
@@ -93,6 +103,7 @@ public class CmdLineUtilsTest
         Assert.That(actual, Is.Empty);
     }
 
+    /// <summary> (Unit Test Method) join to command line test 04. </summary>
     [Test(Description = "Tests the CmdLineUtils.JoinToCommandLine, with valid input sequence.")]
     public void JoinToCommandLine_Test_04()
     {
@@ -106,6 +117,7 @@ public class CmdLineUtilsTest
         Assert.That(actual, Is.EquivalentTo(expected));
     }
 
+    /// <summary> (Unit Test Method) join to command line test 05. </summary>
     [Test(Description = "Tests the CmdLineUtils.JoinToCommandLine, with input containing spaces and not yet in quotes.")]
     public void JoinToCommandLine_Test_05()
     {
@@ -131,6 +143,7 @@ public class CmdLineUtilsTest
         Assert.That(actual_b, Is.EquivalentTo(expected_b));
     }
 
+    /// <summary> (Unit Test Method) join to command line test 06. </summary>
     [Test(Description = "Tests the CmdLineUtils.JoinToCommandLine, with another input containing spaces and not yet in quotes.")]
     public void JoinToCommandLine_Test_06()
     {
@@ -144,6 +157,7 @@ public class CmdLineUtilsTest
         Assert.That(actual, Is.EqualTo(expected));
     }
 
+    /// <summary> (Unit Test Method) join to command line test 07. </summary>
     [Test(Description = "Tests the CmdLineUtils.JoinToCommandLine, with input already in quotes.")]
     public void JoinToCommandLine_Test_07()
     {
@@ -160,6 +174,7 @@ public class CmdLineUtilsTest
 
     #region Tests_SplitFromCommandLine
 
+    /// <summary> (Unit Test Method) splits from command line test 01. </summary>
     [Test(Description = "Tests the CmdLineUtils.SplitFromCommandLine, with null input string.")]
     public void SplitFromCommandLine_Test_01()
     {
@@ -169,6 +184,7 @@ public class CmdLineUtilsTest
         });
     }
 
+    /// <summary> (Unit Test Method) splits from command line test 02. </summary>
     [Test(Description = "Tests the CmdLineUtils.SplitFromCommandLine, with rather simple input.")]
     public void SplitFromCommandLine_Test_02()
     {
@@ -193,6 +209,7 @@ public class CmdLineUtilsTest
         }
     }
 
+    /// <summary> (Unit Test Method) splits from command line test 93. </summary>
     [Test(Description = "Tests the CmdLineUtils.SplitFromCommandLine, with complicated input string.")]
     public void SplitFromCommandLine_Test_93()
     {
@@ -219,15 +236,17 @@ public class CmdLineUtilsTest
 
     #region Tests_EncodeJoinedArgumentsToSingleArgValue
 
+    /// <summary> (Unit Test Method) encode joined arguments to single argument value test o 1. </summary>
     [Test(Description = "Tests the CmdLineUtils.EncodeJoinedArgumentsToSingleArgValue, with input string null.")]
     public void EncodeJoinedArgumentsToSingleArgValue_Test_O1()
     {
         Assert.Throws<ArgumentNullException>(delegate ()
-        {
-            CmdLineUtils.EncodeJoinedArgumentsToSingleArgValue(null);
-        });
+      {
+          CmdLineUtils.EncodeJoinedArgumentsToSingleArgValue(null);
+      });
     }
 
+    /// <summary> (Unit Test Method) encode joined arguments to single argument value test 02. </summary>
     [Test(Description = "Tests the CmdLineUtils.EncodeJoinedArgumentsToSingleArgValue, with input string empty.")]
     public void EncodeJoinedArgumentsToSingleArgValue_Test_02()
     {
@@ -237,6 +256,7 @@ public class CmdLineUtilsTest
         Assert.That(actual, Is.Empty);
     }
 
+    /// <summary> (Unit Test Method) encode joined arguments to single argument value test 03. </summary>
     [Test(Description = "Tests the CmdLineUtils.EncodeJoinedArgumentsToSingleArgValue, with two short arguments.")]
     public void EncodeJoinedArgumentsToSingleArgValue_Test_03()
     {
@@ -250,6 +270,7 @@ public class CmdLineUtilsTest
         Assert.That(actual2, Is.EqualTo(expected2));
     }
 
+    /// <summary> (Unit Test Method) encode joined arguments to single argument value test 04. </summary>
     [Test(Description = "Tests the CmdLineUtils.Encode]oinedArgumentsToSingleArgValue, with possible AppSynch arguments.")]
     public void EncodeJoinedArgumentsToSingleArgValue_Test_04()
     {
@@ -268,16 +289,21 @@ public class CmdLineUtilsTest
     #endregion // Tests_EncodeJoinedArgumentsToSingleArgValue
 
     #region Tests_DecodeJoinedArgumentsFromSingleArgValue
-
+    /// <summary>
+    /// (Unit Test Method) decodes the joined arguments from single argument value test o 1.
+    /// </summary>
     [Test(Description = "Tests the CmdLineUtils.DecodeJoinedArgumentsFromSingleArgValue, with input string null.")]
     public void DecodeJoinedArgumentsFromSingleArgValue_Test_O1()
     {
         Assert.Throws<ArgumentNullException>(delegate ()
-        {
-            CmdLineUtils.DecodeJoinedArgumentsFromSingleArgValue(null);
-        });
+       {
+           CmdLineUtils.DecodeJoinedArgumentsFromSingleArgValue(null);
+       });
     }
 
+    /// <summary>
+    /// (Unit Test Method) decodes the joined arguments from single argument value test 02.
+    /// </summary>
     [Test(Description = "Tests the CmdLineUtils.DecodeJoinedArgumentsFromSingleArgValue, with input string empty.")]
     public void DecodeJoinedArgumentsFromSingleArgValue_Test_02()
     {

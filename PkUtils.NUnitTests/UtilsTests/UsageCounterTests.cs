@@ -1,10 +1,10 @@
 ﻿// Ignore Spelling: Utils
 //
-
 using PK.PkUtils.Utils;
 
 namespace PK.PkUtils.NUnitTests.UtilsTests;
 
+/// <summary>  Unit Tests of <see cref="UsageCounter"/>. </summary>
 [TestFixture()]
 public class UsageCounterTests
 {
@@ -12,7 +12,7 @@ public class UsageCounterTests
     public void UsageCounterConstructorTest()
     {
         // ACT
-        UsageCounter counter = new UsageCounter();
+        UsageCounter counter = new();
 
         // ASSERT
         Assert.That(counter.IsUsed, Is.False);
@@ -27,7 +27,7 @@ public class UsageCounterTests
     public void AddReferenceTest(int references)
     {
         // ARRANGE
-        UsageCounter counter = new UsageCounter();
+        UsageCounter counter = new();
 
         // ACT
         Parallel.For(0, references, n => counter.AddReference());
@@ -44,7 +44,7 @@ public class UsageCounterTests
     public void ReleaseTest(int references)
     {
         // ARRANGE
-        UsageCounter counter = new UsageCounter();
+        UsageCounter counter = new();
 
         // ACT
         Parallel.For(0, references, n => counter.AddReference());

@@ -3,7 +3,6 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using PK.Commands.CommandUtils;
 using PK.Commands.Interfaces;
 using PK.PkUtils.Cmd;
 using PK.PkUtils.Consoles;
@@ -14,22 +13,22 @@ using ILogger = log4net.ILog;
 
 namespace PK.Commands.CommandProcessing;
 
-/// <summary>
-/// Processes command-line arguments using DualFormat syntax, 
-/// extending <see cref="CommandsInputProcessor{TCommand, TErrorCode}"/>.
-/// </summary>
-/// 
-/// <remarks>
-/// This processor overrides <see cref="ParseInputArgs"/> to utilize <see cref="DualFormatCmdParametersProvider"/> 
-/// instead of the standard <see cref="CommandArgsParser"/>.
+/// Provides command-line argument processing using dual-format syntax, 
+/// supporting both key-value pairs and switch-based arguments.
+/// This class extends CommandsInputProcessor and overrides argument parsing to use DualFormatCmdParametersProvider.
 ///
-/// It supports parsing command-line arguments in both of the following formats:
-/// 1. `/ParamName1 Value1 /ParamName2 Value2 /ParamName3 Value3`
-/// 2. `/ParamName1:Value1 /ParamName2:Value2 -ParamName3:Value3`
-/// </remarks>
-/// 
-/// <typeparam name="TCommand">The type of command to process.</typeparam>
-/// <typeparam name="TErrorCode">Type of error details.</typeparam>
+/// Supported two command-line formats:
+///   - Key-value pairs: /ParamName1 Value1 /ParamName2 Value2 /ParamName3 Value3
+///   - Colon-delimited pairs: /ParamName1:Value1 /ParamName2:Value2 -ParamName3:Value3
+///
+/// Switches: If AcceptSwitchesSyntax is true, arguments without values (e.g., nologo) are interpreted as boolean switches.
+///
+/// Command name precedence: If input argument commandNamePrecedes is true, the first argument is treated as the command name.
+/// Otherwise, the command name is derived from the first parameter.
+///
+/// <typeparam name="TCommand">Type of command to process. Must implement ICommand.</typeparam>
+/// <typeparam name="TErrorCode">Type representing error details.</typeparam>
+
 public class DualFormatInputProcessor<TCommand, TErrorCode> : CommandsInputProcessor<TCommand, TErrorCode>
     where TCommand : class, ICommand<TErrorCode>
 {
@@ -107,4 +106,5 @@ public class DualFormatInputProcessor<TCommand, TErrorCode> : CommandsInputProce
 }
 
 
-#pragma warning restore IDE0290     // Use primary constructor
+#pragma warning restore IDE0290     // Use primary constructor/// <summary>
+

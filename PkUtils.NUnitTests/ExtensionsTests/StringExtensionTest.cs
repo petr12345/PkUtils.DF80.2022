@@ -1,7 +1,7 @@
-﻿// Ignore Spelling: PkUtils, Utils, Cloneable
+﻿// Ignore Spelling: Utils, Cloneable
 // 
-using PK.PkUtils.Extensions;
 
+using PK.PkUtils.Extensions;
 
 namespace PK.PkUtils.NUnitTests.ExtensionsTests;
 

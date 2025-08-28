@@ -1,7 +1,6 @@
 ﻿// Ignore Spelling: Utils
 // 
 
-
 using PK.PkUtils.Extensions;
 
 namespace PK.PkUtils.NUnitTests.ExtensionsTests;

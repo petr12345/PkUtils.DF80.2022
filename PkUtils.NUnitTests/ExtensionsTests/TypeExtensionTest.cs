@@ -14,7 +14,7 @@ public class TypeExtensionTest
     public interface IStackedForm { }
     public class StackedFormWrapper<TForm> : IStackedForm, IDisposable where TForm : Form
     {
-        public void Dispose() { }
+        public void Dispose() { GC.SuppressFinalize(this); }
     }
     public class FormWrapperPlainDerived<TForm> : StackedFormWrapper<TForm> where TForm : Form { };
     public class MainStackedFormWrapper<TForm> : StackedFormWrapper<TForm> where TForm : Form { }
@@ -75,39 +75,42 @@ public class TypeExtensionTest
         Type genericT, checkedT1, checkedT2;
         bool actual1, actual2;
 
-        genericT = typeof(StackedFormWrapper<>);
-        checkedT1 = typeof(FormWrapperPlainDerived<>);
-        checkedT2 = typeof(FormWrapperPlainDerived<Form>);
-        actual1 = checkedT1.IsSubclassOfRawGeneric(genericT);
-        actual2 = checkedT2.IsSubclassOfRawGeneric(genericT);
-        Assert.That(actual1, Is.True);
-        Assert.That(actual2, Is.True);
+        using (Assert.EnterMultipleScope())
+        {
+            genericT = typeof(StackedFormWrapper<>);
+            checkedT1 = typeof(FormWrapperPlainDerived<>);
+            checkedT2 = typeof(FormWrapperPlainDerived<Form>);
+            actual1 = checkedT1.IsSubclassOfRawGeneric(genericT);
+            actual2 = checkedT2.IsSubclassOfRawGeneric(genericT);
+            Assert.That(actual1, Is.True);
+            Assert.That(actual2, Is.True);
 
-        genericT = typeof(MainStackedFormWrapper<>);
-        checkedT1 = typeof(FormWrapperMainDerived<>);
-        checkedT2 = typeof(FormWrapperMainDerived<Form>);
-        actual1 = checkedT1.IsSubclassOfRawGeneric(genericT);
-        actual2 = checkedT2.IsSubclassOfRawGeneric(genericT);
-        Assert.That(actual1, Is.True);
-        Assert.That(actual2, Is.True);
+            genericT = typeof(MainStackedFormWrapper<>);
+            checkedT1 = typeof(FormWrapperMainDerived<>);
+            checkedT2 = typeof(FormWrapperMainDerived<Form>);
+            actual1 = checkedT1.IsSubclassOfRawGeneric(genericT);
+            actual2 = checkedT2.IsSubclassOfRawGeneric(genericT);
+            Assert.That(actual1, Is.True);
+            Assert.That(actual2, Is.True);
 
-        genericT = typeof(MainStackedFormWrapper<>);
-        checkedT1 = typeof(FormWrapperMainDerived<>);
-        checkedT2 = typeof(FormWrapperMainDerived<Form>);
-        actual1 = checkedT1.IsSubclassOfRawGeneric(genericT);
-        actual2 = checkedT2.IsSubclassOfRawGeneric(genericT);
-        Assert.That(actual1, Is.True);
-        Assert.That(actual2, Is.True);
+            genericT = typeof(MainStackedFormWrapper<>);
+            checkedT1 = typeof(FormWrapperMainDerived<>);
+            checkedT2 = typeof(FormWrapperMainDerived<Form>);
+            actual1 = checkedT1.IsSubclassOfRawGeneric(genericT);
+            actual2 = checkedT2.IsSubclassOfRawGeneric(genericT);
+            Assert.That(actual1, Is.True);
+            Assert.That(actual2, Is.True);
 
-        genericT = typeof(StackedFormWrapper<>);
-        checkedT1 = typeof(FormWrapperMainDerived<>);
-        checkedT2 = typeof(FormWrapperMainDerived<Form>);
-        actual1 = checkedT1.IsSubclassOfRawGeneric(genericT);
-        actual2 = checkedT2.IsSubclassOfRawGeneric(genericT);
+            genericT = typeof(StackedFormWrapper<>);
+            checkedT1 = typeof(FormWrapperMainDerived<>);
+            checkedT2 = typeof(FormWrapperMainDerived<Form>);
+            actual1 = checkedT1.IsSubclassOfRawGeneric(genericT);
+            actual2 = checkedT2.IsSubclassOfRawGeneric(genericT);
 
-        Assert.That(actual1, Is.True);
-        Assert.That(actual2, Is.True);
-        Assert.That(checkedT2.IsSubclassOfRawGeneric(checkedT1), Is.True);
+            Assert.That(actual1, Is.True);
+            Assert.That(actual2, Is.True);
+            Assert.That(checkedT2.IsSubclassOfRawGeneric(checkedT1), Is.True);
+        }
     }
 
     /// <summary>   A test for TypeToReadable. </summary>

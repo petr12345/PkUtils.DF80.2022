@@ -3,11 +3,11 @@
 using System.Globalization;
 using PK.PkUtils.IO;
 
-namespace PK.PkUtils.NUnitTests.IOTests;
-
 #pragma warning disable VSSpell001
 #pragma warning disable IDE0057 // Use range operator
 #pragma warning disable IDE0305 // Collection initialization can be simplified
+
+namespace PK.PkUtils.NUnitTests.IOTests;
 
 /// <summary> This is a test class for <see cref="FilePathHelper"/>. </summary>
 [TestFixture()]
@@ -37,7 +37,7 @@ public class FilePathHelperTest
     [Test()]
     public void FilePathHelper_HasWildCardTest_02()
     {
-        Assert.Multiple(() =>
+        using (Assert.EnterMultipleScope())
         {
             Assert.That(FilePathHelper.HasWildCard(null), Is.False);
             Assert.That(FilePathHelper.HasWildCard(""), Is.False);
@@ -47,7 +47,7 @@ public class FilePathHelperTest
             Assert.That(FilePathHelper.HasWildCard("?"), Is.True);
             Assert.That(FilePathHelper.HasWildCard("aa*c"), Is.True);
             Assert.That(FilePathHelper.HasWildCard("aa?c"), Is.True);
-        });
+        }
     }
     #endregion // HasWildCardTest
 
@@ -1226,11 +1226,11 @@ public class FilePathHelperTest
 
         // Assert
 
-        Assert.Multiple(() =>
+        using (Assert.EnterMultipleScope())
         {
             Assert.That(actual1, Is.EqualTo(systemDirectory));
             Assert.That(actual2, Is.EqualTo(systemDirectory));
-        });
+        }
     }
     #endregion // GetLonestExistingDirectory_Test
     #endregion // Tests

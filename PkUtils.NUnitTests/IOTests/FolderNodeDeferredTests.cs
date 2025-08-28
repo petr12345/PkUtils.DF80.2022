@@ -1,9 +1,10 @@
-﻿// Ignore Spelling: Utils, Subfolders
+﻿// Ignore Spelling: Utils, Subfolder, Subfolders
 //
 using PK.PkUtils.Interfaces;
 using PK.PkUtils.IO;
 
 namespace PK.PkUtils.NUnitTests.IOTests;
+
 
 /// <summary>   (Unit Test Fixture) of a class <see cref="FolderNodeDeferred"/>. </summary>
 public class FolderNodeDeferredTests
@@ -74,12 +75,12 @@ public class FolderNodeDeferredTests
         // Act
         FolderNodeDeferred result = FolderNodeDeferred.BuildFileTree([], rootPath);
 
-        Assert.Multiple(() =>
+        using (Assert.EnterMultipleScope())
         {
             Assert.That(result.Name, Is.EqualTo(normalizedRoot));
             Assert.That(result.Files, Is.Empty);
             Assert.That(result.Subfolders, Is.Empty);
-        });
+        }
     }
 
     /// <summary>
@@ -105,14 +106,14 @@ public class FolderNodeDeferredTests
         var folderB = subfoldersDict["folderA"].Subfolders.FirstOrDefault(f => f.Name == "folderB");
 
         // Assert
-        Assert.Multiple(() =>
+        using (Assert.EnterMultipleScope())
         {
             Assert.That(subfoldersDict, Contains.Key("folderA"));
             Assert.That(subfoldersDict["folderA"].Subfolders.Any(subfolder => subfolder.Name == "folderB"), Is.True);
             Assert.That(result.Files.Any(f => f.Name == "file1.txt"), Is.True);
             Assert.That(subfoldersDict["folderA"].Files.Select(f => f.Name), Contains.Item("file2.txt"));
             Assert.That(folderB?.Files.Select(f => f.Name), Contains.Item("file3.txt"));
-        });
+        }
     }
 
     /// <summary>
@@ -149,7 +150,7 @@ public class FolderNodeDeferredTests
         IFolderNode? folderH = folderG?.Subfolders.FirstOrDefault(f => f.Name == "folderH");
 
         // Assert
-        Assert.Multiple(() =>
+        using (Assert.EnterMultipleScope())
         {
             // Root folder
             Assert.That(result.Files.Any(f => f.Name == "file1.txt"), Is.True);
@@ -178,7 +179,7 @@ public class FolderNodeDeferredTests
             // FolderG and its subfolder
             Assert.That(folderG?.Files.Select(f => f.Name), Contains.Item("file8.txt"));
             Assert.That(folderH?.Files.Select(f => f.Name), Contains.Item("file9.txt"));
-        });
+        }
     }
     #endregion // BuildFileTree Tests
     #endregion // Tests

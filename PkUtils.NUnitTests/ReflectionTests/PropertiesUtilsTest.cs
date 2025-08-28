@@ -1,9 +1,13 @@
-﻿// Ignore Spelling: Utils
-//
+﻿// Ignore Spelling: CCA, Utils, Inline
+// 
 using System.Reflection;
 using PK.PkUtils.Reflection;
 
-#pragma warning disable IDE0305 // Collection initialization can be simplified
+#pragma warning disable IDE0018   // Inline variable declaration
+#pragma warning disable IDE0090   // 'new' expression can be simplified
+#pragma warning disable IDE0300   // Simplify collection initialization
+#pragma warning disable IDE0305   // Collection initialization can be simplified
+
 
 namespace PK.PkUtils.NUnitTests.ReflectionTests;
 
@@ -251,7 +255,7 @@ public class PropertiesUtilsTest
         res_private = t.SetStaticPropertyValue("pyramid", "P_a_private");
         A.GetPropertiesA(out int a_public, out double a_protected, out string? a_private);
 
-        Assert.Multiple(() =>
+        using (Assert.EnterMultipleScope())
         {
             Assert.That(res_public, Is.True);
             Assert.That(res_protected, Is.True);
@@ -259,7 +263,7 @@ public class PropertiesUtilsTest
             Assert.That(a_public, Is.EqualTo(1492));
             Assert.That(a_protected, Is.EqualTo(PI_Exact));
             Assert.That(a_private, Is.EqualTo("pyramid"));
-        });
+        }
 
         // -- ii/ Demonstrates that via typeof(B) you cannot simply set properties of type B declared in base A
         t = typeof(B);
@@ -268,7 +272,7 @@ public class PropertiesUtilsTest
         res_private = t.SetStaticPropertyValue("hole in the wall", "P_a_private");
         A.GetPropertiesA(out a_public, out a_protected, out a_private);
 
-        Assert.Multiple(() =>
+        using (Assert.EnterMultipleScope())
         {
             Assert.That(res_public, Is.False);
             Assert.That(a_public, Is.Not.EqualTo(2006));
@@ -279,7 +283,7 @@ public class PropertiesUtilsTest
 
             Assert.That(res_private, Is.False);
             Assert.That(a_private, Is.Not.EqualTo("hole in the wall"));
-        });
+        }
 
         // -- iii/ Demonstrates that via typeof(B), with the usage of BindingFlags.FlattenHierarchy,
         // you can set public and protected properties of type B declared in base A, but NOT private properties
@@ -289,7 +293,7 @@ public class PropertiesUtilsTest
         res_private = t.SetStaticPropertyValue("cannot be set", "P_a_private", true);
         A.GetPropertiesA(out a_public, out a_protected, out a_private);
 
-        Assert.Multiple(() =>
+        using (Assert.EnterMultipleScope())
         {
             Assert.That(res_public, Is.True);
             Assert.That(a_public, Is.EqualTo(223344));
@@ -299,7 +303,7 @@ public class PropertiesUtilsTest
 
             Assert.That(res_private, Is.False);
             Assert.That(a_private, Is.Not.EqualTo("cannot be set"));
-        });
+        }
 
         // -- iv/ Demonstrates that via typeof(B) you can set all properties of type B declared in B
         t = typeof(B);
@@ -308,7 +312,7 @@ public class PropertiesUtilsTest
         res_private = t.SetStaticPropertyValue("that can be set", "P_b_private", true);
         B.GetPropertiesB(out int b_public, out double b_protected, out string? b_private);
 
-        Assert.Multiple(() =>
+        using (Assert.EnterMultipleScope())
         {
             Assert.That(res_public, Is.True);
             Assert.That(b_public, Is.EqualTo(89));
@@ -318,7 +322,7 @@ public class PropertiesUtilsTest
 
             Assert.That(res_private, Is.True);
             Assert.That(b_private, Is.EqualTo("that can be set"));
-        });
+        }
     }
     #endregion // Accessing_static_property_value_Shallow_Scope_tests
 
@@ -367,7 +371,7 @@ public class PropertiesUtilsTest
         res_private = c.SetInstancePropertyValue("pyramid", "P_c_private");
         c.GetPropertiesC(out int c_public, out double c_protected, out string? c_private);
 
-        Assert.Multiple(() =>
+        using (Assert.EnterMultipleScope())
         {
             Assert.That(res_public, Is.True);
             Assert.That(res_protected, Is.True);
@@ -375,7 +379,7 @@ public class PropertiesUtilsTest
             Assert.That(c_public, Is.EqualTo(1492));
             Assert.That(c_protected, Is.EqualTo(PI_Exact));
             Assert.That(c_private, Is.EqualTo("pyramid"));
-        });
+        }
 
         // -- ii/ Demonstrates that having D instance, you can access all non-static public and protected properties
         // of instance D declared in base C, but NOT private properties
@@ -384,7 +388,7 @@ public class PropertiesUtilsTest
         res_private = d.SetInstancePropertyValue("cannot be set", "P_c_private");
         d.GetPropertiesC(out c_public, out c_protected, out c_private);
 
-        Assert.Multiple(() =>
+        using (Assert.EnterMultipleScope())
         {
             Assert.That(res_public, Is.True);
             Assert.That(c_public, Is.EqualTo(223344));
@@ -394,7 +398,7 @@ public class PropertiesUtilsTest
 
             Assert.That(res_private, Is.False);
             Assert.That(c_private, Is.Not.EqualTo("cannot be set"));
-        });
+        }
 
         // -- iii/ Demonstrates that having D instance, you can set all properties of type D declared in D
         res_public = d.SetInstancePropertyValue(89, "P_d_public");
@@ -402,7 +406,7 @@ public class PropertiesUtilsTest
         res_private = d.SetInstancePropertyValue("that can be set", "P_d_private");
         d.GetPropertiesD(out int d_public, out double d_protected, out string? d_private);
 
-        Assert.Multiple(() =>
+        using (Assert.EnterMultipleScope())
         {
             Assert.That(res_public, Is.True);
             Assert.That(d_public, Is.EqualTo(89));
@@ -412,7 +416,7 @@ public class PropertiesUtilsTest
 
             Assert.That(res_private, Is.True);
             Assert.That(d_private, Is.EqualTo("that can be set"));
-        });
+        }
     }
     #endregion // Accessing_instance_property_value_Shallow_Scope_tests
 
@@ -480,11 +484,11 @@ public class PropertiesUtilsTest
         {
             actual = PropertiesUtils.GetAllProperties(typeof(B), strPropertyName, flags);
             listActual = actual.ToList();
-            Assert.Multiple(() =>
+            using (Assert.EnterMultipleScope())
             {
                 Assert.That(listActual.Count(), Is.EqualTo(1));
                 Assert.That(listActual.First().Name, Is.EqualTo(strPropertyName));
-            });
+            }
         }
 
         foreach (string strPropertyName in P_arrInvalidPropertisNames)
@@ -555,4 +559,8 @@ public class PropertiesUtilsTest
     #endregion // Accessing_PropertyInfo_Full_Scope
 }
 
+
+#pragma warning restore IDE0018
+#pragma warning restore IDE0090
+#pragma warning restore IDE0300
 #pragma warning restore IDE0305

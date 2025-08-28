@@ -1,10 +1,11 @@
-﻿// Ignore Spelling: Utils, BSID
+﻿// Ignore Spelling: Utils
 //
 using PK.PkUtils.DataStructures;
 
 #pragma warning disable VSSpell001
 
 namespace PK.PkUtils.NUnitTests.DataStructuresTest;
+
 
 /// <summary> Unit Test of generic class Repository. </summary>
 [TestFixture()]
@@ -25,12 +26,12 @@ public class RepositoryTests
         Repository<string> rep = new();
 
         // Assert
-        Assert.Multiple(() =>
+        using (Assert.EnterMultipleScope())
         {
             Assert.That(rep.HasData, Is.False);
             Assert.That(rep.IsAttached, Is.False);
             Assert.That(rep.Data, Is.Null);
-        });
+        }
     }
 
     [Test]
@@ -43,12 +44,12 @@ public class RepositoryTests
         Repository<string> rep = new(inputPalindrom, false);
 
         // Assert
-        Assert.Multiple(() =>
+        using (Assert.EnterMultipleScope())
         {
             Assert.That(rep.HasData, Is.True);
             Assert.That(rep.IsAttached, Is.True);
             Assert.That(rep.Data, Is.EqualTo(inputPalindrom));
-        });
+        }
     }
 
     [Test]
@@ -61,12 +62,12 @@ public class RepositoryTests
         Repository<string> rep = new(input);
 
         // Assert
-        Assert.Multiple(() =>
+        using (Assert.EnterMultipleScope())
         {
             Assert.That(rep.HasData, Is.True);
             Assert.That(rep.IsAttached, Is.False);
             Assert.That(rep.Data, Is.EqualTo(input));
-        });
+        }
     }
 
     [Test]
@@ -76,12 +77,12 @@ public class RepositoryTests
         Repository<int> rep = new();
 
         // Assert
-        Assert.Multiple(() =>
+        using (Assert.EnterMultipleScope())
         {
             Assert.That(rep.HasData, Is.True);
             Assert.That(rep.IsAttached, Is.False);
             Assert.That(rep.Data, Is.Zero);
-        });
+        }
     }
 
     #endregion // Tests_constructors
@@ -111,12 +112,12 @@ public class RepositoryTests
         Repository<string> rep3 = new(input, false);
 
         // Assert
-        Assert.Multiple(() =>
+        using (Assert.EnterMultipleScope())
         {
             Assert.That(rep1, Is.EqualTo(rep2));
             Assert.That(rep1, Is.Not.EqualTo(rep3));
             Assert.That(rep2, Is.Not.EqualTo(rep3));
-        });
+        }
     }
     #endregion // Tests_Equals
 
@@ -139,12 +140,12 @@ public class RepositoryTests
         string s3 = rep3.ToString();
 
         // Assert
-        Assert.Multiple(() =>
+        using (Assert.EnterMultipleScope())
         {
             Assert.That(!string.IsNullOrEmpty(s1), Is.True);
             Assert.That(!string.IsNullOrEmpty(s2), Is.True);
             Assert.That(!string.IsNullOrEmpty(s3), Is.True);
-        });
+        }
     }
     #endregion // Tests_ToString
 }

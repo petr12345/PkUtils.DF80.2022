@@ -3,7 +3,6 @@
 
 using PK.PkUtils.Dump;
 
-
 namespace PK.PkUtils.NUnitTests.DumpTests;
 
 /// <summary> This is a test class for <see cref="ObjectDumper"/> </summary>

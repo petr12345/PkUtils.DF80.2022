@@ -8,7 +8,6 @@ using PK.Commands.Interfaces;
 using PK.PkUtils.Consoles;
 using ILogger = log4net.ILog;
 
-
 namespace PK.Commands.NUnitTests.CommandProcessingTests;
 
 /// <summary> Unit Test Fixture implementing tests of CommandsInputProcessor. </summary>
