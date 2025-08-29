@@ -28,7 +28,7 @@ namespace PK.PkUtils.NUnitTests.ExtensionsTests
         /// <summary>
         /// A helper method for test of AddNew
         ///</summary>
-        internal void AddNewTestHelper<TKey, TValue>(
+        private static void AddNewTestHelper<TKey, TValue>(
             KeyedCollection<TKey, TValue> keyedCollection,
             TValue item) where TKey : notnull
         {

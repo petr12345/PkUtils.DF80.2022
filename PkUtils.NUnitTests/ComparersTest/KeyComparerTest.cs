@@ -43,8 +43,11 @@ public class KeyComparerTest
 
         foreach (var x in listInts)
         {
-            Assert.That(comparer.Compare(x, x), Is.Zero);
-            Assert.That(comparer.Compare(x, x + 1), Is.LessThan(0));
+            using (Assert.EnterMultipleScope())
+            {
+                Assert.That(comparer.Compare(x, x), Is.Zero);
+                Assert.That(comparer.Compare(x, x + 1), Is.LessThan(0));
+            }
         }
     }
 
@@ -53,11 +56,13 @@ public class KeyComparerTest
     public void KeyComparer_EqualsTest_02()
     {
         var comparer = new KeyComparer<string, int>(s => s.Length);
-
-        Assert.That(comparer.Compare("aaa", "AAA"), Is.Zero);
-        Assert.That(comparer.Compare("aaaa", "wXyZ"), Is.Zero);
-        Assert.That(comparer.Compare("aaa", "w"), Is.GreaterThan(0));
-        Assert.That(comparer.Compare("a", "www"), Is.LessThan(0));
+        using (Assert.EnterMultipleScope())
+        {
+            Assert.That(comparer.Compare("aaa", "AAA"), Is.Zero);
+            Assert.That(comparer.Compare("aaaa", "wXyZ"), Is.Zero);
+            Assert.That(comparer.Compare("aaa", "w"), Is.GreaterThan(0));
+            Assert.That(comparer.Compare("a", "www"), Is.LessThan(0));
+        }
     }
 
     [Test()]

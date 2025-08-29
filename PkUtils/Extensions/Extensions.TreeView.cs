@@ -21,7 +21,7 @@ public static class TreeViewExtensions
     /// <summary> Gets recursively all nodes in the tree view. </summary>
     /// <exception cref="ArgumentNullException"> Thrown when <paramref name="tv"/> is null. </exception>
     /// <param name="tv"> A TreeView control whose nodes are retrieved. Can't be null. </param>
-    /// <returns> Enumerable collection of all nodes in the tree. </returns>
+    /// <returns>   Enumerable collection of all nodes in the tree. </returns>
     public static IEnumerable<TreeNode> GetAllNodes(this TreeView tv)
     {
         ArgumentNullException.ThrowIfNull(tv);
@@ -51,7 +51,7 @@ public static class TreeViewExtensions
     /// <exception cref="ArgumentNullException"> Thrown when any of input arguments is null. </exception>
     /// <param name="tv"> A TreeView control whose nodes are hunted-down. Must not be equal to null. </param>
     /// <param name="match"> A predicate that matching node must fulfill. Must not be equal to null. </param>
-    /// <returns> Found TreeNode, or null if none matching node is found. </returns>
+    /// <returns>   Found TreeNode, or null if none matching node is found. </returns>
     public static TreeNode FindNode(this TreeView tv, Predicate<TreeNode> match)
     {
         ArgumentNullException.ThrowIfNull(tv);
@@ -121,7 +121,7 @@ public static class TreeViewExtensions
 
     /// <summary>   A TreeView extension method that searches for the root node. </summary>
     /// <param name="tv"> A TreeView control whose nodes are examined. Must not be equal to null. </param>
-    /// <returns> The found root node, or null. </returns>
+    /// <returns>   The found root node, or null. </returns>
     public static TreeNode FindRootNode(this TreeView tv)
     {
         ArgumentNullException.ThrowIfNull(tv);
@@ -130,7 +130,7 @@ public static class TreeViewExtensions
 
     /// <summary>   Gets the full path of the top node in the <see cref="TreeView"/>, if one exists. </summary>
     /// <param name="tv"> The TreeView control from which to retrieve the top node path. </param>
-    /// <returns> The full path of the top node if it exists; otherwise, <c>null</c>. </returns>
+    /// <returns>   The full path of the top node if it exists; otherwise, <c>null</c>. </returns>
     /// <exception cref="ArgumentNullException"> Thrown if <paramref name="tv"/> is <c>null</c>. </exception>/// 
     /// <seealso cref="RestoreTopNode"/>
     public static string GetTopNodePath(this TreeView tv)
@@ -257,7 +257,7 @@ public static class TreeViewExtensions
     /// <summary> A TreeNode extension method that query if 'tn' is root. </summary>
     /// <exception cref="ArgumentNullException"> Thrown when <paramref name="tn"/> is null. </exception>
     /// <param name="tn"> A tree node examined. Can't be null. </param>
-    /// <returns> True if root, false if not. </returns>
+    /// <returns>   True if root, false if not. </returns>
     public static bool IsRoot(this TreeNode tn)
     {
         ArgumentNullException.ThrowIfNull(tn);
@@ -267,7 +267,7 @@ public static class TreeViewExtensions
     /// <summary> A TreeNode extension method that query if 'tn' is root. </summary>
     /// <exception cref="ArgumentNullException"> Thrown when <paramref name="tn"/> is null. </exception>
     /// <param name="tn"> A tree node examined. Can't be null. </param>
-    /// <returns> True if root, false if not. </returns>
+    /// <returns>   True if root, false if not. </returns>
     public static bool IsLeaf(this TreeNode tn)
     {
         ArgumentNullException.ThrowIfNull(tn);
@@ -320,7 +320,7 @@ public static class TreeViewExtensions
     /// <param name="tn"> A tree node whose child nodes are examined. Can't be null. </param>
     /// <param name="match"> A predicate that specifies matching condition for nodes.  
     /// Must not be equal to null. </param>
-    /// <returns> Resulting sequence of nodes that can be iterated. </returns>
+    /// <returns>   Resulting sequence of nodes that can be iterated. </returns>
     /// <seealso cref="FindChildNode"/>
     public static IEnumerable<TreeNode> FindAllChildren(
         this TreeNode tn,

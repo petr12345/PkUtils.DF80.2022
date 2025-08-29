@@ -21,7 +21,7 @@ public static class Primes
     ///
     /// <param name="maxValue"> The maximum value. Has to be positive. </param>
     ///
-    /// <returns> Resulting sequence of primes. </returns>
+    /// <returns>   Resulting sequence of primes. </returns>
     public static IEnumerable<int> GeneratePrimesInRange(int maxValue)
     {
         if (maxValue < 1) throw new ArgumentOutOfRangeException(

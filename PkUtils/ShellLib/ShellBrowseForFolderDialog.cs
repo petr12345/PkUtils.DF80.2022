@@ -822,12 +822,8 @@ public class ShellBrowseForFolderDialog
 
         return 0;
     }
-    #endregion // Private Methods
-    #endregion // Methods
 
-
-
-    private string GetDisplayNameOf(IntPtr pidl)
+    private static string GetDisplayNameOf(IntPtr pidl)
     {
         SHGetDesktopFolder(out IShellFolder desktopFolder);
 
@@ -846,6 +842,8 @@ public class ShellBrowseForFolderDialog
 
         return displayName;
     }
+    #endregion // Private Methods
+    #endregion // Methods
 }
 
 #pragma warning restore IDE0290 // Use primary constructor

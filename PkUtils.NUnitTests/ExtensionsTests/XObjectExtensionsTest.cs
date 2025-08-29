@@ -94,7 +94,7 @@ public class XObjectExtensionsTests
 
         // Assert
         Assert.That(path, Does.StartWith(expectedLineInfo));
-        path = path.Substring(path.IndexOf(expectedLineInfo) + expectedLineInfo.Length).TrimStart();
+        path = path[(path.IndexOf(expectedLineInfo) + expectedLineInfo.Length)..].TrimStart();
         Assert.That(path, Does.StartWith("/root/child/@name"));
     }
     #endregion // GetPath_With_Line_Info_Tests
@@ -106,7 +106,7 @@ public class XObjectExtensionsTests
     {
         // Arrange
         XDocument doc = XDocument.Parse("<root><item /><item /><item /><item2/></root>");
-        XElement[] items = doc.Root.Elements("item").ToArray();
+        XElement[] items = [.. doc.Root.Elements("item")];
 
         // Act
         string path1 = items[0].GetPath(showLineNumber: false);
@@ -115,13 +115,13 @@ public class XObjectExtensionsTests
         string path4 = doc.Root.Element("item2").GetPath(showLineNumber: false);
 
         // Assert
-        Assert.Multiple(() =>
+        using (Assert.EnterMultipleScope())
         {
             Assert.That(path1, Does.Contain("/root/item(1)"));
             Assert.That(path2, Does.Contain("/root/item(2)"));
             Assert.That(path3, Does.Contain("/root/item(3)"));
             Assert.That(path4, Is.EqualTo("/root/item2"));
-        });
+        }
     }
     #endregion // GetPath_Sibling_Index_Tests
     #endregion // GetPath_Tests
@@ -190,8 +190,11 @@ public class XObjectExtensionsTests
         string path = subchild.GetPathAndLineNumber(out int? lineNumber);
 
         // Assert
-        Assert.That(lineNumber, Is.EqualTo(expectedLineNumber));
-        Assert.That(path, Is.EqualTo(expectedPath));
+        using (Assert.EnterMultipleScope())
+        {
+            Assert.That(lineNumber, Is.EqualTo(expectedLineNumber));
+            Assert.That(path, Is.EqualTo(expectedPath));
+        }
     }
 
     [Test(Description = "Tests returning correct path for XAttribute with line info.")]
@@ -210,8 +213,11 @@ public class XObjectExtensionsTests
         string path = attr.GetPathAndLineNumber(out int? lineNumber);
 
         // Assert
-        Assert.That(lineNumber, Is.EqualTo(expectedLineNumber));
-        Assert.That(path, Is.EqualTo(expectedPath));
+        using (Assert.EnterMultipleScope())
+        {
+            Assert.That(lineNumber, Is.EqualTo(expectedLineNumber));
+            Assert.That(path, Is.EqualTo(expectedPath));
+        }
     }
     #endregion // GetPathAndLineNumber_With_Line_Info_Tests
 
@@ -223,7 +229,7 @@ public class XObjectExtensionsTests
         // Arrange
         const string inputXml = "<root>\n  <item />\n  <item />\n  <item />\n  <item2/>\n</root>";
         XDocument doc = XDocument.Parse(inputXml, LoadOptions.SetLineInfo);
-        XElement[] items = doc.Root.Elements("item").ToArray();
+        XElement[] items = [.. doc.Root.Elements("item")];
 
         // Act
         string path1 = items[0].GetPathAndLineNumber(out int? lineInfo1);
@@ -232,7 +238,7 @@ public class XObjectExtensionsTests
         string path4 = doc.Root.Element("item2").GetPathAndLineNumber(out int? lineInfo4);
 
         // Assert
-        Assert.Multiple(() =>
+        using (Assert.EnterMultipleScope())
         {
             Assert.That(path1, Is.EqualTo("/root/item(1)"));
             Assert.That(path2, Is.EqualTo("/root/item(2)"));
@@ -243,7 +249,7 @@ public class XObjectExtensionsTests
             Assert.That(lineInfo2, Is.EqualTo(3));
             Assert.That(lineInfo3, Is.EqualTo(4));
             Assert.That(lineInfo4, Is.EqualTo(5));
-        });
+        }
     }
     #endregion // GetPathAndLineNumber_Sibling_Index_Tests
     #endregion // GetPathAndLineNumber_Tests

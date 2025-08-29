@@ -90,10 +90,8 @@ public class SharedMemoryTest
         for (int ii = 1; ii <= maxMappingNameLength; ii++)
         {
             string mappingName = new string('x', ii);
-            using (Segment tempSegment = new Segment(mappingName, SharedMemoryCreationFlag.Create, 20, true))
-            {
-                Assert.That(tempSegment.IsSynchronized, Is.True);
-            }
+            using var tempSegment = new Segment(mappingName, SharedMemoryCreationFlag.Create, 20, true);
+            Assert.That(tempSegment.IsSynchronized, Is.True);
         }
     }
 
@@ -169,21 +167,13 @@ public class SharedMemoryTest
 
         using (Segment sA = new Segment(mappingName, pA, true))
         {
-            using (IDisposable lockA1 = sA.AcquireLock())
+            using var lockA1 = sA.AcquireLock();
+            using var lockA2 = sA.AcquireLock();
+            using (Segment sB = new Segment(mappingName, true))
             {
-                using (IDisposable lockA2 = sA.AcquireLock())
-                {
-                    using (Segment sB = new Segment(mappingName, true))
-                    {
-                        using (IDisposable lockB1 = sB.AcquireLock())
-                        {
-                            using (IDisposable lockB2 = sB.AcquireLock())
-                            {
-                                pB = (PersonData)sB.GetData();
-                            }
-                        }
-                    }
-                }
+                using var lockB1 = sB.AcquireLock();
+                using var lockB2 = sB.AcquireLock();
+                pB = (PersonData)sB.GetData();
             }
         }
 

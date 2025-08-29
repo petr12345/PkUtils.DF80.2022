@@ -43,8 +43,11 @@ public class CachedEnumerableTest
         string[] arrInput = Enumerable.Range(0, 3).Select(i => i.ToString()).ToArray();
         CachedEnumerable<string> enumerab = new CachedEnumerable<string>(arrInput);
 
-        Assert.That(enumerab.Any(), Is.True);
-        Assert.That(enumerab.Status, Is.EqualTo(ParseStatus.Parsing));
+        using (Assert.EnterMultipleScope())
+        {
+            Assert.That(enumerab.Any(), Is.True);
+            Assert.That(enumerab.Status, Is.EqualTo(ParseStatus.Parsing));
+        }
 
         enumerab.Dispose();
         Assert.Throws<ObjectDisposedException>(() => enumerab.Any());
@@ -57,9 +60,12 @@ public class CachedEnumerableTest
         string[] arrInput = Enumerable.Range(0, 10).Select(i => i.ToString()).ToArray();
         CachedEnumerable<string> enumerab = new CachedEnumerable<string>(arrInput);
 
-        Assert.That(enumerab.Status, Is.EqualTo(ParseStatus.ParseNotInitialized));
-        Assert.That(enumerab.Any(), Is.True);
-        Assert.That(enumerab.Status, Is.EqualTo(ParseStatus.Parsing));
+        using (Assert.EnterMultipleScope())
+        {
+            Assert.That(enumerab.Status, Is.EqualTo(ParseStatus.ParseNotInitialized));
+            Assert.That(enumerab.Any(), Is.True);
+            Assert.That(enumerab.Status, Is.EqualTo(ParseStatus.Parsing));
+        }
     }
 
     /// <summary> A test for CachedEnumerable parsing, which should succeed. </summary>
@@ -84,20 +90,23 @@ public class CachedEnumerableTest
         IEnumerable<int> output2 = enumerab.Take(arrInput.Length);
         IEnumerable<int> output3 = enumerab.Take(arrInput.Length + 2);
 
-        Assert.That(output1.Count(), Is.EqualTo(arrInput.Length - 2));
-        Assert.That(enumerab.CachedItemsCount, Is.EqualTo(arrInput.Length - 2));
-        Assert.That(enumerab.Status, Is.EqualTo(ParseStatus.Parsing));
+        using (Assert.EnterMultipleScope())
+        {
+            Assert.That(output1.Count(), Is.EqualTo(arrInput.Length - 2));
+            Assert.That(enumerab.CachedItemsCount, Is.EqualTo(arrInput.Length - 2));
+            Assert.That(enumerab.Status, Is.EqualTo(ParseStatus.Parsing));
 
-        Assert.That(output2.Count(), Is.EqualTo(arrInput.Length));
-        Assert.That(enumerab.CachedItemsCount, Is.EqualTo(arrInput.Length));
-        Assert.That(enumerab.Status, Is.EqualTo(ParseStatus.Parsing));
+            Assert.That(output2.Count(), Is.EqualTo(arrInput.Length));
+            Assert.That(enumerab.CachedItemsCount, Is.EqualTo(arrInput.Length));
+            Assert.That(enumerab.Status, Is.EqualTo(ParseStatus.Parsing));
 
-        Assert.That(output3.Count(), Is.EqualTo(arrInput.Length));
-        Assert.That(enumerab.CachedItemsCount, Is.EqualTo(arrInput.Length));
-        Assert.That(enumerab.Status, Is.EqualTo(ParseStatus.ParsedOk));
+            Assert.That(output3.Count(), Is.EqualTo(arrInput.Length));
+            Assert.That(enumerab.CachedItemsCount, Is.EqualTo(arrInput.Length));
+            Assert.That(enumerab.Status, Is.EqualTo(ParseStatus.ParsedOk));
 
-        enumerab.ResetCache();
-        Assert.That(enumerab.Status, Is.EqualTo(ParseStatus.ParseNotInitialized));
+            enumerab.ResetCache();
+            Assert.That(enumerab.Status, Is.EqualTo(ParseStatus.ParseNotInitialized));
+        }
     }
 
     /// <summary>
@@ -367,14 +376,20 @@ public class CachedEnumerableTest
 
         for (int ii = 0; ii < arrInput.Length;)
         {
-            Assert.That(en.CanPeek, Is.True);
-            Assert.That(++ii, Is.EqualTo(en.Peek));
-            Assert.That(en.MoveNext(), Is.True);
-            Assert.That(ii, Is.EqualTo(en.Current));
+            using (Assert.EnterMultipleScope())
+            {
+                Assert.That(en.CanPeek, Is.True);
+                Assert.That(++ii, Is.EqualTo(en.Peek));
+                Assert.That(en.MoveNext(), Is.True);
+                Assert.That(ii, Is.EqualTo(en.Current));
+            }
         }
 
-        Assert.That(en.CanPeek, Is.False);
-        Assert.That(en.MoveNext(), Is.False);
+        using (Assert.EnterMultipleScope())
+        {
+            Assert.That(en.CanPeek, Is.False);
+            Assert.That(en.MoveNext(), Is.False);
+        }
     }
     #endregion // Tests_PeekAbleEnumerator
 
@@ -495,10 +510,15 @@ public class CachedEnumerableTest
 
             for (int ii = 0; ii < nInputLength;)
             {
-                Assert.That(en.CanPeek, Is.True);
-                Assert.That(++ii, Is.EqualTo(en.Peek));
-                Assert.That(en.MoveNext(), Is.True);
-                Assert.That(ii, Is.EqualTo(en.Current));
+                // Do NOT use using (Assert.EnterMultipleScope())
+                // because of problem System.InvalidOperationException : The assertion scope was disposed out of order.
+                // using (Assert.EnterMultipleScope())
+                {
+                    Assert.That(en.CanPeek, Is.True);
+                    Assert.That(++ii, Is.EqualTo(en.Peek));
+                    Assert.That(en.MoveNext(), Is.True);
+                    Assert.That(ii, Is.EqualTo(en.Current));
+                }
             }
 
             Assert.That(en.CanPeek, Is.False);

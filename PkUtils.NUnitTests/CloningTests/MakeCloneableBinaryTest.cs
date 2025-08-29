@@ -56,8 +56,11 @@ public class MakeCloneableBinaryTest
         Animal an01 = new Animal(6);
         Animal an02 = an01.DeepClone();
 
-        Assert.That(an01, Is.Not.SameAs(an02));
-        Assert.That(an01.Legs, Is.EqualTo(an02.Legs));
+        using (Assert.EnterMultipleScope())
+        {
+            Assert.That(an01, Is.Not.SameAs(an02));
+            Assert.That(an01.Legs, Is.EqualTo(an02.Legs));
+        }
     }
 
     [Test]
@@ -66,9 +69,12 @@ public class MakeCloneableBinaryTest
         Animal an01 = new Baboon("Joe");
         Animal an02 = an01.DeepClone();
 
-        Assert.That(an01, Is.Not.SameAs(an02));
-        Assert.That(an01.Legs, Is.EqualTo(an02.Legs));
-        Assert.That((an02 as Baboon)?.Name, Is.EqualTo("Joe"));
+        using (Assert.EnterMultipleScope())
+        {
+            Assert.That(an01, Is.Not.SameAs(an02));
+            Assert.That(an01.Legs, Is.EqualTo(an02.Legs));
+            Assert.That((an02 as Baboon)?.Name, Is.EqualTo("Joe"));
+        }
     }
 
     #endregion // Tests

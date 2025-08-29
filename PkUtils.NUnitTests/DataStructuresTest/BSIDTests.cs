@@ -71,7 +71,7 @@ public class BSIDTests
         object id_1st = new BSID(_sLower);
         bool equal_1st = StringComparer.InvariantCultureIgnoreCase.Equals(id_1st.ToString(), _sUpper);
 
-        Assert.That(equal_1st, Is.EqualTo(true));
+        Assert.That(equal_1st, Is.True);
     }
 
     [Test]
@@ -100,15 +100,18 @@ public class BSIDTests
         object id_1st = new BSID(_sLower);
         object id_2nd = new BSID(_sUpper);
 
-        Assert.That(id_1st.Equals(nullObj), Is.False);
-        Assert.That(id_1st.Equals(id_dummy), Is.False);
-        Assert.That(id_1st.Equals(id_1st), Is.True);
-        Assert.That(id_1st.Equals(id_2nd), Is.True);
+        using (Assert.EnterMultipleScope())
+        {
+            Assert.That(id_1st.Equals(nullObj), Is.False);
+            Assert.That(id_1st.Equals(id_dummy), Is.False);
+            Assert.That(id_1st.Equals(id_1st), Is.True);
+            Assert.That(id_1st.Equals(id_2nd), Is.True);
 
-        Assert.That(id_2nd.Equals(nullObj), Is.False);
-        Assert.That(id_2nd.Equals(id_dummy), Is.False);
-        Assert.That(id_2nd.Equals(id_2nd), Is.True);
-        Assert.That(id_2nd.Equals(id_1st), Is.True);
+            Assert.That(id_2nd.Equals(nullObj), Is.False);
+            Assert.That(id_2nd.Equals(id_dummy), Is.False);
+            Assert.That(id_2nd.Equals(id_2nd), Is.True);
+            Assert.That(id_2nd.Equals(id_1st), Is.True);
+        }
     }
     #endregion // Tests_Methods
 
@@ -141,7 +144,7 @@ public class BSIDTests
         var id = (BSID)_sLower;
         bool equal = StringComparer.InvariantCultureIgnoreCase.Equals(id.ID, _sUpper);
 
-        Assert.That(equal, Is.EqualTo(true));
+        Assert.That(equal, Is.True);
     }
 
     [Test]
@@ -151,7 +154,7 @@ public class BSIDTests
         string str = (string)id;
         bool equal = StringComparer.InvariantCultureIgnoreCase.Equals(str, _sUpper);
 
-        Assert.That(equal, Is.EqualTo(true));
+        Assert.That(equal, Is.True);
     }
     #endregion // Tests_Static_Operators_Conversions
 
@@ -165,17 +168,20 @@ public class BSIDTests
         BSID id_1st = new BSID(_sLower);
         BSID id_2nd = new BSID(_sUpper);
 
-        Assert.That(id_1st == id_null, Is.False);
-        Assert.That(id_1st == id_dummy, Is.False);
+        using (Assert.EnterMultipleScope())
+        {
+            Assert.That(id_1st == id_null, Is.False);
+            Assert.That(id_1st == id_dummy, Is.False);
 
-        Assert.That(id_1st == id_1st, Is.True);
-        Assert.That(id_1st == id_2nd, Is.True);
+            Assert.That(id_1st == id_1st, Is.True);
+            Assert.That(id_1st == id_2nd, Is.True);
 
-        Assert.That(id_2nd == id_null, Is.False);
-        Assert.That(id_2nd == id_dummy, Is.False);
+            Assert.That(id_2nd == id_null, Is.False);
+            Assert.That(id_2nd == id_dummy, Is.False);
 
-        Assert.That(id_2nd == id_2nd, Is.True);
-        Assert.That(id_2nd == id_1st, Is.True);
+            Assert.That(id_2nd == id_2nd, Is.True);
+            Assert.That(id_2nd == id_1st, Is.True);
+        }
     }
 
     [Test]
@@ -184,13 +190,16 @@ public class BSIDTests
         BSID id_null = null!;
         BSID id_dummy = new BSID(_sDummy);
 
-        Assert.That(id_null < id_null, Is.False);
-        Assert.That(id_null > id_null, Is.False);
-        Assert.That(id_dummy < id_dummy, Is.False);
-        Assert.That(id_dummy > id_dummy, Is.False);
+        using (Assert.EnterMultipleScope())
+        {
+            Assert.That(id_null < id_null, Is.False);
+            Assert.That(id_null > id_null, Is.False);
+            Assert.That(id_dummy < id_dummy, Is.False);
+            Assert.That(id_dummy > id_dummy, Is.False);
 
-        Assert.That(id_null < id_dummy, Is.True);
-        Assert.That(id_dummy > id_null, Is.True);
+            Assert.That(id_null < id_dummy, Is.True);
+            Assert.That(id_dummy > id_null, Is.True);
+        }
     }
 
     [Test]
@@ -200,15 +209,18 @@ public class BSIDTests
         BSID id_1st = new BSID(_sLower);
         BSID id_2nd = new BSID(_sUpper);
 
-        Assert.That(id_1st == id_1st, Is.True);
-        Assert.That(id_1st == id_2nd, Is.True);
-        Assert.That(id_2nd == id_1st, Is.True);
+        using (Assert.EnterMultipleScope())
+        {
+            Assert.That(id_1st == id_1st, Is.True);
+            Assert.That(id_1st == id_2nd, Is.True);
+            Assert.That(id_2nd == id_1st, Is.True);
 
-        Assert.That(_sLower.CompareTo(_sDummy) < 0, Is.True);
-        Assert.That(id_1st < id_dummy, Is.True);
+            Assert.That(_sLower.CompareTo(_sDummy) < 0, Is.True);
+            Assert.That(id_1st < id_dummy, Is.True);
 
-        Assert.That(_sDummy.CompareTo(_sLower) > 0, Is.True);
-        Assert.That(id_dummy > id_1st, Is.True);
+            Assert.That(_sDummy.CompareTo(_sLower) > 0, Is.True);
+            Assert.That(id_dummy > id_1st, Is.True);
+        }
     }
     #endregion // Tests_Static_Operators_Comparisons
     #endregion // Tests_Static_Operators
@@ -254,11 +266,14 @@ public class BSIDTests
         BSID? id_null = null;
         BSID id_dummy = new BSID(_sDummy);
 
-        Assert.That(BSID.Compare(id_null, id_null), Is.Zero);
-        Assert.That(BSID.Compare(id_dummy, id_dummy), Is.Zero);
+        using (Assert.EnterMultipleScope())
+        {
+            Assert.That(BSID.Compare(id_null, id_null), Is.Zero);
+            Assert.That(BSID.Compare(id_dummy, id_dummy), Is.Zero);
 
-        Assert.That(BSID.Compare(id_null, id_dummy), Is.EqualTo(-1));
-        Assert.That(BSID.Compare(id_dummy, id_null), Is.EqualTo(1));
+            Assert.That(BSID.Compare(id_null, id_dummy), Is.EqualTo(-1));
+            Assert.That(BSID.Compare(id_dummy, id_null), Is.EqualTo(1));
+        }
     }
 
     [Test]

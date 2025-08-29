@@ -71,7 +71,7 @@ public readonly struct AwaitableDisposable<T> where T : IDisposable
 
     /// <summary> Implicit conversion to the underlying task. </summary>
     /// <param name="source">   The awaitable wrapper. </param>
-    /// <returns> The result of the operation. </returns>
+    /// <returns>   The result of the operation. </returns>
     public static implicit operator Task<T>(AwaitableDisposable<T> source)
     {
         return source.AsTask();
@@ -87,7 +87,7 @@ public readonly struct AwaitableDisposable<T> where T : IDisposable
     /// <summary> Infrastructure. Returns a configured task awaiter for the underlying task. </summary>
     /// <param name="continueOnCapturedContext"> Whether to attempt to marshal the continuation back to the
     /// captured context. </param>
-    /// <returns> A ConfiguredTaskAwaitable{T} </returns>
+    /// <returns>   A ConfiguredTaskAwaitable{T} </returns>
     public ConfiguredTaskAwaitable<T> ConfigureAwait(bool continueOnCapturedContext)
     {
         return _task.ConfigureAwait(continueOnCapturedContext);

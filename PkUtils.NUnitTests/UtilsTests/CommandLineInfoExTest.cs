@@ -68,14 +68,14 @@ public class CommandLineInfoExTest
         CommandLineInfoEx info = new CommandLineInfoEx();
 
         info.ParseCommandLine(args);
-        Assert.Multiple(() =>
+        using (Assert.EnterMultipleScope())
         {
             Assert.That(info.GetSwitch("nologo"), Is.True);
             Assert.That(info.GetSwitch("NoLogo"), Is.False);
 
             Assert.That(info.GetOption("InputFile", out string strVal), Is.True);
             Assert.That(strVal, Is.EqualTo("doc1.rtf"));
-        });
+        }
     }
 
     /// <summary>
@@ -88,14 +88,14 @@ public class CommandLineInfoExTest
         CommandLineInfoEx info = new CommandLineInfoEx(false, string.Empty);
 
         info.ParseCommandLine(args);
-        Assert.Multiple(() =>
+        using (Assert.EnterMultipleScope())
         {
             Assert.That(info.GetSwitch("nologo"), Is.True);
             Assert.That(info.GetSwitch("NoLogO"), Is.True);
 
             Assert.That(info.GetOption("iNpUtFiLe", out string strVal), Is.True);
             Assert.That(strVal, Is.EqualTo("DOC1.RTF").IgnoreCase);
-        });
+        }
     }
 
     /// <summary> A test for CommandLineInfoEx.DeepClone. </summary>
@@ -106,11 +106,11 @@ public class CommandLineInfoExTest
         CommandLineInfoEx info1 = new CommandLineInfoEx(args, true, string.Empty);
         CommandLineInfoEx info2 = info1.DeepClone();
 
-        Assert.Multiple(() =>
+        using (Assert.EnterMultipleScope())
         {
             Assert.That(info1.GetSwitch("nologo"), Is.True);
             Assert.That(info2.GetSwitch("nologo"), Is.True);
-        });
+        }
     }
 
     /// <summary> A test for covariance of IDeepCloneable ( compilation of assignment ). </summary>

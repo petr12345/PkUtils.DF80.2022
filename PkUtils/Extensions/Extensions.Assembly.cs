@@ -67,7 +67,7 @@ public static class AssemblyExtensions
     /// <summary> An Assembly extension method that gets either root assembly of <paramref name="assembly"/>
     /// or that assembly itself. </summary>
     /// <param name="assembly"> The current assembly to act on. Can't be null. </param>
-    /// <returns> The root or current assembly. </returns>
+    /// <returns>   The root or current assembly. </returns>
     public static Assembly GetRootOrCurrentAssembly(this Assembly assembly)
     {
         return assembly.GetRootAssembly() ?? assembly;
@@ -79,7 +79,7 @@ public static class AssemblyExtensions
     /// </exception>
     ///
     /// <param name="assembly"> The assembly to act on. </param>
-    /// <returns> The assembly unique identifier. </returns>
+    /// <returns>   The assembly unique identifier. </returns>
     public static string GetAssemblyGuid(this Assembly assembly)
     {
         ArgumentNullException.ThrowIfNull(assembly);
@@ -92,7 +92,7 @@ public static class AssemblyExtensions
     /// </exception>
     ///
     /// <param name="assembly"> The assembly to act on. </param>
-    /// <returns> The assembly unique identifier. </returns>
+    /// <returns>   The assembly unique identifier. </returns>
     public static string GetAssemblyProduct(this Assembly assembly)
     {
         ArgumentNullException.ThrowIfNull(assembly);
@@ -112,7 +112,7 @@ public static class AssemblyExtensions
     ///
     /// <param name="assembly"> The assembly to act on. </param>
     ///
-    /// <returns> The assembly Version. </returns>
+    /// <returns>   The assembly Version. </returns>
     public static Version GetAssemblyVersion(this Assembly assembly)
     {
         ArgumentNullException.ThrowIfNull(assembly);

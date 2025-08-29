@@ -12,7 +12,7 @@ public static class WpfUtils
     #region Methods
 
     /// <summary> Gets main window handle. </summary>
-    /// <returns> The main window handle, or IntPtr.Zero if failed. </returns>
+    /// <returns>   The main window handle, or IntPtr.Zero if failed. </returns>
     public static IntPtr GetMainWindowHandle()
     {
         // Ensure the application has a main window and it's loaded
@@ -29,7 +29,7 @@ public static class WpfUtils
     }
 
     /// <summary> Gets main window. </summary>
-    /// <returns> The main window, or null if none found. </returns>
+    /// <returns>   The main window, or null if none found. </returns>
     public static Win32Window GetMainWindow()
     {
         IntPtr handle = GetMainWindowHandle();

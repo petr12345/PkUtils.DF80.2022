@@ -6,6 +6,7 @@ using PK.PkUtils.Interfaces;
 
 namespace PK.PkUtils.NUnitTests.DataStructuresTest;
 
+#pragma warning disable CA1859    // Change type of variable ...
 
 /// <summary> NUnit tests of generic class SizeLimitedCache. </summary>
 [TestFixture()]
@@ -100,16 +101,22 @@ public class SizeLimitedCacheTests
         // 
         for (int jj = populateSource.Count - 1; jj >= 0; jj--)
         {
-            Assert.That(mutexCache.TryGetValue(jj, out Mutex m), Is.True);
-            Assert.That(IsMutextIsDisposed(m), Is.False, "Mutex should not be disposed now");
+            using (Assert.EnterMultipleScope())
+            {
+                Assert.That(mutexCache.TryGetValue(jj, out Mutex m), Is.True);
+                Assert.That(IsMutextIsDisposed(m), Is.False, "Mutex should not be disposed now");
+            }
         }
 
         // 4. Attempt to remove a few items from cache, assert mutex was disposed by that
         //
         for (int jj = 6; jj < 8; jj++)
         {
-            Assert.That(mutexCache.Remove(jj), Is.True);
-            Assert.That(IsMutextIsDisposed(populateSource[jj].SynchroMutex), Is.True);
+            using (Assert.EnterMultipleScope())
+            {
+                Assert.That(mutexCache.Remove(jj), Is.True);
+                Assert.That(IsMutextIsDisposed(populateSource[jj].SynchroMutex), Is.True);
+            }
         }
 
         // 5. Call dispose on the cache from several threads
@@ -376,3 +383,4 @@ public class SizeLimitedCacheTests
     }
     #endregion // Tests_Clear
 }
+#pragma warning restore CA1859    // Change type of variable ...

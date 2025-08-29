@@ -167,7 +167,7 @@ public class CollectionFormHook<T> : CollectionFormInfo
     }
 
     /// <summary> Validates the items taken from hooked CollectionForm. </summary>
-    /// <returns> True if it succeeds, false if it fails. </returns>
+    /// <returns>   True if it succeeds, false if it fails. </returns>
     protected virtual bool ValidateCollectionFormItems()
     {
         IReadOnlyList<T> listItems = GetCollectionFormItems();
@@ -247,7 +247,7 @@ public class CollectionFormHook<T> : CollectionFormInfo
     }
 
     /// <summary> Unhook previously hooked collection form. </summary>
-    /// <returns> True if it succeeds, false if it fails. </returns>
+    /// <returns>  True if it succeeds, false if it fails. </returns>
     protected internal virtual bool UnhookCollectionForm()
     {
         Form form;

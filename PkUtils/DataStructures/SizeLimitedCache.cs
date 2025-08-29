@@ -125,7 +125,7 @@ public class SizeLimitedCache<TKey, TValue> : ISizeLimitedCache<TKey, TValue>
     /// <param name="argValue"> The argument value to be checked. </param>
     /// <param name="argName">  Name of the argument. </param>
     ///
-    /// <returns> An original value of <paramref name="argValue"/>. </returns>
+    /// <returns>  An original value of <paramref name="argValue"/>. </returns>
     protected static int CheckMaxSizePositive(int argValue, string argName)
     {
         if (argValue <= 0) throw new ArgumentOutOfRangeException(argName, argValue, "The maximum size must be positive");

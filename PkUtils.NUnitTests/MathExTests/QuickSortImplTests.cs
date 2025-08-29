@@ -5,6 +5,8 @@ using PK.PkUtils.MathEx;
 
 namespace PK.PkUtils.NUnitTests.MathExTests;
 
+#pragma warning disable CA1859    // Change type of variable ...
+
 
 /// <summary> This is a test class for <see cref="QuickSortImpl"/> </summary>
 [TestFixture()]
@@ -72,7 +74,7 @@ public class QuickSortImplTests
     [Test()]
     public void SortArray_0_ElementsTest()
     {
-        int[] arr = new int[] { };
+        int[] arr = Array.Empty<int>();
 
         arr = _sorter.SortArray(arr);
         Assert.That(arr.IsSorted(), Is.True);
@@ -131,3 +133,5 @@ public class QuickSortImplTests
 
     #endregion // Tests
 }
+
+#pragma warning restore CA1859    // Change type of variable ...

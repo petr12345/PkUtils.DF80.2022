@@ -74,7 +74,7 @@ public class Win32WindowHook : WindowMessageHook
     /// <param name="win32Window"> An object that exposes Win32 HWND handle.
     /// Could be null; in that case the hook unhooks itself. 
     /// </param>
-    /// <returns> True on success, false on failure. </returns>
+    /// <returns>   True on success, false on failure. </returns>
     public virtual bool HookWindow(IWin32Window win32Window)
     {
         bool wasHooked = IsHooked;

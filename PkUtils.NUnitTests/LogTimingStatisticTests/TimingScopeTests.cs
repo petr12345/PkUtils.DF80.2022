@@ -1,9 +1,9 @@
 ﻿// Ignore Spelling: Utils
 //
 using PK.PkUtils.LogTimingStatistic;
-
-
 namespace PK.PkUtils.NUnitTests.LogTimingStatisticTests;
+
+#pragma warning disable CA1859    // Change type of variable ...
 
 [TestFixture()]
 public class TimingScopeTests
@@ -51,8 +51,11 @@ public class TimingScopeTests
         var topic2 = scope.AddOccurrence(_topicName2, TimeSpan.FromSeconds(44));
 
         // Assert
-        Assert.That(topic1, Is.Not.Null);
-        Assert.That(topic2, Is.Not.Null);
+        using (Assert.EnterMultipleScope())
+        {
+            Assert.That(topic1, Is.Not.Null);
+            Assert.That(topic2, Is.Not.Null);
+        }
     }
 
     [Test()]
@@ -69,7 +72,7 @@ public class TimingScopeTests
         // Assert
         Assert.That(all, Contains.Item(topic1));
         Assert.That(all, Contains.Item(topic2));
-        Assert.That(all.Count(), Is.EqualTo(2));
+        Assert.That(all.Count, Is.EqualTo(2));
     }
 
     [Test()]
@@ -87,3 +90,4 @@ public class TimingScopeTests
         Assert.That(scope.GetAllTopics(), Is.Empty);
     }
 }
+#pragma warning restore CA1859    // Change type of variable ...

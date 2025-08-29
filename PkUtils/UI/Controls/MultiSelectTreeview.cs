@@ -243,7 +243,7 @@ public partial class MultiSelectTreeView : TreeView
     /// via <see cref="SetNodeForeColor(TreeNode, Color)"/>. </summary>
     /// <param name="node"> The <see cref="TreeNode"/> to check. Must not be null. </param>
     /// <param name="foreColor"> [out] The foreground color of the node. </param>
-    /// <returns> <c>true</c> if the node has a custom foreground color; otherwise, <c>false</c>. </returns>
+    /// <returns>   <c>true</c> if the node has a custom foreground color; otherwise, <c>false</c>. </returns>
     /// <seealso cref="SetNodeForeColor"/>
     public bool IsForeColoredNode(TreeNode node, out Color foreColor)
     {

@@ -135,7 +135,7 @@ internal sealed class MsgHookMap : Singleton<MsgHookMap>
 
     /// <summary> Find native hook associated with window handle. </summary>
     /// <param name="hwnd"> The handle of the window. </param>
-    /// <returns> The found ChainedNativeWindowp; or null if nothing found. </returns>
+    /// <returns>  The found ChainedNativeWindowp; or null if nothing found. </returns>
     internal ChainedNativeWindow LookupNativeHook(IntPtr hwnd)
     {
         ChainedNativeWindow result = null;
@@ -149,7 +149,7 @@ internal sealed class MsgHookMap : Singleton<MsgHookMap>
 
     /// <summary> Find first hook associated with window. </summary>
     /// <param name="hwnd"> The handle of window. </param>
-    /// <returns> A WindowMessageHook, mapped to given <paramref name="hwnd"/>. Will be null if none found. </returns>
+    /// <returns>  A WindowMessageHook, mapped to given <paramref name="hwnd"/>. Will be null if none found. </returns>
     internal WindowMessageHook Lookup(IntPtr hwnd)
     {
         ChainedNativeWindow nativeWindow;

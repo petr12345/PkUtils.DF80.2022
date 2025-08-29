@@ -171,7 +171,7 @@ public class UnmanagedPtr : IDisposableEx
     /// Thrown when there is insufficient memory to satisfy the request. </exception>
     /// 
     /// <param name="nBytesToAllocate">New size of the buffer</param>
-    /// <returns> An IntPtr to the newly allocated memory buffer. </returns>
+    /// <returns>  An IntPtr to the newly allocated memory buffer. </returns>
     public IntPtr Realloc(int nBytesToAllocate)
     {
         ArgumentOutOfRangeException.ThrowIfNegative(nBytesToAllocate);

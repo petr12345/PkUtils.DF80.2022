@@ -22,10 +22,12 @@ public class SerialPortLib_SerialPortSettingsTest
     {
         SerialPortSettingsBase b1 = new SerialPortSettingsBase();
         object b2 = b1.DeepClone();
-
-        Assert.That(b2, Is.InstanceOf<SerialPortSettingsBase>());
-        Assert.That(b1.Equals(b2));
-        Assert.That(b1.GetHashCode(), Is.EqualTo(b2.GetHashCode()));
+        using (Assert.EnterMultipleScope())
+        {
+            Assert.That(b2, Is.InstanceOf<SerialPortSettingsBase>());
+            Assert.That(b1.Equals(b2));
+            Assert.That(b1.GetHashCode(), Is.EqualTo(b2.GetHashCode()));
+        }
     }
 
     /// <summary>
@@ -38,7 +40,7 @@ public class SerialPortLib_SerialPortSettingsTest
         object s2 = s1.DeepClone();
 
         Assert.That(s1.GetType(), Is.EqualTo(s2.GetType()));
-        Assert.That(s1.Equals(s2), Is.True);
+        Assert.That(s1, Is.EqualTo(s2));
         Assert.That(s1.GetHashCode(), Is.EqualTo(s2.GetHashCode()));
     }
 

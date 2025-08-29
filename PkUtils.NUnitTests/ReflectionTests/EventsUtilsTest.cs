@@ -54,8 +54,12 @@ public class EventsUtilsTest
         // check the effect of it
         ts.HandlerCalled = false;
         cb.SelectedIndex = 3;
-        Assert.That(cb.SelectedIndex, Is.EqualTo(3));
-        Assert.That(ts.HandlerCalled, Is.False);
+
+        using (Assert.EnterMultipleScope())
+        {
+            Assert.That(cb.SelectedIndex, Is.EqualTo(3));
+            Assert.That(ts.HandlerCalled, Is.False);
+        }
     }
     #endregion // Events_Utils_Tests
 }

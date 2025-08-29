@@ -131,7 +131,7 @@ public class Singleton<T> where T : class
 
     /// <summary> Attempts to dispose the instance of T, if it exists and is disposable. </summary>
     /// <remarks> Upon success, assigns instance to null; otherwise does not change anything. </remarks>
-    /// <returns> True if it succeeds, false if it fails. </returns>
+    /// <returns>   True if it succeeds, false if it fails. </returns>
     public static bool DisposeInstance()
     {
         lock (SyncRoot)

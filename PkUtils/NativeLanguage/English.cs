@@ -71,7 +71,7 @@ public static class English
     /// <param name="extension"> (Optional) The extension. By default "s", but if a word ends in -s. -sh, -ch, -x
     /// or -z, you add -es. </param>
     ///
-    /// <returns> Either an extension( "s" or "es" ), or an empty string. </returns>
+    /// <returns>   Either an extension( "s" or "es" ), or an empty string. </returns>
     public static string Plural<T>(this T count, string extension = "s")
     {
         return Convert.ToInt64(count, CultureInfo.InvariantCulture) >= 2 ? extension : string.Empty;

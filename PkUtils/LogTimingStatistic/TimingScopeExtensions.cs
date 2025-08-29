@@ -42,7 +42,7 @@ public static class TimingScopeExtensions
     /// <param name="scope"> The scope to act on. </param>
     /// <param name="includeTotalMilliseconds"> True to include, false to exclude the total milliseconds. </param>
     /// <param name="sorting"> (Optional) The topics sorting method. </param>
-    /// <returns> The timings report. </returns>
+    /// <returns>   The timings report. </returns>
     public static IReadOnlyList<string> GenerateTimingsReport(
         this ITimingScope scope,
         bool includeTotalMilliseconds,

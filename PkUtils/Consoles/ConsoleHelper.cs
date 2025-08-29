@@ -119,7 +119,7 @@ public static class ConsoleHelper
     /// <param name="instructions">     The sequence of instructions. May be null or empty. </param>
     /// <param name="keysPossible">     The set of keys possible to end the dialog. </param>
     ///
-    /// <returns> A ConsoleDialogResult. </returns>
+    /// <returns>   A ConsoleDialogResult. </returns>
     public static ConsoleDialogResult DoConsoleDialog(
         IConsoleDisplay consoleDisplay,
         IEnumerable<string> warnings,

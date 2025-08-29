@@ -23,7 +23,7 @@ public class PersonData : IEquatable<PersonData>
 
     public PersonData(int age, string name)
     {
-        if (name == null) throw new ArgumentNullException(nameof(name));
+        ArgumentNullException.ThrowIfNull(name);
 
         this._age = age;
         this._name = name;

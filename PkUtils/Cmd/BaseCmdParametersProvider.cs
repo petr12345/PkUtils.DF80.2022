@@ -60,7 +60,7 @@ public abstract class BaseCmdParametersProvider : ICmdParametersProvider
     ///
     /// <param name="name"> The parameter name. Can't be null or empty. </param>
     ///
-    /// <returns> The string parameter value. </returns>
+    /// <returns>   The string parameter value. </returns>
     protected abstract string GetStringParameter(string name);
     #endregion // Methods
 }

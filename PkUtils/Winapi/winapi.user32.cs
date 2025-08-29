@@ -3022,7 +3022,7 @@ public static class User32
     ///                           If this parameter is NULL, this function is equivalent to EnumWindows.. </param>
     /// <param name="lpEnumFunc"> A pointer to an application-defined callback function. </param>
     /// <param name="lParam"> An application-defined value to be passed to the callback function.. </param>
-    /// <returns> True if it succeeds, false if it fails. </returns>
+    /// <returns>   True if it succeeds, false if it fails. </returns>
     [DllImport("user32")]
     [return: MarshalAs(UnmanagedType.Bool)]
     public static extern bool EnumChildWindows(
@@ -3166,7 +3166,7 @@ public static class User32
     /// <param name="nIndex"> The zero-based offset to the value to be retrieved. Valid values are in the
     ///  range zero through the number of bytes of extra window memory, minus the size of an integer. 
     ///  To set any other value, specify one of the <see cref="Win32.GWL"/> enum values. </param>
-    /// <returns> If the function succeeds, the return value is the requested value.
+    /// <returns>  If the function succeeds, the return value is the requested value.
     /// If the function fails, the return value is zero.
     /// </returns>
     public static IntPtr GetWindowLongPtr(IntPtr hWnd, int nIndex)
@@ -3557,7 +3557,7 @@ public static class User32
 
     /// <summary> Searches for the message box, given the caption. </summary>
     /// <param name="caption"> The caption. </param>
-    /// <returns> The found message box. </returns>
+    /// <returns>   The found message box. </returns>
     public static IntPtr FindMessageBox(string caption)
     {
         return FindWindow(Win32.MessageBoxClass, caption);

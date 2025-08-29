@@ -18,7 +18,7 @@ public interface ITimingTopic
 
     /// <summary> Adds an occurrence of the topic to the whole statistic. </summary>
     /// <param name="callSpan"> The call span. </param>
-    /// <returns> A TimingTopic. </returns>
+    /// <returns>   A TimingTopic. </returns>
     ITimingTopic AddOccurrence(TimeSpan callSpan);
 }
 
@@ -27,7 +27,7 @@ public static class TimingTopicExtensions
 {
     /// <summary> An ITimingTopic extension method that gets average time. </summary>
     /// <param name="topic"> The topic to act on. Can't be null. </param>
-    /// <returns> The average time of call. </returns>
+    /// <returns>   The average time of call. </returns>
     public static TimeSpan GetAverageTime(this ITimingTopic topic)
     {
         ArgumentNullException.ThrowIfNull(topic);

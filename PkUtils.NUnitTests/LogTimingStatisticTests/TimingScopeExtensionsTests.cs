@@ -6,6 +6,8 @@ using PK.PkUtils.LogTimingStatistic;
 
 namespace PK.PkUtils.NUnitTests.LogTimingStatisticTests;
 
+#pragma warning disable CA1859    // Change type of variable ...
+
 [TestFixture()]
 public class TimingScopeExtensionsTests
 {
@@ -30,3 +32,4 @@ public class TimingScopeExtensionsTests
         Assert.That(dumper.ToString(), Is.Not.Null);
     }
 }
+#pragma warning restore CA1859    // Change type of variable ...

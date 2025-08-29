@@ -131,7 +131,7 @@ public class MultiSelectOwnerDrawTreeView : MultiSelectTreeView
     /// <param name="node"> The node to select or unselect. If null, the method returns false and does nothing. </param>
     /// <param name="selectNode"> If true, the node is added to the selection set. If false, the node is removed
     /// from the selection set. </param>
-    /// <returns> true if the selection state of the node was changed; otherwise, false&lt;. </returns>
+    /// <returns>   true if the selection state of the node was changed; otherwise, false&lt;. </returns>
     protected override bool ToggleNode(TreeNode node, bool selectNode)
     {
         bool result;

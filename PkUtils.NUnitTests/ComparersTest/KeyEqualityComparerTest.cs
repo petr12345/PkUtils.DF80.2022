@@ -47,11 +47,11 @@ public class KeyEqualityComparerTest
 
         foreach (var x in Enumerable.Range(-5, 11).ToList())
         {
-            Assert.Multiple(() =>
+            using (Assert.EnterMultipleScope())
             {
                 Assert.That(comparer.Equals(x, x), Is.True);
                 Assert.That(comparer.Equals(x, -x), Is.True);
-            });
+            }
         }
     }
 
@@ -63,12 +63,12 @@ public class KeyEqualityComparerTest
     {
         var comparer = new KeyEqualityComparer<string, int>(s => s.Length);
 
-        Assert.Multiple(() =>
+        using (Assert.EnterMultipleScope())
         {
             Assert.That(comparer.Equals("hiker", "HIKER"), Is.True);
             Assert.That(comparer.Equals("trace", "tRaCe"), Is.True);
             Assert.That(comparer.Equals("lemons", "lemon"), Is.False);
-        });
+        }
     }
     #endregion // Tests
 }

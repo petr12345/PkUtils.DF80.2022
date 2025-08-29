@@ -122,7 +122,7 @@ public static class KeyComparer
     ///                             Must not equal to null. </param>
     /// <param name="keyComparer"> Key comparer. 
     ///                            May be null, in that case just default Comparer will be used. </param>
-    /// <returns> A new <see cref="KeyComparer{T, TKey}"/> instance. </returns>
+    /// <returns>   A new <see cref="KeyComparer{T, TKey}"/> instance. </returns>
     public static KeyComparer<T, TKey> Create<T, TKey>(
         Func<T, TKey> keyExtractor,
         IComparer<TKey> keyComparer = null)

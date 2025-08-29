@@ -5,8 +5,6 @@ using System.Diagnostics;
 using PK.PkUtils.Extensions;
 using PK.PkUtils.Interfaces;
 
-#pragma warning disable IDE0130 // Namespace "..." does not match folder structure
-
 namespace PK.PkUtils.DataStructures;
 
 /// <summary>
@@ -193,7 +191,7 @@ public class ComplexErrorResult<TError> : IComplexErrorResult<TError>
     #region Non_static_methods
 
     /// <summary>   Convert this object into a string representation. </summary>
-    /// <returns> A string that represents this object. </returns>
+    /// <returns>   A string that represents this object. </returns>
     public override string ToString()
     {
         if (Success) return "Success";
@@ -203,7 +201,7 @@ public class ComplexErrorResult<TError> : IComplexErrorResult<TError>
 
     /// <summary>   Attempts to get exception. </summary>
     /// <param name="exception"> [out] The exception. </param>
-    /// <returns> True if it succeeds, false if it fails. </returns>
+    /// <returns>   True if it succeeds, false if it fails. </returns>
     protected bool TryGetException(out Exception exception)
     {
         exception = _errorDetails as Exception;

@@ -69,7 +69,7 @@ public unsafe class StructArray<S> : UnmanagedPtr where S : struct
     /// <summary> Get the pointer to n-th ( nDex-th ) structure. Accompanies the indexer. </summary>
     /// <exception cref="ArgumentOutOfRangeException"> Thrown when <paramref name="nDex"/> has invalid value. </exception>
     /// <param name="nDex"> An array index. </param>
-    /// <returns> Pointer to nDex-th  structure. </returns>
+    /// <returns>   Pointer to nDex-th  structure. </returns>
     public IntPtr GetStructurePtr(int nDex)
     {
         if ((nDex < 0) || (nDex >= Size))
@@ -84,7 +84,7 @@ public unsafe class StructArray<S> : UnmanagedPtr where S : struct
     /// <summary> Indexer to get items within this collection using array index syntax. </summary>
     /// <exception cref="ArgumentOutOfRangeException"> Thrown when <paramref name="nDex"/> has invalid value. </exception>
     /// <param name="nDex"> The index. </param>
-    /// <returns> The indexed item. </returns>
+    /// <returns>   The indexed item. </returns>
     public S* this[int nDex]
     {
         get { return (S*)GetStructurePtr(nDex); }
@@ -95,7 +95,7 @@ public unsafe class StructArray<S> : UnmanagedPtr where S : struct
     /// negative value. </exception>
     /// <exception cref="OutOfMemoryException"> Thrown when there is insufficient memory to satisfy the request. </exception>
     /// <param name="nStructuresToAllocate"> A new amount of structures this wrapper should keep. </param>
-    /// <returns> A new pointer to the buffer beginning. </returns>
+    /// <returns>   A new pointer to the buffer beginning. </returns>
     public IntPtr ReallocStructures(int nStructuresToAllocate)
     {
         if (nStructuresToAllocate < 0)

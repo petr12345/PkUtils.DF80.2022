@@ -13,7 +13,7 @@ public interface IQuickSorter
     /// <param name="leftIndex">    Zero-based index of the left. </param>
     /// <param name="rightIndex">   Zero-based index of the right. </param>
     ///
-    /// <returns> The sorted array. </returns>
+    /// <returns>   The sorted array. </returns>
     int[] SortArray(int[] array, int leftIndex, int rightIndex);
 }
 
@@ -26,7 +26,7 @@ public static class QuickSorterExtensions
     ///
     /// <param name="sorter">   The sorter to be used. </param>
     /// <param name="array">    The array to act on. </param>
-    /// <returns> The sorted array. </returns>
+    /// <returns>   The sorted array. </returns>
     public static int[] SortArray(this IQuickSorter sorter, int[] array)
     {
         ArgumentNullException.ThrowIfNull(sorter);

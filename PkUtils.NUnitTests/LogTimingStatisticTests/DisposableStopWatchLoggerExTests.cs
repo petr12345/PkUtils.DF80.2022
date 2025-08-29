@@ -4,8 +4,9 @@ using PK.PkUtils.Dump;
 using PK.PkUtils.Interfaces;
 using PK.PkUtils.LogTimingStatistic;
 
-
 namespace PK.PkUtils.NUnitTests.LogTimingStatisticTests;
+
+#pragma warning disable CA1859    // Change type of variable ...
 
 [TestFixture()]
 public class DisposableStopWatchLoggerExTests
@@ -85,7 +86,12 @@ public class DisposableStopWatchLoggerExTests
 
         // Assert
         string output = dumper.ToString()!;
-        Assert.That(logger.IsDisposed, Is.True);
-        Assert.That(output, Is.Not.Null);
+        using (Assert.EnterMultipleScope())
+        {
+            Assert.That(logger.IsDisposed, Is.True);
+            Assert.That(output, Is.Not.Null);
+        }
     }
 }
+
+#pragma warning restore CA1859    // Change type of variable ...

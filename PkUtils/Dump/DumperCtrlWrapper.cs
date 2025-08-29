@@ -23,7 +23,7 @@ public class DumperCtrlWrapper<CTRL> : IDumperEx, IDisposableEx where CTRL : Con
     #region Typedefs
 
     /// <summary>   Argument-less delegate that is used in implementation of <see cref="Reset"/>. </summary>
-    /// <returns> true if it succeeds, false if it fails. </returns>
+    /// <returns>   true if it succeeds, false if it fails. </returns>
     protected delegate bool ResetMethodInvoker();
 
     /// <summary>

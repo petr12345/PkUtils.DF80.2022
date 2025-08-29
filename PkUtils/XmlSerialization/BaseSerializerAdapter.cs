@@ -129,7 +129,7 @@ namespace PK.PkUtils.XmlSerialization
         /// <param name="encoding">     The resulting file encoding. </param>
         /// <param name="obj">          The written object. </param>
         ///
-        /// <returns> True on success, false on failure. </returns>
+        /// <returns>   True on success, false on failure. </returns>
 
         public bool WriteFile(string strFileName, Encoding encoding, T obj)
         {

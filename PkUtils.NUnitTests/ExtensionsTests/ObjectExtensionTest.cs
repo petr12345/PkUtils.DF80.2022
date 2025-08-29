@@ -128,7 +128,7 @@ public class ObjectExtensionTest
     {
         MyDisposableStruct myStruct = new();
         string result = myStruct.AsNameValue();
-        Assert.That(result, Is.EqualTo("myStruct = ACMCodeGenNUnitTest.ExtensionsTests.ObjectExtensionTest+MyDisposableStruct"));
+        Assert.That(result, Is.EqualTo("myStruct = PK.PkUtils.NUnitTests.ExtensionsTests.ObjectExtensionTest+MyDisposableStruct"));
     }
 
     [Test(Description = "Validates AsNameValue generates correct string for a primitive type.")]

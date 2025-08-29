@@ -202,7 +202,7 @@ public static class KeyEqualityComparer
     /// <param name="keyComparer"> (Optional) Key comparer. 
     /// May be null, in that case just "regular" methods GetHashCode for getting key hash code
     /// and Equals for keys comparison will be used. </param>
-    /// <returns> A new <see cref="KeyEqualityComparer{T, TKey}"/> instance. </returns>
+    /// <returns>   A new <see cref="KeyEqualityComparer{T, TKey}"/> instance. </returns>
     public static KeyEqualityComparer<T, TKey> Create<T, TKey>(
         Func<T, TKey> keyExtractor,
         IEqualityComparer<TKey> keyComparer = null)

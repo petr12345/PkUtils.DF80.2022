@@ -51,7 +51,7 @@ public static class ReflectionUtils
     /// <param name="enumVal">  The enum value to act on. </param>
     /// <param name="fallbackToValue">  (Optional) True to fall-back to value of enum. </param>
     ///
-    /// <returns> The description. </returns>
+    /// <returns>   The description. </returns>
     public static string GetDescription<T>(
         this T enumVal,
         bool fallbackToValue = true) where T : Enum
@@ -86,7 +86,7 @@ public static class ReflectionUtils
     ///
     /// <param name="obj"> The object whose type name should be retrieved. </param>
     ///
-    /// <returns> The name of type of given object. </returns>
+    /// <returns>  The name of type of given object. </returns>
     ///
     /// <seealso cref="SafeGetType"/>
     public static string SafeGetTypeName(this object obj)

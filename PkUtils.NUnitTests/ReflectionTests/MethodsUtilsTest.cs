@@ -4,6 +4,8 @@ using System.Globalization;
 using System.Reflection;
 using PK.PkUtils.Reflection;
 
+#pragma warning disable CA1822 // Member ... does not access instance data and can be marked as static
+
 
 namespace PK.PkUtils.NUnitTests.ReflectionTests;
 
@@ -487,9 +489,9 @@ public class MethodsUtilsTest
     public void MethodsUtils_GetAllMethodsTest_01()
     {
         string strMethodName = "DumpIntegers";
-        Func<string, bool> nameMatchPredicate = name => (0 == string.CompareOrdinal(name, strMethodName));
+        bool NameMatchPredicate(string name) => (0 == string.CompareOrdinal(name, strMethodName));
         Type t = typeof(Z);
-        IEnumerable<string> expectedNames = AllNonStaticMethodNames.Where(nameMatchPredicate);
+        IEnumerable<string> expectedNames = AllNonStaticMethodNames.Where(NameMatchPredicate);
 
         BindingFlags flags = BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance;
         IEnumerable<MethodInfo> actualMethods = MethodsUtils.GetAllMethods(t, strMethodName, flags);
@@ -557,9 +559,9 @@ public class MethodsUtilsTest
     public void MethodsUtils_GetAllInstanceMethodsTest()
     {
         string strMethodName = "DumpDecimals";
-        Func<string, bool> nameMatchPredicate = name => (0 == string.CompareOrdinal(name, strMethodName));
+        bool NameMatchPredicate(string name) => (0 == string.CompareOrdinal(name, strMethodName));
         Type t = typeof(Z);
-        IEnumerable<string> expectedNames = AllNonStaticMethodNames.Where(nameMatchPredicate);
+        IEnumerable<string> expectedNames = AllNonStaticMethodNames.Where(NameMatchPredicate);
 
         IEnumerable<MethodInfo> actualMethods = MethodsUtils.GetAllInstanceMethods(t, strMethodName);
         IEnumerable<string> actualNames = actualMethods.Select(method => method.Name);
@@ -619,3 +621,4 @@ public class MethodsUtilsTest
     }
     #endregion // Accessing_MethodInfo_Full_Scope_tests
 }
+#pragma warning restore CA1822

@@ -212,7 +212,7 @@ public class Repository<T> : IRepository<T>, IEquatable<Repository<T>>
 
     /// <summary> Converts currently owned or attached data (if any) to string. </summary>
     /// 
-    /// <returns> A string representation of <see cref="Data"/>. </returns>
+    /// <returns>  A string representation of <see cref="Data"/>. </returns>
     protected string DataToString()
     {
         return Data.AsString();

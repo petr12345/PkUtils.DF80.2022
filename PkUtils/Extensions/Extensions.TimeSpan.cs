@@ -17,7 +17,7 @@ public static class TimeSpanEx
     /// <param name="span"> The span to act on. </param>
     /// <param name="includeMilliseconds">  (Optional) True to include, false to exclude the milliseconds. </param>
     ///
-    /// <returns> Span as a human-readable string. </returns>
+    /// <returns>   Span as a human-readable string. </returns>
     public static string ToReadableString(this TimeSpan span, bool includeMilliseconds = false)
     {
         TimeSpan d = span.Duration();

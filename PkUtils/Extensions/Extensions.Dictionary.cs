@@ -56,7 +56,7 @@ public static class DictionaryExtensions
     /// <param name="leftBrace">    The left separating brace. </param>
     /// <param name="rightBrace">   The right separating brace. </param>
     ///
-    /// <returns> Dictionary as a string. </returns>
+    /// <returns>   Dictionary as a string. </returns>
     /// <exception cref="System.ArgumentNullException">Thrown when input argument <paramref name="dictionary"/> is null.</exception>        
     public static string ToStringEx<TKey, TValue>(
         this IEnumerable<KeyValuePair<TKey, TValue>> dictionary,
@@ -285,7 +285,7 @@ public static class DictionaryExtensions
     /// <param name="value">      [out] When this method returns, contains the object removed, or the default value
     /// of the TValue type if key does not exist. </param>
     ///
-    /// <returns> true if the object was removed successfully; otherwise, false. </returns>
+    /// <returns>   true if the object was removed successfully; otherwise, false. </returns>
     public static bool TryRemove<TKey, TValue>(
         this IDictionary<TKey, TValue> dictionary,
         TKey key,
@@ -384,7 +384,7 @@ public static class DictionaryExtensions
     /// <param name="dictionary">   The dictionary where the value is returned from. Can't be null. </param>
     /// <param name="key">          The key for which the value is retrieved. </param>
     ///
-    /// <returns> A TValue. </returns>
+    /// <returns>   A TValue. </returns>
     public static TValue ValueOrDefault<TKey, TValue>(
         this IReadOnlyDictionary<TKey, TValue> dictionary,
         TKey key)
@@ -406,7 +406,7 @@ public static class DictionaryExtensions
     /// <param name="key">          The key for which the value is retrieved. </param>
     /// <param name="default">      The default value to be returned if <paramref name="key"/> is not present. </param>
     ///
-    /// <returns> A TValue. </returns>
+    /// <returns>   A TValue. </returns>
     public static TValue ValueOrDefault<TKey, TValue>(
         this IReadOnlyDictionary<TKey, TValue> dictionary,
         TKey key,
@@ -431,7 +431,7 @@ public static class DictionaryExtensions
     /// <typeparam name="TValue">   Type of the value. </typeparam>
     /// <param name="dictionary">   The dictionary where the value is returned from. Can't be null. </param>
     ///
-    /// <returns> Dictionary as a Dictionary&lt;TKey,TValue&gt; </returns>
+    /// <returns>   Dictionary as a Dictionary&lt;TKey,TValue&gt; </returns>
     public static Dictionary<TKey, TValue> ToDictionary<TKey, TValue>(
         this IReadOnlyDictionary<TKey, TValue> dictionary)
     {
