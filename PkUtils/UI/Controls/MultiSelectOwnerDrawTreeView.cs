@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.Drawing;
 using System.Windows.Forms;
@@ -18,8 +19,15 @@ public class MultiSelectOwnerDrawTreeView : MultiSelectTreeView
     #region Fields
 
     private readonly SizeLimitedCache<Color, SolidBrush> _cacheBrushes;
+
     private int _nodeFrameThickness = _defaultNodeFrameThickness;
     private const int _defaultNodeFrameThickness = 0;
+
+    // <summary> Horizontal padding added when invalidating a node's bounds. </summary>
+    private const int _nodeInvalidatePaddingX = 5;
+
+    /// <summary> Vertical padding added when invalidating a node's bounds. </summary>
+    private const int _nodeInvalidatePaddingY = 2;
     #endregion // Fields
 
     #region Constructor(s)
@@ -81,17 +89,18 @@ public class MultiSelectOwnerDrawTreeView : MultiSelectTreeView
         return false;
     }
 
-    /// <summary> Gets the bounds of the text area of the specified node. </summary>
-    /// <param name="node">The <see cref="TreeNode"/> whose text bounds are retrieved.</param>
-    /// <returns>A <see cref="Rectangle"/> representing the text area of the node.</returns>
-    protected Rectangle GetNodeTextBounds(TreeNode node)
-    {
-        ArgumentNullException.ThrowIfNull(node);
+    // For now, this method is not used, but it could be useful in the future.
+    ///// <summary> Gets the bounds of the text area of the specified node. </summary>
+    ///// <param name="node">The <see cref="TreeNode"/> whose text bounds are retrieved.</param>
+    ///// <returns>A <see cref="Rectangle"/> representing the text area of the node.</returns>
+    //protected Rectangle GetNodeTextBounds(TreeNode node)
+    //{
+    //    ArgumentNullException.ThrowIfNull(node);
 
-        Size textSize = TextRenderer.MeasureText(node.Text, node.NodeFont ?? this.Font);
-        Point location = new(node.Bounds.X, node.Bounds.Y);
-        return new Rectangle(location, new Size(textSize.Width, node.Bounds.Height));
-    }
+    //    Size textSize = TextRenderer.MeasureText(node.Text, node.NodeFont ?? this.Font);
+    //    Point location = new(node.Bounds.X, node.Bounds.Y);
+    //    return new Rectangle(location, new Size(textSize.Width, node.Bounds.Height));
+    //}
 
     /// <summary> Invalidates the drawing area of the specified node. </summary>
     /// <param name="node">The <see cref="TreeNode"/> to invalidate.</param>
@@ -100,7 +109,7 @@ public class MultiSelectOwnerDrawTreeView : MultiSelectTreeView
         ArgumentNullException.ThrowIfNull(node);
 
         Rectangle bounds = node.Bounds;
-        bounds.Inflate(5, 2); // Could be replaced with dynamic sizing if needed
+        bounds.Inflate(_nodeInvalidatePaddingX, _nodeInvalidatePaddingY); // Could be replaced with dynamic sizing if needed
 
         this.Invalidate(bounds);
     }
@@ -109,15 +118,36 @@ public class MultiSelectOwnerDrawTreeView : MultiSelectTreeView
     /// <param name="node">The root <see cref="TreeNode"/> to invalidate.</param>
     protected void InvalidateNodeAndDescendants(TreeNode node)
     {
-        // node.EnumerateSelfAndDescendants().ForEach(InvalidateNode);
-        // The commented code above is shorter, but it is a performnce hit to enumerate quite all descendants
-        if (node.IsVisible)
+        if (node is null || !node.IsVisible)
+            return;
+
+        // Instead of invalidating each node separately (which can trigger many paint requests),
+        // we collect a single bounding rectangle that covers the node and all visible descendants.
+        Rectangle union = Rectangle.Empty;
+
+        // Use an explicit stack instead of recursion to avoid deep call chains for large trees.
+        for (var stack = new Stack<TreeNode>([node]); stack.Count > 0;)
         {
-            InvalidateNode(node);
-            if (node.IsExpanded)
+            TreeNode current = stack.Pop();
+            if (!current.IsVisible)
+                continue;
+
+            union = union.IsEmpty ? current.Bounds : Rectangle.Union(union, current.Bounds);
+
+            // Only descend into children if the node is expanded.
+            // This way we skip collapsed branches, which don’t need repainting.
+            if (current.IsExpanded)
             {
-                node.GetChildren().ForEach(InvalidateNodeAndDescendants);
+                stack.PushRange(current.GetChildren());
             }
+        }
+
+        // Invalidate once using the combined rectangle (with same padding as before).
+        // This reduces the number of invalidation calls and therefore the number of paint operations.
+        if (!union.IsEmpty)
+        {
+            union.Inflate(_nodeInvalidatePaddingX, _nodeInvalidatePaddingY);
+            Invalidate(union);
         }
     }
     #endregion // Protected Methods
@@ -137,7 +167,10 @@ public class MultiSelectOwnerDrawTreeView : MultiSelectTreeView
         bool result;
         if (result = (node is not null) && base.ToggleNode(node, selectNode))
         {
-            InvalidateNodeAndDescendants(node);
+            if (PaintProjectedSelections)
+                InvalidateNodeAndDescendants(node);
+            else
+                InvalidateNode(node);
         }
 
         return result;
@@ -154,10 +187,10 @@ public class MultiSelectOwnerDrawTreeView : MultiSelectTreeView
     /// <param name="args"> A <see cref="DrawTreeNodeEventArgs"/> containing the event data for the node to be drawn. </param>
     protected override void OnDrawNode(DrawTreeNodeEventArgs args)
     {
-        // For some reason, this method is caleld for invisible nodes as well,
+        // For some reason, this method is called for invisible nodes as well,
         // so we need to check if the node is visible not to waste time on rendering.
-        // Checking the bound is the most effectivbe way to do this,
-        // as they are prepered already in the input args.
+        // Checking the bound is the most effective way to do this,
+        // as they are prepared already in the input args.
         Rectangle textBounds = args.Bounds;
 
         if ((textBounds.Width > 0) && (textBounds.Height > 0))
@@ -167,7 +200,6 @@ public class MultiSelectOwnerDrawTreeView : MultiSelectTreeView
             bool isNodeSelected = IsSelected(currentNode);
             Color highlightBackgroundColor = SystemColors.Highlight;
             Color highlightForegroundColor = SystemColors.HighlightText;
-            Color backgroundColor = highlightBackgroundColor;
             Color foregroundColor = highlightForegroundColor;
 
             // If the node has a custom font, adjust the bounds to fit the rendered text.
@@ -184,7 +216,7 @@ public class MultiSelectOwnerDrawTreeView : MultiSelectTreeView
             else
             {
                 // Determine the background and foreground colors for unselected nodes.
-                DetermineUnselectedNodeColor(currentNode, out backgroundColor, out foregroundColor);
+                DetermineUnselectedNodeColor(currentNode, out Color backgroundColor, out foregroundColor);
 
                 // Retrieve or create a cached SolidBrush for the background color.
                 if (_cacheBrushes.TryGetValue(backgroundColor, out SolidBrush backgroundBrush) is false)
