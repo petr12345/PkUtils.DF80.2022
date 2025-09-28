@@ -74,15 +74,6 @@ namespace PK.SubstEditLib.Subst
                 _selInfo = selInfo;
                 _logData = logData;
             }
-            protected internal TextBoxSelInfo SelInfo
-            {
-                get { return _selInfo; }
-            }
-            protected internal SubstLogData<TFIELDID> LogData
-            {
-                get { return _logData; }
-            }
-#if DEBUG
             public virtual string Say
             {
                 get
@@ -93,7 +84,15 @@ namespace PK.SubstEditLib.Subst
                         (_logData == null) ? "null" : _logData.Say);
                 }
             }
-#endif
+
+            protected internal TextBoxSelInfo SelInfo
+            {
+                get { return _selInfo; }
+            }
+            protected internal SubstLogData<TFIELDID> LogData
+            {
+                get { return _logData; }
+            }
         }
 
         /// <summary>
@@ -121,6 +120,22 @@ namespace PK.SubstEditLib.Subst
             #endregion // Constructors
 
             #region Properties
+
+            public override string Say
+            {
+                get
+                {
+                    string strRes = string.Format(
+                        CultureInfo.InvariantCulture,
+                        "SubstUndoableEdit: (_before={0}, _after={1})",
+                        _before.Say,
+                        _after.Say);
+
+                    return strRes;
+                }
+            }
+
+
             protected internal TextBoxSelInfo SelBefore
             {
                 get { return (_before != null) ? _before.SelInfo : null; }
@@ -160,21 +175,6 @@ namespace PK.SubstEditLib.Subst
             public override void EmptyUndoBuffer()
             {
             }
-#if DEBUG
-            public override string Say
-            {
-                get
-                {
-                    string strRes = string.Format(
-                        CultureInfo.InvariantCulture,
-                        "SubstUndoableEdit: (_before={0}, _after={1})",
-                        _before.Say,
-                        _after.Say);
-
-                    return strRes;
-                }
-            }
-#endif
             #endregion // Methods
         }
         #endregion // Typedefs
@@ -271,6 +271,20 @@ namespace PK.SubstEditLib.Subst
         public SubstPhysData<TFIELDID> PhysData
         {
             get { return _physData; }
+        }
+
+        public virtual string Say
+        {
+            get
+            {
+                StringBuilder sb = new();
+
+                sb.AppendFormat(
+                    CultureInfo.InvariantCulture,
+                    "SubstEditHook: (_undoMgr={0})",
+                    (null == this._undoMgr) ? "null" : _undoMgr.Say);
+                return sb.ToString();
+            }
         }
 
         protected UndoManager UndoMgr
@@ -484,22 +498,6 @@ namespace PK.SubstEditLib.Subst
 
             return res;
         }
-
-#if DEBUG
-        public virtual string Say
-        {
-            get
-            {
-                StringBuilder sb = new();
-
-                sb.AppendFormat(
-                    CultureInfo.InvariantCulture,
-                    "SubstEditHook: (_undoMgr={0})",
-                    (null == this._undoMgr) ? "null" : _undoMgr.Say);
-                return sb.ToString();
-            }
-        }
-#endif
         #endregion // Public Methods
 
         #region Protected Methods
@@ -1164,7 +1162,7 @@ namespace PK.SubstEditLib.Subst
             strOld = this._textBx.Text;
             Debug.Assert(strOld == PhysData.GetPhysStr);
 #else
-      strOld = PhysData.GetPhysStr;
+            strOld = PhysData.GetPhysStr;
 #endif
             lRes = CallOrigProc((int)Win32.WM.WM_CHAR, wParam, lParam);
 

@@ -164,7 +164,7 @@ public partial class SplashForm : Form, ISplashWindow
           : base(data.Priority)
         {
             ArgumentNullException.ThrowIfNull(data);
-            factory.CheckNotDisposed(nameof(factory));
+            factory.CheckNotDisposed();
 
             _initData = data;
             _factory = factory;

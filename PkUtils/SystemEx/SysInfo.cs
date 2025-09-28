@@ -1,18 +1,7 @@
-﻿/***************************************************************************************************************
-*
-* FILE NAME:   .\SystemEx\SysInfo.cs
-*
-* AUTHOR:      Petr Kodet
-*
-* DESCRIPTION: The file contains definition of class SysInfo
-*
-**************************************************************************************************************/
-
-// Ignore Spelling: Utils, Ver, Msinfo, Admin, Fallback
+﻿// Ignore Spelling: Admin, Fallback, Msinfo, Sys, Utils, Ver
 //
 using System;
 using System.IO;
-using System.Runtime.InteropServices;
 using System.Security.Principal;
 using Microsoft.Win32;
 using PK.PkUtils.WinApi;
@@ -53,7 +42,7 @@ public static class SysInfo
         return servicePack;
     }
 
-    /// <summary> Get Operating system version information. </summary>
+    /// <summary> Get operating system version information. </summary>
     /// <returns>The detected operating system version.</returns>
     /// <seealso href="http://stackoverflow.com/questions/2819934/detect-windows-7-in-net">
     /// Stackoverflow: Detect Windows 7 in .net</seealso>
@@ -156,14 +145,22 @@ public static class SysInfo
                             }
                             break;
 
-                        case 10:  // Currently minorVersion is always 0, but added for future-proofing to be better safe than sorry
-                            result = minorVersion switch
+                        // Microsoft did not bump the major version from 10 to 11 in the kernel.
+                        // Only the marketing name changed to Windows 11.
+                        // Detection based on version numbers alone can’t distinguish Win10 vs Win11.
+                        // The reliable way is to use the build number.
+                        case 10:
+                            if (productType == VER_NT_WORKSTATION)
                             {
-                                0 => (productType == VER_NT_WORKSTATION)
-                                    ? (RuntimeInformation.OSDescription.Contains("Windows 11") ? WinVer.Win11 : WinVer.Win10)
-                                    : WinVer.WinServer2016,
-                                _ => WinVer.Unknown, // Fallback in case of unexpected future versions
-                            };
+                                if (os.Version.Build >= 22000)
+                                    result = WinVer.Win11;
+                                else
+                                    result = WinVer.Win10;
+                            }
+                            else
+                            {
+                                result = WinVer.WinServer2016;
+                            }
                             break;
                     }
                     break;
@@ -175,7 +172,7 @@ public static class SysInfo
     }
 
     /// <summary> Find the full path to "MSInfo32.exe". </summary>
-    /// <returns>   Returns non-empty string on success, empty string on failure. </returns>
+    /// <returns> Returns non-empty string on success, empty string on failure. </returns>
     public static string GetMsinfo32Path()
     {
         string strTempPath = string.Empty;
@@ -246,8 +243,8 @@ public static class SysInfo
         {
             if (currentIdentity != null)
             {
-                WindowsPrincipal pricipal = new(currentIdentity);
-                isAdmin = pricipal.IsInRole(WindowsBuiltInRole.Administrator);
+                WindowsPrincipal principal = new(currentIdentity);
+                isAdmin = principal.IsInRole(WindowsBuiltInRole.Administrator);
             }
         }
         return isAdmin;

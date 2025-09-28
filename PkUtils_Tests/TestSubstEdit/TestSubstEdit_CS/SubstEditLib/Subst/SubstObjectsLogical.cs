@@ -73,6 +73,17 @@ namespace PK.SubstEditLib.Subst
 
         #region Properties
 
+        public virtual string Say
+        {
+            get
+            {
+                string strInfo = string.Format(
+                    CultureInfo.InvariantCulture,
+                    "LogInfo: (_what={0}, _pos={1})", _what, _pos);
+                return strInfo;
+            }
+        }
+
         public TFIELDID What
         {
             get { return _what; }
@@ -133,19 +144,6 @@ namespace PK.SubstEditLib.Subst
         {
             Debug.Assert(0 <= _pos);
         }
-
-#if DEBUG
-        public virtual string Say
-        {
-            get
-            {
-                string strInfo = string.Format(
-                    CultureInfo.InvariantCulture,
-                    "LogInfo: (_what={0}, _pos={1})", _what, _pos);
-                return strInfo;
-            }
-        }
-#endif
         #endregion // Methods
 
         #region IXmlSerializable Members
@@ -314,15 +312,12 @@ namespace PK.SubstEditLib.Subst
 
         #region Constructor(s)
 
-        public SubstLogData()
-          : this(null, string.Empty)
-        {
-        }
+        public SubstLogData() : this(null, string.Empty)
+        { }
 
         public SubstLogData(IEnumerable<ISubstDescr<TFIELDID>> substMap)
           : this(substMap, string.Empty)
-        {
-        }
+        { }
 
         public SubstLogData(IEnumerable<ISubstDescr<TFIELDID>> substMap, string strLogStr)
         {
@@ -357,15 +352,28 @@ namespace PK.SubstEditLib.Subst
             protected set { AssignLogList(value); }
         }
 
-        protected SubstMapKeeper<TFIELDID> MapKeeper
+        public virtual string Say
         {
-            get { return _map; }
+            get
+            {
+                string strRes;
+                StringBuilder sbInfo = new();
+
+                foreach (LogInfo<TFIELDID> info in this.GetLogList)
+                {
+                    sbInfo.Append(info.Say);
+                }
+                strRes = string.Format(
+                    CultureInfo.InvariantCulture,
+                    "SubstLogData: (_logStr={0}, _logList={1} )", _logStr, sbInfo);
+
+                return strRes;
+            }
         }
 
-        protected internal IEnumerable<ISubstDescr<TFIELDID>> GetSubstMap
-        {
-            get { return MapKeeper.GetSubstMap; }
-        }
+        protected SubstMapKeeper<TFIELDID> MapKeeper { get => _map; }
+
+        protected internal IEnumerable<ISubstDescr<TFIELDID>> GetSubstMap { get => MapKeeper.GetSubstMap; }
         #endregion // Properties
 
         #region Methods
@@ -635,27 +643,6 @@ namespace PK.SubstEditLib.Subst
                 info.AssertValid();
             }
         }
-
-#if DEBUG
-        public virtual string Say
-        {
-            get
-            {
-                string strRes;
-                StringBuilder sbInfo = new();
-
-                foreach (LogInfo<TFIELDID> info in this.GetLogList)
-                {
-                    sbInfo.Append(info.Say);
-                }
-                strRes = string.Format(
-                    CultureInfo.InvariantCulture,
-                    "SubstLogData: (_logStr={0}, _logList={1} )", _logStr, sbInfo);
-
-                return strRes;
-            }
-        }
-#endif
         #endregion // Public Methods
 
         #region Protected Methods

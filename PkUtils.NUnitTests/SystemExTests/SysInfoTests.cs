@@ -1,4 +1,4 @@
-﻿// Ignore Spelling: Utils, Ver
+﻿// Ignore Spelling: Admin, Fallback, Msinfo, Sys, Utils, Ver
 //
 using PK.PkUtils.SystemEx;
 

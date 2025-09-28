@@ -1,14 +1,8 @@
-﻿/***************************************************************************************************************
-*
-* FILE NAME:   .\Undo\IUndoableEdit.cs
-*
-* AUTHOR:      Petr Kodet
-*
-* DESCRIPTION: The file contains definition of interfaces IUndoableEdit and ICompoundEdit
-*
-**************************************************************************************************************/
-
+﻿
+// Define UNDO_ACTIVATION_SUPPORT if you want to support activation/deactivation of compound undo operations 
+// (e.g., tracking whether an edit is still in progress).
 #define UNDO_ACTIVATION_SUPPORT
+
 // Ignore Spelling: Utils, Undoable
 //
 using System;
@@ -17,98 +11,103 @@ using PK.PkUtils.Interfaces;
 namespace PK.PkUtils.Undo;
 
 /// <summary>
-/// IUndoableEdit is a single item in undo-redo buffer.
+/// Represents a single edit operation in the undo-redo buffer.
 /// </summary>
 [CLSCompliant(true)]
 public interface IUndoableEdit : IUndoable, IDisposableEx
 {
-    /// <summary>Is this edit item significant enough for shaping individual Undo operation, 
-    /// with related menu text.</summary>
+    /// <summary>
+    /// Gets a value indicating whether this edit is significant enough to be treated as a separate undo operation, 
+    /// including its associated menu text.
+    /// </summary>
     bool Significant { get; }
 
-    /// <summary> Gets the name (characteristic) of this item in undo-redo buffer. 
-    ///  Can be used in User Interface, for instance in the menu item text.</summary>
+    /// <summary>
+    /// Gets the display name of this edit in the undo-redo buffer. 
+    /// This can be used in the user interface, such as in menu item text.
+    /// </summary>
     string PresentationName { get; }
 
-    /// <summary> Gets the name (characteristic) of this item in undo-redo buffer, that is specific for <see cref="IUndoable.Undo"/>operation.
-    ///  Can be used in User Interface, for instance in the menu item text.</summary>
+    /// <summary>
+    /// Gets the display name of this edit for the undo operation.
+    /// This can be used in the user interface, such as in menu item text.
+    /// </summary>
     string UndoPresentationName { get; }
 
-    /// <summary> Gets the name (characteristic) of this item in undo-redo buffer, that is specific for <see cref="IUndoable.Redo"/>operation.
-    ///  Can be used in User Interface, for instance in the menu item text.</summary>
+    /// <summary>
+    /// Gets the display name of this edit for the redo operation.
+    /// This can be used in the user interface, such as in menu item text.
+    /// </summary>
     string RedoPresentationName { get; }
+
+    /// <summary>
+    /// Gets a textual description of the undo information currently held by this object.
+    /// </summary>
+    string Say { get; }
 
 #if UNDO_ACTIVATION_SUPPORT
 
     /// <summary>
-    /// This property is used in situation if the recorded undo operation is compound operation 
-    /// which consist of multiple IUndoableEdit elements. <br/>
-    /// The property IsActive on the last element helps to determine whether that particular sub-operation is still in progress;
-    /// for instance, assuming that sub-operation is typing into one of more text controls, whether the typing is still in progress.
+    /// Gets a value indicating whether this edit is currently active.
+    /// This is relevant for compound operations consisting of multiple <see cref="IUndoableEdit"/> elements.
+    /// For example, this can indicate whether a typing operation is still in progress.
     /// </summary>
     bool IsActive { get; }
 
     /// <summary>
-    /// Returns true if Undo operation can be called for this edit even while it is in Active state.
-    /// Otherwise returns false.
+    /// Gets a value indicating whether the undo operation can be performed while this edit is active.
     /// </summary>
     /// <seealso cref="IsActive"/>
     bool CanUndoWhileActive { get; }
 
     /// <summary>
-    /// Returns true if Redo operation can be called for this edit even while it is in Active state.
-    /// Otherwise returns false.
+    /// Gets a value indicating whether the redo operation can be performed while this edit is active.
     /// </summary>
     /// <seealso cref="IsActive"/>
     bool CanRedoWhileActive { get; }
 
     /// <summary>
-    /// Should return true if successfully deactivated, or if no deactivation was needed.
-    /// Return false for unsuccessfully deactivated (if the edit had to stay active ).
+    /// Attempts to deactivate this edit. 
+    /// Returns <c>true</c> if deactivation was successful or not required; otherwise, <c>false</c> if the edit must remain active.
     /// </summary>
-    /// <returns>True on success, false on failure.</returns>
+    /// <returns><c>true</c> if successfully deactivated or no deactivation was needed; otherwise, <c>false</c>.</returns>
     bool Deactivate();
 
 #endif // UNDO_ACTIVATION_SUPPORT
-
-#if DEBUG
-    /// <summary>
-    /// Returns a description (textual representation) of the undo information currently held by this object.
-    /// </summary>
-    string Say { get; }
-#endif // DEBUG
 }
 
 /// <summary>
-/// ICompoundEdit consists of more child IUndoableEdit items.
-/// Undo/redo of ICompoundEdit involves in sequence data of all these child items.
+/// Represents a compound edit consisting of multiple child <see cref="IUndoableEdit"/> items.
+/// Undoing or redoing a <see cref="ICompoundEdit"/> processes all its child edits in sequence.
 /// </summary>
-/// <remarks> Every ICompoundEdit must be created with <see cref="ICompoundEdit.IsOpenMultiMode"/>
-/// property set to true, and remaining true till <see cref="ICompoundEdit.EndMultiMode"/> is called.<br/>
-/// By calling <see cref="ICompoundEdit.EndMultiMode"/>, the compound edit is effectively 'closed',
-/// and will prevent adding any more by <see cref="IUndoableEdit "/> child items 
-/// by <see cref="AddEdit"/> call.</remarks>
+/// <remarks>
+/// Every <see cref="ICompoundEdit"/> must be created with <see cref="IsOpenMultiMode"/> set to <c>true</c>,
+/// and remain open until <see cref="EndMultiMode"/> is called.
+/// Calling <see cref="EndMultiMode"/> closes the compound edit, preventing further child edits from being added via <see cref="AddEdit"/>.
+/// </remarks>
 [CLSCompliant(true)]
 public interface ICompoundEdit : IUndoableEdit
 {
     /// <summary>
-    /// Returns true while the edit is 'open' for adding child edits.
-    /// After the last child edit is added, the using code should call EndMultiMode.
+    /// Gets a value indicating whether the compound edit is open for adding child edits.
+    /// After the last child edit is added, <see cref="EndMultiMode"/> should be called.
     /// </summary>
     bool IsOpenMultiMode { get; }
 
     /// <summary>
-    /// Add child edit item
+    /// Adds a child edit item to this compound edit.
     /// </summary>
-    /// <param name="e">The child edit item being added.</param>
-    /// <returns>True on success, false on failure.</returns>
+    /// <param name="e">The child edit item to add. Cannot be <c>null</c>.</param>
+    /// <returns><c>true</c> if the child edit was added successfully; otherwise, <c>false</c>.</returns>
     bool AddEdit(IUndoableEdit e);
 
     /// <summary>
-    /// End the 'multi mode'. Should be called once ( after) the last action item has been added.
+    /// Closes the compound edit, preventing any further child edits from being added.
+    /// Should be called after the last action item has been added.
     /// </summary>
-    /// <remarks> There is no counterparting 'StartMultiMode' method. 
-    /// For more details, see the remarks of <see cref="ICompoundEdit"/> description.
+    /// <remarks>
+    /// There is no corresponding 'StartMultiMode' method.
+    /// For more details, see the remarks for <see cref="ICompoundEdit"/>.
     /// </remarks>
     void EndMultiMode();
 }

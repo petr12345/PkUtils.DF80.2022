@@ -152,7 +152,7 @@ public static class SplashExtension
     /// <param name="newProgressBarText">New progress bar text.</param>
     public static void SetTextsAndReference(this ISplash s, string newStatusText, string newProgressBarText)
     {
-        s.CheckNotDisposed(nameof(s));
+        s.CheckNotDisposed();
         s.SetTexts(newStatusText, newProgressBarText, true);
     }
 
@@ -164,7 +164,7 @@ public static class SplashExtension
     /// <param name="newProgressBarText">New progress bar text.</param>
     public static void SetTextsNoReference(this ISplash s, string newStatusText, string newProgressBarText)
     {
-        s.CheckNotDisposed(nameof(s));
+        s.CheckNotDisposed();
         s.SetTexts(newStatusText, newProgressBarText, false);
     }
 }

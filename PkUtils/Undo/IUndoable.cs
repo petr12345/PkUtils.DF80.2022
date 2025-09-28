@@ -1,15 +1,4 @@
-﻿/***************************************************************************************************************
-*
-* FILE NAME:   .\Undo\IUndoableEdit.cs
-*
-* AUTHOR:      Petr Kodet
-*
-* DESCRIPTION: The file contains definition of interface IUndoable
-*
-**************************************************************************************************************/
-
-
-// Ignore Spelling: Utils, Undoable
+﻿// Ignore Spelling: Utils, Undoable
 //
 using System;
 

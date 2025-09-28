@@ -1,13 +1,5 @@
-﻿/***************************************************************************************************************
-*
-* FILE NAME:   .\Undo\UndoableCompoundEdit.cs
-*
-* AUTHOR:      Petr Kodet
-*
-* DESCRIPTION: The file contains definition of class UndoableCompoundEdit
-*
-**************************************************************************************************************/
-
+﻿// Define UNDO_ACTIVATION_SUPPORT if you want to support activation/deactivation of compound undo operations 
+// (e.g., tracking whether an edit is still in progress).
 #define UNDO_ACTIVATION_SUPPORT
 
 // Ignore Spelling: Utils, Undoable
@@ -49,22 +41,13 @@ public class UndoableCompoundEdit : UndoableAbstractEdit, ICompoundEdit
 
     #region Properties
 
-    /// <summary>
-    /// Nomen est omen.
-    /// </summary>
-    public IUndoableEdit LastEdit
-    {
-        get
-        {
-            return _edits.LastOrDefault();
-        }
-    }
+    /// <summary> Nomen est omen. </summary>
+    public IUndoableEdit LastEdit { get => _edits.LastOrDefault(); }
     #endregion // Properties
 
     #region Methods
 
     /// <summary> Returns the last edit if that one is active. </summary>
-    ///
     /// <returns>
     /// The last <see cref="IUndoableEdit"/> if its property
     /// <see cref="PK.PkUtils.Undo.IUndoableEdit.IsActive"/>
@@ -204,7 +187,7 @@ public class UndoableCompoundEdit : UndoableAbstractEdit, ICompoundEdit
         }
         else
         {
-            // send redo to all edits in the same order as they were added 
+            // Send redo to all edits in the same order as they were added 
             // ( which is reversed order from the way they were undone )
             for (int ii = 0; ii < _edits.Count; ii++)
             {
@@ -233,7 +216,7 @@ public class UndoableCompoundEdit : UndoableAbstractEdit, ICompoundEdit
     {
         get
         {
-            return (null != _edits.First(edit => edit.Significant));
+            return (null != _edits.FirstOrDefault(edit => edit.Significant));
         }
     }
 
@@ -385,10 +368,7 @@ public class UndoableCompoundEdit : UndoableAbstractEdit, ICompoundEdit
     /// For better understanding see code of AddEdit method, or the 'EndMultiMode' method. <br/>
     /// </summary>
     /// <seealso cref="ICompoundEdit.IsOpenMultiMode"/>
-    public virtual bool IsOpenMultiMode
-    {
-        get { return _bMultiMode; }
-    }
+    public virtual bool IsOpenMultiMode { get => _bMultiMode; }
 
     /// <summary>
     /// Adds a single IUndoableEdit item into the current undo recording action.
@@ -397,6 +377,8 @@ public class UndoableCompoundEdit : UndoableAbstractEdit, ICompoundEdit
     /// <returns>True on success, false on failure.</returns>
     public virtual bool AddEdit(IUndoableEdit e)
     {
+        ArgumentNullException.ThrowIfNull(e);
+
         bool result = false;
 
         if (IsOpenMultiMode)

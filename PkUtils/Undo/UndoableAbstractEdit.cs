@@ -1,13 +1,6 @@
-﻿/***************************************************************************************************************
-*
-* FILE NAME:   .\Undo\IUndoableEdit.cs
-*
-* AUTHOR:      Petr Kodet
-*
-* DESCRIPTION: The file contains definition of class UndoableAbstractEdit
-*
-**************************************************************************************************************/
-
+﻿
+// Define UNDO_ACTIVATION_SUPPORT if you want to support activation/deactivation of compound undo operations 
+// (e.g., tracking whether an edit is still in progress).
 #define UNDO_ACTIVATION_SUPPORT
 
 // Ignore Spelling: Utils, Undoable
@@ -18,40 +11,43 @@ using System.Globalization;
 namespace PK.PkUtils.Undo;
 
 /// <summary>
-/// The abstract class implementing some (actually most) of the functionality
-/// of IUndoableEdit.
+/// The abstract class implementing most of the functionality of <see cref="IUndoableEdit"/>.
+/// Provides base logic for undo/redo operations, disposal, and presentation naming.
 /// </summary>
 [CLSCompliant(true)]
 public abstract class UndoableAbstractEdit : IUndoableEdit
 {
     #region Fields
     /// <summary>
-    /// Backing field for the property <see cref="IsDisposed"/>
+    /// Indicates whether this object has been disposed.
     /// </summary>
     protected bool _bDisposed;
 
     /// <summary>
-    /// Backing field for the property <see cref="HasBeenDone"/>
+    /// Indicates whether the edit operation has been performed.
     /// </summary>
     protected bool _bHasBeenDone = true;
 
     /// <summary>
-    /// Backing field for the property <see cref="BaseUndoName"/>
+    /// The base name for the Undo operation.
     /// </summary>
     protected const string _strUndoName = "Undo";
 
     /// <summary>
-    /// Backing field for the property <see cref="BaseRedoName"/>
+    /// The base name for the Redo operation.
     /// </summary>
     protected const string _strRedoName = "Redo";
 
+    /// <summary>
+    /// The default presentation name for undo/redo operations.
+    /// </summary>
     private static readonly string _strDefaultPresentationName = string.Empty;
     #endregion // Fields
 
     #region Constructor(s)
 
     /// <summary>
-    /// The default argument-less constructor. Should be protected in an abstract class.
+    /// Initializes a new instance of the <see cref="UndoableAbstractEdit"/> class.
     /// </summary>
     protected UndoableAbstractEdit()
     {
@@ -61,8 +57,7 @@ public abstract class UndoableAbstractEdit : IUndoableEdit
     #region Properties
 
     /// <summary>
-    /// A base name of the Undo operation, used as a leading prefix
-    /// in <see cref="UndoPresentationName"/> property implementation.
+    /// Gets the base name of the Undo operation, used as a leading prefix in <see cref="UndoPresentationName"/>.
     /// </summary>
     protected static string BaseUndoName
     {
@@ -70,30 +65,27 @@ public abstract class UndoableAbstractEdit : IUndoableEdit
     }
 
     /// <summary>
-    /// A base name of the Redo operation, used as a leading prefix
-    /// in <see cref="RedoPresentationName"/> property implementation.
+    /// Gets the base name of the Redo operation, used as a leading prefix in <see cref="RedoPresentationName"/>.
     /// </summary>
     protected static string BaseRedoName
     {
         get { return _strRedoName; }
     }
 
-    /// <summary> The indicator whether this UndoableAbstractEdit is still usable. </summary>
-    ///
-    /// <value> True if this has not been disposed, false otherwise. </value>
+    /// <summary>
+    /// Gets a value indicating whether this <see cref="UndoableAbstractEdit"/> is still usable.
+    /// </summary>
+    /// <value>True if this object has not been disposed; otherwise, false.</value>
     protected bool IsAlive
     {
         get { return !IsDisposed; }
     }
 
     /// <summary>
-    /// The indicator whether the editing step that is recorder by this object has been actually done or not.<br/>
-    /// Becomes false after the <see cref="Undo"/> operation is completed. <br/>
-    /// Becomes true after constructing this UndoableAbstractEdit, and after the <see cref="Redo"/> operation is
-    /// completed. <br/>
+    /// Gets or sets a value indicating whether the editing step recorded by this object has been performed.
+    /// Becomes false after <see cref="Undo"/> is called, and true after construction or <see cref="Redo"/>.
     /// </summary>
-    ///
-    /// <value> true if this object has been done, false if not. </value>
+    /// <value>True if the operation has been performed; otherwise, false.</value>
     protected bool HasBeenDone
     {
         get { return _bHasBeenDone; }
@@ -104,35 +96,23 @@ public abstract class UndoableAbstractEdit : IUndoableEdit
     #region Methods
 
     /// <summary>
-    /// Dispose(bool disposing) executes in two distinct scenarios.
-    /// If disposing equals true, the method has been called directly
-    /// or indirectly by a user's code. Managed and unmanaged resources
-    /// can be disposed.
-    /// If disposing equals false, the method has been called by the 
-    /// runtime from inside the finalizer and you should not reference 
-    /// other objects. Only unmanaged resources can be disposed.
+    /// Releases the unmanaged resources used by the <see cref="UndoableAbstractEdit"/> and optionally releases the managed resources.
     /// </summary>
-    /// <param name="disposing"> If true, is called by IDisposable.Dispose. 
-    /// Otherwise it is called by finalizer.</param>
+    /// <param name="disposing">
+    /// True to release both managed and unmanaged resources; false to release only unmanaged resources.
+    /// </param>
     protected virtual void Dispose(bool disposing)
     {
-        // Check to see if Dispose has already been called.
         if (!this.IsDisposed)
         {
             // If disposing equals true, dispose both managed and unmanaged resources.
             if (disposing)
             {
+                // No managed resources to dispose in this class.
             }
-            // Now release unmanaged resources. If disposing is false, 
-            // only that code is executed.
-            // Actually nothing to do here for this particular class
+            // No unmanaged resources to release in this class.
 
-            ////////////////////////////////////////////////////////////////////
-            // Note that this is not thread safe.
-            // Another thread could start disposing the object after the managed resources are disposed,
-            // but before the _disposed flag is set to true.
-            // If thread safety is necessary, it must be implemented by the client ( calling code ).
-
+            // Note: Not thread safe. Thread safety must be implemented by the client if needed.
             _bDisposed = true;
         }
     }
@@ -158,7 +138,7 @@ public abstract class UndoableAbstractEdit : IUndoableEdit
     {
         if (!CanUndo)
         {
-            throw new InvalidOperationException();
+            throw new InvalidOperationException("Cannot undo: either the edit is disposed or has not been done.");
         }
         if (!IsActive)
         {
@@ -171,7 +151,7 @@ public abstract class UndoableAbstractEdit : IUndoableEdit
     {
         if (!CanRedo)
         {
-            throw new InvalidOperationException();
+            throw new InvalidOperationException("Cannot redo: either the edit is disposed or has already been done.");
         }
         if (!IsActive)
         {
@@ -180,9 +160,11 @@ public abstract class UndoableAbstractEdit : IUndoableEdit
     }
 
     /// <summary>
-    ///  Cleans all the Undo and Redo information that is currently held by this object.
+    /// Removes all undo and redo information currently held by this object.
     /// </summary>
-    /// <remarks> An abstract method inherited from <see cref="IUndoableEdit"/></remarks>
+    /// <remarks>
+    /// This method must be implemented by derived classes to clear their undo/redo state.
+    /// </remarks>
     public abstract void EmptyUndoBuffer();
     #endregion // IUndoable Members
 
@@ -193,8 +175,7 @@ public abstract class UndoableAbstractEdit : IUndoableEdit
     public void Dispose()
     {
         Dispose(true);
-        // Take yourself off the Finalization queue to prevent finalization code 
-        // for this object from executing a second time.
+        // Prevent finalization code from executing a second time.
         GC.SuppressFinalize(this);
     }
     #endregion // IDisposable Members
@@ -206,8 +187,7 @@ public abstract class UndoableAbstractEdit : IUndoableEdit
     }
     #endregion // IDisposableEx Members
 
-    /// <summary>Is this edit item significant enough for shaping individual Undo operation, 
-    /// with related menu text.</summary>
+    /// <inheritdoc/>
     public virtual bool Significant
     {
         get { return true; }
@@ -249,10 +229,25 @@ public abstract class UndoableAbstractEdit : IUndoableEdit
         }
     }
 
-#if UNDO_ACTIVATION_SUPPORT
     /// <summary>
-    /// IsActive return true if the user has not finished editing yet
+    /// Gets a string describing the values of all fields of this instance.
     /// </summary>
+    public virtual string Say
+    {
+        get
+        {
+            string strRes = string.Format(
+                CultureInfo.InvariantCulture,
+                "AbstractUndoableEdit: (_bDisposed={0}, _bHasBeenDone={1})",
+                _bDisposed,
+                _bHasBeenDone);
+
+            return strRes;
+        }
+    }
+
+#if UNDO_ACTIVATION_SUPPORT
+    /// <inheritdoc/>
     public virtual bool IsActive
     {
         get { return false; }
@@ -270,34 +265,11 @@ public abstract class UndoableAbstractEdit : IUndoableEdit
         get { return false; }
     }
 
-    /// <summary>
-    /// Should return true if successfully deactivated, or if no deactivation was needed.
-    /// Return false for unsuccessfully deactivated (if the edit had to stay active ).
-    /// </summary>
-    /// <returns>True on success, false on failure.</returns>
+    /// <inheritdoc/>
     public virtual bool Deactivate()
     {
         return true;
     }
 #endif // UNDO_ACTIVATION_SUPPORT
-
-#if DEBUG
-    /// <summary>
-    /// Returns a string describing all values of fields of this instance.
-    /// </summary>
-    public virtual string Say
-    {
-        get
-        {
-            string strRes = string.Format(
-                CultureInfo.InvariantCulture,
-                "AbstractUndoableEdit: (_bDisposed={0}, _bHasBeenDone={1})",
-                _bDisposed,
-                _bHasBeenDone);
-
-            return strRes;
-        }
-    }
-#endif
     #endregion // IUndoableEdit Members
 }

@@ -498,8 +498,7 @@ public static class FieldsUtils
         IEnumerable<FieldInfo> result = temp.Where(f => typeof(T).IsAssignableFrom(f.FieldType));
 #if DEBUG
         List<FieldInfo> resList = [.. result];
-        Debug.Write(string.Format(CultureInfo.InvariantCulture, "GetAllStaticFieldsEx returns {0} fields",
-          resList.Count));
+        Debug.Write($"GetAllStaticFieldsEx returns {resList.Count} fields");
 #endif // DEBUG
 
         return result;

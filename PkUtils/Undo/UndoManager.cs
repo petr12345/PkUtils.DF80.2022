@@ -1,14 +1,4 @@
-﻿/***************************************************************************************************************
-*
-* FILE NAME:   .\Undo\UndoManager.cs
-*
-* AUTHOR:      Petr Kodet
-*
-* DESCRIPTION: The file contains definition of class UndoableCompoundEdit
-*
-**************************************************************************************************************/
-
-// Ignore Spelling: Utils
+﻿// Ignore Spelling: Utils
 //
 using System;
 using System.Diagnostics;
@@ -20,7 +10,8 @@ using PK.PkUtils.Extensions;
 namespace PK.PkUtils.Undo;
 
 /// <summary>
-/// UndoManager is the "root" UndoableCompoundEdit - the holder of the complete undo/redo buffer.
+/// Manages the undo and redo buffer as the root <see cref="UndoableCompoundEdit"/>.
+/// Provides thread-safe operations for adding, undoing, redoing, and trimming edits.
 /// </summary>
 [CLSCompliant(true)]
 public class UndoManager : UndoableCompoundEdit
@@ -28,7 +19,7 @@ public class UndoManager : UndoableCompoundEdit
     #region Typedefs
 
     /// <summary>
-    /// This enum defines current UndoManager status
+    /// Represents the current status of the <see cref="UndoManager"/>.
     /// </summary>
     public enum MgrStatus
     {
@@ -57,13 +48,12 @@ public class UndoManager : UndoableCompoundEdit
     #region Fields
 
     /// <summary>
-    /// The default value that will be used by argument-less constructor as the initial value for the property
-    /// <see cref="Limit"/>.
+    /// The default maximum number of <see cref="IUndoableEdit"/> items kept in the buffer.
     /// </summary>
     public const int _defaultLimit = 256;
 
     /// <summary>
-    /// The backing field for the <see cref="Status"/> property.
+    /// The current status of the <see cref="UndoManager"/>.
     /// </summary>
     protected MgrStatus _status = MgrStatus.Listening;
 
@@ -76,23 +66,24 @@ public class UndoManager : UndoableCompoundEdit
     #region Constructor(s)
 
     /// <summary>
-    /// Default argument-less constructor.
+    /// Initializes a new instance of the <see cref="UndoManager"/> class with the default limit.
     /// </summary>
-    /// <remarks>Calls overloaded single-argument constructor <see cref="UndoManager(int)"/>,
-    /// passing as the actual argument value the constant <see cref="_defaultLimit"/> </remarks>
+    /// <remarks>
+    /// Calls the constructor with a single argument, passing <see cref="_defaultLimit"/> as the value.
+    /// </remarks>
     public UndoManager()
       : this(_defaultLimit)
     { }
 
     /// <summary>
-    /// A single-argument constructor, providing the initial value for the property <see cref="Limit"/>.
+    /// Initializes a new instance of the <see cref="UndoManager"/> class with a specified limit.
     /// </summary>
-    /// <param name="nLimit">This limit is a maximal count of IUndoableEdit items kept in the buffer.
-    /// The value must be positive; otherwise throws <see cref="ArgumentException"/>.
+    /// <param name="nLimit">
+    /// The maximum number of <see cref="IUndoableEdit"/> items to keep in the buffer. Must be positive.
     /// </param>
     public UndoManager(int nLimit)
     {
-        CheckPositive(nLimit, "nLimit");
+        ArgumentOutOfRangeException.ThrowIfNegativeOrZero(nLimit);
         _limit = nLimit;
     }
     #endregion // Constructor(s)
@@ -100,7 +91,7 @@ public class UndoManager : UndoableCompoundEdit
     #region Properties
 
     /// <summary>
-    /// Maximal count of IUndoableEdit items kept in the buffer.
+    /// Gets or sets the maximum number of <see cref="IUndoableEdit"/> items kept in the buffer.
     /// </summary>
     public int Limit
     {
@@ -112,7 +103,7 @@ public class UndoManager : UndoableCompoundEdit
         {
             lock (_syncRoot)
             {
-                CheckPositive(value, "value");
+                ArgumentOutOfRangeException.ThrowIfNegativeOrZero(value);
                 _limit = value;
                 TrimForLimit();
             }
@@ -120,41 +111,28 @@ public class UndoManager : UndoableCompoundEdit
     }
 
     /// <summary>
-    /// Count of edits of <see cref="IUndoableEdit"/> type, that are currently held in the undo/redo buffer.
+    /// Gets the current number of <see cref="IUndoableEdit"/> items held in the undo/redo buffer.
     /// </summary>
-    public int EditsCount
-    {
-        get { return _edits.Count; }
-    }
+    public int EditsCount { get => _edits.Count; }
 
     /// <summary>
-    /// Returns the current undo manager status, as represented by MgrStatus enum.
+    /// Gets the current status of the undo manager.
     /// </summary>
-    public MgrStatus Status
-    {
-        get { return _status; }
-    }
+    public MgrStatus Status { get => _status; }
 
     /// <summary>
-    /// Returns the index for the _edits internal buffer,
-    /// - position where the next IUndoableEdit item will be added by <see cref="AddEdit(IUndoableEdit)"/>.
+    /// Gets the index in the internal buffer where the next <see cref="IUndoableEdit"/> will be added.
     /// </summary>
-    protected int NextAdd
-    {
-        get { return _nIndexOfNextAdd; }
-    }
+    protected int NextAdd { get => _nIndexOfNextAdd; }
     #endregion // Properties
 
     #region Methods
 
-    #region Public Methods
-    #endregion // Public Methods
-
     #region Protected Methods
 
     /// <summary>
-    /// If the current count of edits in the buffer, represented by <see cref="EditsCount"/>
-    /// is bigger than <see cref="Limit"/>, removes from the undo buffer all superfluous edit items.
+    /// Trims the undo buffer if the number of edits exceeds the <see cref="Limit"/>.
+    /// Removes the oldest edits to maintain the buffer size.
     /// </summary>
     protected void TrimForLimit()
     {
@@ -166,10 +144,10 @@ public class UndoManager : UndoableCompoundEdit
     }
 
     /// <summary>
-    /// Get rid of edits between nFrom to nTo ( including )
+    /// Removes edits from the buffer between the specified indices, inclusive.
     /// </summary>
-    /// <param name="nFrom">The index of first deleted edit item.</param>
-    /// <param name="nTo">The index of last deleted edit item.</param>
+    /// <param name="nFrom">The index of the first edit to remove.</param>
+    /// <param name="nTo">The index of the last edit to remove.</param>
     protected void TrimEdits(int nFrom, int nTo)
     {
         if (nFrom <= nTo)
@@ -191,13 +169,12 @@ public class UndoManager : UndoableCompoundEdit
     }
 
     /// <summary>
-    /// Returns the first 'significant' <see cref="IUndoableEdit"/> edit item
-    /// (counting in the backward order), to which Undo should be performed
-    /// if <see cref="ICompoundEdit.IsOpenMultiMode"/> is still set to true; i.e. if <see cref="ICompoundEdit.EndMultiMode"/> 
-    /// has not been called yet.<br/>
-    /// For better understanding, see the implementation of <see cref="Undo"/>.
+    /// Returns the most recent significant <see cref="IUndoableEdit"/> to which an Undo should be performed.
+    /// If a compound edit is active, returns the active edit if it can be undone.
     /// </summary>
-    /// <returns>Returns found <see cref="IUndoableEdit"/> or null if no such item can be found.</returns>
+    /// <returns>
+    /// The <see cref="IUndoableEdit"/> to be undone, or <c>null</c> if none is available.
+    /// </returns>
     protected IUndoableEdit EditToBeUndone()
     {
         IUndoableEdit tempEdit;
@@ -213,13 +190,12 @@ public class UndoManager : UndoableCompoundEdit
     }
 
     /// <summary>
-    /// Returns the first 'significant' <see cref="IUndoableEdit"/> edit item
-    /// to which Redo operation should be performed
-    /// if <see cref="ICompoundEdit.IsOpenMultiMode"/> is still set to true; i.e. if <see cref="ICompoundEdit.EndMultiMode"/> 
-    /// has not been called yet.<br/>
-    /// For better understanding, see the implementation of <see cref="Redo"/>.
+    /// Returns the next significant <see cref="IUndoableEdit"/> to which a Redo should be performed.
+    /// If a compound edit is active, returns the active edit if it can be undone.
     /// </summary>
-    /// <returns>Returns found <see cref="IUndoableEdit"/> or null if no such item can be found.</returns>
+    /// <returns>
+    /// The <see cref="IUndoableEdit"/> to be redone, or <c>null</c> if none is available.
+    /// </returns>
     protected IUndoableEdit EditToBeRedone()
     {
         IUndoableEdit tempEdit;
@@ -239,14 +215,18 @@ public class UndoManager : UndoableCompoundEdit
         return null;
     }
 
-    /// <summary> Undo to the given IUndoableEdit edit (including) </summary>
-    ///
-    /// <param name="editTo"> The <see cref="IUndoableEdit"/> item to which the undoing engine should perform Undo
-    /// ( in backward order). </param>
+    /// <summary>
+    /// Performs Undo operations up to and including the specified <see cref="IUndoableEdit"/>.
+    /// </summary>
+    /// <param name="editTo">
+    /// The <see cref="IUndoableEdit"/> to which Undo should be performed (inclusive).
+    /// </param>
     protected void UndoTo(IUndoableEdit editTo)
     {
-        editTo.CheckNotDisposed(nameof(editTo));
-        Debug.Assert(0 <= _edits.IndexOf(editTo), "The buffer _edits must contain this IUndoableEdit");
+        editTo.CheckNotDisposed();
+        Debug.Assert(
+            0 <= _edits.IndexOf(editTo),
+            $"The buffer {nameof(_edits)} must contain this IUndoableEdit");
 
         for (int nDex = NextAdd - 1; nDex >= 0; nDex--)
         {
@@ -257,12 +237,14 @@ public class UndoManager : UndoableCompoundEdit
     }
 
     /// <summary>
-    /// Redo to given IUndoableEdit edit (including)
+    /// Performs Redo operations up to and including the specified <see cref="IUndoableEdit"/>.
     /// </summary>
-    /// <param name="editTo"> The <see cref="IUndoableEdit"/> item to which the redoing engine should perform Redo </param>
+    /// <param name="editTo">
+    /// The <see cref="IUndoableEdit"/> to which Redo should be performed (inclusive).
+    /// </param>
     protected void RedoTo(IUndoableEdit editTo)
     {
-        editTo.CheckNotDisposed(nameof(editTo));
+        editTo.CheckNotDisposed();
         if (!_edits.Contains(editTo)) throw new ArgumentException("The buffer _edits must contain this IUndoableEdit", nameof(editTo));
 
         for (; NextAdd < EditsCount;)
@@ -273,20 +255,6 @@ public class UndoManager : UndoableCompoundEdit
         }
     }
     #endregion // Protected Methods
-
-    #region Private Methods
-
-    #endregion // Private Methods
-
-    private static void CheckPositive(int nLimitVal, string argName)
-    {
-        if (nLimitVal <= 0)
-        {
-            string strErr = string.Format(CultureInfo.InvariantCulture,
-              "Invalid value of {0} = {1}. The value has to be positive.", argName, nLimitVal);
-            throw new ArgumentException(strErr, argName);
-        }
-    }
     #endregion // Methods
 
     #region ICompoundEdit Members
@@ -348,8 +316,8 @@ public class UndoManager : UndoableCompoundEdit
     }
 
     /// <summary>
-    /// Performs the Undo operation.<br/>
-    /// Overrides the base class implementation, in order specific behaviour for UndoManager.
+    /// Performs the Undo operation.
+    /// Overrides the base class implementation to provide specific behavior for <see cref="UndoManager"/>.
     /// </summary>
     public override void Undo()
     {
@@ -370,8 +338,8 @@ public class UndoManager : UndoableCompoundEdit
     }
 
     /// <summary>
-    /// Performs the Redo operation.<br/>
-    /// Overrides the base class implementation, in order specific behaviour for UndoManager.
+    /// Performs the Redo operation.
+    /// Overrides the base class implementation to provide specific behavior for <see cref="UndoManager"/>.
     /// </summary>
     public override void Redo()
     {
@@ -392,8 +360,7 @@ public class UndoManager : UndoableCompoundEdit
     }
 
     /// <summary>
-    /// Overwrites the implementation of the base class, which cleans all the Undo and Redo information that is
-    /// currently held by this object.
+    /// Clears all Undo and Redo information currently held by this object.
     /// </summary>
     public override void EmptyUndoBuffer()
     {
@@ -463,16 +430,13 @@ public class UndoManager : UndoableCompoundEdit
         }
     }
 
-#if DEBUG
     /// <summary>
-    /// Returns a string describing all values of fields of this instance.
+    /// Returns a string describing all field values of this instance, including the status, buffer index, limit, and contained edits.
     /// </summary>
     public override string Say
     {
         get
         {
-
-            string strRes;
             StringBuilder sbEdits = new();
 
             for (int ii = 0; ii < NextAdd; ii++)
@@ -483,7 +447,7 @@ public class UndoManager : UndoableCompoundEdit
                     sbEdits.AppendFormat(CultureInfo.InvariantCulture, ",{0}{1}", Environment.NewLine, _edits[ii].Say);
             }
 
-            strRes = string.Format(
+            string strRes = string.Format(
                 CultureInfo.InvariantCulture,
                 "UndoManager: (_status={0}, _nIndexOfNextAdd={1}, _limit={2}, _Edits={3})",
                 _status,
@@ -494,33 +458,35 @@ public class UndoManager : UndoableCompoundEdit
             return strRes;
         }
     }
-#endif
     #endregion // IUndoableEdit Members
 
     /// <summary>
-    /// Adds a single IUndoableEdit item into the current undo recording action.
+    /// Adds a single <see cref="IUndoableEdit"/> item into the current undo recording action.
+    /// Trims the redo buffer and ensures the buffer does not exceed the set limit.
     /// </summary>
-    /// <param name="e">The <see cref="IUndoableEdit "/> item being added.</param>
-    /// <returns>True on success, false on failure.</returns>
+    /// <param name="e">The <see cref="IUndoableEdit"/> item to add. Cannot be <c>null</c>.</param>
+    /// <returns><c>true</c> on success; otherwise, <c>false</c>.</returns>
     public override bool AddEdit(IUndoableEdit e)
     {
+        ArgumentNullException.ThrowIfNull(e);
+
         bool retVal = false;
 
         lock (_syncRoot)
         {
             if (this.Status == MgrStatus.Listening)
             {
-                // remove edits from here to end of undo queue.
+                // Remove edits from here to end of undo queue.
                 this.TrimEdits(NextAdd, EditsCount - 1);
-                // now we can't redo
+                // Now we can't redo
                 retVal = base.AddEdit(e);
                 if (IsOpenMultiMode)
                 {
                     retVal = true;
                 }
-                //update position
+                // Update position
                 this._nIndexOfNextAdd = EditsCount;
-                // cut beginning to make sure undo queue is not too big
+                // Cut beginning to make sure undo queue is not too big
                 this.TrimForLimit();
             }
             else

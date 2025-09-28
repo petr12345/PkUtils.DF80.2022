@@ -392,7 +392,7 @@ public static class MethodsUtils
 
         return matchedMethodsList;
 #else
-        return  allMethods.Where(m => 0 == string.CompareOrdinal(methodName, m.Name));
+        return allMethods.Where(m => 0 == string.CompareOrdinal(methodName, m.Name));
 #endif // DEBUG
     }
 
