@@ -9,7 +9,7 @@ using static System.FormattableString;
 
 #pragma warning disable IDE0090 // Use 'new(...)'
 
-namespace ACMCodeGen.CCA.Commands.BaseCommands;
+namespace PK.Commands.BaseCommands;
 
 /// <summary> A base command class, implementing <see cref="ICommand{TErrorCode}"/>. </summary>
 ///

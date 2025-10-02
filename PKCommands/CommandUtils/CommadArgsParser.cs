@@ -4,10 +4,10 @@ using System;
 using System.Collections.Generic;
 using System.Text.RegularExpressions;
 
-namespace PK.Commands.CommandUtils;
-
 #pragma warning disable IDE0079    // Remove unnecessary suppressions
 #pragma warning disable SYSLIB1045 // Use 'GeneratedRegexAttribute' to generate the regular expression implementation at compile-time.
+
+namespace PK.Commands.CommandUtils;
 
 /// <summary>
 /// A class used to parse command-line arguments into a dictionary of parameters and values.

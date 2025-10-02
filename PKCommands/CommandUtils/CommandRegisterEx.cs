@@ -8,7 +8,6 @@ using PK.Commands.Interfaces;
 using PK.PkUtils.Consoles;
 using PK.PkUtils.Extensions;
 using PK.PkUtils.Interfaces;
-using static System.FormattableString;
 using ILogger = log4net.ILog;
 
 #pragma warning disable IDE0305 // Collection initialization can be simplified
@@ -30,7 +29,6 @@ public class CommandRegisterEx<TCommand, TErrorCode> :
 
     private TCommand _lastValidated;
     private TCommand _lastExecuted;
-    private TErrorCode _lastError;
     #endregion // Fields
 
     #region Constructor(s)
@@ -78,16 +76,6 @@ public class CommandRegisterEx<TCommand, TErrorCode> :
             DoRegisterCommands(logger, cmdTypes);
         }
     }
-
-    /// <inheritdoc/>
-    public override IComplexErrorResult<TErrorCode> Execute(
-        string cmdName,
-        IReadOnlyDictionary<string, string> parsedArgs,
-        IConsoleDisplay display)
-    {
-        ResetLastError();
-        return base.Execute(cmdName, parsedArgs, display);
-    }
     #endregion // ICommandRegister Members
 
     /// <inheritdoc/>
@@ -95,28 +83,9 @@ public class CommandRegisterEx<TCommand, TErrorCode> :
 
     /// <inheritdoc/>
     public TCommand LastExecutedCommand { get => _lastExecuted; }
-
-    /// <inheritdoc/>
-    public TErrorCode GetLastError()
-    {
-        return _lastError;
-    }
     #endregion // ICommandRegisterEx Members
 
     #region Methods
-
-    /// <summary>   Sets the last error to <paramref name="value"/>. </summary>
-    /// <param name="value"> The value to be assigned. </param>
-    protected void SetLastError(TErrorCode value)
-    {
-        _lastError = value;
-    }
-
-    /// <summary> Resets the last error. </summary>
-    protected void ResetLastError()
-    {
-        SetLastError(default);
-    }
 
     /// <inheritdoc/>
     protected override IComplexResult ValidateCommand(
@@ -125,17 +94,8 @@ public class CommandRegisterEx<TCommand, TErrorCode> :
         IConsoleDisplay display)
     {
         _lastValidated = command ?? throw new ArgumentNullException(nameof(command));
-        IComplexResult result = null;
+        IComplexResult result = base.ValidateCommand(command, parsedArgs, display);
 
-        try
-        {
-            result = base.ValidateCommand(command, parsedArgs, display);
-        }
-        finally
-        {
-            // The result will be still null if and only if command syntax validation failed by exception
-            SetLastErrorFromCommand(command, null);
-        }
         return result;
     }
 
@@ -143,29 +103,14 @@ public class CommandRegisterEx<TCommand, TErrorCode> :
     protected override IComplexErrorResult<TErrorCode> ExecuteValidatedCommand(TCommand command)
     {
         _lastExecuted = command ?? throw new ArgumentNullException(nameof(command));
-
-        TErrorCode errorCode;
-        IComplexErrorResult<TErrorCode> result = null;
-
-        try
-        {
-            result = base.ExecuteValidatedCommand(command);
-            errorCode = result.Failed() ? command.GetLastError() : default;
-            SetLastError(errorCode);
-        }
-        finally
-        {
-            SetLastErrorFromCommand(command, result);
-        }
-
-        return result;
+        return base.ExecuteValidatedCommand(command);
     }
 
     private static void CheckImplementsICommandEx(Type tp)
     {
         if (!ImplementsICommandEx(tp))
         {
-            string errorMessage = Invariant($"The type {tp.TypeToReadable()} does not implement generic {typeof(ICommandEx<>).TypeToReadable()}");
+            string errorMessage = $"The type {tp.TypeToReadable()} does not implement generic {typeof(ICommandEx<>).TypeToReadable()}";
             throw new ArgumentException(errorMessage, nameof(tp));
         }
     }
@@ -183,23 +128,6 @@ public class CommandRegisterEx<TCommand, TErrorCode> :
         bool result = (tp.GetInterfaces().Any(ti => ti.IsGenericType && ti.GetGenericTypeDefinition() == typeof(ICommandEx<>)));
 
         return result;
-    }
-
-    private void SetLastErrorFromCommand(TCommand command, IComplexErrorResult<TErrorCode> result)
-    {
-        if ((result == null) || result.Failed())
-        {
-            // get error code from command
-            TErrorCode errorCode = command.GetLastError();
-
-            // if it's an error, and last error not set yet
-            if ((errorCode is not null)
-                && !errorCode.Equals(default(TErrorCode))
-                && this.GetLastError().Equals(default(TErrorCode)))
-            {
-                SetLastError(errorCode);
-            }
-        }
     }
     #endregion // Methods
 }

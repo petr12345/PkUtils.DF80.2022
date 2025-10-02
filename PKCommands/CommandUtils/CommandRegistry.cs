@@ -2,9 +2,9 @@
 //
 using System;
 using System.Collections.Generic;
-using System.Globalization;
 using System.Linq;
 using PK.Commands.Interfaces;
+
 
 namespace PK.Commands.CommandUtils;
 
@@ -55,21 +55,22 @@ internal class CommandRegistry<TCommand, TErrorCode> where TCommand : ICommand<T
 
     #region Methods
 
-    /// <summary>   Gets a command of given name. </summary>
-    ///
-    /// <exception cref="ArgumentException"> Thrown when given command name not found in command register. </exception>
-    /// <exception cref="ArgumentNullException"> Thrown when given command name is null. </exception>
-    /// 
-    /// <param name="name"> The name. </param>
-    /// <returns> The resulting found command. </returns>
+    /// <summary> Retrieves a command by its name. </summary>
+    /// <param name="name">The name of the command to retrieve.</param>
+    /// <returns>The command associated with the specified name.</returns>
+    /// <exception cref="ArgumentNullException"> Thrown when <paramref name="name"/> is <c>null</c>. </exception>
+    /// <exception cref="ArgumentException">
+    /// Thrown when a command with the specified <paramref name="name"/> does not exist in the registry.
+    /// </exception>
     public TCommand GetCommand(string name)
     {
         ArgumentNullException.ThrowIfNull(name);
 
         if (!CommandsDictionary.TryGetValue(name, out TCommand result))
         {
-            string strErr = string.Format(CultureInfo.InvariantCulture, "Command '{0}' not found. ", name);
-            throw new ArgumentException(strErr, nameof(name));
+            // Use an empty string for paramName to avoid the default exception message format
+            // that appends "(Parameter 'name')" to the error message.
+            throw new ArgumentException($"Command '{name}' not found.", paramName: string.Empty);
         }
 
         return result;
