@@ -1,9 +1,12 @@
-﻿// Ignore Spelling: Utils
-//
+﻿// Ignore Spelling: CCA, Utils
+// 
+
 using PK.PkUtils.Threading;
 
 
-namespace PK.PkUtils.NUnitTests.Threading;
+namespace PK.PkUtils.NUnitTests.ThreadingTests;
+
+
 
 /// <summary>  Unit Tests of class <see cref="WorkerThread"/>. </summary>
 [TestFixture()]
@@ -16,7 +19,7 @@ public class WorkerThreadTests
         // Arrange + Act
         WorkerThread wt = new();
 
-        Assert.Multiple(() =>
+        using (Assert.EnterMultipleScope())
         {
             // Assert
             Assert.That(wt.ManagedThread, Is.Not.Null);
@@ -30,7 +33,7 @@ public class WorkerThreadTests
             Assert.That(wt.Priority, Is.EqualTo(ThreadPriority.Normal));
             Assert.That(wt.EventWaitExit, Is.Null);
             Assert.That(wt.Name, Is.Null);
-        });
+        }
     }
 
     [Test, Description("Test of constructor using ThreadPriority.")]
@@ -44,12 +47,12 @@ public class WorkerThreadTests
         // Arrange + Act
         WorkerThread wt = new(priority);
 
-        Assert.Multiple(() =>
+        using (Assert.EnterMultipleScope())
         {
             // Assert
             Assert.That(wt.ManagedThread, Is.Not.Null);
             Assert.That(wt.Priority, Is.EqualTo(priority));
-        });
+        }
     }
 
     [Test, Description("Test of constructor utilizing two bool arguments.")]
@@ -63,7 +66,7 @@ public class WorkerThreadTests
         WorkerThread wt = new(attach: willAttach, createWaitExitEvent: willCreateWaitExitEvent);
 
         // Assert
-        Assert.Multiple(() =>
+        using (Assert.EnterMultipleScope())
         {
             Assert.That(wt.ManagedThread, Is.Not.Null);
             Assert.That(wt.Priority, Is.EqualTo(ThreadPriority.Normal));
@@ -76,7 +79,7 @@ public class WorkerThreadTests
             Assert.That(wt.EventWaitExit != null, Is.EqualTo(willCreateWaitExitEvent));
 
             Assert.That(wt.IsDisposed, Is.False);
-        });
+        }
     }
 
     [Test, Description("Test of Start followed by waiting for exit.")]
@@ -88,25 +91,24 @@ public class WorkerThreadTests
         // Act
         wt.Start();
 
-        // Assert
-        Assert.Multiple(() =>
+        using (Assert.EnterMultipleScope())
         {
             Assert.That(wt.Unstarted, Is.False);
             Assert.That(wt.IsAlive, Is.True);
             Assert.That(wt.IsDisposed, Is.False);
-        });
+        }
 
         // Act
         wt.Join();
 
         // Assert
-        Assert.Multiple(() =>
+        using (Assert.EnterMultipleScope())
         {
             Assert.That(wt.Unstarted, Is.False);
             Assert.That(wt.IsAlive, Is.False);
             Assert.That(wt.IsDisposed, Is.False);
             Assert.That(wt.ManagedThread, Is.Not.Null);
-        });
+        }
     }
 
     [Test, Description("Test of Start followed by Abort.")]
@@ -118,25 +120,23 @@ public class WorkerThreadTests
         // Act
         wt.Start();
 
-        // Assert
-        Assert.Multiple(() =>
+        using (Assert.EnterMultipleScope())
         {
             Assert.That(wt.Unstarted, Is.False);
             Assert.That(wt.IsAlive, Is.True);
             Assert.That(wt.Name, Is.Null);
             Assert.That(wt.IsDisposed, Is.False);
-        });
+        }
 
         // Act
         wt.Abort();
 
-        // Assert
-        Assert.Multiple(() =>
+        using (Assert.EnterMultipleScope())
         {
             Assert.That(wt.IsDisposed, Is.True);
             Assert.That(wt.IsAlive, Is.False);
             Assert.That(wt.ManagedThread, Is.Null);
-        });
+        }
     }
 
     [Test, Description("Test of Start followed by Dispose.")]
@@ -156,24 +156,22 @@ public class WorkerThreadTests
         // Act
         wt.Start();
 
-        // Assert
-        Assert.Multiple(() =>
+        using (Assert.EnterMultipleScope())
         {
             Assert.That(wt.Unstarted, Is.False);
             Assert.That(wt.IsAlive, Is.True);
             Assert.That(wt.IsDisposed, Is.False);
             Assert.That(wt.Name, Is.EqualTo(threadName));
-        });
+        }
 
         // Act
         wt.Dispose();
 
-        // Assert
-        Assert.Multiple(() =>
+        using (Assert.EnterMultipleScope())
         {
             Assert.That(wt.IsDisposed, Is.True);
             Assert.That(wt.IsAlive, Is.False);
             Assert.That(wt.ManagedThread, Is.Null);
-        });
+        }
     }
 }

@@ -1,14 +1,4 @@
-﻿/***************************************************************************************************************
-*
-* FILE NAME:   .\NativeMemory\SharedMemoryException.cs
-*
-* AUTHOR:      Petr Kodet
-*
-* DESCRIPTION: The file contains definition of class SharedMemoryException
-*
-**************************************************************************************************************/
-
-// Ignore Spelling: Utils
+﻿// Ignore Spelling: Utils
 //
 using System;
 using System.Globalization;

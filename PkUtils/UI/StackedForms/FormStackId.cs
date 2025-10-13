@@ -143,6 +143,18 @@ public class FormStackId<TDATA> : FormStack.StackId, IEquatable<FormStackId<TDAT
 
         return result;
     }
+
+    /// <summary>
+    /// Overrides the implementation of the base class to support additional data in this class.
+    /// </summary>
+    /// <param name="obj">The object to compare with the current FormStackId.</param>
+    /// <returns>true if the objects are considered equal, false otherwise.</returns>
+    public override bool Equals(object obj)
+    {
+        if (ReferenceEquals(this, obj))
+            return true;
+        return (obj is FormStackId<TDATA> other) && Equals(other);
+    }
     #endregion // Methods
 
     #region IEquatable<FormStackId> Members

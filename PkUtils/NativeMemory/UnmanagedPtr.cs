@@ -1,18 +1,9 @@
-﻿/***************************************************************************************************************
-*
-* FILE NAME:   .\NativeMemory\UnmanagedPtr.cs
-*
-* AUTHOR:      Petr Kodet
-*
-* DESCRIPTION: The file contains definition of class UnmanagedPtr
-*
-**************************************************************************************************************/
-
-// Ignore Spelling: Realloc, Utils
+﻿// Ignore Spelling: Realloc, Utils
 //
 using System;
 using System.Runtime.InteropServices;
 using PK.PkUtils.Interfaces;
+
 
 namespace PK.PkUtils.NativeMemory;
 

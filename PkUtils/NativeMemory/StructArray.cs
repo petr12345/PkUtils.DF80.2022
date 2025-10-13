@@ -1,14 +1,4 @@
-﻿/***************************************************************************************************************
-*
-* FILE NAME:   .\NativeMemory\StructArray.cs
-*
-* AUTHOR:      Petr Kodet
-*
-* DESCRIPTION: The file contains definition of generic StructArray
-*
-**************************************************************************************************************/
-
-// Ignore Spelling: Utils, Realloc
+﻿// Ignore Spelling: Utils, Realloc
 //
 using System;
 using System.Runtime.InteropServices;

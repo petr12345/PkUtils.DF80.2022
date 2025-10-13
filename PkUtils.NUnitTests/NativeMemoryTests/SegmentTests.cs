@@ -1,19 +1,19 @@
 ﻿// Ignore Spelling: PkUtils, Utils
 // 
+#nullable enable
+
 using PK.PkUtils.NativeMemory;
 using PK.PkUtils.Threading;
 
-#nullable enable
+#pragma warning disable IDE0290     // Use primary constructor
 
 namespace PK.PkUtils.NUnitTests.NativeMemoryTests;
-
-#pragma warning disable VSTHRD200 // Use "Async" suffix for async methods
 
 /// <summary>
 /// Contains tests for shared memory usage with <see cref="Segment"/> class.
 /// </summary>
 [TestFixture()]
-public class SharedMemoryTest
+public class SegmentTests
 {
     #region Typedefs
 
@@ -33,10 +33,8 @@ public class SharedMemoryTest
 
         protected override void WorkerFunction()
         {
-            using (Segment segmentAttached = new Segment(_mappingName, true))
-            {
-                _resultData = (PersonData)segmentAttached.GetData();
-            }
+            using Segment segmentAttached = new(_mappingName, true);
+            _resultData = (PersonData)segmentAttached.GetData();
         }
     }
     #endregion // Typedefs
@@ -61,7 +59,7 @@ public class SharedMemoryTest
     /// <summary>
     /// A test for Segment constructor, which should fail with ArgumentNullException
     /// </summary>
-    [Test()]
+    [Test(Description = "A test for Segment constructor, which should fail with ArgumentNullException")]
     public void Segment_Constructor_01()
     {
         Assert.Throws<ArgumentNullException>(() =>
@@ -71,7 +69,7 @@ public class SharedMemoryTest
     /// <summary>
     /// A test for Segment constructor, which should fail with ArgumentException
     /// </summary>
-    [Test()]
+    [Test(Description = "A test for Segment constructor, which should fail with ArgumentException")]
     public void Segment_Constructor_02()
     {
         Assert.Throws<ArgumentException>(() =>
@@ -82,15 +80,15 @@ public class SharedMemoryTest
     /// A test for Segment constructor, which should succeed for all names 
     /// with length up to <see cref="Segment.MaxMappingNameLength"/>.
     /// </summary>
-    [Test()]
+    [Test(Description = "A test for Segment constructor, which should succeed for all names with length up to Segment.MaxMappingNameLength.")]
     public void Segment_Constructor_03()
     {
         int maxMappingNameLength = Segment.MaxMappingNameLength;
 
         for (int ii = 1; ii <= maxMappingNameLength; ii++)
         {
-            string mappingName = new string('x', ii);
-            using var tempSegment = new Segment(mappingName, SharedMemoryCreationFlag.Create, 20, true);
+            string mappingName = new('x', ii);
+            using Segment tempSegment = new(mappingName, SharedMemoryCreationFlag.Create, 20, true);
             Assert.That(tempSegment.IsSynchronized, Is.True);
         }
     }
@@ -99,11 +97,11 @@ public class SharedMemoryTest
     /// A test for Segment constructor, which should raise ArgumentExceptio for mapping name 
     /// longer than <see cref="Segment.MaxMappingNameLength"/>.
     /// </summary>
-    [Test()]
+    [Test(Description = "A test for Segment constructor, which should raise ArgumentException for mapping name longer than Segment.MaxMappingNameLength.")]
     public void Segment_Constructor_04()
     {
         int maxMappingNameLength = Segment.MaxMappingNameLength;
-        string mappingName = new string('x', maxMappingNameLength + 1);
+        string mappingName = new('x', maxMappingNameLength + 1);
 
         Assert.Throws<ArgumentException>(() =>
             new Segment(mappingName, SharedMemoryCreationFlag.Create, 20, true));
@@ -112,7 +110,7 @@ public class SharedMemoryTest
     /// <summary>
     /// A test for Segment constructor, which should fail with ArgumentException
     /// </summary>
-    [Test()]
+    [Test(Description = "A test for Segment constructor, which should fail with ArgumentOutOfRangeException")]
     public void Segment_Constructor_05()
     {
         Assert.Throws<ArgumentOutOfRangeException>(() =>
@@ -126,19 +124,17 @@ public class SharedMemoryTest
     /// A test for Segment writing and reading back.
     /// Should succeed with no exception thrown.
     /// </summary>
-    [Test()]
+    [Test(Description = "A test for Segment writing and reading back. Should succeed with no exception thrown.")]
     public void Segment_WriteRead_SingleThread_01()
     {
         string mappingName = Guid.NewGuid().ToString();
-        PersonData p1 = new PersonData(37, "Tronald Dump");
+        PersonData p1 = new(37, "Tronald Dump");
         PersonData p2;
 
-        using (Segment s1 = new Segment(mappingName, p1, true))
+        using (Segment s1 = new(mappingName, p1, true))
         {
-            using (Segment s2 = new Segment(mappingName, true))
-            {
-                p2 = (PersonData)s2.GetData();
-            }
+            using Segment s2 = new(mappingName, true);
+            p2 = (PersonData)s2.GetData();
         }
 
         Assert.That(p2, Is.EqualTo(p1));
@@ -157,24 +153,22 @@ public class SharedMemoryTest
     /// However, the thread must call the ReleaseMutex method the same number of times to
     /// release ownership of the mutex.".
     /// </remarks>
-    [Test()]
+    [Test(Description = "A test for Segment writing and reading back, with several lock applied in both segments. Should succeed with no exception thrown.")]
     public void Segment_WriteRead_SingleThread_02()
     {
         string mappingName = Guid.NewGuid().ToString();
         string personName = "Liška podšitá";
-        PersonData pA = new PersonData(222, personName);
+        PersonData pA = new(222, personName);
         PersonData pB;
 
-        using (Segment sA = new Segment(mappingName, pA, true))
+        using (Segment sA = new(mappingName, pA, true))
         {
-            using var lockA1 = sA.AcquireLock();
-            using var lockA2 = sA.AcquireLock();
-            using (Segment sB = new Segment(mappingName, true))
-            {
-                using var lockB1 = sB.AcquireLock();
-                using var lockB2 = sB.AcquireLock();
-                pB = (PersonData)sB.GetData();
-            }
+            using IDisposable lockA1 = sA.AcquireLock();
+            using IDisposable lockA2 = sA.AcquireLock();
+            using Segment sB = new(mappingName, true);
+            using IDisposable lockB1 = sB.AcquireLock();
+            using IDisposable lockB2 = sB.AcquireLock();
+            pB = (PersonData)sB.GetData();
         }
 
         Assert.That(pB, Is.EqualTo(pA));
@@ -184,24 +178,20 @@ public class SharedMemoryTest
     /// A test for Segment s1 writing and s2 reading back after the original segment is disposed, 
     /// which should succeed ( because s2 is constructed before s1 disposal ).
     /// </summary>
-    [Test()]
+    [Test(Description = "A test for Segment s1 writing and s2 reading back after the original segment is disposed, which should succeed.")]
     public void Segment_WriteRead_SingleThread_03()
     {
         string mappingName = Guid.NewGuid().ToString();
-        PersonData p1 = new PersonData(22, "John Smith");
+        PersonData p1 = new(22, "John Smith");
         PersonData p2;
 
-        using (Segment s1 = new Segment(mappingName, p1, true))
+        using (Segment s1 = new(mappingName, p1, true))
         {
-            using (Segment s2 = new Segment(mappingName, true))
-            {
-                s1.Dispose();
+            using Segment s2 = new(mappingName, true);
+            s1.Dispose();
 
-                using (IDisposable lockB2 = s2.AcquireLock())
-                {
-                    p2 = (PersonData)s2.GetData();
-                }
-            }
+            using IDisposable lockB2 = s2.AcquireLock();
+            p2 = (PersonData)s2.GetData();
         }
 
         Assert.That(p2, Is.EqualTo(p1));
@@ -211,7 +201,7 @@ public class SharedMemoryTest
     /// A test for Segment writing and reading, which should throw SharedMemoryException,
     /// because attaching to non-existing file mapping.
     /// </summary>
-    [Test()]
+    [Test(Description = "A test for Segment writing and reading, which should throw SharedMemoryException, because attaching to non-existing file mapping.")]
     public void Segment_WriteRead_SingleThread_04()
     {
         // Following should throw SharedMemoryException from the constructor
@@ -221,18 +211,14 @@ public class SharedMemoryTest
 
         string mappingName1 = Guid.NewGuid().ToString();
         string mappingName2 = Guid.NewGuid().ToString();
-        PersonData p1 = new PersonData(73, "XX YY");
+        PersonData p1 = new(73, "XX YY");
         PersonData p2;
 
         Assert.Throws<SharedMemoryException>(() =>
         {
-            using (Segment s1 = new Segment(mappingName1, p1, true))
-            {
-                using (Segment s2 = new Segment(mappingName2, true))
-                {
-                    p2 = (PersonData)s2.GetData();
-                }
-            }
+            using Segment s1 = new(mappingName1, p1, true);
+            using Segment s2 = new(mappingName2, true);
+            p2 = (PersonData)s2.GetData();
         });
     }
     #endregion // Tests_write_read_singlethread
@@ -243,22 +229,19 @@ public class SharedMemoryTest
     /// A test for Segment writing and reading back in a separate thread, without additional locking.
     /// Should succeed with no exception thrown.
     /// </summary>
-    [Test()]
-
+    [Test(Description = "A test for Segment writing and reading back in a separate thread, without additional locking. Should succeed with no exception thrown.")]
     public void Segment_WriteRead_MultiThread_01()
     {
         string mappingName = Guid.NewGuid().ToString();
-        PersonData personWritten = new PersonData(37, "Oliver Twist");
+        PersonData personWritten = new(37, "Oliver Twist");
         PersonData? personRead = null;
 
-        using (Segment segmentWritten = new Segment(mappingName, personWritten, true))
+        using (Segment segmentWritten = new(mappingName, personWritten, true))
         {
-            using (SegmentReadThread thread = new SegmentReadThread(mappingName))
-            {
-                thread.Start();
-                thread.Join();
-                personRead = thread.ResultData;
-            }
+            using SegmentReadThread thread = new(mappingName);
+            thread.Start();
+            thread.Join();
+            personRead = thread.ResultData;
         }
 
         Assert.That(personWritten, Is.EqualTo(personRead));
@@ -268,11 +251,11 @@ public class SharedMemoryTest
     /// A test for Segment writing and reading back in a separate thread, with additional locking.
     /// Should succeed with no exception thrown.
     /// </summary>
-    [Test()]
+    [Test(Description = "A test for Segment writing and reading back in a separate thread, with additional locking. Should succeed with no exception thrown.")]
     public void Segment_WriteRead_MultiThread_02()
     {
         string mappingName = Guid.NewGuid().ToString();
-        PersonData personWritten = new PersonData(63, "Sir Arthur Conan Doyle");
+        PersonData personWritten = new(63, "Sir Arthur Conan Doyle");
         ManualResetEvent acquiredLockOnce;
         Segment segmentWritten;
         PersonData? personRead = null;
@@ -280,11 +263,9 @@ public class SharedMemoryTest
         // Local method locking and unlocking the written segment
         void ThreadLockAndUnlockUnlockSegment()
         {
-            using (IDisposable temporaryLock = segmentWritten.AcquireLock())
-            {
-                acquiredLockOnce.Set();
-                Thread.Sleep(256);
-            }
+            using IDisposable temporaryLock = segmentWritten.AcquireLock();
+            acquiredLockOnce.Set();
+            Thread.Sleep(256);
         }
 
         // Local method reading the person data from shared memory, creating attached segment
@@ -294,10 +275,8 @@ public class SharedMemoryTest
             acquiredLockOnce.WaitOne();
 
             // only after that try reading
-            using (Segment segmentAttached = new Segment(mappingName, true))
-            {
-                personRead = (PersonData)segmentAttached.GetData();
-            }
+            using Segment segmentAttached = new(mappingName, true);
+            personRead = (PersonData)segmentAttached.GetData();
         }
 
         // the main body
@@ -305,9 +284,9 @@ public class SharedMemoryTest
         {
             using (segmentWritten = new Segment(mappingName, personWritten, true))
             {
-                Thread threadLockUnlock = new Thread(new ThreadStart(ThreadLockAndUnlockUnlockSegment));
-                Thread threadRead = new Thread(new ThreadStart(ThreadReadPersonData));
-                Thread[] threads = { threadRead, threadLockUnlock };
+                Thread threadLockUnlock = new(new ThreadStart(ThreadLockAndUnlockUnlockSegment));
+                Thread threadRead = new(new ThreadStart(ThreadReadPersonData));
+                Thread[] threads = [threadRead, threadLockUnlock];
 
                 threadLockUnlock.Start();
                 threadRead.Start();
@@ -315,19 +294,22 @@ public class SharedMemoryTest
             }
         }
 
-        Assert.That(personRead, Is.Not.Null);
-        Assert.That(personWritten, Is.EqualTo(personRead));
+        using (Assert.EnterMultipleScope())
+        {
+            Assert.That(personRead, Is.Not.Null);
+            Assert.That(personWritten, Is.EqualTo(personRead));
+        }
     }
 
     /// <summary>
     /// A test for Segment writing and reading back in a separate thread, with additional locking.
     /// Should throw AbandonedMutexException.
     /// </summary>
-    [Test()]
+    [Test(Description = "A test for Segment writing and reading back in a separate thread, with additional locking. Should throw AbandonedMutexException.")]
     public void Segment_WriteRead_MultiThread_03()
     {
         string mappingName = Guid.NewGuid().ToString();
-        PersonData personWritten = new PersonData(int.MaxValue, "Mark Twain");
+        PersonData personWritten = new(int.MaxValue, "Mark Twain");
         PersonData personRead = null!;
         ManualResetEvent acquiredLockOnce;
         Segment segmentWritten;
@@ -358,7 +340,7 @@ public class SharedMemoryTest
             {
                 using (segmentWritten = new Segment(mappingName, personWritten, true))
                 {
-                    Thread threadLockUnlock = new Thread(new ThreadStart(ThreadLockAndUnlockUnlockSegment));
+                    Thread threadLockUnlock = new(new ThreadStart(ThreadLockAndUnlockUnlockSegment));
                     threadLockUnlock.Start();
 
                     // make sure the other thread locks the segmentWritten
@@ -367,10 +349,8 @@ public class SharedMemoryTest
                     threadLockUnlock.Join();
 
                     // perform reading the person data from shared memory, creating attached segment
-                    using (Segment segmentAttached = new Segment(mappingName, true))
-                    {
-                        personRead = (PersonData)segmentAttached.GetData();
-                    }
+                    using Segment segmentAttached = new(mappingName, true);
+                    personRead = (PersonData)segmentAttached.GetData();
                 }
             }
         });
@@ -378,5 +358,5 @@ public class SharedMemoryTest
     #endregion // Tests_write_read_multithread
     #endregion // Tests
 }
-#pragma warning restore VSTHRD200 // Use "Async" suffix for async methods
 
+#pragma warning restore IDE0290     // Use primary constructor

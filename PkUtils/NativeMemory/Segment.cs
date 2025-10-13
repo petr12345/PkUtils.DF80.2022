@@ -1,14 +1,4 @@
-﻿/***************************************************************************************************************
-*
-* FILE NAME:   .\NativeMemory\Segment.cs
-*
-* AUTHOR:      Petr Kodet
-*
-* DESCRIPTION: The file contains definition of class Segment
-*
-**************************************************************************************************************/
-
-// Ignore Spelling: Utils
+﻿// Ignore Spelling: Utils
 //
 #pragma warning disable SYSLIB0011 // BinaryFormatter serialization is obsolete and should not be used.
 #pragma warning disable IDE0090 // Use 'new(...)'
@@ -31,9 +21,6 @@ namespace PK.PkUtils.NativeMemory;
 [CLSCompliant(true)]
 public class Segment : BaseSegment
 {
-    #region Fields
-    #endregion // Fields
-
     #region Constructor(s)
 
     /// <summary>

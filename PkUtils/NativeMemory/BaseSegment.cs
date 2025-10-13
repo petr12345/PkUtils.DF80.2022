@@ -1,14 +1,4 @@
-﻿/***************************************************************************************************************
-*
-* FILE NAME:   .\NativeMemory\BaseSegment.cs
-*
-* AUTHOR:      Petr Kodet
-*
-* DESCRIPTION: The file contains definition of class BaseSegment
-*
-**************************************************************************************************************/
-
-// Ignore Spelling: Utils
+﻿// Ignore Spelling: Utils
 // 
 
 using System;
@@ -18,6 +8,7 @@ using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading;
 using Microsoft.Win32.SafeHandles;
+using PK.PkUtils.Interfaces;
 using PK.PkUtils.Utils;
 using PK.PkUtils.WinApi;
 using static System.FormattableString;
@@ -25,7 +16,7 @@ using static System.FormattableString;
 namespace PK.PkUtils.NativeMemory;
 
 /// <summary>
-/// Enum for specifying whether a new shared memory segment should be created
+/// Enum type for specifying whether a new shared memory segment should be created
 /// or just attached to an existing one.
 /// </summary>
 [CLSCompliant(true)]
@@ -33,28 +24,29 @@ public enum SharedMemoryCreationFlag
 {
     /// <summary>
     /// Indicates that the constructor must create a new FileMapping object. 
-    /// Fails if there is existing one of that name
+    /// Fails if there is an existing one of that name.
     /// </summary>
     Create,
 
     /// <summary>
-    /// Indicates that must attach to existing new FileMapping object. 
-    /// Fails if there is no such existing mapping object of that name
+    /// Indicates that the segment must attach to an existing FileMapping object. 
+    /// Fails if there is no such existing mapping object of that name.
     /// </summary>
     Attach,
 
     /// <summary>
-    /// Indicates that should attach if there is existing object of the given name, 
+    /// Indicates that the segment should attach if there is an existing object of the given name, 
     /// or create a new one if there is not.
     /// </summary>
     CreateOrAttach,
 }
 
-/// <summary> This class wraps Win32 shared memory. <br/>
+/// <summary> 
+/// This class wraps Win32 shared memory. <br/>
 /// You can store any byte array in shared memory and have it retrieved from another process on the
 /// same machine. Data is stored via the <see cref="SetByteArrayData"/> method and retrieved via
 /// the <see cref="GetByteArrayData"/> method.  <br/>
-/// Access to the shared memory segment can be synchronized for instance using the
+/// Access to the shared memory segment can be synchronized, for instance using the
 /// <see cref="AcquireLock"/>, which locks a named mutex.
 /// </summary>
 /// <seealso href="http://msdn2.microsoft.com/en-us/library/ms810428.aspx">
@@ -64,10 +56,11 @@ public class BaseSegment : IDisposable
 {
     #region Typedefs
 
-    /// <summary> The class MutexWaitWrapper is a wrapper around <see cref="Mutex"/>.
-    /// The primary purpose of the wrapper is to wrap lock-acquiring into "something IDisposable-derived".
-    /// This way, the traditional try-finally code, with releasing the lock in the finally part
-    /// could be replaced by more simple 
+    /// <summary> 
+    /// The class MutexLockWrapper is a wrapper around <see cref="Mutex"/>.
+    /// The primary purpose of the wrapper is to wrap lock-acquiring into an IDisposable-derived object.
+    /// This way, the traditional try-finally code, with releasing the lock in the finally part,
+    /// can be replaced by a more simple pattern using 'using' blocks.
     /// <code>
     /// <![CDATA[
     /// public PersonData Read(string mappingName)
@@ -83,14 +76,15 @@ public class BaseSegment : IDisposable
     /// ]]>
     /// </code>
     /// </summary>
-    protected class MutexLockWrapper : IDisposable
+    protected class MutexLockWrapper : IDisposableEx
     {
         private Mutex _acquiredMutex;
 
-        /// <summary> Specialized constructor for use only by <see cref="BaseSegment"/> and classed derived from it. 
-        ///           The caller provides a mutex that should be released when disposing this lock.
+        /// <summary> 
+        /// Specialized constructor for use only by <see cref="BaseSegment"/> and classes derived from it. 
+        /// The caller provides a mutex that should be released when disposing this lock.
         /// </summary>
-        /// <exception cref="ArgumentNullException">    Thrown when <paramref name="acquiredMutex"/> is null. </exception>
+        /// <exception cref="ArgumentNullException"> Thrown when <paramref name="acquiredMutex"/> is null. </exception>
         /// <param name="acquiredMutex"> The mutex acquired by calling code. </param>
         protected internal MutexLockWrapper(Mutex acquiredMutex)
         {
@@ -129,31 +123,34 @@ public class BaseSegment : IDisposable
 
     #region Fields
 
-    /// <summary> The handle returned by API CreateFileMapping/OpenFileMapping.  <br/>
-    /// 
+    /// <summary> 
+    /// The handle returned by API CreateFileMapping/OpenFileMapping. <br/>
     /// The purpose of SafeFileHandle usage here is to make sure that system memory is properly
     /// released regardless of any asynchronous thread aborts. <br/>
     /// For more details see <a href="https://docs.microsoft.com/en-us/archive/msdn-magazine/2005/october/using-the-reliability-features-of-the-net-framework">
     /// Keep Your Code Running with the Reliability Features of the .NET Framework</a>
-    /// by Stephen Toub, MSDN Magazine Oct 2005. </summary>
+    /// by Stephen Toub, MSDN Magazine Oct 2005. 
+    /// </summary>
     private SafeFileHandle _nativeMappingHandle;
 
     /// <summary>
-    /// The result of MapViewOfFile
+    /// The result of MapViewOfFile, which is a pointer to the mapped memory.
     /// </summary>
     private IntPtr _nativeDataPtr;
 
     /// <summary>
     /// A named mutex, that allows to synchronize the access to the shared memory instance, 
-    /// using the <see cref="AcquireLock"/>.
+    /// using the <see cref="AcquireLock"/> method.
     /// </summary>
     private Mutex _guardMutex;
 
-    /// <summary> The complete size of created buffer ( memory block pointed by _nativeDataPtr ).
-    /// First two longs in the buffer are occupied by auxiliary header:
-    /// - the first long in the buffer that keeps the size of the buffer itself
-    /// - the second long stores the size of following data.  
-    /// See also the related code <see cref="CopyByteArrayToSharedMemory"/> </summary>
+    /// <summary> 
+    /// The complete size of created buffer (memory block pointed by _nativeDataPtr).
+    /// First two longs in the buffer are occupied by an auxiliary header:
+    /// - the first long in the buffer keeps the size of the buffer itself
+    /// - the second long stores the size of the following data.  
+    /// See also the related code <see cref="CopyByteArrayToSharedMemory"/> 
+    /// </summary>
     private readonly int _bufferSize;
 
     /// <summary>
@@ -174,7 +171,7 @@ public class BaseSegment : IDisposable
 
     /// <summary>
     /// The maximum length of the mutex name. Constructor of mutex throws ArgumentException in case
-    /// provided name is longer than 260 characters.
+    /// the provided name is longer than 260 characters.
     /// </summary>
     private const int _maxMutexNameLength = 260;
 
@@ -188,14 +185,13 @@ public class BaseSegment : IDisposable
     /// Constructs the shared memory segment through calling the API for FileMapping and the ViewOfFile.
     /// </summary>
     /// <param name="fileMappingName"> The name given to file mapping object. Can't be null or empty. </param>
-    /// <param name="creationFlag"> The creation flag, either 'Create', 'Attach' or 'CreateOrAttach'</param>
+    /// <param name="creationFlag"> The creation flag, either 'Create', 'Attach' or 'CreateOrAttach'.</param>
     /// <param name="nBufferEffectiveSize"> The required effective size of the buffer.
     /// Has no effect if the mapping is attached to an existing object; otherwise the value must be positive. </param>
     /// <param name="synchronized"> True if the access to shared memory should be synchronized. </param>
-    /// 
     /// <exception cref="ArgumentException"> Thrown if any of input arguments has illegal value. </exception>
     /// <exception cref="ArgumentOutOfRangeException"> Thrown if <paramref name="creationFlag"/> is SharedMemoryCreationFlag.Create,
-    ///                                                and the value <paramref name="nBufferEffectiveSize"/> is not positive. </exception>
+    /// and the value <paramref name="nBufferEffectiveSize"/> is not positive. </exception>
     /// <exception cref="SharedMemoryException"> Thrown if <see cref="Kernel32.CreateFileMapping"/> has failed. </exception>
     public BaseSegment(
         string fileMappingName,
@@ -231,11 +227,10 @@ public class BaseSegment : IDisposable
 
         _isSynchronized = synchronized;
 
-        // Create named mutex, with name derived from fileMappingName
+        // Create named mutex, with name derived from fileMappingName.
         // The name must be prefixed by "Global\", to specify the mutex being created in the Win32 global or session namespace.
         // See https://msdn.microsoft.com/en-us/library/windows/desktop/ms682411(v=vs.85).aspx
         // see also https://msdn.microsoft.com/en-us/library/system.threading.mutex.aspx
-        //
         string strMutexName = _guardMutexNamePrefix + fileMappingName + _guardMutexNameSuffix;
         Exception initException = null;
 
@@ -243,15 +238,13 @@ public class BaseSegment : IDisposable
 
         // If synchronizing shared memory access, all following needs to be guarded by mutex, 
         // until contents of memory shared memory block is completely initialized.
-        // 
-        // The lock will work either as a read lock or write lock, depending on the segment is crated or attached.
-        // 
+        // The lock will work either as a read lock or write lock, depending on whether the segment is created or attached.
         using (IDisposable creationLock = AcquireLock())
         {
             bool bFailed = false;
             string errorMessage = string.Empty;
 
-            // Now Create or attach to shared memory segment
+            // Now create or attach to shared memory segment
             if (creationFlag == SharedMemoryCreationFlag.Create)
             {
                 // Create the shared segment
@@ -278,8 +271,8 @@ public class BaseSegment : IDisposable
                 // However, the loss of this API on Windows CE is not as bad as it may sound.
                 // CreateFileMapping can create respective kernel objects as well as open them 
                 // if given a name that refers to a preexisting object.
-                // Sea also "A Quick and Versatile Synchronization Object" at
-                // http://msdn2.microsoft.com/en-us/library/ms810428.aspx"
+                // See also "A Quick and Versatile Synchronization Object" at
+                // http://msdn2.microsoft.com/en-us/library/ms810428.aspx
                 //
                 // Note: If the object exists before the function call, 
                 // the function returns a handle to the existing object 
@@ -354,7 +347,7 @@ public class BaseSegment : IDisposable
             }
         }
 
-        // It is more convenient an manageable to call the cleanup method and throw exception from the same one place,
+        // It is more convenient and manageable to call the cleanup method and throw exception from the same one place,
         // and that should happen only after creationLock.Dispose() has been called by the end of 'using' scope.
         // This is because creationLock.Dispose() calls ReleaseMutex(), and that mutex is disposed by NonVirtualDispose.
         // If NonVirtualDispose is called first, there is later System.ObjectDisposedException caused by ReleaseMutex() 
@@ -369,7 +362,7 @@ public class BaseSegment : IDisposable
 
     /// <summary>
     /// Constructs the shared memory segment through calling the API for FileMapping and the ViewOfFile.
-    /// Just shortcut to constructor with argument SharedMemoryCreationFlag.Attach.
+    /// Shortcut to constructor with argument SharedMemoryCreationFlag.Attach.
     /// </summary>
     /// <param name="fileMappingName"> The name given to file mapping object. Can't be null or empty. </param>
     /// <param name="synchronized"> True if the access to shared memory should be synchronized. </param>
@@ -379,18 +372,18 @@ public class BaseSegment : IDisposable
       : this(fileMappingName, SharedMemoryCreationFlag.Attach, 0, synchronized)
     { }
 
-    /// <summary> Constructs the shared memory segment through calling the API for FileMapping and the ViewOfFile,
-    /// and copies the contents of  <paramref name="dataStream"/> to shared memory segment.<br/>
-    /// The segment created by this constructor has always its memory 'created', not 'attached' ( the
-    /// constructor calls the overloaded constructor with argument SharedMemoryCreationFlag.Create ).
+    /// <summary> 
+    /// Constructs the shared memory segment through calling the API for FileMapping and the ViewOfFile,
+    /// and copies the contents of <paramref name="dataStream"/> to shared memory segment.<br/>
+    /// The segment created by this constructor always has its memory 'created', not 'attached' (the
+    /// constructor calls the overloaded constructor with argument SharedMemoryCreationFlag.Create).
     /// The effective size of buffer of created segment is determined by the
-    /// <paramref name="dataStream"/> length. </summary>
-    /// 
-    /// <exception cref="ArgumentNullException"> Thrown when a supplied  <paramref name="dataStream"/>  is null. </exception>
-    /// <exception cref="ObjectDisposedException"> Thrown when a supplied  <paramref name="dataStream"/>  has been disposed. </exception>
-    ///
+    /// <paramref name="dataStream"/> length. 
+    /// </summary>
+    /// <exception cref="ArgumentNullException"> Thrown when a supplied <paramref name="dataStream"/> is null. </exception>
+    /// <exception cref="ObjectDisposedException"> Thrown when a supplied <paramref name="dataStream"/> has been disposed. </exception>
     /// <param name="fileMappingName"> The name given to file mapping object. Can't be null or empty. </param>
-    /// <param name="dataStream">  <see cref="System.IO.Stream"/> containing  data to be copied to shared memory. </param>
+    /// <param name="dataStream"> <see cref="System.IO.Stream"/> containing data to be copied to shared memory. </param>
     /// <param name="synchronized"> True if the access to shared memory should be synchronized. </param>
     public BaseSegment(
       string fileMappingName,
@@ -404,13 +397,11 @@ public class BaseSegment : IDisposable
     /// <summary>
     /// Constructs the shared memory segment through calling the API for FileMapping and the ViewOfFile,
     /// and copies byte array data to shared memory segment.
-    /// The segment created by this constructor has always its memory 'created', not 'attached'
-    /// ( the method calls overloaded constructor with argument SharedMemoryCreationFlag.Create ).
+    /// The segment created by this constructor always has its memory 'created', not 'attached'
+    /// (the method calls overloaded constructor with argument SharedMemoryCreationFlag.Create).
     /// The effective size of buffer of created segment is determined by the array length.
     /// </summary>
-    /// 
     /// <exception cref="ArgumentNullException"> Thrown when a supplied <paramref name="data"/> is null. </exception>
-    /// 
     /// <param name="fileMappingName"> The name given to file mapping object. Can't be null or empty. </param>
     /// <param name="data"> The input array of bytes. </param>
     /// <param name="synchronized"> True if the access to shared memory should be synchronized. </param>
@@ -427,10 +418,10 @@ public class BaseSegment : IDisposable
     #region Finalizer
 
     /// <summary>
-    /// Finalizer to free up shared memory segment native handle
+    /// Finalizer to free up shared memory segment native handle.
     /// </summary>
     /// <remarks>
-    /// Note: the compiler actually expands the pseudo-destructor syntax here to following code:
+    /// Note: the compiler actually expands the pseudo-destructor syntax here to the following code:
     /// <code>
     /// protected override void Finalize()
     /// {
@@ -456,7 +447,9 @@ public class BaseSegment : IDisposable
 
     #region Properties
 
-    /// <summary> Gets the maximum length of the mapping name provided in constructor. </summary>
+    /// <summary> 
+    /// Gets the maximum length of the mapping name provided in constructor. 
+    /// </summary>
     public static int MaxMappingNameLength
     {
         get
@@ -468,18 +461,44 @@ public class BaseSegment : IDisposable
     }
 
     /// <summary>
-    /// Get the current complete size of created buffer 
+    /// Gets the prefix used for naming global mutexes associated with shared memory segments.
     /// </summary>
-    public int BufferCompleteSize
-    {
-        get { return _bufferSize; }
-    }
+    public static string GlobalMutexNamePrefix { get => _guardMutexNamePrefix; }
+
+    /// <summary> Gets the current complete size of created buffer. </summary>
+    public int BufferCompleteSize { get => _bufferSize; }
 
     /// <summary>
-    /// Get the size of the usable part of the buffer.
+    /// Gets the size of the usable part of the buffer.
     /// The buffer has two long(s) in its header, so the resulting size here is
-    /// BufferCompleteSize - 2*Marshal.SizeOf(typeof(long)) )
+    /// BufferCompleteSize - 2*Marshal.SizeOf(typeof(long)).
     /// </summary>
+    /// 
+    /// <remarks>
+    /// <para>
+    /// <b>Allocated Memory Layout:</b>
+    /// <code>
+    /// +---------------------+---------------------+----------------------+
+    /// | Buffer Size (long)  | Data Length (long)  |      Data ...        |
+    /// +---------------------+---------------------+----------------------+
+    /// |   8 bytes           |   8 bytes           | BufferEffectiveSize  |
+    /// </code>
+    /// </para>
+    /// <para>
+    /// <b>Legend:</b>
+    /// <list type="bullet">
+    /// <item>
+    /// <description><b>Buffer Size (long):</b> Total size of the buffer (header + data), written by <see cref="WriteBufferCompleteSize"/>.</description>
+    /// </item>
+    /// <item>
+    /// <description><b>Data Length (long):</b> Actual length of the data stored, written/read by <see cref="CopyByteArrayToSharedMemory"/> and <see cref="CopySharedMemoryToByteArray"/>.</description>
+    /// </item>
+    /// <item>
+    /// <description><b>Data ...:</b> The actual byte array or stream data.</description>
+    /// </item>
+    /// </list>
+    /// </para>
+    /// </remarks>
     public int BufferEffectiveSize
     {
         get
@@ -513,7 +532,7 @@ public class BaseSegment : IDisposable
     }
 
     /// <summary>
-    /// Provides access to the cross-process wait handle
+    /// Provides access to the cross-process wait handle.
     /// </summary>
     public WaitHandle WaitHandle
     {
@@ -521,7 +540,7 @@ public class BaseSegment : IDisposable
     }
 
     /// <summary>
-    /// Get the result of MapViewOfFile as IntPtr
+    /// Gets the result of MapViewOfFile as IntPtr.
     /// </summary>
     protected IntPtr NativeDataAsIntPtr
     {
@@ -529,7 +548,7 @@ public class BaseSegment : IDisposable
     }
 
     /// <summary>
-    /// Get the result of MapViewOfFile as pointer void*
+    /// Gets the result of MapViewOfFile as pointer void*.
     /// </summary>
     private unsafe void* NativeDataAsVoidPtr
     {
@@ -540,12 +559,13 @@ public class BaseSegment : IDisposable
     #region Methods
     #region Public Methods
 
-    /// <summary> Acquires the lock object, that - until released - guarantees the calling thread an exclusive access
-    ///            to shared memory through methods that use mutex-synchronization mechanism. </summary>
-    /// <param name="millisecondsTimeout"> The number of milliseconds to wait, or Infinite (-1) to wait indefinitely.. </param>
-    ///
-    /// <returns> If locking succeeds, the result is IDisposable-object holding the mutex 
-    ///           that should be released when unlocking. If locking fails, the result will be just null.
+    /// <summary> 
+    /// Acquires the lock object, that - until released - guarantees the calling thread an exclusive access
+    /// to shared memory through methods that use the mutex-synchronization mechanism. 
+    /// </summary>
+    /// <param name="millisecondsTimeout"> The number of milliseconds to wait, or Infinite (-1) to wait indefinitely. </param>
+    /// <returns> If locking succeeds, the result is an IDisposable-object holding the mutex 
+    /// that should be released when unlocking. If locking fails, the result will be just null.
     /// </returns>
     public IDisposable AcquireLock(int millisecondsTimeout = Timeout.Infinite)
     {
@@ -560,19 +580,19 @@ public class BaseSegment : IDisposable
     }
 
     /// <summary>
-    /// Returns the stored data of this BaseSegment as byte array
+    /// Returns the stored data of this BaseSegment as a byte array.
     /// </summary>
-    /// <returns> Byte Array</returns>
+    /// <returns> Byte Array containing the data. </returns>
     public byte[] GetByteArrayData()
     {
         return CopySharedMemoryToByteArray();
     }
 
     /// <summary>
-    /// Stores Byte array in shared memory of this BaseSegment
+    /// Stores a byte array in shared memory of this BaseSegment.
     /// </summary>
-    /// <exception cref="ArgumentNullException"> Thrown when a supplied  <paramref name="data"/> is null. </exception>
-    /// <param name="data"> The input array of bytes </param>
+    /// <exception cref="ArgumentNullException"> Thrown when a supplied <paramref name="data"/> is null. </exception>
+    /// <param name="data"> The input array of bytes. </param>
     public void SetByteArrayData(byte[] data)
     {
         CopyByteArrayToSharedMemory(data);
@@ -582,10 +602,9 @@ public class BaseSegment : IDisposable
     #region Protected methods
 
     /// <summary>
-    /// Throws SharedMemoryException with a specific text. Just implementation helper called by other methods.
+    /// Throws SharedMemoryException with a specific text. Just an implementation helper called by other methods.
     /// </summary>
     /// <exception cref="SharedMemoryException"> Thrown when a Shared Memory error condition occurs. </exception>
-    ///
     /// <param name="nLength"> The length to be used for formatting text. </param>
     protected static void ThrowTooLargeDataException(long nLength)
     {
@@ -608,10 +627,10 @@ public class BaseSegment : IDisposable
 
     /// <summary>
     /// This is the SAVING method.
-    /// Copies a Byte array to shared memory segment using unsafe pointers.
+    /// Copies a byte array to shared memory segment using unsafe pointers.
     /// </summary>
-    /// <exception cref="ArgumentNullException"> Thrown when a supplied  <paramref name="data"/> is null. </exception>
-    /// <param name="data"> The input array of bytes</param>
+    /// <exception cref="ArgumentNullException"> Thrown when a supplied <paramref name="data"/> is null. </exception>
+    /// <param name="data"> The input array of bytes.</param>
     /// <seealso cref="CopySharedMemoryToByteArray"/>
     protected unsafe void CopyByteArrayToSharedMemory(byte[] data)
     {
@@ -625,14 +644,14 @@ public class BaseSegment : IDisposable
         using IDisposable writeLock = AcquireLock();
         byte* dest = (byte*)NativeDataAsVoidPtr;
 
-        dest += Marshal.SizeOf(typeof(long)); // skip first long in the buffer that keeps the size of buffer itself
+        dest += Marshal.SizeOf(typeof(long)); // skip first long in the buffer that keeps the size of the buffer itself
         *(long*)dest = dataLen;               // store the size of following data
         dest += Marshal.SizeOf(typeof(long)); // increment pointer again
         Marshal.Copy(data, 0, (IntPtr)dest, (int)dataLen);  // now store the data
     }
 
     /// <summary>
-    /// This is READING method.
+    /// This is the READING method.
     /// Copies the shared memory data to output byte array.
     /// </summary>
     /// <returns>The resulting array of bytes. </returns>
@@ -643,7 +662,7 @@ public class BaseSegment : IDisposable
         long dataLen;
         byte* source = (byte*)NativeDataAsVoidPtr;
 
-        source += Marshal.SizeOf(typeof(long)); // skip first long in the buffer that keeps the size of buffer itself
+        source += Marshal.SizeOf(typeof(long)); // skip first long in the buffer that keeps the size of the buffer itself
         dataLen = *(long*)source;               // get the stored data Length
         source += Marshal.SizeOf(typeof(long)); // set the source data pointer to start of serialized object graph
 
@@ -656,19 +675,17 @@ public class BaseSegment : IDisposable
     }
 
     /// <summary>
-    /// This is SAVING method.
-    /// Copies the contents of input stream to shared memory segment, using temporary byte array.
+    /// This is the SAVING method.
+    /// Copies the contents of input stream to shared memory segment, using a temporary byte array.
     /// </summary>
-    /// <exception cref="ArgumentNullException"> Thrown when a supplied  <paramref name="stream"/> is null. </exception>
-    /// <exception cref="ObjectDisposedException"> Thrown when a supplied  <paramref name="stream"/>  has been disposed. </exception>
-    /// 
+    /// <exception cref="ArgumentNullException"> Thrown when a supplied <paramref name="stream"/> is null. </exception>
+    /// <exception cref="ObjectDisposedException"> Thrown when a supplied <paramref name="stream"/> has been disposed. </exception>
     /// <param name="stream"> System.IO.Stream - data to be copied to shared memory. Can't be null. </param>
     protected void CopyStreamToSharedMemory(Stream stream)
     {
         ArgumentNullException.ThrowIfNull(stream);
 
         // Note no write lock is needed here, existing lock inside CopyByteArrayToSharedMemory is sufficient.
-        // 
         // Read stream data into byte array
         byte[] data;
         int nLength = GetLengthOfDataToCopy(stream);
@@ -684,8 +701,8 @@ public class BaseSegment : IDisposable
     }
 
     /// <summary>
-    /// This is READING method.
-    /// Copies shared memory data to passed stream, using temporary byte array.
+    /// This is the READING method.
+    /// Copies shared memory data to the passed stream, using a temporary byte array.
     /// </summary>
     /// <param name="stream">System.IO.Stream - stream to receive data. Can't be null. </param>
     protected void CopySharedMemoryToStream(Stream stream)
@@ -693,7 +710,6 @@ public class BaseSegment : IDisposable
         ArgumentNullException.ThrowIfNull(stream);
 
         // Note no read lock is needed here, existing lock inside CopySharedMemoryToByteArray is sufficient
-        // 
         // Copy the shared memory data to byte array
         byte[] data = CopySharedMemoryToByteArray();
 
@@ -726,11 +742,11 @@ public class BaseSegment : IDisposable
     #region Private methods
 
     /// <summary>
-    /// Returns the integer representing the Length of data that should be copied. 
-    /// Throws an exception if the stream is too long ( out of integer range )
+    /// Returns the integer representing the length of data that should be copied. 
+    /// Throws an exception if the stream is too long (out of integer range).
     /// </summary>
-    /// <param name="stream"></param>
-    /// <returns></returns>
+    /// <param name="stream">The stream whose length is to be determined.</param>
+    /// <returns>The length of the stream as an integer.</returns>
     private static int GetLengthOfDataToCopy(Stream stream)
     {
         ArgumentNullException.ThrowIfNull(stream);
@@ -745,8 +761,9 @@ public class BaseSegment : IDisposable
 
     /// <summary>
     /// Auxiliary method called by constructor, 
-    /// reads the complete size of attached buffer from its header
+    /// reads the complete size of attached buffer from its header.
     /// </summary>
+    /// <returns>The complete size of the buffer as an integer.</returns>
     private unsafe int ReadBufferCompleteSize()
     {
         long* source = (long*)NativeDataAsVoidPtr;
@@ -757,8 +774,9 @@ public class BaseSegment : IDisposable
 
     /// <summary>
     /// Auxiliary method called by constructor, 
-    /// writes the complete size of attached buffer to its header
+    /// writes the complete size of attached buffer to its header.
     /// </summary>
+    /// <param name="nBufferComplete">The complete size of the buffer to write.</param>
     private unsafe void WriteBufferCompleteSize(int nBufferComplete)
     {
         long* dest = (long*)NativeDataAsVoidPtr;
@@ -770,7 +788,7 @@ public class BaseSegment : IDisposable
     #region IDisposable members
 
     /// <summary>
-    /// IDisposable.Dispose allow timely clean up and removed the need for finalization
+    /// IDisposable.Dispose allows timely clean up and removes the need for finalization.
     /// </summary>
     public void Dispose()
     {
@@ -779,27 +797,27 @@ public class BaseSegment : IDisposable
     }
 
     /// <summary>
-    /// The cleanup method, called by Dispose and on some scenarios by constructor.
-    /// The reason of existence of this method is that I need non-virtual method 
-    /// callable by the constructor, having the same functionality as Dispose, 
+    /// The cleanup method, called by Dispose and in some scenarios by the constructor.
+    /// The reason for the existence of this method is that a non-virtual method is needed 
+    /// that is callable by the constructor, having the same functionality as Dispose, 
     /// but which does not call derived class dispose.
     /// Note:
-    /// In C#, calling virtual method always involved calling the method of derived class 
-    /// who overloaded it, even if the call is from constructor 
-    /// ( and the derived class is not fully constructed yet ).
-    /// Also, I cannot use some syntax to enforce 'exactly this' method calling, like
+    /// In C#, calling a virtual method always involves calling the method of the derived class 
+    /// that overloaded it, even if the call is from the constructor 
+    /// (and the derived class is not fully constructed yet).
+    /// Also, there is no syntax to enforce 'exactly this' method calling, like
     /// <code>
     /// Segment.Dispose(true);  or this.BaseSegment.Dispose(true);
     /// </code>
-    /// since both does not compile in C#.
+    /// since both do not compile in C#.
     /// </summary>
-    /// <param name="disposing"></param>
+    /// <param name="disposing">True if called from Dispose; false if called from finalizer.</param>
     private void NonVirtualDispose(bool disposing)
     {
-        // 1. if being called from IDisposable.Dispose, clean up managed resources first
+        // 1. If being called from IDisposable.Dispose, clean up managed resources first
         if (disposing)
         {
-            // Note it is safe to close the mutex here even if constructor did not created the "real" Win32 mutex as new,
+            // Note it is safe to close the mutex here even if constructor did not create the "real" Win32 mutex as new,
             // because "real" Win32 mutex is destroyed when last handle to it is closed.
             Disposer.SafeDispose(ref _guardMutex);
         }
