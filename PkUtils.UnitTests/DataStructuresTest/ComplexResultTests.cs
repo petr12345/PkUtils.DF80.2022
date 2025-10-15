@@ -28,7 +28,7 @@ namespace PK.PkUtils.UnitTests.DataStructuresTest
             IComplexResult<int> iRes = new ComplexResult<int>(nValue);
 
             Assert.IsTrue(iRes.Success);
-            Assert.IsTrue(iRes.Content == nValue);
+            Assert.AreEqual(nValue, iRes.Content);
             Assert.IsNull(iRes.ErrorMessage);
         }
 
@@ -67,7 +67,7 @@ namespace PK.PkUtils.UnitTests.DataStructuresTest
             IComplexResult<int> iRes = new ComplexResult<int>(iTmp);
 
             Assert.IsTrue(iRes.Success);
-            Assert.IsTrue(iRes.Content == nValue);
+            Assert.AreEqual(nValue, iRes.Content);
             Assert.IsNull(iRes.ErrorMessage);
         }
 
@@ -90,7 +90,7 @@ namespace PK.PkUtils.UnitTests.DataStructuresTest
             IComplexResult<string> iRes = ComplexResult<string>.CreateSuccessful(_stringRegularValue);
 
             Assert.IsTrue(iRes.Success);
-            Assert.AreEqual(iRes.Content, _stringRegularValue);
+            Assert.AreEqual(_stringRegularValue, iRes.Content);
             Assert.IsNull(iRes.ErrorMessage);
         }
 

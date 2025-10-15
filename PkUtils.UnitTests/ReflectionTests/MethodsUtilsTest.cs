@@ -579,7 +579,7 @@ namespace PK.PkUtils.UnitTests.ReflectionTests
             MethodInfo actualMethod = MethodsUtils.GetStaticMethod(t, strMethodName);
 
             Assert.IsNotNull(actualMethod);
-            Assert.IsTrue(0 == string.CompareOrdinal(actualMethod.Name, strMethodName));
+            Assert.AreEqual(0, string.CompareOrdinal(actualMethod.Name, strMethodName));
         }
 
         /// <summary>
@@ -614,7 +614,7 @@ namespace PK.PkUtils.UnitTests.ReflectionTests
             MethodInfo actualMethod = MethodsUtils.GetInstanceMethod(t, strMethodName);
 
             Assert.IsNotNull(actualMethod);
-            Assert.IsTrue(0 == string.CompareOrdinal(actualMethod.Name, strMethodName));
+            Assert.AreEqual(0, string.CompareOrdinal(actualMethod.Name, strMethodName));
         }
 
         /// <summary>

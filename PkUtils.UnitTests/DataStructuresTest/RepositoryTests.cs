@@ -25,7 +25,7 @@ namespace PK.PkUtils.UnitTests.DataStructuresTest
 
             Assert.IsFalse(rep.HasData);
             Assert.IsFalse(rep.IsAttached);
-            Assert.AreEqual(null, rep.Data);
+            Assert.IsNull(rep.Data);
         }
 
         [TestMethod]
@@ -92,6 +92,7 @@ namespace PK.PkUtils.UnitTests.DataStructuresTest
         public void Repository_ToString_01()
         {
             const string inputPalindrom = "Báře jede jeřáb";
+
             Repository<string> rep1 = new();
             Repository<string> rep2 = new(inputPalindrom);
             Repository<string> rep3 = new(inputPalindrom, false);
@@ -100,9 +101,11 @@ namespace PK.PkUtils.UnitTests.DataStructuresTest
             string s2 = rep2.ToString();
             string s3 = rep3.ToString();
 
-            Assert.IsTrue(!string.IsNullOrEmpty(s1));
-            Assert.IsTrue(!string.IsNullOrEmpty(s2));
-            Assert.IsTrue(!string.IsNullOrEmpty(s3));
+            Assert.IsFalse(string.IsNullOrEmpty(s1));
+            Assert.IsNotNull(s2);
+            Assert.IsNotNull(s3);
+            Assert.IsNotNull(s1);
+            Assert.IsGreaterThan(0, s1.Length);
         }
         #endregion // Tests_ToString
     }

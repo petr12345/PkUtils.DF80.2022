@@ -45,7 +45,7 @@ namespace PK.PkUtils.UnitTests.ReflectionTests
             // check the effect of it
             ts._bHandlerCalled = false;
             cb.SelectedIndex = 1;
-            Assert.IsTrue(1 == cb.SelectedIndex);
+            Assert.AreEqual(1, cb.SelectedIndex);
             Assert.IsTrue(ts._bHandlerCalled);
 
             // unsubscribe 
@@ -55,7 +55,7 @@ namespace PK.PkUtils.UnitTests.ReflectionTests
             // check the effect of it
             ts._bHandlerCalled = false;
             cb.SelectedIndex = 3;
-            Assert.IsTrue(3 == cb.SelectedIndex);
+            Assert.AreEqual(3, cb.SelectedIndex);
             Assert.IsFalse(ts._bHandlerCalled);
         }
         #endregion // Events_Utils_Tests

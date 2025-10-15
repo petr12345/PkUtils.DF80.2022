@@ -45,7 +45,7 @@ namespace PK.PkUtils.UnitTests.DataStructuresTest
             string[] arrInput = Enumerable.Range(0, 3).Select(i => i.ToString()).ToArray();
             CachedEnumerable<string> enumerab = new(arrInput);
 
-            Assert.AreEqual(true, enumerab.Any());
+            Assert.IsTrue(enumerab.Any());
             Assert.AreEqual(ParseStatus.Parsing, enumerab.Status);
 
             enumerab.Dispose();
@@ -63,7 +63,7 @@ namespace PK.PkUtils.UnitTests.DataStructuresTest
             CachedEnumerable<string> enumerab = new(arrInput);
 
             Assert.AreEqual(ParseStatus.ParseNotInitialized, enumerab.Status);
-            Assert.AreEqual(true, enumerab.Any());
+            Assert.IsTrue(enumerab.Any());
             Assert.AreEqual(ParseStatus.Parsing, enumerab.Status);
         }
 
@@ -233,7 +233,7 @@ namespace PK.PkUtils.UnitTests.DataStructuresTest
                 }
 
                 // iv/ test functionality of current enumerator
-                Assert.AreEqual(true, en_CurrentGeneration.CanPeek);
+                Assert.IsTrue(en_CurrentGeneration.CanPeek);
                 Assert.AreEqual(ParseStatus.Parsing, enumerab.Status);
                 Assert.AreEqual(arrInput[0], en_CurrentGeneration.Peek);
 
@@ -291,7 +291,7 @@ namespace PK.PkUtils.UnitTests.DataStructuresTest
             CachedEnumerable<int> enumerab = new(arrInput);
 
             Assert.AreEqual(ParseStatus.ParseNotInitialized, enumerab.Status);
-            Assert.AreEqual(true, enumerab.ResumeParsing());
+            Assert.IsTrue(enumerab.ResumeParsing());
             Assert.AreEqual(ParseStatus.ParseNotInitialized, enumerab.Status);
         }
 
@@ -306,14 +306,14 @@ namespace PK.PkUtils.UnitTests.DataStructuresTest
             IPeekAbleEnumerator<string> en = enumerab.GetPeekAbleEnumerator();
 
             Assert.AreEqual(ParseStatus.ParseNotInitialized, enumerab.Status);
-            Assert.AreEqual(true, enumerab.ResumeParsing());
+            Assert.IsTrue(enumerab.ResumeParsing());
             Assert.AreEqual(ParseStatus.ParseNotInitialized, enumerab.Status);
 
-            Assert.AreEqual(true, en.CanPeek);
+            Assert.IsTrue(en.CanPeek);
             Assert.AreEqual("0", en.Peek);
             Assert.AreEqual(ParseStatus.Parsing, enumerab.Status);
 
-            Assert.AreEqual(true, enumerab.ResumeParsing());
+            Assert.IsTrue(enumerab.ResumeParsing());
             Assert.AreEqual(ParseStatus.Parsing, enumerab.Status);
         }
 
@@ -358,26 +358,26 @@ namespace PK.PkUtils.UnitTests.DataStructuresTest
 
             // i/ play with status ParseStatus.ParseNotInitialized
             Assert.AreEqual(ParseStatus.ParseNotInitialized, enumerab.Status);
-            Assert.AreEqual(true, enumerab.ResumeParsing());
+            Assert.IsTrue(enumerab.ResumeParsing());
             Assert.AreEqual(ParseStatus.ParseNotInitialized, enumerab.Status);
 
             // ii/ play with status ParseStatus.Parsing
             IPeekAbleEnumerator<int> en = enumerab.GetPeekAbleEnumerator();
-            Assert.AreEqual(true, en.CanPeek);
+            Assert.IsTrue(en.CanPeek);
             Assert.AreEqual(ParseStatus.Parsing, enumerab.Status);
-            Assert.AreEqual(true, enumerab.ResumeParsing());
+            Assert.IsTrue(enumerab.ResumeParsing());
             Assert.AreEqual(ParseStatus.Parsing, enumerab.Status);
 
             // iii/ play with status ParseStatus.ParsePrematureEnd, when max buffer size is still small
             enumerab.FillBuffer(999);
             Assert.AreEqual(nFirstSmallMaxSize, enumerab.CachedItemsCount);
             Assert.AreEqual(ParseStatus.ParsePrematureEnd, enumerab.Status);
-            Assert.AreEqual(false, enumerab.ResumeParsing());
+            Assert.IsFalse(enumerab.ResumeParsing());
             Assert.AreEqual(ParseStatus.ParsePrematureEnd, enumerab.Status);
 
             // iv/ play with status ParseStatus.ParsePrematureEnd, when max buffer size is enlarged
             enumerab.MaxBufferSize = int.MaxValue;
-            Assert.AreEqual(true, enumerab.ResumeParsing());
+            Assert.IsTrue(enumerab.ResumeParsing());
             Assert.AreEqual(ParseStatus.Parsing, enumerab.Status);
             Assert.AreEqual(arrInput.Length, enumerab.FillBuffer());
             Assert.AreEqual(ParseStatus.ParsedOk, enumerab.Status);
@@ -396,14 +396,14 @@ namespace PK.PkUtils.UnitTests.DataStructuresTest
 
             for (int ii = 0; ii < arrInput.Length;)
             {
-                Assert.AreEqual(true, en.CanPeek);
+                Assert.IsTrue(en.CanPeek);
                 Assert.AreEqual(++ii, en.Peek);
-                Assert.AreEqual(true, en.MoveNext());
+                Assert.IsTrue(en.MoveNext());
                 Assert.AreEqual(ii, en.Current);
             }
 
-            Assert.AreEqual(false, en.CanPeek);
-            Assert.AreEqual(false, en.MoveNext());
+            Assert.IsFalse(en.CanPeek);
+            Assert.IsFalse(en.MoveNext());
         }
         /// <summary>
         /// A single-thread test for CachedEnumerable usage, which should throw ObjectDisposedException,
@@ -524,14 +524,14 @@ namespace PK.PkUtils.UnitTests.DataStructuresTest
 
                 for (int ii = 0; ii < nInputLength;)
                 {
-                    Assert.AreEqual(true, en.CanPeek);
+                    Assert.IsTrue(en.CanPeek);
                     Assert.AreEqual(++ii, en.Peek);
-                    Assert.AreEqual(true, en.MoveNext());
+                    Assert.IsTrue(en.MoveNext());
                     Assert.AreEqual(ii, en.Current);
                 }
 
-                Assert.AreEqual(false, en.CanPeek);
-                Assert.AreEqual(false, en.MoveNext());
+                Assert.IsFalse(en.CanPeek);
+                Assert.IsFalse(en.MoveNext());
             });
         }
         #endregion // Tests_Parallel

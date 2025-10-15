@@ -73,7 +73,7 @@ namespace PK.PkUtils.UnitTests.ComparersTest
             var fsSorted = filesAll.OrderBy<FileSystemInfo, FileSystemInfo>(fs => fs, fsComp);
             var fiSorted = filesAll.OrderBy<FileInfo, FileInfo>(fi => fi, fiComp);
 
-            Assert.AreEqual(true, fsSorted.SequenceEqual(fiSorted));
+            Assert.IsTrue(fsSorted.SequenceEqual(fiSorted));
         }
 
         /// <summary>
@@ -98,12 +98,12 @@ namespace PK.PkUtils.UnitTests.ComparersTest
             Assert.AreEqual(0, comparer.Compare("aaa", "AAA"));
             Assert.AreEqual(0, comparer.Compare("aaa", "XYZ"));
 
-            Assert.IsTrue(0 > comparer.Compare(null!, "pqr"));
-            Assert.IsTrue(0 < comparer.Compare("pqr", null!));
+            Assert.IsGreaterThan(comparer.Compare(null!, "pqr"), 0);
+            Assert.IsLessThan(comparer.Compare("pqr", null!), 0);
 
             Assert.AreEqual(0, comparer.Compare(null!, null!));
-            Assert.IsTrue(0 > comparer.Compare(null!, string.Empty));
-            Assert.IsTrue(0 < comparer.Compare(string.Empty, null!));
+            Assert.IsGreaterThan(comparer.Compare(null!, string.Empty), 0);
+            Assert.IsLessThan(comparer.Compare(string.Empty, null!), 0);
         }
     }
 #pragma warning restore IDE0039

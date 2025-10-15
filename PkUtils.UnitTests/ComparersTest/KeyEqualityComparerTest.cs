@@ -59,8 +59,8 @@ namespace PK.PkUtils.UnitTests.ComparersTest
 
             foreach (var x in Enumerable.Range(-5, 11).ToList())
             {
-                Assert.AreEqual(true, comparer.Equals(x, x));
-                Assert.AreEqual(true, comparer.Equals(x, -x));
+                Assert.IsTrue(comparer.Equals(x, x));
+                Assert.IsTrue(comparer.Equals(x, -x));
             }
         }
 
@@ -72,9 +72,9 @@ namespace PK.PkUtils.UnitTests.ComparersTest
         {
             var comparer = new KeyEqualityComparer<string, int>(s => s.Length);
 
-            Assert.AreEqual(true, comparer.Equals("aaa", "AAA"));
-            Assert.AreEqual(true, comparer.Equals("aaaa", "wXyZ"));
-            Assert.AreEqual(false, comparer.Equals("aaa", "w"));
+            Assert.IsTrue(comparer.Equals("aaa", "AAA"));
+            Assert.IsTrue(comparer.Equals("aaaa", "wXyZ"));
+            Assert.IsFalse(comparer.Equals("aaa", "w"));
         }
         #endregion // Tests
     }

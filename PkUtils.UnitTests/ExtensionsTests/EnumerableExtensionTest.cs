@@ -138,7 +138,7 @@ namespace PK.PkUtils.UnitTests.ExtensionsTests
             IDictionary<int, int> dict = new Dictionary<int, int>();
 
             couples.SafeForEach(couple => dict.Add(couple.i, couple.n));
-            Assert.IsTrue(dict.Count == count);
+            Assert.HasCount(count, dict);
         }
         #endregion // Tests_SafeForEach
 
@@ -209,7 +209,7 @@ namespace PK.PkUtils.UnitTests.ExtensionsTests
             int[] source = { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 };
             int[] actual_duplicities = source.FindDuplicities().ToArray();
 
-            Assert.IsTrue(!actual_duplicities.Any());
+            Assert.IsFalse(actual_duplicities.Any());
         }
 
         /// <summary> A test for FindDuplicities, which should succeed. </summary>

@@ -32,7 +32,7 @@ public class FilePathHelperTest
     [TestMethod()]
     public void FilePathHelper_HasWildCardTest_01()
     {
-        Assert.AreEqual(false, FilePathHelper.HasWildCard(_320CharsAbsolutePath));
+        Assert.IsFalse(FilePathHelper.HasWildCard(_320CharsAbsolutePath));
     }
 
     /// <summary>
@@ -41,13 +41,13 @@ public class FilePathHelperTest
     [TestMethod()]
     public void FilePathHelper_HasWildCardTest_02()
     {
-        Assert.AreEqual(false, FilePathHelper.HasWildCard(null));
-        Assert.AreEqual(false, FilePathHelper.HasWildCard(""));
-        Assert.AreEqual(false, FilePathHelper.HasWildCard("abc"));
-        Assert.AreEqual(false, FilePathHelper.HasWildCard("\\//"));
-        Assert.AreEqual(true, FilePathHelper.HasWildCard("?"));
-        Assert.AreEqual(true, FilePathHelper.HasWildCard("aa*c"));
-        Assert.AreEqual(true, FilePathHelper.HasWildCard("aa?c"));
+        Assert.IsFalse(FilePathHelper.HasWildCard(null));
+        Assert.IsFalse(FilePathHelper.HasWildCard(""));
+        Assert.IsFalse(FilePathHelper.HasWildCard("abc"));
+        Assert.IsFalse(FilePathHelper.HasWildCard("\\//"));
+        Assert.IsTrue(FilePathHelper.HasWildCard("?"));
+        Assert.IsTrue(FilePathHelper.HasWildCard("aa*c"));
+        Assert.IsTrue(FilePathHelper.HasWildCard("aa?c"));
     }
     #endregion // HasWildCardTest
 
@@ -215,7 +215,7 @@ public class FilePathHelperTest
     [TestMethod()]
     public void FilePathHelper_IsPathRootOnlyTest_01()
     {
-        Assert.AreEqual(false, FilePathHelper.IsPathRootOnly(_320CharsAbsolutePath, false));
+        Assert.IsFalse(FilePathHelper.IsPathRootOnly(_320CharsAbsolutePath, false));
     }
 
     /// <summary>
@@ -516,7 +516,7 @@ public class FilePathHelperTest
         string basePath = _317CharsRelativePath;
         string resultActual = FilePathHelper.GenerateAbsolute(basePath);
 
-        Assert.IsTrue(resultActual.EndsWith(basePath));
+        Assert.EndsWith(basePath, resultActual);
     }
     #endregion // GenerateAbsoluteTest
 
@@ -987,7 +987,7 @@ public class FilePathHelperTest
     public void FilePathHelper_GetPathPartsTest_01()
     {
         var collection = FilePathHelper.GetPathParts(_320CharsAbsolutePath);
-        Assert.IsTrue(collection.Count > 0);
+        Assert.IsNotEmpty(collection);
     }
 
     /// <summary>
@@ -998,7 +998,7 @@ public class FilePathHelperTest
     {
         var collection = FilePathHelper.GetPathParts(null);
 
-        Assert.AreEqual(0, collection.Count);
+        Assert.IsEmpty(collection);
     }
 
     /// <summary>
@@ -1011,7 +1011,7 @@ public class FilePathHelperTest
         string childPath = @"C:\Tmp3\xyz\CtrlSourceCode\";
         var collection = FilePathHelper.GetPathParts(FilePathHelper.GetRelativePath(parentPath, childPath));
 
-        Assert.AreEqual(2, collection.Count);
+        Assert.HasCount(2, collection);
     }
 
     /// <summary>
@@ -1024,7 +1024,7 @@ public class FilePathHelperTest
         string childPath = @"C:\Tmp3\xyz\CtrlSourceCode";
         var collection = FilePathHelper.GetPathParts(FilePathHelper.GetRelativePath(parentPath, childPath));
 
-        Assert.AreEqual(0, collection.Count);
+        Assert.IsEmpty(collection);
     }
     #endregion // GetPathPartsTest
 
@@ -1041,7 +1041,7 @@ public class FilePathHelperTest
     {
         string path = _320CharsAbsolutePath;
         string actual = FilePathHelper.PathCompact(path, shortenTo);
-        Assert.IsTrue(actual.Length <= shortenTo);
+        Assert.IsLessThanOrEqualTo(shortenTo, actual.Length);
     }
 
     /// <summary>

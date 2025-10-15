@@ -59,7 +59,7 @@ namespace PK.PkUtils.UnitTests.ExtensionsTests
         {
             MultiHue invalid = (MultiHue)666;
             bool actual = invalid.IsValidFlagsCombination();
-            Assert.AreEqual(false, actual);
+            Assert.IsFalse(actual);
         }
 
 

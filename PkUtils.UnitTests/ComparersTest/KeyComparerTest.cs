@@ -46,7 +46,7 @@ namespace PK.PkUtils.UnitTests.ComparersTest
             foreach (var x in listInts)
             {
                 Assert.AreEqual(0, comparer.Compare(x, x));
-                Assert.IsTrue(0 > comparer.Compare(x, x + 1));
+                Assert.IsGreaterThan(comparer.Compare(x, x + 1), 0);
             }
         }
 
@@ -58,8 +58,8 @@ namespace PK.PkUtils.UnitTests.ComparersTest
 
             Assert.AreEqual(0, comparer.Compare("aaa", "AAA"));
             Assert.AreEqual(0, comparer.Compare("aaaa", "wXyZ"));
-            Assert.IsTrue(0 < comparer.Compare("aaa", "w"));
-            Assert.IsTrue(0 > comparer.Compare("a", "www"));
+            Assert.IsLessThan(comparer.Compare("aaa", "w"), 0);
+            Assert.IsGreaterThan(comparer.Compare("a", "www"), 0);
         }
 
         [TestMethod()]

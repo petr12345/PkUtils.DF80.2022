@@ -60,8 +60,8 @@ namespace PK.PkUtils.UnitTests.ComparersTest
 
             foreach (var x in Enumerable.Range(2, 7).ToList())
             {
-                Assert.AreEqual(true, comparer.Equals(x, x));
-                Assert.AreEqual(true, comparer.Equals(x, -x));
+                Assert.IsTrue(comparer.Equals(x, x));
+                Assert.IsTrue(comparer.Equals(x, -x));
             }
         }
 
@@ -75,9 +75,9 @@ namespace PK.PkUtils.UnitTests.ComparersTest
             Func<string, int> h = (s => s.Length);
             var comparer = new FunctionalEqualityComparer<string>(f, h);
 
-            Assert.AreEqual(true, comparer.Equals("aaa", "AAA"));
-            Assert.AreEqual(true, comparer.Equals("aaaa", "wXyZ"));
-            Assert.AreEqual(false, comparer.Equals("aaa", "w"));
+            Assert.IsTrue(comparer.Equals("aaa", "AAA"));
+            Assert.IsTrue(comparer.Equals("aaaa", "wXyZ"));
+            Assert.IsFalse(comparer.Equals("aaa", "w"));
         }
 
         /// <summary>
@@ -104,13 +104,13 @@ namespace PK.PkUtils.UnitTests.ComparersTest
             Func<string, int> h = x => x.Length;
             var comparer = FunctionalEqualityComparer.CreateNullSafeComparer<string>(f, h);
 
-            Assert.AreEqual(true, comparer.Equals("aaa", "AAA"));
-            Assert.AreEqual(true, comparer.Equals("aaa", "XYZ"));
+            Assert.IsTrue(comparer.Equals("aaa", "AAA"));
+            Assert.IsTrue(comparer.Equals("aaa", "XYZ"));
 
             Assert.IsFalse(comparer.Equals(null!, "pqr"));
             Assert.IsFalse(comparer.Equals("pqr", null!));
 
-            Assert.AreEqual(true, comparer.Equals(null!, null!));
+            Assert.IsTrue(comparer.Equals(null!, null!));
             Assert.IsFalse(comparer.Equals(null!, string.Empty));
             Assert.IsFalse(comparer.Equals(string.Empty, null!));
         }

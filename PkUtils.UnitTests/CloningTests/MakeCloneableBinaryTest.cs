@@ -71,7 +71,7 @@ namespace PK.PkUtils.UnitTests.Cloning
 
             Assert.IsFalse(object.ReferenceEquals(an01, an02));
             Assert.AreEqual(an01.Legs, an02.Legs);
-            Assert.AreEqual((an02 as Baboon)!.Name, "Joe");
+            Assert.AreEqual("Joe", (an02 as Baboon)!.Name);
         }
 
         #endregion // Tests

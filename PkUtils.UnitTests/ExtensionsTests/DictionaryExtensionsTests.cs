@@ -279,8 +279,8 @@ namespace PK.PkUtils.UnitTests.ExtensionsTests
             int hash3rd = dict_3rd.DictionaryHashCode();
             int hash4th = dict_4th.DictionaryHashCode();
 
-            Assert.IsTrue(hash1st == hash2nd);
-            Assert.IsTrue(hash3rd == hash4th);
+            Assert.AreEqual(hash2nd, hash1st);
+            Assert.AreEqual(hash4th, hash3rd);
         }
         #endregion // Tests_IDictionary_extensions
 

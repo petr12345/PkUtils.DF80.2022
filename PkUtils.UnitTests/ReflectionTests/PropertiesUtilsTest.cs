@@ -209,11 +209,11 @@ namespace PK.PkUtils.UnitTests.ReflectionTests
             // -- ii/ Demonstrates that via typeof(B) you cannot simply access its properties of type B declared in base A
             t = typeof(B);
             actual = t.GetStaticPropertyValue("P_a_public");
-            Assert.AreEqual(null, actual);
+            Assert.IsNull(actual);
             actual = t.GetStaticPropertyValue("P_a_protected");
-            Assert.AreEqual(null, actual);
+            Assert.IsNull(actual);
             actual = t.GetStaticPropertyValue("P_a_private");
-            Assert.AreEqual(null, actual);
+            Assert.IsNull(actual);
 
             // -- iii/ Demonstrates that via typeof(B), with the usage of BindingFlags.FlattenHierarchy,
             // you can access public and protected properties of type B declared in base A, but NOT private properties
@@ -223,7 +223,7 @@ namespace PK.PkUtils.UnitTests.ReflectionTests
             actual = t.GetStaticPropertyValue("P_a_protected", true);
             Assert.AreEqual(3.14, actual);
             actual = t.GetStaticPropertyValue("P_a_private", true);
-            Assert.AreEqual(null, actual);
+            Assert.IsNull(actual);
 
             // -- iv/ Demonstrates that via typeof(B) you can access all properties of type B declared in B
             t = typeof(B);
@@ -540,7 +540,7 @@ namespace PK.PkUtils.UnitTests.ReflectionTests
             foreach (string strPropertyName in P_arr_D_NonStaticPropertisNames)
             {
                 actual = PropertiesUtils.GetInstanceProperty(typeof(D), strPropertyName);
-                Assert.AreNotEqual(null, actual);
+                Assert.IsNotNull(actual);
                 Assert.AreEqual(actual.Name, strPropertyName);
             }
         }

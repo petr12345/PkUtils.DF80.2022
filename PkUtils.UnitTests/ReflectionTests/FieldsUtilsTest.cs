@@ -306,7 +306,7 @@ namespace PK.PkUtils.UnitTests.ReflectionTests
             Assert.AreEqual(55.66, a_protected);
 
             Assert.IsFalse(res_private);
-            Assert.AreNotEqual(a_private, "cannot be set");
+            Assert.AreNotEqual("cannot be set", a_private);
 
             // -- iv/ Demonstrates that via typeof(B) you can set all fields of type B declared in B
             t = typeof(B);
@@ -591,7 +591,7 @@ namespace PK.PkUtils.UnitTests.ReflectionTests
             BindingFlags flags = BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance; ;
             FieldInfo f = typeof(D).GetAllFields(strFieldName, flags).Single();
 
-            Assert.AreEqual(f.FieldType, typeof(double));
+            Assert.AreEqual(typeof(double), f.FieldType);
             Assert.IsFalse(f.FieldType.IsAssignableFrom(typeof(int)));
             Assert.IsFalse(typeof(double).IsAssignableFrom(typeof(int)));
 
@@ -619,7 +619,7 @@ namespace PK.PkUtils.UnitTests.ReflectionTests
             BindingFlags flags = BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance; ;
             FieldInfo f = typeof(D).GetAllFields(strFieldName, flags).Single();
 
-            Assert.AreEqual(f.FieldType, typeof(double));
+            Assert.AreEqual(typeof(double), f.FieldType);
             Assert.IsFalse(f.FieldType.IsAssignableFrom(typeof(int)));
             Assert.IsFalse(typeof(double).IsAssignableFrom(typeof(int)));
 
@@ -750,7 +750,7 @@ namespace PK.PkUtils.UnitTests.ReflectionTests
             {
                 actual = FieldsUtils.GetAllInstanceFields(typeof(C), strFieldName);
                 listActual = actual.ToList();
-                Assert.AreEqual(1, listActual.Count);
+                Assert.HasCount(1, listActual);
                 Assert.AreEqual(strFieldName, listActual.First().Name);
             }
 
@@ -758,7 +758,7 @@ namespace PK.PkUtils.UnitTests.ReflectionTests
             {
                 actual = FieldsUtils.GetAllInstanceFields(typeof(D), strFieldName);
                 listActual = actual.ToList();
-                Assert.AreEqual(1, listActual.Count);
+                Assert.HasCount(1, listActual);
                 Assert.AreEqual(listActual.First().Name, strFieldName);
             }
 
@@ -780,8 +780,8 @@ namespace PK.PkUtils.UnitTests.ReflectionTests
             foreach (string strFieldName in _arr_D_NonStaticFieldNames)
             {
                 actual = FieldsUtils.GetInstanceField(typeof(D), strFieldName);
-                Assert.AreNotEqual(null, actual);
-                Assert.AreEqual(actual.Name, strFieldName);
+                Assert.IsNotNull(actual);
+                Assert.AreEqual(strFieldName, actual.Name);
             }
         }
         #endregion // Accessing_FieldInfo_Full_Scope_tests

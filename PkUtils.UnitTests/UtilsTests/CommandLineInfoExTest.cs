@@ -60,7 +60,7 @@ public class CommandLineInfoExTest
     {
         var args = new string[] { "/InputFile", "doc1.rtf", "nologo" };
         CommandLineInfoEx info = new(args);
-        Assert.IsTrue(!info.IsEmpty);
+        Assert.IsFalse(info.IsEmpty);
     }
 
     /// <summary>
@@ -73,10 +73,10 @@ public class CommandLineInfoExTest
         CommandLineInfoEx info = new();
 
         info.ParseCommandLine(args);
-        Assert.AreEqual(true, info.GetSwitch("nologo"));
-        Assert.AreEqual(false, info.GetSwitch("NoLogo"));
+        Assert.IsTrue(info.GetSwitch("nologo"));
+        Assert.IsFalse(info.GetSwitch("NoLogo"));
 
-        Assert.AreEqual(true, info.GetOption("InputFile", out string strVal));
+        Assert.IsTrue(info.GetOption("InputFile", out string strVal));
         Assert.AreEqual("doc1.rtf", strVal);
     }
 
@@ -90,10 +90,10 @@ public class CommandLineInfoExTest
         CommandLineInfoEx info = new(false, string.Empty);
 
         info.ParseCommandLine(args);
-        Assert.AreEqual(true, info.GetSwitch("nologo"));
-        Assert.AreEqual(true, info.GetSwitch("NoLogO"));
+        Assert.IsTrue(info.GetSwitch("nologo"));
+        Assert.IsTrue(info.GetSwitch("NoLogO"));
 
-        Assert.AreEqual(true, info.GetOption("iNpUtFiLe", out string strVal));
+        Assert.IsTrue(info.GetOption("iNpUtFiLe", out string strVal));
         Assert.AreEqual("DOC1.RTF", strVal);
     }
 
@@ -105,8 +105,8 @@ public class CommandLineInfoExTest
         CommandLineInfoEx info1 = new(args, true, string.Empty);
         CommandLineInfoEx info2 = info1.DeepClone();
 
-        Assert.AreEqual(true, info1.GetSwitch("nologo"));
-        Assert.AreEqual(true, info2.GetSwitch("nologo"));
+        Assert.IsTrue(info1.GetSwitch("nologo"));
+        Assert.IsTrue(info2.GetSwitch("nologo"));
     }
 
     /// <summary> A test for covariance of IDeepCloneable ( compilation of assignment ). </summary>

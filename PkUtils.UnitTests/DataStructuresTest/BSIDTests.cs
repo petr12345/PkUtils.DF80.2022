@@ -70,7 +70,7 @@ namespace PK.PkUtils.UnitTests.DataStructuresTest
             var id = new BSID(_sLower);
             bool equal = StringComparer.InvariantCultureIgnoreCase.Equals(id.ID, _sUpper);
 
-            Assert.AreEqual(true, equal);
+            Assert.IsTrue(equal);
         }
         #endregion // Tests_Properties
 
@@ -82,7 +82,7 @@ namespace PK.PkUtils.UnitTests.DataStructuresTest
             object id_1st = new BSID(_sLower);
             bool equal_1st = StringComparer.InvariantCultureIgnoreCase.Equals(id_1st.ToString(), _sUpper);
 
-            Assert.AreEqual(true, equal_1st);
+            Assert.IsTrue(equal_1st);
         }
 
         [TestMethod]
@@ -91,7 +91,7 @@ namespace PK.PkUtils.UnitTests.DataStructuresTest
             object id_2nd = new BSID(_sUpper);
             bool equal_2nd = StringComparer.InvariantCulture.Equals(id_2nd.ToString(), _sUpper);
 
-            Assert.AreEqual(true, equal_2nd);
+            Assert.IsTrue(equal_2nd);
         }
 
         [TestMethod]
@@ -111,15 +111,15 @@ namespace PK.PkUtils.UnitTests.DataStructuresTest
             object id_1st = new BSID(_sLower);
             object id_2nd = new BSID(_sUpper);
 
-            Assert.AreEqual(false, id_1st.Equals(nullObj));
-            Assert.AreEqual(false, id_1st.Equals(id_dummy));
-            Assert.AreEqual(true, id_1st.Equals(id_1st));
-            Assert.AreEqual(true, id_1st.Equals(id_2nd));
+            Assert.IsFalse(id_1st.Equals(nullObj));
+            Assert.IsFalse(id_1st.Equals(id_dummy));
+            Assert.IsTrue(id_1st.Equals(id_1st));
+            Assert.IsTrue(id_1st.Equals(id_2nd));
 
-            Assert.AreEqual(false, id_2nd.Equals(nullObj));
-            Assert.AreEqual(false, id_2nd.Equals(id_dummy));
-            Assert.AreEqual(true, id_2nd.Equals(id_2nd));
-            Assert.AreEqual(true, id_2nd.Equals(id_1st));
+            Assert.IsFalse(id_2nd.Equals(nullObj));
+            Assert.IsFalse(id_2nd.Equals(id_dummy));
+            Assert.IsTrue(id_2nd.Equals(id_2nd));
+            Assert.IsTrue(id_2nd.Equals(id_1st));
         }
         #endregion // Tests_Methods
 
@@ -131,7 +131,7 @@ namespace PK.PkUtils.UnitTests.DataStructuresTest
             BSID id_1st = new(_sLower);
             BSID id_2nd = CloneHelperBinary.DeepClone(id_1st);  // involves binary serialization
 
-            Assert.AreEqual(true, id_1st.Equals(id_2nd));
+            Assert.IsTrue(id_1st.Equals(id_2nd));
         }
         [TestMethod]
         public void BSID_operator_FromStringToId_01()
@@ -149,7 +149,7 @@ namespace PK.PkUtils.UnitTests.DataStructuresTest
             var id = (BSID)_sLower;
             bool equal = StringComparer.InvariantCultureIgnoreCase.Equals(id.ID, _sUpper);
 
-            Assert.AreEqual(true, equal);
+            Assert.IsTrue(equal);
         }
 
         [TestMethod]
@@ -159,7 +159,7 @@ namespace PK.PkUtils.UnitTests.DataStructuresTest
             string str = (string)id;
             bool equal = StringComparer.InvariantCultureIgnoreCase.Equals(str, _sUpper);
 
-            Assert.AreEqual(true, equal);
+            Assert.IsTrue(equal);
         }
         #endregion // Tests_Static_Operators_Conversions
 
@@ -174,17 +174,17 @@ namespace PK.PkUtils.UnitTests.DataStructuresTest
             BSID id_1st = new(_sLower);
             BSID id_2nd = new(_sUpper);
 
-            Assert.AreEqual(false, id_1st == id_null);
-            Assert.AreEqual(false, id_1st == id_dummy);
+            Assert.IsFalse(id_1st == id_null);
+            Assert.IsFalse(id_1st == id_dummy);
 
-            Assert.AreEqual(true, id_1st == id_1st);
-            Assert.AreEqual(true, id_1st == id_2nd);
+            Assert.IsTrue(id_1st == id_1st);
+            Assert.IsTrue(id_1st == id_2nd);
 
-            Assert.AreEqual(false, id_2nd == id_null);
-            Assert.AreEqual(false, id_2nd == id_dummy);
+            Assert.IsFalse(id_2nd == id_null);
+            Assert.IsFalse(id_2nd == id_dummy);
 
-            Assert.AreEqual(true, id_2nd == id_2nd);
-            Assert.AreEqual(true, id_2nd == id_1st);
+            Assert.IsTrue(id_2nd == id_2nd);
+            Assert.IsTrue(id_2nd == id_1st);
         }
 
         [TestMethod]
@@ -213,10 +213,10 @@ namespace PK.PkUtils.UnitTests.DataStructuresTest
             Assert.IsTrue(id_1st == id_2nd);
             Assert.IsTrue(id_2nd == id_1st);
 
-            Assert.IsTrue(_sLower.CompareTo(_sDummy) < 0);
+            Assert.IsLessThan(0, _sLower.CompareTo(_sDummy));
             Assert.IsTrue(id_1st < id_dummy);
 
-            Assert.IsTrue(_sDummy.CompareTo(_sLower) > 0);
+            Assert.IsGreaterThan(0, _sDummy.CompareTo(_sLower));
             Assert.IsTrue(id_dummy > id_1st);
         }
         #endregion // Tests_Static_Operators_Comparisons
@@ -232,17 +232,17 @@ namespace PK.PkUtils.UnitTests.DataStructuresTest
             BSID id_1st = new(_sLower);
             BSID id_2nd = new(_sUpper);
 
-            Assert.AreEqual(false, id_1st.Equals(id_null));
-            Assert.AreEqual(false, id_1st.Equals(id_dummy));
+            Assert.IsFalse(id_1st.Equals(id_null));
+            Assert.IsFalse(id_1st.Equals(id_dummy));
 
-            Assert.AreEqual(true, id_1st.Equals(id_1st));
-            Assert.AreEqual(true, id_1st.Equals(id_2nd));
+            Assert.IsTrue(id_1st.Equals(id_1st));
+            Assert.IsTrue(id_1st.Equals(id_2nd));
 
-            Assert.AreEqual(false, id_2nd.Equals(id_null));
-            Assert.AreEqual(false, id_2nd.Equals(id_dummy));
+            Assert.IsFalse(id_2nd.Equals(id_null));
+            Assert.IsFalse(id_2nd.Equals(id_dummy));
 
-            Assert.AreEqual(true, id_2nd.Equals(id_2nd));
-            Assert.AreEqual(true, id_2nd.Equals(id_1st));
+            Assert.IsTrue(id_2nd.Equals(id_2nd));
+            Assert.IsTrue(id_2nd.Equals(id_1st));
         }
         [TestMethod]
         public void BSID_IComparable_00()
@@ -281,11 +281,11 @@ namespace PK.PkUtils.UnitTests.DataStructuresTest
             Assert.AreEqual(0, id_1st.CompareTo(id_2nd));
             Assert.AreEqual(0, id_2nd.CompareTo(id_1st));
 
-            Assert.IsTrue(_sLower.CompareTo(_sDummy) < 0);
-            Assert.IsTrue(id_1st.CompareTo(id_dummy) < 0);
+            Assert.IsLessThan(0, _sLower.CompareTo(_sDummy));
+            Assert.IsLessThan(0, id_1st.CompareTo(id_dummy));
 
-            Assert.IsTrue(_sDummy.CompareTo(_sLower) > 0);
-            Assert.IsTrue(id_dummy.CompareTo(id_1st) > 0);
+            Assert.IsGreaterThan(0, _sDummy.CompareTo(_sLower));
+            Assert.IsGreaterThan(0, id_dummy.CompareTo(id_1st));
         }
         #endregion // Tests_IComparable_BSID
         #endregion // Tests
