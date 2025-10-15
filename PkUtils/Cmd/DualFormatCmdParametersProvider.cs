@@ -2,6 +2,7 @@
 //
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.Globalization;
 using System.IO;
@@ -22,13 +23,19 @@ namespace PK.PkUtils.Cmd;
 /// 1. Key-value pairs with colon delimiter: "/ParamName1:Value1 /ParamName2:Value2 -ParamName3:Value3"
 /// 2. Key followed by space-delimited value: "/ParamName1 Value1 /ParamName2 Value2 /ParamName3 Value3"
 /// Produces a dictionary (parameter name -> parameter value).
+/// <para>
+/// <b>Immutability note:</b> As of this version, <c>DualFormatCmdParametersProvider</c> is fully immutable.
+/// All internal collections, including the original arguments order, are exposed as read-only and cannot be modified
+/// after construction. The public API and internal state are both immutable.
+/// </para>
 /// </remarks>
 public class DualFormatCmdParametersProvider : BaseCmdParametersProvider, ICmdParametersProviderEx
 {
     #region Fields
 
     private readonly IReadOnlyDictionary<string, string> _name2Value;
-    private readonly List<string> _originalArgumentsOrder = [];
+    private readonly ReadOnlyCollection<string> _originalArgumentsOrder;
+    private readonly List<string> _originalArgumentsOrderBuilder = [];
     private readonly StringComparer _argsNamesComparer = StringComparer.OrdinalIgnoreCase;
 
     private const char PREFIX_SLASH = '/';
@@ -70,6 +77,7 @@ public class DualFormatCmdParametersProvider : BaseCmdParametersProvider, ICmdPa
     public DualFormatCmdParametersProvider(bool acceptSwitchesSyntax)
     {
         _name2Value = ParseArgs(Environment.GetCommandLineArgs(), acceptSwitchesSyntax, true);
+        _originalArgumentsOrder = new ReadOnlyCollection<string>(_originalArgumentsOrderBuilder);
     }
 
     /// <summary>
@@ -94,6 +102,7 @@ public class DualFormatCmdParametersProvider : BaseCmdParametersProvider, ICmdPa
     public DualFormatCmdParametersProvider(IEnumerable<string> args, bool acceptSwitchesSyntax)
     {
         _name2Value = ParseArgs(args, acceptSwitchesSyntax, false);
+        _originalArgumentsOrder = new ReadOnlyCollection<string>(_originalArgumentsOrderBuilder);
     }
     #endregion // Constructor(s)
 
@@ -120,7 +129,7 @@ public class DualFormatCmdParametersProvider : BaseCmdParametersProvider, ICmdPa
     }
 
     /// <summary> Gets all keys representing both Options and switches, in the same order as they were on the command line. </summary>
-    public IEnumerable<string> OriginalArgumentsOrder
+    public IReadOnlyList<string> OriginalArgumentsOrder
     {
         get
         {
@@ -182,7 +191,6 @@ public class DualFormatCmdParametersProvider : BaseCmdParametersProvider, ICmdPa
             Debug.Assert(_originalArgumentsOrder.Contains(key, ArgumentNamesComparer));
         }
     }
-
 
     /// <summary> Normalizes the key. With current implementation, just returns the original key.
     ///            Derived class could override this, and for instance convert key to uppercase or lowercase.
@@ -314,7 +322,7 @@ public class DualFormatCmdParametersProvider : BaseCmdParametersProvider, ICmdPa
             }
             else
             {
-                _originalArgumentsOrder.Add(name);
+                _originalArgumentsOrderBuilder.Add(name);
                 name = NormalizeKey(name);
                 if (!dict.TryAdd(name, value))
                 {   // rather than ArgumentException, prefer specialized InputLineValidationException

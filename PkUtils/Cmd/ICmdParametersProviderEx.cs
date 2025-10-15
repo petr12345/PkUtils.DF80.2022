@@ -18,7 +18,7 @@ public interface ICmdParametersProviderEx : ICmdParametersProvider
 
     /// <summary> Gets all keys representing both Options and switches, in the same order as they were on the command line. </summary>
     /// <remarks> Unlike with <see cref="Options"/> and <see cref="Switches"/>, the order of items here is preserved. </remarks>
-    IEnumerable<string> OriginalArgumentsOrder { get; }
+    IReadOnlyList<string> OriginalArgumentsOrder { get; }
 
     /// <summary> Return the dictionary of pairs arg -> value. </summary>
     IReadOnlyDictionary<string, string> AllParameters { get; }

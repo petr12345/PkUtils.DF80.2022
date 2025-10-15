@@ -96,7 +96,7 @@ public class DualFormatInputProcessor<TCommand, TErrorCode> : CommandsInputProce
         else
         {
             provider = new DualFormatCmdParametersProvider(cmdLineArgs, acceptSwitchesSyntax);
-            commandName = provider.OriginalArgumentsOrder.First();
+            commandName = provider.OriginalArgumentsOrder[0];
         }
 
         cmdName = commandName;
