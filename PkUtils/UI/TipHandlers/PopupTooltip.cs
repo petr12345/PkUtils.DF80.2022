@@ -11,6 +11,7 @@
 // Ignore Spelling: Utils, Popup, Tooltip, msec
 //
 using System;
+using System.ComponentModel;
 using System.Diagnostics;
 using System.Drawing;
 using System.Threading;
@@ -60,6 +61,7 @@ public class PopupTooltip : Control, IPopupText
             RefreshColors();
         }
 
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public bool DrawHighlighted
         {
             get { return _bDrawHighlited; }
@@ -437,6 +439,7 @@ public class PopupTooltip : Control, IPopupText
     /// <summary>
     /// Property margins ( actually are not supported yet ... )
     /// </summary>
+    [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
     public Size Margins
     {
         get { return _margins; }
@@ -444,6 +447,7 @@ public class PopupTooltip : Control, IPopupText
     }
 
     /// <inheritdoc/>
+    [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
     public bool DrawHighlighted
     {
         get { return _textBox.DrawHighlighted; }

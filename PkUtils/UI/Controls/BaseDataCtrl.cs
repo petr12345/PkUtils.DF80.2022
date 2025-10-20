@@ -52,6 +52,7 @@ public partial class BaseDataCtrl<D> : UserControl where D : class
     /// <summary>
     /// A property accessing the data object.
     /// </summary>
+    [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
     public D Data
     {
         get;

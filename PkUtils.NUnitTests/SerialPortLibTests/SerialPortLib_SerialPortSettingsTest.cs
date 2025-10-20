@@ -47,7 +47,7 @@ public class SerialPortLib_SerialPortSettingsTest
     /// <summary>
     /// A basic test for SerialPortSettingsEx, which should succeed
     ///</summary>
-    public void SerialPortSettingsEx_DeepCloneTest_01()
+    public static void SerialPortSettingsEx_DeepCloneTest_01()
     {
         SerialPortSettingsEx sex1 = new SerialPortSettingsEx();
         object sex2 = sex1.DeepClone();

@@ -95,6 +95,7 @@ public partial class MultiSelectTreeView : TreeView
 
     /// <summary> Gets or sets the collection of selected nodes. </summary>
     [Browsable(false)]
+    [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
     public IReadOnlyCollection<TreeNode> SelectedNodes
     {
         get => _selectedNodes;
@@ -117,6 +118,7 @@ public partial class MultiSelectTreeView : TreeView
 
     /// <summary>   Gets or sets the dumper. The actual value could be null. </summary>
     [Browsable(false)]
+    [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
     public IDumper Dumper { get => _dumper; set => _dumper = value; }
 
     /// <summary> Gets or sets a value indicating whether the suppress temporary highlight ( see more in description ). </summary>
@@ -132,6 +134,7 @@ public partial class MultiSelectTreeView : TreeView
 
     /// <summary> Gets or sets the selected node. </summary>
     /// <remarks> Note: This property hides the native TreeView's SelectedNode property. </remarks>
+    [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
     public new TreeNode SelectedNode
     {
         get => _selectedNode;

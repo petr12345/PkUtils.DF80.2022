@@ -79,6 +79,7 @@ public partial class SmoothProgressBar : UserControl
     /// <summary>
     /// This property obtains or sets the lower value for the range of valid values for progress. The default
     /// value of this property is zero (0); you cannot set this property to a negative value. </summary>
+    [DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)]
     public int Minimum
     {
         get
@@ -115,6 +116,7 @@ public partial class SmoothProgressBar : UserControl
     /// <summary>
     /// This property obtains or sets the upper value for the range of valid values for progress. The default
     /// value of this property is 100. </summary>
+    [DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)]
     public int Maximum
     {
         get
@@ -146,6 +148,7 @@ public partial class SmoothProgressBar : UserControl
     /// <summary>
     /// This property obtains or sets the current level of progress. The value must be in the range that the
     /// Minimum and the Maximum properties define. </summary>
+    [DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)]
     public int Value
     {
         get
@@ -210,6 +213,7 @@ public partial class SmoothProgressBar : UserControl
     /// The color of the left part of the progress bar
     /// </summary>
     [BrowsableAttribute(true)]
+    [DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)]
     public Color BarColorLeft
     {
         get
@@ -232,6 +236,7 @@ public partial class SmoothProgressBar : UserControl
     /// The color of the text in the progress bar
     /// </summary>
     [BrowsableAttribute(true)]
+    [DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)]
     public Color BarColorText
     {
         get
@@ -254,6 +259,7 @@ public partial class SmoothProgressBar : UserControl
     /// The the text in the progress bar
     /// </summary>
     [BrowsableAttribute(true)]
+    [DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)]
     public string BarText
     {
         get

@@ -189,7 +189,7 @@ public class ConcurrentLocker<TKey> : IConcurrentLocker<TKey>
     /// <inheritdoc/>
     public bool IsDisposed
     {
-        get { return (Thread.VolatileRead(ref this._disposableState) == StateDisposed); }
+        get { return (System.Threading.Volatile.Read(ref this._disposableState) == StateDisposed); }
     }
 
     /// <inheritdoc/>

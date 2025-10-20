@@ -191,7 +191,7 @@ public static class EnumExtension
             }
             else
             {
-                return Enum.IsDefined(typeof(T), result) ? result : null;
+                return Enum.IsDefined(result) ? result : null;
             }
         }
 

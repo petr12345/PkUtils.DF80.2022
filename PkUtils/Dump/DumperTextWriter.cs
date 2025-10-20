@@ -14,16 +14,40 @@ using PK.PkUtils.Utils;
 namespace PK.PkUtils.Dump;
 
 /// <summary>
-/// DumperTextWriter works as a general output for TextWriterTraceListener,
-/// delegating all received texts to provided IDumper. <br/>
-/// Code using DumperTextWriter class may look like following 
-/// ( assuming the related class provided as 'this' argument derives from IDumper ):
-/// <code>
-/// Trace.AutoFlush = true;
-/// _dumpWriter = new DumperTextWriter(this);
-/// Trace.Listeners.Add(new TextWriterTraceListener(_dumpWriter)); 
-/// </code>
+/// A <see cref="TextWriter"/> implementation that enqueues written text and
+/// asynchronously forwards it to an <see cref="IDumper"/> target.
 /// </summary>
+/// 
+/// <remarks>
+/// <para>
+/// Use this class when you want non-blocking text output: 
+/// calls to <see cref="Write(string)"/> and <see cref="WriteLine(string)"/> enqueue the text 
+/// and an internal background worker thread dequeues items and calls <see cref="IDumper.DumpText(string)"/> on the IDumper target.
+/// </para>
+/// 
+/// <para>
+/// The writer may be constructed with a null <see cref="IDumper"/>; queued text will be buffered
+/// until an <see cref="IDumper"/> is assigned via <see cref="SetOutput(IDumper)"/>.
+/// Access to the output and the internal queue is synchronized. Calling <see cref="Flush"/> will wait briefly
+/// for the queue to drain if a target is set and the worker thread is still alive.
+/// </para>
+/// 
+/// <para>
+/// Disposal stops the worker thread (with a short timeout) and cleans up internal resources.
+/// </para>
+/// 
+/// <para><b>Example</b>:</para>
+/// <code>
+/// // Typical usage: create the writer and add it as a Trace listener so Trace.Write / Trace.WriteLine
+/// // forward text to your IDumper implementation without blocking the caller.
+/// Trace.AutoFlush = true;
+/// using var dumpWriter = new DumperTextWriter(this); // 'this' implements IDumper
+/// Trace.Listeners.Add(new TextWriterTraceListener(dumpWriter));
+/// 
+/// // Later you can change the output target safely:
+/// // dumpWriter.SetOutput(new MyOtherDumper());
+/// </code>
+/// </remarks>
 [CLSCompliant(true)]
 public class DumperTextWriter : TextWriter, IDisposableEx
 {
@@ -82,66 +106,77 @@ public class DumperTextWriter : TextWriter, IDisposableEx
                 {
                     if (Dumper._evReady.WaitOne(_waitForWriteMs))
                     {
-                        IDisposableEx iDisp;
                         string strNext = null; // null indicates we have not found anything to write
                         Nullable<int> nWaitForOutput = null;
+                        IDumper outputToUse = null;
 
-                        // the event became signaled, which means there is something to write, or at least the event about it has been received
+                        // Enter upgradeable read lock to inspect Output and QueueBuffer
                         Dumper.SyncSlim.EnterUpgradeableReadLock();
                         try
                         {
-                            // do anything only if there is currently any output set at all
-                            if (null == Dumper.Output)
+                            // If there's no output, instruct to wait a bit before retry
+                            if (Dumper.Output == null)
                             {
-                                // Assign following to indicate the thread should sleep, to give more chance the other thread to assign the output.
-                                // The Sleep itself should not be here, but only in the finally part after the read lock is released.
                                 nWaitForOutput = _waitForWriteMs;
                             }
                             else
-                            { // Now figure-out if there is truly anything to write in the queue buffer. 
-                              // Do not call IsWriterQueueEmpty, for performance reasons (to avoid another lock acquiring).
+                            {
+                                // If there is an output but nothing in queue, reset the event and loop
                                 if (Dumper.QueueBuffer.Count == 0)
-                                { // just set the state of the event to non-signaled
-                                    Dumper._evReady.Reset();
-                                    continue;
-                                }
-
-                                // --- Proceed with another item processing. Must acquire writer lock first
-                                Dumper.SyncSlim.EnterWriteLock();
-                                try
                                 {
-                                    iDisp = Dumper.Output as IDisposableEx;
-                                    if ((null != iDisp) && iDisp.IsDisposed)
+                                    Dumper._evReady.Reset();
+                                }
+                                else
+                                {
+                                    // Capture output and dequeue while holding write lock only briefly
+                                    Dumper.SyncSlim.EnterWriteLock();
+                                    try
                                     {
-                                        bTargetDisposed = true;
-                                    }
-                                    else
-                                    {
-                                        strNext = Dumper.QueueBuffer.Dequeue();
-                                        try
+                                        if ((Dumper.Output is IDisposableEx iDisp) && iDisp.IsDisposed)
                                         {
-                                            Dumper.Output.DumpText(strNext);
-                                        }
-                                        catch (ObjectDisposedException /*ex*/)
-                                        { // eat the ObjectDisposedException.
-                                            /* string stackTrace = ex.StackTrace; */
                                             bTargetDisposed = true;
                                         }
+                                        else
+                                        {
+                                            outputToUse = Dumper.Output;
+                                            strNext = Dumper.QueueBuffer.Dequeue();
+
+                                            // If we've drained the queue, reset the event so worker can sleep
+                                            if (Dumper.QueueBuffer.Count == 0)
+                                            {
+                                                Dumper._evReady.Reset();
+                                            }
+                                        }
                                     }
-                                }
-                                finally
-                                {
-                                    Dumper.SyncSlim.ExitWriteLock();
+                                    finally
+                                    {
+                                        Dumper.SyncSlim.ExitWriteLock();
+                                    }
                                 }
                             }
                         }
                         finally
                         {
+                            // Release upgradeable read lock BEFORE calling out to DumpText to avoid deadlocks
                             Dumper.SyncSlim.ExitUpgradeableReadLock();
-                            if (nWaitForOutput.HasValue && !bTargetDisposed)
+                        }
+
+                        // Call DumpText outside of any Dumper.SyncSlim locks to avoid reentrancy/deadlocks
+                        if ((strNext != null) && !bTargetDisposed && (outputToUse != null))
+                        {
+                            try
                             {
-                                Thread.Sleep(nWaitForOutput.Value);
+                                outputToUse.DumpText(strNext);
                             }
+                            catch (ObjectDisposedException /*ex*/)
+                            { // eat the ObjectDisposedException.
+                                bTargetDisposed = true;
+                            }
+                        }
+
+                        if (nWaitForOutput.HasValue && !bTargetDisposed)
+                        {
+                            Thread.Sleep(nWaitForOutput.Value);
                         }
                     }
                 }
@@ -162,6 +197,7 @@ public class DumperTextWriter : TextWriter, IDisposableEx
     #region Fields
 
     #region Protected Fields
+
     /// <summary> The instance of WriterThread, who delegates all received texts to provided IDumper. The thread
     /// is disposed in DumperTextWriter.Dispose; after that <see cref="IsDisposed"/> always returns
     /// true. </summary>
@@ -207,8 +243,7 @@ public class DumperTextWriter : TextWriter, IDisposableEx
     /// <param name="output"> The object to which the  writer thread will eventually direct the output. May be null. </param>
     public DumperTextWriter(IDumper output)
       : this(output, System.Text.Encoding.Unicode)
-    {
-    }
+    { }
 
     /// <summary> Constructs a new instance of DumperTextWriter. Starts the internal thread, which will pick-up new items from the
     /// internal queue and "deliver" them to given IDumper, if that IDumper is not null. </summary>
@@ -238,21 +273,12 @@ public class DumperTextWriter : TextWriter, IDisposableEx
     ///
     /// <remarks> Instead of simple setter, the value can be modified by method <see cref="SetOutput"/>,
     /// providing thread-safety. </remarks>
-    public IDumper Output
-    {
-        get { return _output; }
-    }
+    public IDumper Output { get => _output; }
 
     /// <summary>
     /// Overrides the virtual property of the base class
     /// </summary>
-    public override Encoding Encoding
-    {
-        get
-        {
-            return _encoding;
-        }
-    }
+    public override Encoding Encoding { get => _encoding; }
 
     /// <summary>
     /// Returns true if the internal queue buffer is empty; false otherwise.
@@ -276,28 +302,17 @@ public class DumperTextWriter : TextWriter, IDisposableEx
     /// <summary>
     /// Accessing the instance of WorkerThread which performs writing
     /// </summary>
-    protected WorkerThread Writer
-    {
-        get { return _writer; }
-    }
+    protected WorkerThread Writer { get => _writer; }
 
-    /// <summary>
-    /// Get the synchronization object
-    /// </summary>
+    /// <summary> Get the synchronization object </summary>
     /// <remarks> It would be better to get here some wrapper objects around the 
     /// acquired reader locks and writer locks, similar way as in class RWLockWrapper.
     /// This is something ToDo </remarks>
-    private ReaderWriterLockSlim SyncSlim
-    {
-        get { return _slim; }
-    }
+    private ReaderWriterLockSlim SyncSlim { get => _slim; }
 
     /// <summary> Returns the queue buffer. </summary>
     /// <remarks> Any access to the buffer must be synchronized through sync object ( ReaderWriterLockSlim ) </remarks>
-    private Queue<string> QueueBuffer
-    {
-        get { return _queueBuffer; }
-    }
+    private Queue<string> QueueBuffer { get => _queueBuffer; }
     #endregion // Properties
 
     #region Methods
@@ -305,9 +320,7 @@ public class DumperTextWriter : TextWriter, IDisposableEx
 
     #region General_stuff
 
-    /// <summary>
-    /// Sets the output , to which the worker thread will "deliver" the contents of internal queue.
-    /// </summary>
+    /// <summary> Sets the output, to which the worker thread will "deliver" the contents of internal queue. </summary>
     /// <param name="output"> The  <see cref="PK.PkUtils.Interfaces.IDumper "/> output ( may be null ).</param>
     public void SetOutput(IDumper output)
     {
@@ -345,6 +358,7 @@ public class DumperTextWriter : TextWriter, IDisposableEx
     /// <param name="millisecondsTimeout">The number of milliseconds to wait for the thread to terminate. </param>
     public void RequestStopOrAbort(int millisecondsTimeout)
     {
+        ArgumentOutOfRangeException.ThrowIfNegative(millisecondsTimeout);
         RequestStop(millisecondsTimeout);
         if (Writer.IsAlive)
         {
@@ -457,9 +471,7 @@ public class DumperTextWriter : TextWriter, IDisposableEx
     /// <summary>
     ///  Returns true in case the object has been disposed and no longer should be used.
     /// </summary>
-    public bool IsDisposed
-    {
-        get { return (_writer == null); }
-    }
+    public bool IsDisposed { get => (_writer == null); }
+
     #endregion // IDisposableEx Members
 }

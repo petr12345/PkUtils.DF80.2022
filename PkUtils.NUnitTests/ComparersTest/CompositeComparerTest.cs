@@ -10,8 +10,8 @@ namespace PK.PkUtils.NUnitTests.ComparersTest;
 [TestFixture, CLSCompliant(false)]
 public class CompositeComparerTest
 {
-    private IComparer<string> _firstComparer;
-    private IComparer<string> _secondComparer;
+    private IComparer<string> _firstComparer = default!;
+    private IComparer<string> _secondComparer = default!;
 
     [SetUp]
     public void SetUp()
@@ -27,14 +27,14 @@ public class CompositeComparerTest
     public void Constructor_FirstComparerNull_ThrowsArgumentNullException()
     {
         var ex = Assert.Throws<ArgumentNullException>(() => new CompositeComparer<string>(null, _secondComparer));
-        Assert.That(ex.ParamName, Is.EqualTo("firstComparer"));
+        Assert.That(ex!.ParamName, Is.EqualTo("firstComparer"));
     }
 
     [Test, Description("Throws ArgumentNullException if second comparer is null.")]
     public void Constructor_SecondComparerNull_ThrowsArgumentNullException()
     {
         var ex = Assert.Throws<ArgumentNullException>(() => new CompositeComparer<string>(_firstComparer, null));
-        Assert.That(ex.ParamName, Is.EqualTo("secondComparer"));
+        Assert.That(ex!.ParamName, Is.EqualTo("secondComparer"));
     }
 
     [Test, Description("Successfully creates instance when both comparers are provided.")]

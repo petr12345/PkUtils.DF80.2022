@@ -28,7 +28,7 @@ namespace PK.PkUtils.UnitTests.ExtensionsTests
         }
 
         /// <summary> A helper method for test of GetValueOrNew </summary>
-        internal void GetValueOrNewTestHelper<TKey, TValue>(
+        internal static void GetValueOrNewTestHelper<TKey, TValue>(
             IDictionary<TKey, TValue> dictionary,
             TKey key,
             TValue expected) where TValue : new()

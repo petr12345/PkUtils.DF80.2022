@@ -64,9 +64,12 @@ public partial class CommandButton : Button
     }
 
     private Font _smallFont;
+
     /// <summary>
     /// SmallFont is the font used for secondary lines
     /// </summary>
+    [Browsable(true)]
+    [DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)]
     public Font SmallFont
     {
         get { return _smallFont; }

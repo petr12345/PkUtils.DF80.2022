@@ -485,7 +485,7 @@ public static class FilePathHelper
             if (bContinueSearching = (nInd >= 0))
             {
                 strTmp = strRight.Substring(0, ++nInd);
-                strRight = strRight.Substring(nInd, strRight.Length - nInd);
+                strRight = strRight.Substring(nInd);
             }
             else
             {

@@ -11,7 +11,6 @@ using PK.PkUtils.IO;
 
 #nullable enable
 
-
 namespace PK.PkUtils.UnitTests.IOTests;
 
 /// <summary>
@@ -64,6 +63,7 @@ public class FileSearchTest
     /// <param name="itemsB"> The files b. </param>
     /// <param name="strDescrA"> The description a. </param>
     /// <param name="strDescrB"> The description b. </param>
+    /// <param name="strItemName"> The item name. </param>
     internal bool SearchDumpResultComparison(
       IEnumerable<FileSystemInfo> itemsA,
       IEnumerable<FileSystemInfo> itemsB,
@@ -94,11 +94,11 @@ public class FileSearchTest
             List<string> seqBminusA = sortedFilesB.Except(sortedFilesA).ToList();
             const int nFragmentCount = 5;
 
-            if (seqAminusB.Count() == 0)
+            if (seqAminusB.Count == 0)
             { // A is subset of B
                 Dump("All results of {0} are contained in {1} results", strDescrA, strDescrB);
             }
-            else if (seqBminusA.Count() == 0)
+            else if (seqBminusA.Count == 0)
             { // B is subset of A
                 Dump("All results of {0} are contained in {1} results", strDescrB, strDescrA);
             }
@@ -108,7 +108,7 @@ public class FileSearchTest
                   strDescrA, strDescrB);
             }
 
-            if (seqAminusB.Count() > 0)
+            if (seqAminusB.Count > 0)
             {
                 string strMsg = string.Format(CultureInfo.InvariantCulture,
                   "Several items found by {0} but NOT present in {1}:", strDescrA, strDescrB);

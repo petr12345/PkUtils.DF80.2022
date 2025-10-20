@@ -207,7 +207,7 @@ public class ApplicationDesktopToolbar : Form
     #region Private Fields
 
     // saves the current edge
-    private ShellApi.AppBarEdges _Edge = ShellApi.AppBarEdges.Float;
+    private ShellApi.AppBarEdges _edge = ShellApi.AppBarEdges.Float;
 
     // saves the callback message id
     private readonly uint CallbackMessageID = 0;
@@ -243,15 +243,16 @@ public class ApplicationDesktopToolbar : Form
     /// <summary>
     /// Represents the current edge of AppBar.
     /// </summary>
+    [DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)]
     public ShellApi.AppBarEdges Edge
     {
         get
         {
-            return _Edge;
+            return _edge;
         }
         set
         {
-            _Edge = value;
+            _edge = value;
 
             if (value == ShellApi.AppBarEdges.Float)
             {
@@ -553,7 +554,7 @@ public class ApplicationDesktopToolbar : Form
         {
             rt.left = 0;
             rt.right = SystemInformation.PrimaryMonitorSize.Width;
-            if (_Edge == ShellApi.AppBarEdges.Top)
+            if (_edge == ShellApi.AppBarEdges.Top)
             {
                 rt.bottom = _PrevSize.Height;
             }

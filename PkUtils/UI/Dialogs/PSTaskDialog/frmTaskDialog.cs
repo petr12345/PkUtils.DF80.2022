@@ -16,6 +16,7 @@
 //
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Drawing;
 using System.Windows.Forms;
 using PK.PkUtils.UI.Dialogs.PSTaskDialog;
@@ -51,9 +52,9 @@ public partial class frmTaskDialog : Form
     private int _defaultButtonIndex;
     private Control _focusControl;
 
-    private eTaskDialogButtons _Buttons = eTaskDialogButtons.YesNoCancel;
+    private eTaskDialogButtons _buttons = eTaskDialogButtons.YesNoCancel;
 
-    private bool _Expanded;
+    private bool _expanded;
     private readonly bool _isVista;
     private bool _formBuilt;
 
@@ -89,6 +90,7 @@ public partial class frmTaskDialog : Form
     /// <summary>
     /// The kind of main icon being used for the Task Dialog.
     /// </summary>
+    [DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)]
     public eSysIcons MainIcon
     {
         get { return _mainIcon; }
@@ -98,6 +100,7 @@ public partial class frmTaskDialog : Form
     /// <summary>
     /// The kind of icon displayed in the footer of the Task Dialog.
     /// </summary>
+    [DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)]
     public eSysIcons FooterIcon
     {
         get { return _footerIcon; }
@@ -107,6 +110,7 @@ public partial class frmTaskDialog : Form
     /// <summary>
     /// The dialog Title ( the text in the Title bar ).
     /// </summary>
+    [DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)]
     public string Title
     {
         get { return this.Text; }
@@ -116,6 +120,7 @@ public partial class frmTaskDialog : Form
     /// <summary>
     /// The main instruction being displayed in the dialog.
     /// </summary>
+    [DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)]
     public string MainInstruction
     {
         get { return _mainInstruction; }
@@ -125,6 +130,8 @@ public partial class frmTaskDialog : Form
     /// <summary>
     /// The content text for the Task Dialog.
     /// </summary>
+    [Browsable(true)]
+    [DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)]
     public string Content
     {
         get { return lbContent.Text; }
@@ -134,6 +141,7 @@ public partial class frmTaskDialog : Form
     /// <summary>
     /// The Task Dialog expanded content text (it will be shown in the dialog after clicking on the arrow expand).
     /// </summary>
+    [DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)]
     public string ExpandedInfo
     {
         get { return lbExpandedInfo.Text; }
@@ -143,6 +151,8 @@ public partial class frmTaskDialog : Form
     /// <summary>
     /// The footer text, displayed in the bottom of Task Dialog.
     /// </summary>
+    [Browsable(true)]
+    [DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)]
     public string Footer
     {
         get { return lbFooter.Text; }
@@ -152,6 +162,7 @@ public partial class frmTaskDialog : Form
     /// <summary>
     /// Indicates the default (initial) radio button being selected in the Task Dialog.
     /// </summary>
+    [DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)]
     public int DefaultButtonIndex
     {
         get { return _defaultButtonIndex; }
@@ -163,6 +174,7 @@ public partial class frmTaskDialog : Form
     /// An example of string consisting of texts of three command buttons:<br/>
     /// <i>"Radio Option 1|Radio Option 2|Radio Option 3"</i>
     /// </summary>
+    [DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)]
     public string RadioButtons
     {
         get { return _radioButtons; }
@@ -201,6 +213,7 @@ public partial class frmTaskDialog : Form
     /// An example of string consisting of texts of three command buttons:<br/>
     /// <i>"Command &amp;Button 1|Command Button 2\nLine 2\nLine 3|Command Button 3"</i>
     /// </summary>
+    [DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)]
     public string CommandButtons
     {
         get { return _commandButtons; }
@@ -218,16 +231,20 @@ public partial class frmTaskDialog : Form
     /// <summary>
     /// The set of displayed <see cref="eTaskDialogButtons"/> buttons, combined into bitmask.
     /// </summary>
+    [Browsable(true)]
+    [DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)]
     public eTaskDialogButtons Buttons
     {
-        get { return _Buttons; }
-        set { _Buttons = value; }
+        get { return _buttons; }
+        set { _buttons = value; }
     }
 
     /// <summary>
     /// The string to be used to label the verification checkbox. If this member is null, the
     /// verification checkbox is not displayed in the dialog box.
     /// </summary>
+    [Browsable(true)]
+    [DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)]
     public string VerificationText
     {
         get { return cbVerify.Text; }
@@ -237,6 +254,7 @@ public partial class frmTaskDialog : Form
     /// <summary>
     /// Is the verification checkbox checked?
     /// </summary>
+    [DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)]
     public bool VerificationCheckBoxChecked
     {
         get { return cbVerify.Checked; }
@@ -246,10 +264,11 @@ public partial class frmTaskDialog : Form
     /// <summary>
     /// Is the dialog in expanded state.
     /// </summary>
+    [DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)]
     public bool Expanded
     {
-        get { return _Expanded; }
-        set { _Expanded = value; }
+        get { return _expanded; }
+        set { _expanded = value; }
     }
     #endregion // Properties
 
@@ -314,12 +333,12 @@ public partial class frmTaskDialog : Form
         {
             AdjustLabelHeight(lbExpandedInfo);
             pnlExpandedInfo.Height = lbExpandedInfo.Height + 4;
-            pnlExpandedInfo.Visible = _Expanded;
-            lbShowHideDetails.Text = (_Expanded ? "        Hide details" : "        Show details");
-            lbShowHideDetails.ImageIndex = (_Expanded ? 0 : 3);
+            pnlExpandedInfo.Visible = _expanded;
+            lbShowHideDetails.Text = (_expanded ? "        Hide details" : "        Show details");
+            lbShowHideDetails.ImageIndex = (_expanded ? 0 : 3);
             if (!show_verify_checkbox)
                 pnlButtons.Height = 40;
-            if (_Expanded)
+            if (_expanded)
                 for_height += pnlExpandedInfo.Height;
         }
 
@@ -375,7 +394,7 @@ public partial class frmTaskDialog : Form
         }
 
         // Setup Buttons
-        switch (_Buttons)
+        switch (_buttons)
         {
             case eTaskDialogButtons.YesNo:
                 bt1.Visible = false;
@@ -439,7 +458,7 @@ public partial class frmTaskDialog : Form
                            Buttons == eTaskDialogButtons.OKCancel ||
                            Buttons == eTaskDialogButtons.YesNoCancel);
 
-        if (!show_verify_checkbox && string.IsNullOrEmpty(ExpandedInfo) && _Buttons == eTaskDialogButtons.None)
+        if (!show_verify_checkbox && string.IsNullOrEmpty(ExpandedInfo) && _buttons == eTaskDialogButtons.None)
             pnlButtons.Visible = false;
         else
             for_height += pnlButtons.Height;
@@ -600,30 +619,30 @@ public partial class frmTaskDialog : Form
 
     private void LbDetails_MouseEnter(object sender, EventArgs args)
     {
-        lbShowHideDetails.ImageIndex = (_Expanded ? 1 : 4);
+        lbShowHideDetails.ImageIndex = (_expanded ? 1 : 4);
     }
 
     private void LbDetails_MouseLeave(object sender, EventArgs args)
     {
-        lbShowHideDetails.ImageIndex = (_Expanded ? 0 : 3);
+        lbShowHideDetails.ImageIndex = (_expanded ? 0 : 3);
     }
 
     private void LbDetails_MouseUp(object sender, MouseEventArgs args)
     {
-        lbShowHideDetails.ImageIndex = (_Expanded ? 1 : 4);
+        lbShowHideDetails.ImageIndex = (_expanded ? 1 : 4);
     }
 
     private void LbDetails_MouseDown(object sender, MouseEventArgs args)
     {
-        lbShowHideDetails.ImageIndex = (_Expanded ? 2 : 5);
+        lbShowHideDetails.ImageIndex = (_expanded ? 2 : 5);
     }
 
     private void LbDetails_Click(object sender, EventArgs args)
     {
-        _Expanded = !_Expanded;
-        pnlExpandedInfo.Visible = _Expanded;
-        lbShowHideDetails.Text = (_Expanded ? "        Hide details" : "        Show details");
-        if (_Expanded)
+        _expanded = !_expanded;
+        pnlExpandedInfo.Visible = _expanded;
+        lbShowHideDetails.Text = (_expanded ? "        Hide details" : "        Show details");
+        if (_expanded)
             this.Height += pnlExpandedInfo.Height;
         else
             this.Height -= pnlExpandedInfo.Height;

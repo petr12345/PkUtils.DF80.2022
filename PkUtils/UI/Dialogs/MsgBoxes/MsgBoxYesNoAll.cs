@@ -103,6 +103,8 @@ public partial class MsgBoxYesNoAll : Form
     /// <summary>
     /// A main instruction text ( text of label _lblMainInstruction, which is the form child control )
     /// </summary>
+    [Browsable(true)]
+    [DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)]
     public string MainInstructionText
     {
         get { return this._lblMainInstruction.Text; }
@@ -112,6 +114,8 @@ public partial class MsgBoxYesNoAll : Form
     /// <summary>
     /// A content text ( text of label _lblContent, which is the form child control )
     /// </summary>
+    [Browsable(true)]
+    [DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)]
     public string ContentText
     {
         get { return this._lblContent.Text; }
@@ -119,6 +123,8 @@ public partial class MsgBoxYesNoAll : Form
     }
 
     /// <summary> Gets or sets the standard icon displayed in the PictureBox. </summary>
+    [Browsable(true)]
+    [DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)]
     public MessageBoxIcon StandardIcon
     {
         get { return _standardIcon; }

@@ -29,7 +29,7 @@ namespace PK.PkUtils.UnitTests.ExtensionsTests
         /// <summary>
         /// A helper for test of IsEmpty
         /// </summary>
-        internal void IsEmptyTestHelper<T>(IEnumerable<T> source, bool expected)
+        internal static void IsEmptyTestHelper<T>(IEnumerable<T> source, bool expected)
         {
             bool actual = EnumerableExtensions.IsEmpty<T>(source);
             Assert.AreEqual(expected, actual);

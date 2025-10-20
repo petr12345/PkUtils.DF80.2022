@@ -793,7 +793,7 @@ public class CachedEnumerable<T> : NotifyPropertyChanged, ICachedEnumerable<T>, 
     protected void ValidateMe()
     {
         Debug.Assert(!IsDisposed);
-        Debug.Assert(Enum.IsDefined(typeof(ParseStatus), this.Status));
+        Debug.Assert(Enum.IsDefined(this.Status));
         Debug.Assert(SlimLock.IsReadLockHeld || SlimLock.IsUpgradeableReadLockHeld || SlimLock.IsWriteLockHeld);
 
         switch (this.Status)
@@ -1091,7 +1091,7 @@ public class CachedEnumerable<T> : NotifyPropertyChanged, ICachedEnumerable<T>, 
     {
         get
         {
-            return (Thread.VolatileRead(ref this._disposableState) == StateDisposed);
+            return (System.Threading.Volatile.Read(ref this._disposableState) == StateDisposed);
         }
     }
     #endregion // IDisposableEx Members

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Diagnostics;
 using System.Drawing;
 using System.Linq;
@@ -49,11 +50,19 @@ namespace TestBinding
         #region Properties
         #region Public Properties
 
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public List<Person> Data_People { get; set; }
+
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public List<Salary> Data_Salaries { get; set; }
+
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public List<Role> Data_Roles { get; set; }
+
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public List<Package> Data_Packages { get; set; }
 
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public string Data_String { get; set; }
         #endregion // Public Properties
 
@@ -295,12 +304,12 @@ namespace TestBinding
             SubscribeDataSources();
         }
 
-        private void _myTextBindingSource_CurrentItemChanged(object sender, EventArgs e)
+        private void OnMyTextBindingSource_CurrentItemChanged(object sender, EventArgs e)
         {
             MessageBox.Show("CurrentItemChanged");
         }
 
-        private void _myTextBindingSource_CurrentChanged(object sender, EventArgs e)
+        private void OnMyTextBindingSource_CurrentChanged(object sender, EventArgs e)
         {
             MessageBox.Show("CurrentChanged");
         }
