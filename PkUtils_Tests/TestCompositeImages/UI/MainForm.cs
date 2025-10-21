@@ -7,12 +7,13 @@
 *
 * AUTHOR:      Petr Kodet
 *
-* DESCRIPTION: The file contains ( the main application window )
+* DESCRIPTION: The file contains the main application window
 *
 **************************************************************************************************************/
 
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Diagnostics;
 using System.Drawing;
 using System.Globalization;
@@ -49,7 +50,7 @@ namespace TestCompositeImages.UI
         private string _lastChosenFolder;
 
         /// <summary> true if this object is processing images now. </summary>
-        private bool _IsProcessing;
+        private bool _isProcessing;
 
         /// <summary> The head of the dataflow network. </summary>
         private ImageProcessingPipe _blocksPipe;
@@ -82,7 +83,7 @@ namespace TestCompositeImages.UI
         /// <value> true if this object is processing, false if not. </value>
         public bool IsProcessing
         {
-            get { return _IsProcessing; }
+            get { return _isProcessing; }
         }
 
         /// <summary> Gets the main image processing pipe. It is assumed the pipe is created already. </summary>
@@ -94,6 +95,7 @@ namespace TestCompositeImages.UI
         /// <summary> Gets or sets the pathname of the last chosen folder. </summary>
         ///
         /// <value> The pathname of the last chosen folder. </value>
+        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
         public string LastChosenFolder
         {
             get { return _lastChosenFolder; }
@@ -174,7 +176,7 @@ namespace TestCompositeImages.UI
         {
             if (bProcessing != IsProcessing)
             {
-                this._IsProcessing = bProcessing;
+                this._isProcessing = bProcessing;
                 DoIndicateProcessingState();
             }
         }

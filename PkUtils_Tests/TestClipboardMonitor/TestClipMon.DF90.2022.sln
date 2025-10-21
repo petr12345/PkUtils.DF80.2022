@@ -1,0 +1,27 @@
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.4.33205.214
+MinimumVisualStudioVersion = 16.0.0
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TestClipMon.DF90.2022", "TestClipMon.DF90.2022.csproj", "{AF20E887-C7E5-4CC0-9FF2-3AFD8590BA70}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PkUtils.DF90.2022", "..\..\PkUtils\PkUtils.DF90.2022.csproj", "{FC81A24B-699C-4543-A5AC-C98BCA594C0D}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{AF20E887-C7E5-4CC0-9FF2-3AFD8590BA70}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{AF20E887-C7E5-4CC0-9FF2-3AFD8590BA70}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{AF20E887-C7E5-4CC0-9FF2-3AFD8590BA70}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{AF20E887-C7E5-4CC0-9FF2-3AFD8590BA70}.Release|Any CPU.Build.0 = Release|Any CPU
+		{FC81A24B-699C-4543-A5AC-C98BCA594C0D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FC81A24B-699C-4543-A5AC-C98BCA594C0D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FC81A24B-699C-4543-A5AC-C98BCA594C0D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FC81A24B-699C-4543-A5AC-C98BCA594C0D}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal
