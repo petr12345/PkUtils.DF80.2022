@@ -21,6 +21,22 @@ using static System.FormattableString;
 
 namespace PK.PkUtils.Extensions;
 
+//// TO DO: to be tried: extension property IsEmpty
+///// <summary>
+///// Provides extension properties for <see cref="IEnumerable{T}"/>.
+///// </summary>
+//extension<T>(IEnumerable<T> source)
+//{
+//    /// <summary>
+//    /// Gets a value indicating whether the sequence contains no elements.
+//    /// </summary>
+//    /// <value>
+//    /// <see langword="true"/> if the sequence has no elements; otherwise, <see langword="false"/>.
+//    /// </value>
+//    public bool IsEmpty => !source.Any();
+//}
+
+
 /// <summary>
 /// Static class containing various IEnumerable extension methods.
 /// </summary>
