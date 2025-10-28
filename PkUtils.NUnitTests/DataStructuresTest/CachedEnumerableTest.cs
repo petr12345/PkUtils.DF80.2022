@@ -6,6 +6,8 @@ using PK.PkUtils.Interfaces;
 
 namespace PK.PkUtils.NUnitTests.DataStructuresTest;
 
+#pragma warning disable IDE0300   // Simplify collection initialization
+
 /// <summary>
 /// This is a test class for CachedEnumerable generic
 ///</summary>
@@ -430,6 +432,7 @@ public class CachedEnumerableTest
     {
         CachedEnumerable<int> enumerab = new CachedEnumerable<int>(Enumerable.Range(0, 10));
         IPeekAbleEnumerator<int> en = enumerab.GetPeekAbleEnumerator();
+        Assert.That(en, Is.Not.Null);
         enumerab.Dispose();
         enumerab.Dispose();
     }
@@ -601,3 +604,4 @@ public class CachedEnumerableTest
     #endregion // Tests_Covariance
     #endregion // Tests
 }
+#pragma warning restore IDE0300

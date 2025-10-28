@@ -126,7 +126,7 @@ public interface IStackedForm
     /// <summary>
     /// The event raised when the Form is closed
     /// </summary>
-    event EventHandler<EventFormStackItemClosedArgs> evStackItemClosed;
+    event EventHandler<EventFormStackItemClosedArgs> EventStackItemClosed;
 
     /// <summary>
     /// The event used to signalize when the Form data preloading has finished.,

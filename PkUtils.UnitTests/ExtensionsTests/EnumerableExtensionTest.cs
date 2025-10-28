@@ -20,7 +20,7 @@ namespace PK.PkUtils.UnitTests.ExtensionsTests
         /// <summary>
         /// A helper for test of IsNullorEmpty
         /// </summary>
-        public void IsNullOrEmptyTestHelper<T>(IEnumerable<T> source, bool expected)
+        public static void IsNullOrEmptyTestHelper<T>(IEnumerable<T> source, bool expected)
         {
             bool actual = EnumerableExtensions.IsNullOrEmpty<T>(source);
             Assert.AreEqual(expected, actual);
@@ -47,7 +47,7 @@ namespace PK.PkUtils.UnitTests.ExtensionsTests
         /// <summary>
         /// A helper for test of IndexOf
         /// </summary>
-        internal void IndexOfTest2Helper<T>(IEnumerable<T> source, T val, IEqualityComparer<T> comparer, int expected)
+        internal static void IndexOfTest2Helper<T>(IEnumerable<T> source, T val, IEqualityComparer<T> comparer, int expected)
         {
             int actual = EnumerableExtensions.IndexOf<T>(source, val, comparer);
             Assert.AreEqual(expected, actual);
@@ -196,7 +196,7 @@ namespace PK.PkUtils.UnitTests.ExtensionsTests
         #region Tests_FindDuplicities
 
         /// <summary> A te        [TestMethod()]
-        public void EnumerableExtension_FindDuplicitiesTest_01()
+        public static void EnumerableExtension_FindDuplicitiesTest_01()
         {
             int[] source = null!;
             Assert.ThrowsExactly<ArgumentNullException>(() => source.FindDuplicities());

@@ -6,6 +6,8 @@ using System.Linq;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using PK.PkUtils.MathEx;
 
+#pragma warning disable IDE0300   // Simplify collection initialization
+
 namespace PK.PkUtils.NUnitTests.MathExTests;
 
 [TestClass()]
@@ -147,3 +149,4 @@ public class QuickSortImplTests
 
     #endregion // Tests
 }
+#pragma warning restore IDE0300

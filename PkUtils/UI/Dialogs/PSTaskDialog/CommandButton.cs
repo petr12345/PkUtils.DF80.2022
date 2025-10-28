@@ -151,11 +151,11 @@ public partial class CommandButton : Button
             return "";
 
         string s = this.Text;
-        string[] lines = s.Split(new char[] { '\n' });
+        string[] lines = s.Split(['\n']);
         s = "";
         for (int i = 1; i < lines.Length; i++)
             s += lines[i] + "\n";
-        return s.Trim(new char[] { '\n' });
+        return s.Trim(['\n']);
     }
 
     private SizeF GetLargeTextSizeF()

@@ -20,7 +20,7 @@ namespace PK.PkUtils.UnitTests.ExtensionsTests
         public interface IStackedForm { }
         public class StackedFormWrapper<TForm> : IStackedForm, IDisposable where TForm : Form
         {
-            public void Dispose() { }
+            public void Dispose() { GC.SuppressFinalize(this); }
         }
         public class FormWrapperPlainDerived<TForm> : StackedFormWrapper<TForm> where TForm : Form { };
         public class MainStackedFormWrapper<TForm> : StackedFormWrapper<TForm> where TForm : Form { }

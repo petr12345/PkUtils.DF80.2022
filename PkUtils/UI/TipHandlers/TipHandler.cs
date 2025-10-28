@@ -13,6 +13,8 @@ using PK.PkUtils.WinApi;
 
 namespace PK.PkUtils.UI.TipHandlers;
 
+#pragma warning disable CA1859    // Change type of variable ...
+
 /// <summary>
 /// TipHandler is base class of "tooltip-supporter engine." 
 /// See derived classes like ListBoxTipHandler.
@@ -872,3 +874,5 @@ public abstract class TipHandler : WindowMessageHook
     #endregion // Private Methods
     #endregion // Methods
 }
+
+#pragma warning restore CA1859    // Change type of variable ...

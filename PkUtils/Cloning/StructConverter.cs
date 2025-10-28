@@ -1,14 +1,4 @@
-﻿/***************************************************************************************************************
-*
-* FILE NAME:   .\Cloning\StructConverter.cs
-*
-* AUTHOR:      Petr Kodet
-*
-* DESCRIPTION: The file contains implementation of StructConverter class
-*
-**************************************************************************************************************/
-
-// Ignore Spelling: Utils
+﻿// Ignore Spelling: Utils
 //
 using System;
 using System.Runtime.InteropServices;
@@ -30,7 +20,7 @@ public static class StructConverter<S> where S : struct
     /// <seealso cref="ToByteArray"/>
     public static int OccupiedBytes
     {
-        get { return Marshal.SizeOf(typeof(S)); }
+        get { return Marshal.SizeOf<S>(); }
     }
 
     /// <summary>
@@ -82,7 +72,7 @@ public static class StructConverter<S> where S : struct
         using (UnmanagedPtr p = new(nLength = OccupiedBytes))
         {
             Marshal.Copy(arr, 0, p.PtrToUnmanagedMemory, nLength);
-            result = (S)Marshal.PtrToStructure(p.PtrToUnmanagedMemory, typeof(S));
+            result = Marshal.PtrToStructure<S>(p.PtrToUnmanagedMemory);
         }
 
         return result;

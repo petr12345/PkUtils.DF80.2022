@@ -8,6 +8,7 @@ using PK.PkUtils.SystemEx;
 using PK.PkUtils.Utils;
 using PK.PkUtils.WinApi;
 
+#pragma warning disable IDE0059   // Avoid unnecessary value assignments
 #pragma warning disable IDE0290     // Use primary constructor
 
 namespace PK.PkUtils.UI.TipHandlers
@@ -519,3 +520,4 @@ namespace PK.PkUtils.UI.TipHandlers
     }
 }
 #pragma warning restore IDE0290 // Use primary constructor
+#pragma warning restore IDE0059

@@ -1,0 +1,51 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>net10.0-windows7.0</TargetFramework>
+    <EnableUnsafeBinaryFormatterSerialization>true</EnableUnsafeBinaryFormatterSerialization>			
+    <OutputType>WinExe</OutputType>
+    <RootNamespace>PK.TestTgSchema</RootNamespace>
+    <AssemblyName>PK.TestTgSchema</AssemblyName>
+    <ApplicationIcon>resources\C#.ico</ApplicationIcon>
+    <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+    <UseWindowsForms>true</UseWindowsForms>
+    <ImportWindowsDesktopTargets>true</ImportWindowsDesktopTargets>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Update="System.Core">
+      <RequiredTargetFramework>3.5</RequiredTargetFramework>
+    </Reference>
+    <Reference Update="System.Xml.Linq">
+      <RequiredTargetFramework>3.5</RequiredTargetFramework>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Update="TextBoxCtrls\TaggingSchemaTextBoxClassBasedCtrl.cs" />
+    <Compile Update="TextBoxCtrls\TaggingSchemaTextBoxEnumBasedCtrl.cs" />
+    <Compile Update="TextBoxCtrls\TaggingSchemaTextBoxGenericCtrl.cs" />
+    <Compile Update="UserCtrls\TaggingSchemaGeneralClassBasedUserCtrl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Update="UserCtrls\TaggingSchemaGeneralEnumBaseUserCtrl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Update="UserCtrls\TaggingSchema_ComponentslUserCtrl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Update="UserCtrls\TaggingSchema_LinesEnumBasedUserCtrl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="..\..\ReadMe.txt">
+      <Link>ReadMe.txt</Link>
+    </Content>
+    <Content Include="resources\C#.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\..\PkUtils\PkUtils.DF10.2026.csproj" />
+    <ProjectReference Include="..\SubstEditLib\SubstEditLib.DF10.2026.csproj" />
+  </ItemGroup>
+  <Target Name="AfterBuild">
+  </Target>
+</Project>

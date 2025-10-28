@@ -283,26 +283,25 @@ public class ErrorPresenterBase : IErrorPresenter
     {
         ArgumentNullException.ThrowIfNull(info);
 
-        string strTmp;
         bool result = false;
 
         if (obj != null)
         {
-            if (null != (strTmp = (obj as string)))
+            if (obj is string strTmp)
             {
                 info.MessageCaption = strTmp;
             }
-            else if (obj is MessageBoxButtons)
+            else if (obj is MessageBoxButtons buttons)
             {
-                info.MessageButtons = (MessageBoxButtons)obj;
+                info.MessageButtons = buttons;
             }
-            else if (obj is MessageBoxIcon)
+            else if (obj is MessageBoxIcon icon)
             {
-                info.MessageIcon = (MessageBoxIcon)obj;
+                info.MessageIcon = icon;
             }
-            else if (obj is MessageBoxDefaultButton)
+            else if (obj is MessageBoxDefaultButton defaultButton)
             {
-                info.MessageDefaultButton = (MessageBoxDefaultButton)obj;
+                info.MessageDefaultButton = defaultButton;
             }
             else
             {

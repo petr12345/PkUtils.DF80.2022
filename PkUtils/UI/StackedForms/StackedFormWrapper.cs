@@ -63,7 +63,7 @@ namespace PK.PkUtils.UI.StackedForms;
 /// <para>
 /// Note how the event handling chain works:    <br/>
 /// ------------------------------------------  <br/>
-///    1. Form.OnClosing =>                     <br/>
+///    1. Form.OnFormClosing =>                 <br/>
 /// => 2. fires the Closing event =>            <br/>
 /// => 3. StackedForm.FormClosingHandler =>     <br/>
 /// => 4. StackedForm.ClosingHandler =>         <br/>
@@ -88,7 +88,7 @@ public class StackedFormWrapper<TForm> : IStackedForm, IDisposable where TForm :
     protected ManualResetEvent _evPreloadDone;
 
     /// <summary>
-    /// The backing field of the property <see cref="evStackItemClosed"/>
+    /// The backing field of the property <see cref="EventStackItemClosed"/>
     /// </summary>
     protected EventHandler<EventFormStackItemClosedArgs> _evStackItemClosed;
 
@@ -156,7 +156,7 @@ public class StackedFormWrapper<TForm> : IStackedForm, IDisposable where TForm :
     #region Methods
 
     /// <summary>
-    /// Fires the event <see cref="evStackItemClosed"/>
+    /// Fires the event <see cref="EventStackItemClosed"/>
     /// </summary>
     /// <param name="args">Argument containing characteristic data for event that is raised when the FormStack item is closed.</param>
     protected void FireEventStackItemClosed(EventFormStackItemClosedArgs args)
@@ -169,14 +169,14 @@ public class StackedFormWrapper<TForm> : IStackedForm, IDisposable where TForm :
     /// </summary>
     protected void InitializeClosingHandler()
     {
-        MyTForm.Closing += new CancelEventHandler(FormClosingHandler);
+        MyTForm.FormClosing += new FormClosingEventHandler(FormClosingHandler);
     }
 
     /// <summary>
     /// The virtual method which is called by the event handler private void FormClosingHandler.
     /// In your derived form, you may overwrite this method
     /// ( and that's what you should do if you want to prevent your form from closing.
-    ///  Don't overwrite virtual void OnClosing(CancelEventArgs args);)
+    ///  Don't overwrite virtual void OnFormClosing(FormClosingEventArgs args);)
     /// </summary>
     /// <param name="sender">The sender (originator) of the event.</param>
     /// <param name="args">Provides data for a cancelable event.</param>
@@ -200,12 +200,12 @@ public class StackedFormWrapper<TForm> : IStackedForm, IDisposable where TForm :
     }
 
     /// <summary>
-    /// The event handler called by the MyTForm.Closing event.
+    /// The event handler called by the MyTForm.FormClosing event.
     /// Delegates the functionality to the virtual method void ClosingHandler
     /// </summary>
     /// <param name="sender">The sender (originator) of the event.</param>
     /// <param name="args">Provides data for a cancelable event.</param>
-    private void FormClosingHandler(object sender, CancelEventArgs args)
+    private void FormClosingHandler(object sender, FormClosingEventArgs args)
     {
         ClosingHandler(sender, args);
     }
@@ -214,7 +214,7 @@ public class StackedFormWrapper<TForm> : IStackedForm, IDisposable where TForm :
     #region IStackedForm Members
 
     /// <inheritdoc/>
-    public event EventHandler<EventFormStackItemClosedArgs> evStackItemClosed
+    public event EventHandler<EventFormStackItemClosedArgs> EventStackItemClosed
     {
         [MethodImpl(MethodImplOptions.Synchronized)]
         add

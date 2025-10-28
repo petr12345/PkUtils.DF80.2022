@@ -5,7 +5,8 @@ using System.Reflection;
 using PK.PkUtils.Reflection;
 
 #pragma warning disable CA1822 // Member ... does not access instance data and can be marked as static
-
+#pragma warning disable IDE0059   // Avoid unnecessary value assignments
+#pragma warning disable IDE0300   // Simplify collection initialization
 
 namespace PK.PkUtils.NUnitTests.ReflectionTests;
 
@@ -114,7 +115,7 @@ public class MethodsUtilsTest
     /// <summary>
     /// A generic helper for the RunStaticMethodTest, not supporting argument types
     /// </summary>
-    internal void RunStaticMethodTestHelper<V>(Type t, string methodName, object[] args, V expected)
+    private void RunStaticMethodTestHelper<V>(Type t, string methodName, object[] args, V expected)
     {
         V actual = (V)MethodsUtils.RunStaticMethod(t, methodName, args)!;
         Assert.That(actual, Is.EqualTo(expected));
@@ -123,7 +124,7 @@ public class MethodsUtilsTest
     /// <summary>
     /// A generic helper for the RunStaticMethodTest, supporting argument types
     /// </summary>
-    internal void RunStaticMethodTestHelper<V>(Type t, string methodName, Type[] argTypes, object[] args, V expected)
+    private void RunStaticMethodTestHelper<V>(Type t, string methodName, Type[] argTypes, object[] args, V expected)
     {
         V actual = (V)MethodsUtils.RunStaticMethod(t, methodName, argTypes, args)!;
         Assert.That(actual, Is.EqualTo(expected));
@@ -327,7 +328,7 @@ public class MethodsUtilsTest
     /// <summary>
     /// A generic helper for the RunStaticMethodTest, not supporting argument types
     /// </summary>
-    internal void RunInstanceMethodTestHelper<T, V>(T obj, string methodName, object[] args, V expected)
+    private void RunInstanceMethodTestHelper<T, V>(T obj, string methodName, object[] args, V expected)
         where T : notnull
     {
         V actual = (V)MethodsUtils.RunInstanceMethod(obj, methodName, args)!;
@@ -337,7 +338,7 @@ public class MethodsUtilsTest
     /// <summary>
     /// A generic helper for the RunStaticMethodTest, supporting argument types
     /// </summary>
-    internal void RunInstanceMethodTestHelper<T, V>(
+    private void RunInstanceMethodTestHelper<T, V>(
         T obj,
         string methodName,
         Type[]? argTypes,
@@ -351,7 +352,7 @@ public class MethodsUtilsTest
     /// <summary>
     /// A generic helper for the RunStaticMethodTest, supporting argument types
     /// </summary>
-    internal void RunInstanceMethodExTestHelper<T, V>(
+    private void RunInstanceMethodExTestHelper<T, V>(
         T obj,
         string methodName,
         Type[]? argTypes,
@@ -524,7 +525,7 @@ public class MethodsUtilsTest
     public void MethodsUtils_GetAllStaticMethodsTest()
     {
         string strMethodName = "B_Protected";
-        Func<string, bool> nameMatchPredicate = name => (0 == string.CompareOrdinal(name, strMethodName));
+        bool nameMatchPredicate(string name) => (0 == string.CompareOrdinal(name, strMethodName));
         Type t = typeof(C);
         IEnumerable<string> expectedNames = AllStaticMethodNames.Where(nameMatchPredicate);
 
@@ -621,4 +622,6 @@ public class MethodsUtilsTest
     }
     #endregion // Accessing_MethodInfo_Full_Scope_tests
 }
+#pragma warning restore IDE0300
+#pragma warning restore IDE0059
 #pragma warning restore CA1822

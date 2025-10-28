@@ -689,11 +689,11 @@ namespace PK.SubstEditLib.Subst
 
             if ((startIndex < 0) || (startIndex > strOldLog.Length))
             {
-                throw new ArgumentException("Argument out of range", "startIndex");
+                throw new ArgumentException("Argument out of range", nameof(startIndex));
             }
             if ((nReplacedLenght < 0) || (nReplacedLenght > strOldLog.Length - startIndex))
             {
-                throw new ArgumentException("Argument out of range", "nReplacedLenght");
+                throw new ArgumentException("Argument out of range", nameof(nReplacedLenght));
             }
             // find all affected fields ( fields for which the deletion index in text precedes the field )
             List<LogInfo<TFIELDID>> listAffected = GetLogList.FindAll(info => (startIndex < info.Pos));
@@ -728,10 +728,7 @@ namespace PK.SubstEditLib.Subst
         /// <see cref="ReplaceLogTextPart"/>
         protected void ReplaceLogTextAllThrough(string strOldPart, string strNewPart)
         {
-            if (string.IsNullOrEmpty(strOldPart))
-            {
-                throw new ArgumentException("Must be a non-empty string", "strOldPart");
-            }
+            ArgumentNullException.ThrowIfNullOrEmpty(strOldPart);
 
             int nDexFound;
             int nOldPart = strOldPart.Length;

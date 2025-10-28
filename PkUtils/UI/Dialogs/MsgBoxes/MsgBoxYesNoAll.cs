@@ -250,11 +250,11 @@ public partial class MsgBoxYesNoAll : Form
         UpdateSize();
     }
 
-    /// <summary> Raises the <see cref="Form.Closing" /> event. </summary>
-    /// <param name="args"> A <see cref="CancelEventArgs" /> that contains the event data. </param>
-    protected override void OnClosing(CancelEventArgs args)
+    /// <summary> Overwrites the virtual method of the predecessor, to provide custom processing. </summary>
+    /// <param name="args">Provides data for a cancel-able Form closing event. </param>
+    protected override void OnFormClosing(FormClosingEventArgs args)
     {
-        base.OnClosing(args);
+        base.OnFormClosing(args);
         _lastLocation = this.Location;
     }
     #endregion // Protected Methods

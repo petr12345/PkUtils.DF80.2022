@@ -898,7 +898,6 @@ public class FormStack : List<IStackedForm>, IDisposable, ISuspendable, ICompact
     {
         lock (Locker)
         {
-            IDisposable iDisp;
             // Prepare the list of 'candidates' for removal ( present in FormList but not in the stack )
             // Must use .ToList() to avoid delayed execution and completely populate the list before further calls of FormList.Remove(sf);
             List<IStackedForm> listToRemove = NotDisplayedForms.ToList();
@@ -915,7 +914,7 @@ public class FormStack : List<IStackedForm>, IDisposable, ISuspendable, ICompact
                 if (!sf.IsModalState)
                 {
                     FormList.Remove(sf);
-                    if (null != (iDisp = sf as IDisposable))
+                    if (sf is IDisposable iDisp)
                     {
                         iDisp.Dispose();
                     }
@@ -1361,7 +1360,6 @@ public class FormStack : List<IStackedForm>, IDisposable, ISuspendable, ICompact
         {
 #if DEBUG
             IStackedForm top = this.TopStackedForm;
-            IStackedForm iSender = sender as IStackedForm;
             StringBuilder sbErrMsg = new();
             bool senderIsWrong = false;
 
@@ -1373,7 +1371,7 @@ public class FormStack : List<IStackedForm>, IDisposable, ISuspendable, ICompact
             }
             else
             {
-                if (null != iSender)
+                if (sender is IStackedForm iSender)
                 {
                     senderIsWrong = !object.ReferenceEquals(sender, top);
                 }

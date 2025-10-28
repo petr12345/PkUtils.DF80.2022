@@ -7,6 +7,8 @@ using System.Reflection;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using PK.PkUtils.Reflection;
 
+#pragma warning disable IDE0059   // Avoid unnecessary value assignments
+
 #nullable enable
 
 namespace PK.PkUtils.UnitTests.ReflectionTests;
@@ -547,3 +549,5 @@ public class PropertiesUtilsTest
     }
     #endregion // Accessing_PropertyInfo_Full_Scope
 }
+
+#pragma warning restore IDE0059

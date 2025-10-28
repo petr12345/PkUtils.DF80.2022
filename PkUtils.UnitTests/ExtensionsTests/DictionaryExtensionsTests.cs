@@ -14,7 +14,7 @@ namespace PK.PkUtils.UnitTests.ExtensionsTests
         #region Auxiliary_methods
 
         /// <summary> A helper method for test of GetValueOrDefault </summary>
-        internal void ValueOrDefaultTestHelper<TKey, TValue>(
+        internal static void ValueOrDefaultTestHelper<TKey, TValue>(
             IDictionary<TKey, TValue> dictionary,
             TKey key,
             TValue expected)
@@ -42,7 +42,7 @@ namespace PK.PkUtils.UnitTests.ExtensionsTests
 
 
         /// <summary> A helper method for test of AddNew.</summary>
-        internal void AddNewTestHelper<TKey, TValue>(
+        internal static void AddNewTestHelper<TKey, TValue>(
           IDictionary<TKey, TValue> dictionary, TKey key, TValue value)
         {
             dictionary.AddNew<TKey, TValue>(key, value);
@@ -52,7 +52,7 @@ namespace PK.PkUtils.UnitTests.ExtensionsTests
         /// <summary>
         /// A helper method for test of RemoveExisting
         /// </summary>
-        internal void RemoveExistingTestHelper<TKey, TValue>(
+        internal static void RemoveExistingTestHelper<TKey, TValue>(
           IDictionary<TKey, TValue> dictionary, TKey key)
         {
             DictionaryExtensions.RemoveExisting<TKey, TValue>(dictionary, key);

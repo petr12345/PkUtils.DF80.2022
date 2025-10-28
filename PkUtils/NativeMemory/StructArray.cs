@@ -28,7 +28,7 @@ public unsafe class StructArray<S> : UnmanagedPtr where S : struct
     /// </summary>
     /// <param name="nStructuresToAllocate">An initial amount of structures for which  the memory block will be  allocated.</param>
     public StructArray(int nStructuresToAllocate)
-      : base(unchecked(nStructuresToAllocate * Marshal.SizeOf(typeof(S))))
+      : base(unchecked(nStructuresToAllocate * Marshal.SizeOf<S>()))
     {
         _size = nStructuresToAllocate;
     }
@@ -68,7 +68,7 @@ public unsafe class StructArray<S> : UnmanagedPtr where S : struct
                 nameof(nDex), nDex, $"Value of {nameof(nDex)} can't be negative and must be less than current size {Size}.");
         }
 
-        return (IntPtr)(((byte*)base.PtrToUnmanagedMemory) + nDex * Marshal.SizeOf(typeof(S)));
+        return (IntPtr)(((byte*)base.PtrToUnmanagedMemory) + nDex * Marshal.SizeOf<S>());
     }
 
     /// <summary> Indexer to get items within this collection using array index syntax. </summary>
@@ -94,7 +94,7 @@ public unsafe class StructArray<S> : UnmanagedPtr where S : struct
                 nameof(nStructuresToAllocate), nStructuresToAllocate, $"Value of {nameof(nStructuresToAllocate)} can't be negative.");
         }
 
-        IntPtr result = base.Realloc(unchecked(nStructuresToAllocate * Marshal.SizeOf(typeof(S))));
+        IntPtr result = base.Realloc(unchecked(nStructuresToAllocate * Marshal.SizeOf<S>()));
         // OK to assign new size, no exception happened
         _size = nStructuresToAllocate;
 

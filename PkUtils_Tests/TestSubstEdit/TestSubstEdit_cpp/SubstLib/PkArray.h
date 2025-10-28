@@ -275,7 +275,8 @@ public:
     void DeleteAndRemoveAll();
 
     /// Finds all the pointers complying the condition (*lpFn), where  lpFn is a callback function provided by user.
-    INT_PTR FindAllThat(lpFirstThatPtrFn lpFn, CPkTypedPtrArray < BASE_CLASS, PTRTYPE > &output, WPARAM wPar = 0, LPARAM lPar = 0) const;
+    INT_PTR FindAllThat(typename CTypedPtrArrayEx<BASE_CLASS, PTRTYPE>::lpFirstThatPtrFn lpFn,
+        CPkTypedPtrArray < BASE_CLASS, PTRTYPE > &output, WPARAM wPar = 0, LPARAM lPar = 0) const;
 
     /**
        Overloaded method of the predecesor. This method adds the contents of another array 
@@ -329,7 +330,7 @@ void CPkArrBase<TYPE, ARG_TYPE>::ForEach(lptEachItemFn lpFn, WPARAM wPar, LPARAM
     INT_PTR ii, isz;
 
     ASSERT(!IsBadCodePtr((FARPROC)lpFn));
-    for(ii = 0, isz = GetSize(); ii < isz; ii++)
+    for(ii = 0, isz = this->GetSize(); ii < isz; ii++)
     {
         (*lpFn)(this->ElementAt(ii), wPar, lPar);
     }
@@ -341,7 +342,7 @@ INT_PTR CPkArrBase<TYPE, ARG_TYPE>::FirstThat(lpFirstThatItemFn lpFn, WPARAM wPa
     INT_PTR ii, isz;
 
     ASSERT(!IsBadCodePtr((FARPROC)lpFn));
-    for(ii = 0, isz = GetSize(); ii < isz; ii++)
+    for(ii = 0, isz = this->GetSize(); ii < isz; ii++)
     {
         if ((*lpFn)((const_cast<CPkArrBase*>(this))->ElementAt(ii), wPar, lPar))
         {
@@ -359,7 +360,7 @@ INT_PTR CPkArrBase<TYPE, ARG_TYPE>::LastThat(lpFirstThatItemFn lpFn, WPARAM wPar
     INT_PTR result = -1;
 
     ASSERT(!IsBadCodePtr((FARPROC)lpFn));
-    for(ii = 0, isz = GetSize(); ii < isz; ii++)
+    for(ii = 0, isz = this->GetSize(); ii < isz; ii++)
     {
         if ((*lpFn)((const_cast<CPkArrBase*>(this))->ElementAt(ii), wPar, lPar))
         {
@@ -377,7 +378,7 @@ INT_PTR CPkArrBase<TYPE, ARG_TYPE>::FindAllThat(lpFirstThatItemFn lpFn, CPkArrBa
 
     ASSERT(!IsBadCodePtr((FARPROC)lpFn));
     output.RemoveAll();
-    for(ii = 0, isz = GetSize(); ii < isz; ii++)
+    for(ii = 0, isz = this->GetSize(); ii < isz; ii++)
     {
         if ((*lpFn)((const_cast<CPkArrBase*>(this))->ElementAt(ii), wPar, lPar))
         {
@@ -392,7 +393,7 @@ INT_PTR CPkArrBase<TYPE, ARG_TYPE>::Find( TYPE const& item) const
 {
     INT_PTR ii, isz;
 
-    for(ii = 0, isz = GetSize(); ii < isz; ii++)
+    for(ii = 0, isz = this->GetSize(); ii < isz; ii++)
     {
         if( ((const_cast<CPkArrBase*>(this))->ElementAt(ii) == item ) )
         {
@@ -413,7 +414,7 @@ BOOL CPkArrBase<TYPE, ARG_TYPE>::BubbleSort(lpCompareItemFn lpCompFn,
     BOOL     bAnyChange = FALSE;
 
     ASSERT(!IsBadCodePtr((FARPROC)lpCompFn));
-    for(lastInd = GetSize() - 1; lastInd > 0; lastInd--)
+    for(lastInd = this->GetSize() - 1; lastInd > 0; lastInd--)
     {
         for (ii = 0; ii < lastInd; ii++)
         {
@@ -446,7 +447,7 @@ BOOL CPkArrBase<TYPE, ARG_TYPE>::IsSorted(lpCompareItemFn lpCompFn,
     BOOL   bResult = TRUE;
 
     ASSERT(!IsBadCodePtr((FARPROC)lpCompFn));
-    for(ii = 0, nBound = GetUpperBound(); ii < nBound; )
+    for(ii = 0, nBound = this->GetUpperBound(); ii < nBound; )
     {
         lpItem = &(*this)[ii];
         lpNxt = &(*this)[++ii];
@@ -467,7 +468,7 @@ void CPkArrBase<TYPE, ARG_TYPE>::ToCList(CList<TYPE, ARG_TYPE>* v_CList) const
 {
     INT_PTR ii, isz;
 
-    for(ii = 0, isz = GetSize(); ii < isz; ii++)
+    for(ii = 0, isz = this->GetSize(); ii < isz; ii++)
     {
         TYPE PkArrayItem = this->GetAt(ii);
         v_CList->AddTail(PkArrayItem);
@@ -502,8 +503,8 @@ void CPkArray<TYPE>::PkSerializeObject(CArchive &ar)
     CObject::Serialize(ar);
     if (ar.IsStoring())
     {
-        ar.WriteCount(m_nSize);
-        for (size_t i = 0; i < m_nSize; i++)
+        ar.WriteCount(this->m_nSize);
+        for (size_t i = 0; i < this->m_nSize; i++)
         {
             ar << &this->ElementAt(i);
         }
@@ -569,7 +570,7 @@ void CTypedPtrArrayEx <BASE_CLASS, PTRTYPE>::AssertValid() const
     PTRTYPE ptr;
 
     BASE_CLASS::AssertValid();
-    for(ii = 0, isz = GetSize(); ii < isz; ii++)
+    for(ii = 0, isz = this->GetSize(); ii < isz; ii++)
     {
         if (ptr = (*this)[ii])
         {
@@ -584,56 +585,14 @@ void CTypedPtrArrayEx <BASE_CLASS, PTRTYPE>::AssertValid() const
 template<class BASE_CLASS, class PTRTYPE>
 INT_PTR CTypedPtrArrayEx <BASE_CLASS, PTRTYPE>::Find(PTRTYPE ptrObj) const
 {
-#if defined(NO_ASM) || defined(_WIN64)
-
     INT_PTR ii, isz;
 
-    for(ii = 0, isz = GetSize(); ii < isz; ii++)
+    for(ii = 0, isz = this->GetSize(); ii < isz; ii++)
     {
         if (ptrObj == this->GetAt(ii))
             return ii;
     }
     return -1;
-
-#else // NO_ASM
-
-    INT_PTR isz;
-    INT_PTR iRes = -1;
-
-    if (isz = GetSize())
-    {
-        CObject const **ptrBuffer = (CObject const **)BASE_CLASS::GetData();
-
-        _asm 
-        {
-            push  edi              // save edi
-            pushf                  // save flags
-            cld                    // it will be forward search operation
-            mov   edi, ptrBuffer   // edi = pointer to buffer 
-            mov   eax, ptrObj      // eax = pointer we are searching for
-            mov   ecx, isz         // ecx = count of items in the buffer
-            mov   ebx, ecx         // ebx = ecx
-            repne scasd            // search !
-            jne   __finish         // jump if not found
-            sub    ebx, ecx        // compute the found index
-            dec    ebx
-            mov    iRes, ebx       // assign result
-          __finish:
-            popf                   // restore flags
-            pop   edi              // restore edi
-        }
-
-#ifdef _DEBUG
-        if (iRes >= 0)
-        {	// assert we found the right thing
-            ASSERT(ptrObj == this->GetAt(iRes));
-        }
-#endif // _DEBUG
-    }
-
-    return iRes;
-
-#endif // NO_ASM
 }
 #pragma warning ( default : 4706)
 
@@ -643,7 +602,7 @@ void CTypedPtrArrayEx <BASE_CLASS, PTRTYPE>::ForEach(lptEachPtrFn lpFn, WPARAM w
     INT_PTR ii, isz;
 
     ASSERT(!IsBadCodePtr((FARPROC)lpFn));
-    for(ii = 0, isz = GetSize(); ii < isz; ii++)
+    for(ii = 0, isz = this->GetSize(); ii < isz; ii++)
     {
         (*lpFn)(this->ElementAt(ii), wPar, lPar);
     }
@@ -655,7 +614,7 @@ INT_PTR CTypedPtrArrayEx <BASE_CLASS, PTRTYPE>::FirstThat(lpFirstThatPtrFn lpFn,
     INT_PTR ii, isz;
 
     ASSERT(!IsBadCodePtr((FARPROC)lpFn));
-    for(ii = 0, isz = GetSize(); ii < isz; ii++)
+    for(ii = 0, isz = this->GetSize(); ii < isz; ii++)
     {
         if ((*lpFn)((const_cast<CTypedPtrArrayEx*>(this))->ElementAt(ii), wPar, lPar))
         {
@@ -673,7 +632,7 @@ INT_PTR CTypedPtrArrayEx <BASE_CLASS, PTRTYPE>::LastThat(lpFirstThatPtrFn lpFn, 
     INT_PTR result = -1;
 
     ASSERT(!IsBadCodePtr((FARPROC)lpFn));
-    for(ii = 0, isz = GetSize(); ii < isz; ii++)
+    for(ii = 0, isz = this->GetSize(); ii < isz; ii++)
     {
         if ((*lpFn)((const_cast<CTypedPtrArrayEx*>(this))->ElementAt(ii), wPar, lPar))
         {
@@ -691,7 +650,7 @@ INT_PTR CTypedPtrArrayEx <BASE_CLASS, PTRTYPE>::FindAllThat(lpFirstThatPtrFn lpF
 
     ASSERT(!IsBadCodePtr((FARPROC)lpFn));
     output.RemoveAll();
-    for(ii = 0, isz = GetSize(); ii < isz; ii++)
+    for(ii = 0, isz = this->GetSize(); ii < isz; ii++)
     {
         PTRTYPE ptr = const_cast<CTypedPtrArrayEx*>(this)->ElementAt(ii);
         if ((*lpFn)(ptr, wPar, lPar))
@@ -725,7 +684,7 @@ void CPkTypedPtrArray <BASE_CLASS, PTRTYPE>::AssertValid() const
     PTRTYPE ptr;
 
     BASE_CLASS::AssertValid();
-    for(ii = 0, isz = GetSize(); ii < isz; ii++)
+    for(ii = 0, isz = this->GetSize(); ii < isz; ii++)
     {
         if (ptr = (*this)[ii])
         {
@@ -753,10 +712,10 @@ void CPkTypedPtrArray <BASE_CLASS, PTRTYPE>::DeleteAt(INT_PTR nIndex, INT_PTR nC
     ASSERT_VALID(this);
     ASSERT(nIndex >= 0);
     ASSERT(nCount >= 0);
-    ASSERT(nIndex + nCount <= GetSize());
+    ASSERT(nIndex + nCount <= this->GetSize());
 
     INT_PTR ii, nLimit;
-    for(ii = nIndex, nLimit = nIndex + nCount; ii < nLimit; ii++)
+    for (ii = nIndex, nLimit = nIndex + nCount; ii < nLimit; ii++)
     {
         if (ptr = (*this)[ii])
         {
@@ -764,20 +723,14 @@ void CPkTypedPtrArray <BASE_CLASS, PTRTYPE>::DeleteAt(INT_PTR nIndex, INT_PTR nC
             delete ptr;
         }
     }
-}
-#pragma warning ( default : 4706)
+};
 
 template<class BASE_CLASS, class PTRTYPE>
 void CPkTypedPtrArray <BASE_CLASS, PTRTYPE>::DeleteAndRemoveAt(INT_PTR nIndex, INT_PTR nCount)
 {
-    ASSERT_VALID(this);
-    ASSERT(nIndex >= 0);
-    ASSERT(nCount >= 0);
-    ASSERT(nIndex + nCount <= GetSize());
-
     DeleteAt(nIndex, nCount);
     BASE_CLASS::RemoveAt(nIndex, nCount);
-}
+};
 
 template<class BASE_CLASS, class PTRTYPE>
 void CPkTypedPtrArray <BASE_CLASS, PTRTYPE>::DeleteAndRemoveAll()
@@ -786,7 +739,8 @@ void CPkTypedPtrArray <BASE_CLASS, PTRTYPE>::DeleteAndRemoveAll()
 }
 
 template<class BASE_CLASS, class PTRTYPE>
-INT_PTR CPkTypedPtrArray <BASE_CLASS, PTRTYPE>::FindAllThat(lpFirstThatPtrFn lpFn, CPkTypedPtrArray < BASE_CLASS, PTRTYPE > &output, WPARAM wPar, LPARAM lPar) const
+INT_PTR CPkTypedPtrArray <BASE_CLASS, PTRTYPE>::FindAllThat(typename CTypedPtrArrayEx<BASE_CLASS, PTRTYPE>::lpFirstThatPtrFn lpFn,
+    CPkTypedPtrArray < BASE_CLASS, PTRTYPE > &output, WPARAM wPar, LPARAM lPar) const
 {
     CTypedPtrArray < BASE_CLASS, PTRTYPE > temp;
 
@@ -829,3 +783,4 @@ void CPkTypedPtrArray <BASE_CLASS, PTRTYPE>::Copy(const CTypedPtrArray<BASE_CLAS
 // Microsoft Visual C++ will insert additional declarations immediately before the previous line.
 
 #endif // !defined(AFX_PKARRAY__H__BA3E5C_3F91_427C_973A_A778B722635D__INCLUDED_)
+#pragma warning ( default : 4706)

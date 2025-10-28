@@ -43,7 +43,7 @@ namespace PK.PkUtils.UI.StackedForms;
 /// <remarks> <para>
 /// Note how the event handling chain works:   <br/>
 /// ------------------------------------------ <br/>
-///    1. Form.OnClosing =&gt;                    <br/>
+///    1. Form.OnFormClosing =&gt;                   <br/>
 /// =&gt; 2. fires the Closing event =&gt;           <br/>
 /// =&gt; 3. StackedForm.FormClosingHandler =&gt;    <br/>
 /// =&gt; 4. StackedForm.ClosingHandler =&gt;        <br/>
@@ -77,12 +77,12 @@ public partial class StackedForm : Form, IStackedForm
     /// <summary>
     /// The backing field for the <see cref="EventPreloadDone"/> property.
     /// </summary>
-    protected ManualResetEvent _evPreloadDone;
+    protected ManualResetEvent _ePreloadDone;
 
     /// <summary>
-    /// The backing field for the <see cref="evStackItemClosed"/> property.
+    /// The backing field for the <see cref="EventStackItemClosed"/> property.
     /// </summary>
-    protected EventHandler<EventFormStackItemClosedArgs> _evStackItemClosed;
+    protected EventHandler<EventFormStackItemClosedArgs> _eStackItemClosed;
 
     /// <summary> 
     /// Affects the behavior of overwritten DestroyHandle method.
@@ -165,7 +165,7 @@ public partial class StackedForm : Form, IStackedForm
     /// </summary>
     protected void InitializeClosingHandler()
     {
-        Closing += new CancelEventHandler(FormClosingHandler);
+        FormClosing += new FormClosingEventHandler(FormClosingHandler);
     }
 
     /// <summary>
@@ -174,7 +174,7 @@ public partial class StackedForm : Form, IStackedForm
     /// <param name="args">Argument containing characteristic data for event that is raised when the FormStack item is closed.</param>
     protected void FireEventStackItemClosed(EventFormStackItemClosedArgs args)
     {
-        _evStackItemClosed?.Invoke(this, args);
+        _eStackItemClosed?.Invoke(this, args);
     }
 
     /// <summary>
@@ -191,7 +191,7 @@ public partial class StackedForm : Form, IStackedForm
     /// The virtual method which is called by the event handler private void FormClosingHandler.
     /// In your derived form, you may overwrite this method
     /// ( and that's what you should do if you want to prevent your form from closing.
-    ///  Don't override virtual void OnClosing(CancelEventArgs args);)
+    ///  Don't override virtual void OnFormClosing(FormClosingEventArgs args);)
     /// </summary>
     /// <param name="sender">The sender (originator) of the event.</param>
     /// <param name="args">Provides data for a cancelable event.</param>
@@ -256,7 +256,7 @@ public partial class StackedForm : Form, IStackedForm
             if (disposing)
             {
                 _bIsDisposing = true;
-                Disposer.SafeDispose(ref _evPreloadDone);
+                Disposer.SafeDispose(ref _ePreloadDone);
             }
             base.Dispose(disposing);
         }
@@ -274,12 +274,12 @@ public partial class StackedForm : Form, IStackedForm
     #region IStackedForm members
 
     /// <inheritdoc/>
-    public event EventHandler<EventFormStackItemClosedArgs> evStackItemClosed
+    public event EventHandler<EventFormStackItemClosedArgs> EventStackItemClosed
     {
         [MethodImpl(MethodImplOptions.Synchronized)]
-        add { _evStackItemClosed += value; }
+        add { _eStackItemClosed += value; }
         [MethodImpl(MethodImplOptions.Synchronized)]
-        remove { _evStackItemClosed -= value; }
+        remove { _eStackItemClosed -= value; }
     }
 
     /// <summary>
@@ -291,11 +291,11 @@ public partial class StackedForm : Form, IStackedForm
     {
         get
         {
-            if (null == _evPreloadDone)
+            if (null == _ePreloadDone)
             {
-                _evPreloadDone = new ManualResetEvent(false);
+                _ePreloadDone = new ManualResetEvent(false);
             }
-            return _evPreloadDone;
+            return _ePreloadDone;
         }
     }
 

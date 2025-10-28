@@ -118,7 +118,7 @@ public class FileSearchTest
                 Dump(fragment);
             }
 
-            if (seqBminusA.Count() > 0)
+            if (seqBminusA.Count > 0)
             {
                 string strMsg = string.Format(CultureInfo.InvariantCulture,
                   "Several items NOT found by {0} but present in {1}:", strDescrA, strDescrB);

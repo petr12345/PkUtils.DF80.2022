@@ -8,6 +8,8 @@ using System.Windows.Forms;
 
 namespace PK.PkUtils.UI.Dialogs.TaskDialogs;
 
+#pragma warning disable IDE0059   // Avoid unnecessary value assignments
+
 /// <summary> Implements several utilities as example of usage of <see cref="TaskDialog"/> </summary>
 public static class TaskDialogWrapper
 {
@@ -503,3 +505,4 @@ public static class TaskDialogWrapper
     }
     #endregion // Private Methods
 }
+#pragma warning restore IDE0059

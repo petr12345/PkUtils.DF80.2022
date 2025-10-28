@@ -239,6 +239,8 @@ namespace PK.TesFileLock
                 _strDirectoryName = FilePathHelper.GetAssemblyDirectory(Assembly.GetEntryAssembly());
         }
 
+        /// <summary> Overwrites the virtual method of the predecessor, to provide custom processing. </summary>
+        /// <param name="args">Provides data for a cancel-able Form closing event. </param>
         protected override void OnFormClosing(FormClosingEventArgs e)
         {
             var sett = Settings.Default;

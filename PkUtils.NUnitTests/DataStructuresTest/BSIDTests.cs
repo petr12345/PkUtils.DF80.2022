@@ -3,6 +3,7 @@
 using PK.PkUtils.Cloning.Binary;
 using PK.PkUtils.DataStructures;
 
+#pragma warning disable IDE0059   // Avoid unnecessary value assignments
 #pragma warning disable 1718   // Suppress locally the warning CS1718: Comparison made to same variable; did you mean to compare something else?
 
 
@@ -298,3 +299,4 @@ public class BSIDTests
     #endregion // Tests
 }
 #pragma warning restore 1718
+#pragma warning restore IDE0059

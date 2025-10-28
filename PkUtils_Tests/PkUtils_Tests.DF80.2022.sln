@@ -73,13 +73,13 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TestXmlSerializer.DF80.2022
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TestPropertyGridCustomCollectionEditor.DF80.2022", "TestPropertyGridCustomCollectionEditor\TestPropertyGridCustomCollectionEditor.DF80.2022.csproj", "{0AC26414-F6FB-49B2-9F7E-F4150A3A0138}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TestWeakRefDF80.2022", "TestWeakRef\TestWeakRefDF80.2022.csproj", "{EBA5702E-64C7-4621-8076-1F23E1EFDEDD}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TestConsoleAppWithIcon.DF80.2022", "TestConsoleAppWithIcon\TestConsoleAppWithIcon.DF80.2022.csproj", "{AB2E0BDB-2CC4-8488-55D4-EC0842303E5A}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TestMultiSelectTreeview.DF80.2022", "TestMultiSelectTreeview\TestMultiSelectTreeview.DF80.2022.csproj", "{6610C0B4-F9B6-ECC4-3AE4-1630E1DA9E20}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TestMultiSelectOwnerDraw.DF80.2022", "TestMultiSelectOwnerDraw\TestMultiSelectOwnerDraw.DF80.2022.csproj", "{C9083219-2E0E-2C9F-94EA-23AFC7EB3D6F}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TestWeakRef.DF80.2022", "TestWeakRef\TestWeakRef.DF80.2022.csproj", "{07E32AB4-B545-B31B-5015-54C2A571DF90}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -211,10 +211,6 @@ Global
 		{0AC26414-F6FB-49B2-9F7E-F4150A3A0138}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{0AC26414-F6FB-49B2-9F7E-F4150A3A0138}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{0AC26414-F6FB-49B2-9F7E-F4150A3A0138}.Release|Any CPU.Build.0 = Release|Any CPU
-		{EBA5702E-64C7-4621-8076-1F23E1EFDEDD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{EBA5702E-64C7-4621-8076-1F23E1EFDEDD}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{EBA5702E-64C7-4621-8076-1F23E1EFDEDD}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{EBA5702E-64C7-4621-8076-1F23E1EFDEDD}.Release|Any CPU.Build.0 = Release|Any CPU
 		{AB2E0BDB-2CC4-8488-55D4-EC0842303E5A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{AB2E0BDB-2CC4-8488-55D4-EC0842303E5A}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{AB2E0BDB-2CC4-8488-55D4-EC0842303E5A}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -227,6 +223,10 @@ Global
 		{C9083219-2E0E-2C9F-94EA-23AFC7EB3D6F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C9083219-2E0E-2C9F-94EA-23AFC7EB3D6F}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{C9083219-2E0E-2C9F-94EA-23AFC7EB3D6F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{07E32AB4-B545-B31B-5015-54C2A571DF90}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{07E32AB4-B545-B31B-5015-54C2A571DF90}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{07E32AB4-B545-B31B-5015-54C2A571DF90}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{07E32AB4-B545-B31B-5015-54C2A571DF90}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

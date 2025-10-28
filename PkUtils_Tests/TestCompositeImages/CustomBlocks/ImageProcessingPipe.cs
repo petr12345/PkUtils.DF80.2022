@@ -115,11 +115,9 @@ namespace TestCompositeImages.CustomBlocks
             MainForm form,
             IEnumerable<string> supportedImageExtensions)
         {
-            if (form == null)
-                throw new ArgumentNullException("form");
-            if (supportedImageExtensions == null)
-                throw new ArgumentNullException("supportedImageExtensions ");
-            // 
+            ArgumentNullException.ThrowIfNull(form);
+            ArgumentNullException.ThrowIfNull(supportedImageExtensions);
+
             // Create the dataflow blocks that form the network. 
             // 
 

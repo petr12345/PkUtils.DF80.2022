@@ -5,6 +5,7 @@ using PK.PkUtils.Extensions;
 using PK.PkUtils.Interfaces;
 
 #pragma warning disable CA1859    // Change type of variable ...
+#pragma warning disable IDE0079     // Remove unnecessary suppression
 
 namespace PK.PkUtils.NUnitTests.ExtensionsTests;
 
@@ -63,4 +64,5 @@ public class DisposableExtensionTest
     #endregion // Tests
 }
 
+#pragma warning restore IDE0079
 #pragma warning restore CA1859    // Change type of variable ...

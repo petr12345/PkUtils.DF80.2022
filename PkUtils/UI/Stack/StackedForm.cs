@@ -43,7 +43,7 @@ namespace PK.PkUtils.UI.Stack;
 /// <remarks> <para>
 /// Note how the event handling chain works:   <br/>
 /// ------------------------------------------ <br/>
-///    1. Form.OnClosing =&gt;                    <br/>
+///    1. Form.OnFormClosing =&gt;                    <br/>
 /// =&gt; 2. fires the Closing event =&gt;           <br/>
 /// =&gt; 3. StackedForm.FormClosingHandler =&gt;    <br/>
 /// =&gt; 4. StackedForm.ClosingHandler =&gt;        <br/>
@@ -165,7 +165,7 @@ public partial class StackedForm : Form, IStackedForm
     /// </summary>
     protected void InitializeClosingHandler()
     {
-        this.Closing += new System.ComponentModel.CancelEventHandler(FormClosingHandler);
+        this.FormClosing += new FormClosingEventHandler(FormClosingHandler);
     }
 
     /// <summary>
@@ -191,7 +191,7 @@ public partial class StackedForm : Form, IStackedForm
     /// The virtual method which is called by the event handler private void FormClosingHandler.
     /// In your derived form, you may overwrite this method
     /// ( and that's what you should do if you want to prevent your form from closing.
-    ///  Don't override virtual void OnClosing(CancelEventArgs args);)
+    ///  Don't override virtual void OnFormClosing(FormClosingEventArgs args);)
     /// </summary>
     /// <param name="sender">The sender (originator) of the event.</param>
     /// <param name="args">Provides data for a cancelable event.</param>

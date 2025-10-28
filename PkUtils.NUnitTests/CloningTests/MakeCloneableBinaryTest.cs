@@ -5,6 +5,8 @@ using PK.PkUtils.Interfaces;
 
 namespace PK.PkUtils.NUnitTests.UtilsTests;
 
+#pragma warning disable CA1859    // Change type of variable ...
+
 /// <summary>
 /// This is a test class for CommandLineInfoEx and is intended
 /// to contain all CommandLineInfoEx Unit Tests
@@ -79,3 +81,5 @@ public class MakeCloneableBinaryTest
 
     #endregion // Tests
 }
+
+#pragma warning restore CA1859    // Change type of variable ...

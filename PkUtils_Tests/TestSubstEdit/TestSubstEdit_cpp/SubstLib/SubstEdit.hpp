@@ -47,7 +47,7 @@ CSubstEdit<TFIELDID>::CSubstEdit(CSubstLogData<TFIELDID> const & logData)
     : m_data(logData)
 {
     m_oldWndProc = NULL;
-    m_bHandlingEnter = false;
+    this->m_bHandlingEnter = false;
     m_nOrigCallLevel = 0;
     m_nChangeNotifyLock = m_nChangeModifyTempCount = m_nLockHookLevel = 0;
 }

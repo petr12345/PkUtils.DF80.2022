@@ -260,7 +260,7 @@ public class FormStack : List<IStackedForm>, IDisposable, ISuspendable, ICompact
     /// The stack of descriptions of actually displayed Forms ( do not confuse with the entire
     /// collection of Forms, which keeps both visible and invisible (just cached) Forms).
     /// </summary>
-    protected List<IStackId> _TypeStack = [];
+    protected List<IStackId> _TypeStack = new();
 
     /// <summary> Stop request variable. See IsStopRequest, StopRequest() </summary>
     protected bool _bStopRequest;
@@ -898,7 +898,6 @@ public class FormStack : List<IStackedForm>, IDisposable, ISuspendable, ICompact
     {
         lock (Locker)
         {
-            IDisposable iDisp;
             // Prepare the list of 'candidates' for removal ( present in FormList but not in the stack )
             // Must use .ToList() to avoid delayed execution and completely populate the list before further calls of FormList.Remove(sf);
             List<IStackedForm> listToRemove = NotDisplayedForms.ToList();
@@ -915,7 +914,7 @@ public class FormStack : List<IStackedForm>, IDisposable, ISuspendable, ICompact
                 if (!sf.IsModalState)
                 {
                     FormList.Remove(sf);
-                    if (null != (iDisp = sf as IDisposable))
+                    if (sf is IDisposable iDisp)
                     {
                         iDisp.Dispose();
                     }
@@ -1126,7 +1125,7 @@ public class FormStack : List<IStackedForm>, IDisposable, ISuspendable, ICompact
                     return DialogResult.None;
                 }
                 // add a close event handler
-                iNewTop.evStackItemClosed += new EventHandler<EventFormStackItemClosedArgs>(On_evStackItemClosed);
+                iNewTop.EventStackItemClosed += new EventHandler<EventFormStackItemClosedArgs>(On_evStackItemClosed);
             }
 
             // Add it to the stack of displayed Forms.
@@ -1345,7 +1344,7 @@ public class FormStack : List<IStackedForm>, IDisposable, ISuspendable, ICompact
 
     /// <summary>
     /// The event handler called when the Form is closed. Is invoked by
-    /// <see cref="IStackedForm.evStackItemClosed"/> </summary>
+    /// <see cref="IStackedForm.EventStackItemClosed"/> </summary>
     ///
     /// <param name="sender"> The sender of the event. </param>
     /// <param name="e">      The event arguments. </param>
@@ -1361,7 +1360,6 @@ public class FormStack : List<IStackedForm>, IDisposable, ISuspendable, ICompact
         {
 #if DEBUG
             IStackedForm top = TopStackedForm;
-            IStackedForm iSender = sender as IStackedForm;
             StringBuilder sbErrMsg = new();
             bool senderIsWrong = false;
 
@@ -1373,7 +1371,7 @@ public class FormStack : List<IStackedForm>, IDisposable, ISuspendable, ICompact
             }
             else
             {
-                if (null != iSender)
+                if (sender is IStackedForm iSender)
                 {
                     senderIsWrong = !ReferenceEquals(sender, top);
                 }

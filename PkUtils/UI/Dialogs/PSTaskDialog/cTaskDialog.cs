@@ -214,7 +214,7 @@ public static class cTaskDialog
             if (!string.IsNullOrEmpty(RadioButtons))
             {
                 List<VistaTaskDialogButton> lst = [];
-                string[] arr = RadioButtons.Split(new char[] { '|' });
+                string[] arr = RadioButtons.Split(['|']);
                 for (int i = 0; i < arr.Length; i++)
                 {
                     try
@@ -325,28 +325,26 @@ public static class cTaskDialog
         else
         {
             // [OPTION 2] Show Emulated Form
-            using (frmTaskDialog td = new())
-            {
-                td.Title = Title;
-                td.MainInstruction = MainInstruction;
-                td.Content = Content;
-                td.ExpandedInfo = ExpandedInfo;
-                td.Footer = Footer;
-                td.RadioButtons = RadioButtons;
-                td.CommandButtons = CommandButtons;
-                td.Buttons = Buttons;
-                td.MainIcon = MainIcon;
-                td.FooterIcon = FooterIcon;
-                td.VerificationText = VerificationText;
-                td.Width = EmulatedFormWidth;
-                td.DefaultButtonIndex = DefaultIndex;
-                td.BuildForm();
-                result = td.ShowDialog(Owner);
+            using frmTaskDialog td = new();
+            td.Title = Title;
+            td.MainInstruction = MainInstruction;
+            td.Content = Content;
+            td.ExpandedInfo = ExpandedInfo;
+            td.Footer = Footer;
+            td.RadioButtons = RadioButtons;
+            td.CommandButtons = CommandButtons;
+            td.Buttons = Buttons;
+            td.MainIcon = MainIcon;
+            td.FooterIcon = FooterIcon;
+            td.VerificationText = VerificationText;
+            td.Width = EmulatedFormWidth;
+            td.DefaultButtonIndex = DefaultIndex;
+            td.BuildForm();
+            result = td.ShowDialog(Owner);
 
-                RadioButtonResult = td.RadioButtonIndex;
-                CommandButtonResult = td.CommandButtonClickedIndex;
-                VerificationChecked = td.VerificationCheckBoxChecked;
-            }
+            RadioButtonResult = td.RadioButtonIndex;
+            CommandButtonResult = td.CommandButtonClickedIndex;
+            VerificationChecked = td.VerificationCheckBoxChecked;
         }
 
         OnTaskDialogClosed?.Invoke(null, EventArgs.Empty);
