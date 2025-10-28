@@ -1,15 +1,4 @@
-﻿/***************************************************************************************************************
-*
-* FILE NAME:   .\Extensions\Extensions.Enmerable.cs
-*
-* AUTHOR:      Petr Kodet
-*
-* DESCRIPTION:
-*   The file contains extension-methods classes EnumerableExtensions
-*
-**************************************************************************************************************/
-
-// Ignore Spelling: Utils, Concat
+﻿// Ignore Spelling: Utils, Concat
 
 using System;
 using System.Collections.Generic;

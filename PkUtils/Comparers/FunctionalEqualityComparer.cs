@@ -1,17 +1,4 @@
-﻿/***************************************************************************************************************
-*
-* FILE NAME:   .\Comparers\FunctionalEqualityComparer.cs
-*
-*
-* AUTHOR:      Petr Kodet
-*
-* DESCRIPTION: Contains the generic class FunctionalEqualityComparer<T> implementing IEqualityComparer<T>,
-*              and static class FunctionalEqualityComparer
-*
-**************************************************************************************************************/
-
-
-// Ignore Spelling: Utils, Comparers
+﻿// Ignore Spelling: Utils, Comparers
 //
 using System;
 using System.Collections.Generic;

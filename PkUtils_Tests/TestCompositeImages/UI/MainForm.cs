@@ -330,7 +330,7 @@ namespace TestCompositeImages.UI
         /// <param name="s">    The string. </param>
         ///
         /// <returns>   true if it succeeds, false if it fails. </returns>
-        protected static bool PathIsvalid(string s)
+        protected static bool PathIsValid(string s)
         {
             return !string.IsNullOrEmpty(s) && Directory.Exists(s);
         }
@@ -368,7 +368,7 @@ namespace TestCompositeImages.UI
         {
             string strLastFolder = Settings.Default.LastSelectedFolder;
 
-            if (!PathIsvalid(strLastFolder))
+            if (!PathIsValid(strLastFolder))
             {
                 // Set the selected path to the common Sample Pictures folder, if it exists.
                 strLastFolder = Path.Combine(
@@ -376,7 +376,7 @@ namespace TestCompositeImages.UI
                    "Sample Pictures");
             }
 
-            if (PathIsvalid(strLastFolder))
+            if (PathIsValid(strLastFolder))
             {
                 LastChosenFolder = strLastFolder;
             }
@@ -397,7 +397,7 @@ namespace TestCompositeImages.UI
         /// <param name="strFolder">    Pathname of the folder. </param>
         protected void DoStartProcessing(string strFolder)
         {
-            Debug.Assert(PathIsvalid(strFolder));
+            Debug.Assert(PathIsValid(strFolder));
             Debug.Assert(!IsProcessing);
 
             this.LastChosenFolder = strFolder;
@@ -436,7 +436,7 @@ namespace TestCompositeImages.UI
         {
             var sett = Settings.Default;
 
-            if (PathIsvalid(this.LastChosenFolder))
+            if (PathIsValid(this.LastChosenFolder))
             {
                 sett.LastSelectedFolder = this.LastChosenFolder;
                 sett.Save();
@@ -546,7 +546,7 @@ namespace TestCompositeImages.UI
                 string strErr;
                 string strFolder = this._textBxImagesFolder.Text;
 
-                if (!PathIsvalid(strFolder))
+                if (!PathIsValid(strFolder))
                 {
                     strErr = string.Format(CultureInfo.CurrentCulture,
                         "The folder '{0}' is not valid. Please specify valid folder.", strFolder);

@@ -223,7 +223,7 @@ public class BaseSegment : IDisposable
                 Invariant($"Value of {nameof(nBufferEffectiveSize)} must be positive, but {nBufferEffectiveSize} is not."));
         }
         // Determine buffer complete size and mutex name.  See also the comment regarding _nBufferSize 
-        nBufferComplete = nBufferEffectiveSize +2 * Marshal.SizeOf<long>();
+        nBufferComplete = nBufferEffectiveSize + 2 * Marshal.SizeOf<long>();
 
         _isSynchronized = synchronized;
 
@@ -504,8 +504,8 @@ public class BaseSegment : IDisposable
         get
         {
             int nTemp = BufferCompleteSize;
-            int nSubstract =2 * Marshal.SizeOf<long>();
-            int nResult =0;
+            int nSubstract = 2 * Marshal.SizeOf<long>();
+            int nResult = 0;
 
             if (nTemp >= nSubstract)
             {
@@ -647,7 +647,7 @@ public class BaseSegment : IDisposable
         dest += Marshal.SizeOf<long>(); // skip first long in the buffer that keeps the size of the buffer itself
         *(long*)dest = dataLen; // store the size of following data
         dest += Marshal.SizeOf<long>(); // increment pointer again
-        Marshal.Copy(data,0, (IntPtr)dest, (int)dataLen); // now store the data
+        Marshal.Copy(data, 0, (IntPtr)dest, (int)dataLen); // now store the data
     }
 
     /// <summary>

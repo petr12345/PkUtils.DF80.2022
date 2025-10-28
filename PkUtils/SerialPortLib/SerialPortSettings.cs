@@ -1,15 +1,4 @@
-﻿/***************************************************************************************************************
-*
-* FILE NAME:   .\SerialPortLib\SerialPortSettings.cs
-*
-*
-* AUTHOR:      Petr Kodet
-*
-* DESCRIPTION: Contains the class SerialPortSettings
-*
-**************************************************************************************************************/
-
-// Ignore Spelling: Utils, rhs, Rts, Dtr
+﻿// Ignore Spelling: Utils, rhs, Rts, Dtr
 //
 using System;
 using System.ComponentModel;

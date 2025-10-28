@@ -344,7 +344,7 @@ public class DumperCtrlWrapper<CTRL> : IDumperEx, IDisposableEx where CTRL : Con
         {
             if (ctrl.InvokeRequired)
             {
-                result = ctrl.Invoke((Func<bool>)(() => DumpEntry(entry)));
+                result = ctrl.Invoke(() => DumpEntry(entry));
             }
             else
             {

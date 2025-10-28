@@ -1,14 +1,4 @@
-﻿/***************************************************************************************************************
-*
-* FILE NAME:   .\IO\FileSearchNonRecursive.cs
-*
-* AUTHOR:      Petr Kodet
-*
-* DESCRIPTION:  Contains class FileSearchNonRecursive, derived from abstract class FileSearchBase
-*
-**************************************************************************************************************/
-
-// Ignore Spelling: Utils
+﻿// Ignore Spelling: Utils
 //
 using System;
 using System.Collections.Generic;

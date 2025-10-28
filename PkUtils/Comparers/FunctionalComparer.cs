@@ -1,15 +1,4 @@
-﻿/***************************************************************************************************************
-*
-* FILE NAME:   .\Comparers\FunctionalComparer.cs
-*
-* AUTHOR:      Petr Kodet
-*
-* DESCRIPTION: Contains the generic class FunctionalComparer<T> implementing IComparer<T>,
-*              and static FunctionalComparer
-*
-**************************************************************************************************************/
-
-// Ignore Spelling: Utils, Comparers
+﻿// Ignore Spelling: Utils, Comparers
 // 
 using System;
 using System.Collections.Generic;

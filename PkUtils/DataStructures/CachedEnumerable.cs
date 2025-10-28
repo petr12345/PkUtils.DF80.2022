@@ -1,14 +1,4 @@
-﻿/***************************************************************************************************************
-*
-* FILE NAME:   .\DataStructures\CachedEnumerable.cs
-*
-* AUTHOR:      Petr Kodet
-*
-* DESCRIPTION: The file contains implementation of CachedEnumerable<T> class
-*
-**************************************************************************************************************/
-
-// Ignore Spelling: Utils
+﻿// Ignore Spelling: Utils
 //
 using System;
 using System.Collections;

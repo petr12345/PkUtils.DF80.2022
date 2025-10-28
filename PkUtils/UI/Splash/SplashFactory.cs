@@ -1,15 +1,4 @@
-﻿/***************************************************************************************************************
-*
-* FILE NAME:   .\UI\Splash\SplashFactory.cs
-*
-* AUTHOR:      Petr Kodet
-*
-* DESCRIPTION: The file contains definition of class SplashFactory
-*
-**************************************************************************************************************/
-
-
-// Ignore Spelling: Utils
+﻿// Ignore Spelling: Utils
 //
 using System;
 using System.Drawing;

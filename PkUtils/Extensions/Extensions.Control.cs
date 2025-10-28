@@ -1,15 +1,4 @@
-﻿/***************************************************************************************************************
-*
-* FILE NAME:   .\Extensions\Control.cs
-*
-* AUTHOR:      Petr Kodet
-*
-* DESCRIPTION:
-*   The file contains extension class ControlExtension
-*
-**************************************************************************************************************/
-
-// Ignore Spelling: Utils, ctrl
+﻿// Ignore Spelling: Utils, ctrl
 //
 using System;
 using System.Collections.Generic;

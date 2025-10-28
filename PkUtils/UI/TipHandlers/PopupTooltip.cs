@@ -1,13 +1,3 @@
-/***************************************************************************************************************
-*
-* FILE NAME:   .\UI\TipHandlers\PopupTooltip.cs
-*
-* AUTHOR:      Petr Kodet
-*
-* DESCRIPTION: The file contains definition of class PopupTooltip
-*
-**************************************************************************************************************/
-
 // Ignore Spelling: Utils, Popup, Tooltip, msec
 //
 using System;

@@ -1,15 +1,4 @@
-﻿/***************************************************************************************************************
-*
-* FILE NAME:   .\Extensions\ContainerControl.cs
-*
-* AUTHOR:      Petr Kodet
-*
-* DESCRIPTION:
-*   The file contains extension-class ContainerControlExtension.
-*
-**************************************************************************************************************/
-
-// Ignore Spelling: Utils, ctrl
+﻿// Ignore Spelling: Utils, ctrl
 //
 using System;
 using System.Windows.Forms;

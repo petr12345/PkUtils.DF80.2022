@@ -125,7 +125,7 @@ public partial class MainForm : FormWithLayoutPersistence
         LoadLocation();
     }
 
-    private void MainFor_Closed(object sender, System.EventArgs e)
+    private void MainForm_Closed(object sender, FormClosedEventArgs e)
     {
         _lbTipHandler1.Done();
         _lbTipHandler2.Done();

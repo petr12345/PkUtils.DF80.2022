@@ -1,15 +1,4 @@
-﻿/***************************************************************************************************************
-*
-* FILE NAME:   .\SerialPortLib\SerialPortManager.cs
-*
-* AUTHOR:      Petr Kodet
-*
-* DESCRIPTION: Contains the class SerialPortManager
-*
-**************************************************************************************************************/
-
-
-// Ignore Spelling: Utils
+﻿// Ignore Spelling: Utils
 //
 using System;
 using System.ComponentModel;

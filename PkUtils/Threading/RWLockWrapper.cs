@@ -1,14 +1,4 @@
-﻿/***************************************************************************************************************
-*
-* FILE NAME:   .\Threading\RWLockWrapper.cs
-*
-* AUTHOR:      Petr Kodet
-*
-* DESCRIPTION: The file contains implementation of a wrapper around ReaderWriterLock.
-*
-**************************************************************************************************************/
-
-// Ignore Spelling: Utils, rwlock
+﻿// Ignore Spelling: Utils, rwlock
 //
 using System;
 using System.Diagnostics;

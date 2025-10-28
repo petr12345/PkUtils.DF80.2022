@@ -1,14 +1,4 @@
-﻿/***************************************************************************************************************
-*
-* FILE NAME:   .\IO\FileSearchBase.cs
-*
-* AUTHOR:      Petr Kodet
-*
-* DESCRIPTION:  The file contains interface IFileSearch and abstract class FileSearchBase
-*
-**************************************************************************************************************/
-
-// Ignore Spelling: Utils
+﻿// Ignore Spelling: Utils
 //
 using System;
 using System.Collections.Generic;

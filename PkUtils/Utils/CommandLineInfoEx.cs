@@ -1,14 +1,4 @@
-﻿/***************************************************************************************************************
-*
-* FILE NAME:   .\Utils\CommandLineInfoEx.cs
-*
-* AUTHOR:      Petr Kodet
-*
-* DESCRIPTION: The class CommandLineInfoEx 
-*
-**************************************************************************************************************/
-
-// Ignore Spelling: Utils, dict
+﻿// Ignore Spelling: Utils, dict
 // 
 
 using System;

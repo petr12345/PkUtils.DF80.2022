@@ -1,14 +1,4 @@
-﻿/***************************************************************************************************************
-*
-* FILE NAME:   .\Threading\WorkerThread.cs
-*
-* AUTHOR:      Petr Kodet
-*
-* DESCRIPTION: The file contains definition of class WorkerThread
-*
-**************************************************************************************************************/
-
-// Ignore Spelling: Utils, Unstarted
+﻿// Ignore Spelling: Utils, Unstarted
 //
 using System;
 using System.Diagnostics;

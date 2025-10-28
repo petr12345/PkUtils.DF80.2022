@@ -1,14 +1,4 @@
-﻿/***************************************************************************************************************
-*
-* FILE NAME:   .\DataStructures\NotifyPropertyChanged.cs
-*
-* AUTHOR:      Petr Kodet
-*
-* DESCRIPTION: The file contains implementation of NotifyPropertyChanged class
-*
-**************************************************************************************************************/
-
-// Ignore Spelling: Utils
+﻿// Ignore Spelling: Utils
 //
 using System;
 using System.Collections.Generic;

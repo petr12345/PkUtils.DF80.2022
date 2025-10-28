@@ -1,14 +1,4 @@
-﻿/***************************************************************************************************************
-*
-* FILE NAME:   .\Cloning\CloneHelperBinary.cs
-*
-* AUTHOR:      Petr Kodet
-*
-* DESCRIPTION: Contains the generic class MakeCloneableBinary
-*
-**************************************************************************************************************/
-
-// Ignore Spelling: Utils, Cloneable
+﻿// Ignore Spelling: Utils, Cloneable
 // 
 
 using System;

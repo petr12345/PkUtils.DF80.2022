@@ -1,15 +1,4 @@
-﻿/***************************************************************************************************************
-*
-* FILE NAME:   .\UI\Stack\FormStackId.cs
-*
-* AUTHOR:      Petr Kodet
-*
-* DESCRIPTION: The file contains definition of class FormStackId, derived from FormStac.StackId
-*
-**************************************************************************************************************/
-
-
-// Ignore Spelling: TDATA, Utils
+﻿// Ignore Spelling: TDATA, Utils
 //
 using System;
 using System.Collections.Generic;

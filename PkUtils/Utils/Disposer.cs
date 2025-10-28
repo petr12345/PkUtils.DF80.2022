@@ -1,14 +1,4 @@
-﻿/***************************************************************************************************************
-*
-* FILE NAME:   .\Utils\Disposer.cs
-*
-* AUTHOR:      Petr Kodet
-*
-* DESCRIPTION: The class Disposer
-*
-**************************************************************************************************************/
-
-// Ignore Spelling: Utils, Cloneable
+﻿// Ignore Spelling: Utils, Cloneable
 //
 
 using System;

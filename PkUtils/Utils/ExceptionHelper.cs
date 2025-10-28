@@ -1,15 +1,4 @@
-﻿/***************************************************************************************************************
-*
-* FILE NAME:   .\Utils\ExceptionHelper.cs
-*
-* AUTHOR:      Petr Kodet
-*
-* DESCRIPTION: The class ExceptionHelper
-*
-**************************************************************************************************************/
-
-
-// Ignore Spelling: Utils, Rethrow, Rethrown
+﻿// Ignore Spelling: Utils, Rethrow, Rethrown
 //
 using System;
 using System.Globalization;

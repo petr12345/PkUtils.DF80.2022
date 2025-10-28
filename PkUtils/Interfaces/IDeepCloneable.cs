@@ -1,14 +1,4 @@
-﻿/***************************************************************************************************************
-*
-* FILE NAME:   .\Interfaces\CloneSupport.cs
-*
-* AUTHOR:      Petr Kodet
-*
-* DESCRIPTION: The file contains definition of interfaces IShallowCloneable and IDeepCloneable
-*
-**************************************************************************************************************/
-
-// Ignore Spelling: Utils, Cloneable
+﻿// Ignore Spelling: Utils, Cloneable
 //
 using System;
 

@@ -1,14 +1,4 @@
-﻿/***************************************************************************************************************
-*
-* FILE NAME:   .\DataStructures\CountableSimple.cs
-*
-* AUTHOR:      Petr Kodet
-*
-* DESCRIPTION: The file contains implementation of Countable class
-*
-**************************************************************************************************************/
-
-// The CountableSimple could be implemented either using CountableGeneric, or quite from the scratch.
+﻿// The CountableSimple could be implemented either using CountableGeneric, or quite from the scratch.
 #define USE_COUNTABLE_GENERICS_APPROACH
 
 // Ignore Spelling: Utils

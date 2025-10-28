@@ -1,14 +1,4 @@
-﻿/***************************************************************************************************************
-*
-* FILE NAME:   .\Utils\MemUtils.cs
-*
-* AUTHOR:      Petr Kodet
-*
-* DESCRIPTION: The utility class MemUtils
-*
-**************************************************************************************************************/
-
-// Ignore Spelling: Utils, Mem, memcmp
+﻿// Ignore Spelling: Utils, Mem, memcmp
 //
 using System;
 

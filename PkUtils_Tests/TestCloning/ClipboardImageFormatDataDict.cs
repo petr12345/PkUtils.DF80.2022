@@ -11,6 +11,8 @@ using SerializedTupleList = System.Collections.Generic.List<System.Tuple<string,
 // Ignore Spelling: Dict
 //
 #pragma warning disable SYSLIB0011 // BinaryFormatter serialization is obsolete and should not be used.
+#pragma warning disable SYSLIB0050 // IDeserializationCallback is obsolete
+#pragma warning disable SYSLIB0051 // GetObjectData is obsolete
 
 
 namespace PK.TestCloning
@@ -57,6 +59,7 @@ namespace PK.TestCloning
         /// <param name="context"> Describes the source and destination of a given serialized stream, 
         /// and provides an additional caller-defined context.
         /// </param>
+        [Obsolete("This method overrides an obsolete base member. BinaryFormatter serialization is obsolete and should not be used.")]
         public override void GetObjectData(SerializationInfo info, StreamingContext context)
         {
             // backup of 'this' data
@@ -228,4 +231,6 @@ namespace PK.TestCloning
     }
     #endregion // ClipboardImageFormatDataDict Class
 }
+#pragma warning restore SYSLIB0051
+#pragma warning restore SYSLIB0050
 #pragma warning restore SYSLIB0011

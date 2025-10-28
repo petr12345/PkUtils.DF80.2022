@@ -264,7 +264,7 @@ public partial class MainForm
         MinimizeBox = false;
         Name = "MainForm";
         Text = "TestTooltip";
-        Closed += MainFor_Closed;
+        FormClosed += MainForm_Closed;
         FormClosing += MainFor_FormClosing;
         Load += MainFor_Load;
         _tabControl.ResumeLayout(false);

@@ -1,15 +1,4 @@
-﻿/***************************************************************************************************************
-*
-* FILE NAME:   .\Extensions\Extensions.String.cs
-*
-* AUTHOR:      Petr Kodet
-*
-* DESCRIPTION:
-*   The file contains extension-methods class StringExtension
-*
-**************************************************************************************************************/
-
-// Ignore Spelling: Utils
+﻿// Ignore Spelling: Utils
 //
 using System;
 using System.Collections.Generic;

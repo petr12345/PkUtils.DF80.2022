@@ -1,14 +1,4 @@
-﻿/***************************************************************************************************************
-*
-* FILE NAME:   .\WeakRefs\WeakEventHandler.cs
-*
-* AUTHOR:      Petr Kodet
-*
-* DESCRIPTION: Contains the class WeakEventHandler
-*
-**************************************************************************************************************/
-
-// Ignore Spelling: Utils, Deregister, deregistered, deregisters, Codeproject
+﻿// Ignore Spelling: Utils, Deregister, deregistered, deregisters, Codeproject
 //
 using System;
 using System.Diagnostics;

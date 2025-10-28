@@ -1,15 +1,4 @@
-﻿/***************************************************************************************************************
-*
-* FILE NAME:   .\Comparers\UsageKeyEqualityComparer.cs
-*
-* AUTHOR:      Petr Kodet
-*
-* DESCRIPTION:  Contains the static class UsageKeyEqualityComparer
-*
-**************************************************************************************************************/
-
-
-// Ignore Spelling: Comparers, Utils
+﻿// Ignore Spelling: Comparers, Utils
 //
 using System;
 using System.Collections.Generic;
