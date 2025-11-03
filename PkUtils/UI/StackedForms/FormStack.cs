@@ -27,6 +27,10 @@ using PK.PkUtils.Reflection;
 
 namespace PK.PkUtils.UI.StackedForms;
 
+#pragma warning disable IDE0028  //  Collection initialization can be simplified
+#pragma warning disable IDE0290     // Use primary constructor
+#pragma warning disable IDE0305 // Collection initialization can be simplified
+
 /// <summary> The class supporting "Multiple Form Application Framework". <br/>
 /// The idea is based on the MSDN article <a href="http://msdn.microsoft.com/en-us/library/aa446546.aspx">
 /// "Creating a Multiple Form Application Framework for the Microsoft .NET Compact Framework"</a>,
@@ -1048,7 +1052,7 @@ public class FormStack : List<IStackedForm>, IDisposable, ISuspendable, ICompact
             }
             else
             {
-                argSubstitute = new object[] { args };
+                argSubstitute = [args];
                 argTypesSubstritute = [typeof(object[])];
             }
         }
@@ -1465,3 +1469,5 @@ public class FormStack : List<IStackedForm>, IDisposable, ISuspendable, ICompact
     }
     #endregion // ICompactable Members
 }
+#pragma warning restore IDE0305
+#pragma warning restore IDE0028

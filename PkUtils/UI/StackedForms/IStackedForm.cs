@@ -17,6 +17,8 @@ using System;
 using System.Threading;
 using System.Windows.Forms;
 
+#pragma warning disable IDE0290     // Use primary constructor
+
 namespace PK.PkUtils.UI.StackedForms;
 
 /// <summary>

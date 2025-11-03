@@ -22,6 +22,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.InteropServices;
 
+#pragma warning disable IDE0290     // Use primary constructor
+
 namespace PK.PkUtils.ShellLib;
 
 /// <summary>

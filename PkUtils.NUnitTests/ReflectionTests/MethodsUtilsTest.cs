@@ -6,7 +6,10 @@ using PK.PkUtils.Reflection;
 
 #pragma warning disable CA1822 // Member ... does not access instance data and can be marked as static
 #pragma warning disable IDE0059   // Avoid unnecessary value assignments
+#pragma warning disable IDE0060   // Remove unused parameter
+#pragma warning disable IDE0290   // Use primary constructor
 #pragma warning disable IDE0300   // Simplify collection initialization
+#pragma warning disable IDE0305 // Collection initialization can be simplified
 
 namespace PK.PkUtils.NUnitTests.ReflectionTests;
 
@@ -622,6 +625,9 @@ public class MethodsUtilsTest
     }
     #endregion // Accessing_MethodInfo_Full_Scope_tests
 }
+#pragma warning restore IDE0305
 #pragma warning restore IDE0300
+#pragma warning restore IDE0290
+#pragma warning restore IDE0060
 #pragma warning restore IDE0059
 #pragma warning restore CA1822

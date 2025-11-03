@@ -4,7 +4,7 @@ using System.Collections.ObjectModel;
 using System.Windows.Forms;
 using PK.PkUtils.Extensions;
 
-namespace PK.PkUtils.NUnitTests.UtilsTests;
+namespace PK.PkUtils.NUnitTests.ExtensionsTests;
 
 /// <summary> (Unit Test Fixture) class testing <see cref="EnumExtension"/>. </summary>
 [TestFixture()]

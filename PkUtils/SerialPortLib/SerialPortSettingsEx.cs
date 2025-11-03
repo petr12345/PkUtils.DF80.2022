@@ -1,16 +1,4 @@
-﻿/***************************************************************************************************************
-*
-* FILE NAME:   .\SerialPortLib\SerialPortSettingsEx.cs
-*
-* AUTHOR:      Petr Kodet
-*
-* DESCRIPTION: Contains the class SerialPortSettingsEx
-*
-**************************************************************************************************************/
-
-
-
-// Ignore Spelling: Utils
+﻿// Ignore Spelling: Utils
 //
 using System;
 using System.Collections.Generic;
@@ -18,6 +6,8 @@ using System.ComponentModel;
 using System.Configuration;
 using System.IO.Ports;
 using System.Linq;
+
+#pragma warning disable IDE0305 // Collection initialization can be simplified
 
 namespace PK.PkUtils.SerialPortLib;
 
@@ -226,3 +216,4 @@ public class SerialPortSettingsEx : SerialPortSettings, IEquatable<SerialPortSet
     }
     #endregion // IEquatable<SerialPortSettingsEx> Members
 }
+#pragma warning restore IDE0305

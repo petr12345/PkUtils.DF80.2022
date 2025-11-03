@@ -76,12 +76,12 @@ public class StackedFormWrapper<TForm> : IStackedForm, IDisposable where TForm :
     /// <summary>
     ///  The backing field of the property <see cref="EventPreloadDone"/>
     /// </summary>
-    protected ManualResetEvent _evPreloadDone;
+    protected ManualResetEvent _eventPreloadDone;
 
     /// <summary>
-    /// The backing field of the property <see cref="evStackItemClosed"/>
+    /// The backing field of the property <see cref="eventStackItemClosed"/>
     /// </summary>
-    protected EventHandler<EventFormStackItemClosedArgs> _evStackItemClosed;
+    protected EventHandler<EventFormStackItemClosedArgs> _eventStackItemClosed;
 
     /// <summary>
     /// The backing field of the property <see cref="IsModalState"/>
@@ -147,12 +147,12 @@ public class StackedFormWrapper<TForm> : IStackedForm, IDisposable where TForm :
     #region Methods
 
     /// <summary>
-    /// Fires the event <see cref="evStackItemClosed"/>
+    /// Fires the event <see cref="eventStackItemClosed"/>
     /// </summary>
     /// <param name="args">Argument containing characteristic data for event that is raised when the FormStack item is closed.</param>
     protected void FireEventStackItemClosed(EventFormStackItemClosedArgs args)
     {
-        _evStackItemClosed?.Invoke(this, args);
+        _eventStackItemClosed?.Invoke(this, args);
     }
 
     /// <summary>
@@ -205,17 +205,17 @@ public class StackedFormWrapper<TForm> : IStackedForm, IDisposable where TForm :
     #region IStackedForm Members
 
     /// <inheritdoc/>
-    public event EventHandler<EventFormStackItemClosedArgs> evStackItemClosed
+    public event EventHandler<EventFormStackItemClosedArgs> eventStackItemClosed
     {
         [MethodImpl(MethodImplOptions.Synchronized)]
         add
         {
-            _evStackItemClosed += value;
+            _eventStackItemClosed += value;
         }
         [MethodImpl(MethodImplOptions.Synchronized)]
         remove
         {
-            _evStackItemClosed -= value;
+            _eventStackItemClosed -= value;
         }
     }
 
@@ -224,11 +224,11 @@ public class StackedFormWrapper<TForm> : IStackedForm, IDisposable where TForm :
     {
         get
         {
-            if (null == _evPreloadDone)
+            if (null == _eventPreloadDone)
             {
-                _evPreloadDone = new ManualResetEvent(false);
+                _eventPreloadDone = new ManualResetEvent(false);
             }
-            return _evPreloadDone;
+            return _eventPreloadDone;
         }
     }
 

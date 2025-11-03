@@ -19,6 +19,8 @@ using System.Windows.Forms;
 
 namespace PK.PkUtils.UI.Stack;
 
+#pragma warning disable IDE0290     // Use primary constructor
+
 /// <summary>
 /// Interface that is mandatory for any class which works as an StackId - an identifier of stacked Form.
 /// The class <see cref="FormStack"/> uses the StackId to identify the Form ( see FormStack.FindForm(IStackId id) ).
@@ -117,7 +119,7 @@ public interface IStackedForm
     /// <summary>
     /// The event raised when the Form is closed
     /// </summary>
-    event EventHandler<EventFormStackItemClosedArgs> evStackItemClosed;
+    event EventHandler<EventFormStackItemClosedArgs> eventStackItemClosed;
 
     /// <summary>
     /// The event used to signalize when the Form data preloading has finished.,

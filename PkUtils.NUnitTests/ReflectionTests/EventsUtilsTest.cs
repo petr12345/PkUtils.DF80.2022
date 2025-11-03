@@ -37,7 +37,7 @@ public class EventsUtilsTest
     public void EventsUtils_RemoveEventHandlerTest()
     {
         ComboBox cb = new System.Windows.Forms.ComboBox();
-        cb.Items.AddRange(new object[] { "aaa", "bbb", "ccc", "ddd" });
+        cb.Items.AddRange(["aaa", "bbb", "ccc", "ddd"]);
         TestSubscriber ts = new TestSubscriber();
 
         // subscribe 

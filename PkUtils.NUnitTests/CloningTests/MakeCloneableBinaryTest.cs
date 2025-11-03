@@ -3,9 +3,12 @@
 using PK.PkUtils.Cloning.Binary;
 using PK.PkUtils.Interfaces;
 
+#pragma warning disable CA1859    // Change type of variable ...
+#pragma warning disable IDE0130 // Namespace "..." does not match folder structure
+#pragma warning disable IDE0290     // Use primary constructor
+
 namespace PK.PkUtils.NUnitTests.UtilsTests;
 
-#pragma warning disable CA1859    // Change type of variable ...
 
 /// <summary>
 /// This is a test class for CommandLineInfoEx and is intended
@@ -82,4 +85,6 @@ public class MakeCloneableBinaryTest
     #endregion // Tests
 }
 
+#pragma warning restore IDE0290
+#pragma warning restore IDE0130 // Namespace "..." does not match folder structure
 #pragma warning restore CA1859    // Change type of variable ...

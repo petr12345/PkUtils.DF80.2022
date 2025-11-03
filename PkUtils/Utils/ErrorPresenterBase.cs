@@ -10,7 +10,11 @@ using PK.PkUtils.Interfaces;
 using PK.PkUtils.Reflection;
 using PK.PkUtils.UI.Dialogs.MsgBoxes;
 
+#pragma warning disable IDE0290     // Use primary constructor
+
+
 namespace PK.PkUtils.Utils;
+
 
 /// <summary>
 /// A base class implementing IErrorPresenter interface.
@@ -334,3 +338,5 @@ public class ErrorPresenterBase : IErrorPresenter
     }
     #endregion // IErrorPresenter Members
 }
+
+#pragma warning restore IDE0290     // Use primary constructor

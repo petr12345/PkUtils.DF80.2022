@@ -14,6 +14,7 @@ using PK.PkUtils.WinApi;
 namespace PK.PkUtils.UI.TipHandlers;
 
 #pragma warning disable CA1859    // Change type of variable ...
+#pragma warning disable IDE0290   // Use primary constructor
 
 /// <summary>
 /// TipHandler is base class of "tooltip-supporter engine." 

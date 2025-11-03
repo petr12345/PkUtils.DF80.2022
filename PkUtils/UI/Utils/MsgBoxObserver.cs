@@ -8,6 +8,8 @@ using System.Runtime.InteropServices;
 using PK.PkUtils.SystemEx;
 using PK.PkUtils.WinApi;
 
+#pragma warning disable IDE0290   // Use primary constructor
+
 namespace PK.PkUtils.UI.Utils;
 
 /// <summary>

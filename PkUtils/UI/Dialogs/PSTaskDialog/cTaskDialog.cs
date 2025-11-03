@@ -19,6 +19,8 @@ using System.Collections.Generic;
 using System.Windows.Forms;
 using PK.PkUtils.UI.PSTaskDialog;
 
+#pragma warning disable IDE0305 // Collection initialization can be simplified
+
 namespace PK.PkUtils.UI.Dialogs.PSTaskDialog;
 
 #region Typedefs
@@ -805,3 +807,4 @@ public static class cTaskDialog
     #endregion // ShowCommandBox
     #endregion // Methods
 }
+#pragma warning restore IDE0305

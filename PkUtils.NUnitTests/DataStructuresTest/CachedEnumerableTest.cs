@@ -6,7 +6,9 @@ using PK.PkUtils.Interfaces;
 
 namespace PK.PkUtils.NUnitTests.DataStructuresTest;
 
+#pragma warning disable IDE0290   // Use primary constructor
 #pragma warning disable IDE0300   // Simplify collection initialization
+#pragma warning disable IDE0305   // Collection initialization can be simplified
 
 /// <summary>
 /// This is a test class for CachedEnumerable generic
@@ -74,7 +76,7 @@ public class CachedEnumerableTest
     [Test]
     public void CachedEnumerable_Parsing_04()
     {
-        CachedEnumerable<string> enumerab = new CachedEnumerable<string>(Enumerable.Empty<string>());
+        CachedEnumerable<string> enumerab = new CachedEnumerable<string>([]);
 
         Assert.That(enumerab.Status, Is.EqualTo(ParseStatus.ParseNotInitialized));
         Assert.That(enumerab.Any(), Is.False);
@@ -576,6 +578,7 @@ public class CachedEnumerableTest
         IPeekAbleEnumerator<MyRectangle> enRects = enData.GetPeekAbleEnumerator();
         // makes sense, as MyRectangle derives from MyShape, but covariance is needed to let compiler allow that
         IPeekAbleEnumerator<MyShape> enShapes = enRects;
+        Assert.That(enShapes.CanPeek, Is.True);
     }
 
     /// <summary> A test for covariance of IPeekAbleEnumerable ( compilation of assignment ). </summary>
@@ -598,10 +601,15 @@ public class CachedEnumerableTest
 
         // enumerable with more derived type
         ICachedEnumerable<MyRectangle> enDataRectangles = new CachedEnumerable<MyRectangle>(arrInput);
+
         // makes sense, as MyRectangle derives from MyShape, but covariance is needed to let compiler allow that
-        ICachedEnumerable<MyShape> enDatShapes = enDataRectangles;
+        ICachedEnumerable<MyShape> enDataShapes = enDataRectangles;
+
+        Assert.That(enDataShapes.CachedItemsCount, Is.Zero);
     }
     #endregion // Tests_Covariance
     #endregion // Tests
 }
+#pragma warning restore IDE0305
 #pragma warning restore IDE0300
+#pragma warning restore IDE0290

@@ -77,12 +77,12 @@ public partial class StackedForm : Form, IStackedForm
     /// <summary>
     /// The backing field for the <see cref="EventPreloadDone"/> property.
     /// </summary>
-    protected ManualResetEvent _evPreloadDone;
+    protected ManualResetEvent _eventPreloadDone;
 
     /// <summary>
-    /// The backing field for the <see cref="evStackItemClosed"/> property.
+    /// The backing field for the <see cref="eventStackItemClosed"/> property.
     /// </summary>
-    protected EventHandler<EventFormStackItemClosedArgs> _evStackItemClosed;
+    protected EventHandler<EventFormStackItemClosedArgs> _eventStackItemClosed;
 
     /// <summary> 
     /// Affects the behavior of overwritten DestroyHandle method.
@@ -174,7 +174,7 @@ public partial class StackedForm : Form, IStackedForm
     /// <param name="args">Argument containing characteristic data for event that is raised when the FormStack item is closed.</param>
     protected void FireEventStackItemClosed(EventFormStackItemClosedArgs args)
     {
-        _evStackItemClosed?.Invoke(this, args);
+        _eventStackItemClosed?.Invoke(this, args);
     }
 
     /// <summary>
@@ -256,7 +256,7 @@ public partial class StackedForm : Form, IStackedForm
             if (disposing)
             {
                 _bIsDisposing = true;
-                Disposer.SafeDispose(ref _evPreloadDone);
+                Disposer.SafeDispose(ref _eventPreloadDone);
             }
             base.Dispose(disposing);
         }
@@ -274,12 +274,12 @@ public partial class StackedForm : Form, IStackedForm
     #region IStackedForm members
 
     /// <inheritdoc/>
-    public event EventHandler<EventFormStackItemClosedArgs> evStackItemClosed
+    public event EventHandler<EventFormStackItemClosedArgs> eventStackItemClosed
     {
         [MethodImpl(MethodImplOptions.Synchronized)]
-        add { _evStackItemClosed += value; }
+        add { _eventStackItemClosed += value; }
         [MethodImpl(MethodImplOptions.Synchronized)]
-        remove { _evStackItemClosed -= value; }
+        remove { _eventStackItemClosed -= value; }
     }
 
     /// <summary>
@@ -291,11 +291,11 @@ public partial class StackedForm : Form, IStackedForm
     {
         get
         {
-            if (null == _evPreloadDone)
+            if (null == _eventPreloadDone)
             {
-                _evPreloadDone = new ManualResetEvent(false);
+                _eventPreloadDone = new ManualResetEvent(false);
             }
-            return _evPreloadDone;
+            return _eventPreloadDone;
         }
     }
 

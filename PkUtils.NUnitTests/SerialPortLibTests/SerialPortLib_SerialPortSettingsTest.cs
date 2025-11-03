@@ -54,7 +54,7 @@ public class SerialPortLib_SerialPortSettingsTest
         object sex2 = sex1.DeepClone();
 
         Assert.That(sex2.GetType(), Is.EqualTo(sex1.GetType()));
-        Assert.That(sex1.Equals(sex2), Is.True);
+        Assert.That(sex1, Is.EqualTo(sex2));
         Assert.That(sex1.GetHashCode(), Is.EqualTo(sex2.GetHashCode()));
     }
     #endregion // Tests
