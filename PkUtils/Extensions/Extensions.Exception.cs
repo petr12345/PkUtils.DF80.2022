@@ -11,7 +11,7 @@ namespace PK.PkUtils.Extensions;
 /// <summary>
 /// Implements extension methods for Exception
 /// </summary>
-public static class ExceptionExtension
+public static class ExceptionExtensions
 {
     #region Fields
 

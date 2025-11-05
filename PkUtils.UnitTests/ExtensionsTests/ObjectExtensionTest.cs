@@ -14,7 +14,7 @@ namespace PK.PkUtils.UnitTests.ExtensionsTests
 {
 
     /// <summary>
-    /// This is a test class for ObjectExtension and is intended
+    /// This is a test class for ObjectExtensions and is intended
     /// to contain all ObjectExtensionTest Unit Tests
     /// </summary>
     [TestClass()]
@@ -119,7 +119,7 @@ namespace PK.PkUtils.UnitTests.ExtensionsTests
 
 
         /// <summary>
-        ///A test for ObjectExtension.CheckNotDisposed
+        ///A test for ObjectExtensions.CheckNotDisposed
         /// </summary>
         [TestMethod()]
         public void CheckNotDisposedTest_21()
@@ -129,7 +129,7 @@ namespace PK.PkUtils.UnitTests.ExtensionsTests
         }
 
         /// <summary>
-        ///A test for ObjectExtension.CheckNotDisposed
+        ///A test for ObjectExtensions.CheckNotDisposed
         /// </summary>
         [TestMethod()]
         public void CheckNotDisposedTest_22()
@@ -140,7 +140,7 @@ namespace PK.PkUtils.UnitTests.ExtensionsTests
         }
 
         /// <summary>
-        ///A test for ObjectExtension.CheckNotDisposed
+        ///A test for ObjectExtensions.CheckNotDisposed
         /// </summary>
         [TestMethod()]
         public void CheckNotDisposedTest_23()
@@ -150,7 +150,7 @@ namespace PK.PkUtils.UnitTests.ExtensionsTests
         }
 
         /// <summary>
-        ///A test for ObjectExtension.CheckNotDisposed
+        ///A test for ObjectExtensions.CheckNotDisposed
         /// </summary>
         [TestMethod()]
         public void CheckNotDisposedTest_24()
@@ -160,7 +160,7 @@ namespace PK.PkUtils.UnitTests.ExtensionsTests
         }
 
         /// <summary>
-        ///A test for ObjectExtension.CheckArgNotNull
+        ///A test for ObjectExtensions.CheckArgNotNull
         /// </summary>
         [TestMethod()]
         public void ObjectExtension_CheckArgNotNullTest_01()
@@ -170,7 +170,7 @@ namespace PK.PkUtils.UnitTests.ExtensionsTests
         }
 
         /// <summary>
-        /// A test for ObjectExtension.CheckArgNotNull
+        /// A test for ObjectExtensions.CheckArgNotNull
         /// </summary>
         [TestMethod()]
         public void ObjectExtension_CheckArgNotNullTest_02()
@@ -189,7 +189,7 @@ namespace PK.PkUtils.UnitTests.ExtensionsTests
         {
           System.Drawing.Size s = new System.Drawing.Size();
 
-          ObjectExtension.CheckArgNotNull<System.Drawing.Size>(s, "s");
+          ObjectExtensions.CheckArgNotNull<System.Drawing.Size>(s, "s");
         }
         */
 
@@ -201,7 +201,7 @@ namespace PK.PkUtils.UnitTests.ExtensionsTests
         }
 
         /// <summary>
-        /// A test for ObjectExtension.CheckNotNull
+        /// A test for ObjectExtensions.CheckNotNull
         /// </summary>
         [TestMethod()]
         public void ObjectExtension_CheckNotNullTest_02()

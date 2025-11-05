@@ -10,7 +10,7 @@ namespace PK.PkUtils.NUnitTests.ExtensionsTests
     /// This is a test class for <see cref="KeyedCollectionExtensions"/>
     ///</summary>
     [TestFixture()]
-    public class KeyedCollectionExtensionTest
+    public class KeyedCollectionExtensionsTest
     {
         #region Auxiliary_types
 

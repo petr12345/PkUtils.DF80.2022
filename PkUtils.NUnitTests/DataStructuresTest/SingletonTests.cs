@@ -3,6 +3,7 @@
 using System.Text;
 using PK.PkUtils.DataStructures;
 
+#pragma warning disable IDE0079  // Remove unnecessary suppression
 #pragma warning disable IDE0059   // Avoid unnecessary value assignments
 #pragma warning disable NUnit2045 // Use Assert.Multiple
 

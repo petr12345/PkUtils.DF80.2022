@@ -80,7 +80,7 @@ public partial class StackedForm : Form, IStackedForm
     protected ManualResetEvent _eventPreloadDone;
 
     /// <summary>
-    /// The backing field for the <see cref="eventStackItemClosed"/> property.
+    /// The backing field for the <see cref="EventStackItemClosed"/> property.
     /// </summary>
     protected EventHandler<EventFormStackItemClosedArgs> _eventStackItemClosed;
 
@@ -274,7 +274,7 @@ public partial class StackedForm : Form, IStackedForm
     #region IStackedForm members
 
     /// <inheritdoc/>
-    public event EventHandler<EventFormStackItemClosedArgs> eventStackItemClosed
+    public event EventHandler<EventFormStackItemClosedArgs> EventStackItemClosed
     {
         [MethodImpl(MethodImplOptions.Synchronized)]
         add { _eventStackItemClosed += value; }

@@ -1119,7 +1119,7 @@ public class FormStack : List<IStackedForm>, IDisposable, ISuspendable, ICompact
                     return DialogResult.None;
                 }
                 // add a close event handler
-                iNewTop.eventStackItemClosed += new EventHandler<EventFormStackItemClosedArgs>(On_evStackItemClosed);
+                iNewTop.EventStackItemClosed += new EventHandler<EventFormStackItemClosedArgs>(On_evStackItemClosed);
             }
 
             // Add it to the stack of displayed Forms.
@@ -1338,7 +1338,7 @@ public class FormStack : List<IStackedForm>, IDisposable, ISuspendable, ICompact
 
     /// <summary>
     /// The event handler called when the Form is closed. Is invoked by
-    /// <see cref="IStackedForm.eventStackItemClosed"/> </summary>
+    /// <see cref="IStackedForm.EventStackItemClosed"/> </summary>
     ///
     /// <param name="sender"> The sender of the event. </param>
     /// <param name="e">      The event arguments. </param>

@@ -11,7 +11,7 @@ namespace PK.PkUtils.Extensions;
 /// Wrapper class around various extension methods.
 /// Extension methods must be defined in a static class.
 /// </summary>
-public static class ObjectExtension
+public static class ObjectExtensions
 {
     #region Fields
     private const string _nullLiteral = "<null>";
@@ -109,15 +109,16 @@ public static class ObjectExtension
     }
 
     /// <summary>
-    /// An extension method that converts <paramref name="obj"/> object to a string,.
+    /// Returns a string representation of all public properties and their values for the specified object.
+    /// If the object is null, returns the specified <paramref name="nullSubstitute"/> or "&lt;null&gt;" by default.
+    /// Properties can optionally be sorted alphabetically.
+    /// Example output: "Age: 32, Name: Paul".
     /// </summary>
-    ///
-    /// <typeparam name="T">    Generic type parameter, type of the object. </typeparam>
-    /// <param name="obj">  The object being converted. May be null. </param>
-    /// <param name="sortAlphabetically">   (Optional) True to sort properties alphabetically. </param>
-    /// <param name="nullSubstitute"> (Optional) The value to be returned when <paramref name="obj"/> is null. 
-    ///                               If null, {null} will be used. </param>
-    /// <returns>   A list of properties with values, like "Age: 32, Name: Paul". </returns>
+    /// <typeparam name="T">The type of the object.</typeparam>
+    /// <param name="obj">The object whose properties will be listed. May be null.</param>
+    /// <param name="sortAlphabetically">If true, properties are sorted alphabetically by name; otherwise, original order is used.</param>
+    /// <param name="nullSubstitute">Optional. The value to return if <paramref name="obj"/> is null. If not specified, "&lt;null&gt;" is used.</param>
+    /// <returns>A comma-separated list of property name-value pairs, or the null substitute if the object is null.</returns>
     public static string PropertyList<T>(
         this T obj,
         bool sortAlphabetically = false,
@@ -230,7 +231,7 @@ public static class ObjectExtension
         CheckArgNotNull(obj, objectName);
         if (obj is IDisposableEx iDisp)
         {
-            DisposableExtension.CheckNotDisposed(iDisp, objectName);
+            DisposableExtensions.CheckNotDisposed(iDisp, objectName);
         }
         return obj;
     }

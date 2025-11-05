@@ -3,6 +3,7 @@
 using System.Reflection;
 using PK.PkUtils.Reflection;
 
+#pragma warning disable IDE0079   // Remove unnecessary suppressions
 #pragma warning disable IDE0018   // Inline variable declaration
 #pragma warning disable IDE0090   // 'new' expression can be simplified
 #pragma warning disable IDE0300   // Simplify collection initialization

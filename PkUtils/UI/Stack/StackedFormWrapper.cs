@@ -79,7 +79,7 @@ public class StackedFormWrapper<TForm> : IStackedForm, IDisposable where TForm :
     protected ManualResetEvent _eventPreloadDone;
 
     /// <summary>
-    /// The backing field of the property <see cref="eventStackItemClosed"/>
+    /// The backing field of the property <see cref="EventStackItemClosed"/>
     /// </summary>
     protected EventHandler<EventFormStackItemClosedArgs> _eventStackItemClosed;
 
@@ -147,7 +147,7 @@ public class StackedFormWrapper<TForm> : IStackedForm, IDisposable where TForm :
     #region Methods
 
     /// <summary>
-    /// Fires the event <see cref="eventStackItemClosed"/>
+    /// Fires the event <see cref="EventStackItemClosed"/>
     /// </summary>
     /// <param name="args">Argument containing characteristic data for event that is raised when the FormStack item is closed.</param>
     protected void FireEventStackItemClosed(EventFormStackItemClosedArgs args)
@@ -205,7 +205,7 @@ public class StackedFormWrapper<TForm> : IStackedForm, IDisposable where TForm :
     #region IStackedForm Members
 
     /// <inheritdoc/>
-    public event EventHandler<EventFormStackItemClosedArgs> eventStackItemClosed
+    public event EventHandler<EventFormStackItemClosedArgs> EventStackItemClosed
     {
         [MethodImpl(MethodImplOptions.Synchronized)]
         add

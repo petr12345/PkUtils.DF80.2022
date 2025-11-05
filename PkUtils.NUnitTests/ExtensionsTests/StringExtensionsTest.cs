@@ -6,10 +6,10 @@ using PK.PkUtils.Extensions;
 namespace PK.PkUtils.NUnitTests.ExtensionsTests;
 
 /// <summary>
-/// This is a test class for <see cref="StringExtension"/>.
+/// This is a test class for <see cref="StringExtensions"/>.
 /// </summary>
 [TestFixture()]
-public class StringExtensionTest
+public class StringExtensionsTest
 {
     #region Tests
 

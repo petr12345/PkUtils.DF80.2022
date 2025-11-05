@@ -4,16 +4,16 @@ using System.Windows.Forms;
 using PK.PkUtils.Extensions;
 using PK.PkUtils.Interfaces;
 
+#pragma warning disable IDE0079   // Remove unnecessary suppressions
 #pragma warning disable CA1859    // Change type of variable ...
-#pragma warning disable IDE0079     // Remove unnecessary suppression
 
 namespace PK.PkUtils.NUnitTests.ExtensionsTests;
 
 /// <summary>
-/// This is a test class for <see cref="DisposableExtension"/>.
+/// This is a test class for <see cref="DisposableExtensions"/>.
 /// </summary>
 [TestFixture()]
-public class DisposableExtensionTest
+public class DisposableExtensionsTest
 {
     #region Auxiliary_types
 
@@ -33,7 +33,7 @@ public class DisposableExtensionTest
 
     #region Tests
 
-    /// <summary> A test for DisposableExtension.CheckNotDisposed. </summary>
+    /// <summary> A test for DisposableExtensions.CheckNotDisposed. </summary>
     [Test()]
     public void DisposableExtension_CheckNotDisposedTest_01()
     {
@@ -42,7 +42,7 @@ public class DisposableExtensionTest
         Assert.Throws<ArgumentNullException>(() => obj.CheckNotDisposed(nameof(obj)));
     }
 
-    /// <summary> A test for DisposableExtension.CheckNotDisposed. </summary>
+    /// <summary> A test for DisposableExtensions.CheckNotDisposed. </summary>
     [Test()]
     public void DisposableExtension_CheckNotDisposedTest_02()
     {
@@ -53,7 +53,7 @@ public class DisposableExtensionTest
         Assert.Throws<ObjectDisposedException>(() => form.CheckNotDisposed(nameof(form)));
     }
 
-    /// <summary> A test for DisposableExtension.CheckNotDisposed. </summary>
+    /// <summary> A test for DisposableExtensions.CheckNotDisposed. </summary>
     [Test()]
     public void DisposableExtension_CheckNotDisposedTest_03()
     {

@@ -23,6 +23,7 @@ using System.Text;
 
 namespace PK.PkUtils.ShellLib;
 
+#pragma warning disable IDE0079   // Remove unnecessary suppressions
 #pragma warning disable SYSLIB1054  // Use 'LibraryImportAttribute' instead of 'DllImportAttribute' to generate P/Invoke marshalling code at compile time
 #pragma warning disable CA1401  // P/Invoke method should not be visible
 

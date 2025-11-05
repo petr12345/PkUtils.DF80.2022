@@ -10,6 +10,9 @@ using PK.PkUtils.WinApi;
 
 namespace PK.PkUtils.UI.TipHandlers;
 
+#pragma warning disable IDE0079  // Remove unnecessary suppression
+#pragma warning disable SYSLIB1054  // Use 'LibraryImportAttribute' instead of 'DllImportAttribute' to generate P/Invoke marshalling code at compile time
+
 /// <summary>   Supports tooltips for ComboBoxes. </summary>
 [CLSCompliant(false)]
 public class ComboBoxTipHandler : TipHandler
@@ -811,3 +814,5 @@ public class ComboBoxTipHandler : TipHandler
     #endregion // Protected_Methods
     #endregion // Methods
 }
+#pragma warning restore SYSLIB1054
+#pragma warning restore IDE0079

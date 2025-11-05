@@ -3,6 +3,7 @@
 using PK.PkUtils.Cloning.Binary;
 using PK.PkUtils.Interfaces;
 
+#pragma warning disable IDE0079   // Remove unnecessary suppressions
 #pragma warning disable CA1859    // Change type of variable ...
 #pragma warning disable IDE0130 // Namespace "..." does not match folder structure
 #pragma warning disable IDE0290     // Use primary constructor

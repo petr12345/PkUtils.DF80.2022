@@ -11,10 +11,10 @@ namespace PK.PkUtils.NUnitTests.ExtensionsTests;
 
 
 /// <summary>
-/// This is a test class for <see cref="ObjectExtension"/>.
+/// This is a test class for <see cref="ObjectExtensions"/>.
 /// </summary>
 [TestFixture()]
-public class ObjectExtensionTest
+public class ObjectExtensionsTest
 {
     #region Auxiliary_types
 
@@ -128,7 +128,7 @@ public class ObjectExtensionTest
     {
         MyDisposableStruct myStruct = new();
         string result = myStruct.AsNameValue();
-        Assert.That(result, Is.EqualTo("myStruct = PK.PkUtils.NUnitTests.ExtensionsTests.ObjectExtensionTest+MyDisposableStruct"));
+        Assert.That(result, Is.EqualTo("myStruct = PK.PkUtils.NUnitTests.ExtensionsTests.ObjectExtensionsTest+MyDisposableStruct"));
     }
 
     [Test(Description = "Validates AsNameValue generates correct string for a primitive type.")]

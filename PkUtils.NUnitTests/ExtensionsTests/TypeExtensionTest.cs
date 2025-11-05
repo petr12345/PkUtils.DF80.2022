@@ -5,7 +5,7 @@ using PK.PkUtils.Extensions;
 
 namespace PK.PkUtils.NUnitTests.ExtensionsTests;
 
-/// <summary>   This is a test class for  <see cref="TypeExtension"/> </summary>
+/// <summary>   This is a test class for  <see cref="TypeExtensions"/> </summary>
 [TestFixture()]
 public class TypeExtensionTest
 {
@@ -62,7 +62,7 @@ public class TypeExtensionTest
         Type t = typeof(System.Windows.Forms.Form);
         Type interfaceType = typeof(IDisposable);
 
-        actual = TypeExtension.HasTheInterface(t, interfaceType);
+        actual = TypeExtensions.HasTheInterface(t, interfaceType);
         Assert.That(actual, Is.True);
     }
 
@@ -118,11 +118,11 @@ public class TypeExtensionTest
     public void TypeExtension_TypeToReadableTest()
     {
         Type t = typeof(System.Drawing.Point);
-        string actual = TypeExtension.TypeToReadable(t);
+        string actual = TypeExtensions.TypeToReadable(t);
         Assert.That(actual, Is.EqualTo("Point"));
 
         t = typeof(List<System.Drawing.Rectangle>);
-        actual = TypeExtension.TypeToReadable(t);
+        actual = TypeExtensions.TypeToReadable(t);
         Assert.That(actual, Is.EqualTo("List`1[Rectangle]"));
     }
     #endregion // Tests

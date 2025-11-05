@@ -632,7 +632,7 @@ public static class cTaskDialog
       eSysIcons MainIcon,
       eSysIcons FooterIcon)
     {
-        return ShowRadioBox(Owner, Title, MainInstruction, Content, ExpandedInfo, Footer, VerificationText, RadioButtons, eSysIcons.Question, eSysIcons.Information, 0);
+        return ShowRadioBox(Owner, Title, MainInstruction, Content, ExpandedInfo, Footer, VerificationText, RadioButtons, MainIcon, FooterIcon, 0);
     }
 
     /// <summary>

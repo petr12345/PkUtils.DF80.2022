@@ -39,9 +39,12 @@ public class SerialPortLib_SerialPortSettingsTest
         SerialPortSettings s1 = new SerialPortSettings();
         object s2 = s1.DeepClone();
 
-        Assert.That(s1.GetType(), Is.EqualTo(s2.GetType()));
-        Assert.That(s1, Is.EqualTo(s2));
-        Assert.That(s1.GetHashCode(), Is.EqualTo(s2.GetHashCode()));
+        using (Assert.EnterMultipleScope())
+        {
+            Assert.That(s1.GetType(), Is.EqualTo(s2.GetType()));
+            Assert.That(s1, Is.EqualTo(s2));
+            Assert.That(s1.GetHashCode(), Is.EqualTo(s2.GetHashCode()));
+        }
     }
 
     /// <summary>
@@ -53,9 +56,12 @@ public class SerialPortLib_SerialPortSettingsTest
         SerialPortSettingsEx sex1 = new SerialPortSettingsEx();
         object sex2 = sex1.DeepClone();
 
-        Assert.That(sex2.GetType(), Is.EqualTo(sex1.GetType()));
-        Assert.That(sex1, Is.EqualTo(sex2));
-        Assert.That(sex1.GetHashCode(), Is.EqualTo(sex2.GetHashCode()));
+        using (Assert.EnterMultipleScope())
+        {
+            Assert.That(sex2.GetType(), Is.EqualTo(sex1.GetType()));
+            Assert.That(sex1, Is.EqualTo(sex2));
+            Assert.That(sex1.GetHashCode(), Is.EqualTo(sex2.GetHashCode()));
+        }
     }
     #endregion // Tests
 }

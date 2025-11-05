@@ -13,6 +13,7 @@ using PK.PkUtils.WinApi;
 
 namespace PK.PkUtils.UI.TipHandlers;
 
+#pragma warning disable IDE0079  // Remove unnecessary suppression
 #pragma warning disable CA1859    // Change type of variable ...
 #pragma warning disable IDE0290   // Use primary constructor
 
@@ -876,4 +877,6 @@ public abstract class TipHandler : WindowMessageHook
     #endregion // Methods
 }
 
+#pragma warning restore IDE0290 // Use primary constructor
 #pragma warning restore CA1859    // Change type of variable ...
+#pragma warning restore IDE0079

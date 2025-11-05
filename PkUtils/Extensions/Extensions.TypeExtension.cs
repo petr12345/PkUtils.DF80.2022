@@ -10,7 +10,7 @@ using System.Text.RegularExpressions;
 namespace PK.PkUtils.Extensions;
 
 /// <summary> Implements extension methods for types. </summary>
-public static class TypeExtension
+public static class TypeExtensions
 {
     #region Fields
     private const string _splitDott = ".";

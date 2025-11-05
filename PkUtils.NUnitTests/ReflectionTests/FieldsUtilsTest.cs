@@ -4,6 +4,7 @@
 using System.Reflection;
 using PK.PkUtils.Reflection;
 
+#pragma warning disable IDE0079   // Remove unnecessary suppressions
 #pragma warning disable NUnit2045 // Use Assert.Multiple
 #pragma warning disable CA2211    // Non-constant fields should not be visible
 #pragma warning disable IDE0018   // Inline variable declaration
@@ -769,6 +770,7 @@ public class FieldsUtilsTest
 }
 
 #pragma warning restore IDE0018
+#pragma warning restore IDE0079
 #pragma warning restore IDE0090
 #pragma warning restore IDE0300
 #pragma warning restore IDE0305

@@ -23,6 +23,7 @@ using System.Windows.Forms;
 using static PK.PkUtils.ShellLib.ShellApi;
 
 #pragma warning disable IDE0290 // Use primary constructor
+#pragma warning disable SYSLIB1054  // Use 'LibraryImportAttribute' instead of 'DllImportAttribute' to generate P/Invoke marshalling code at compile time
 
 namespace PK.PkUtils.ShellLib;
 
@@ -836,4 +837,5 @@ public class ShellBrowseForFolderDialog
     #endregion // Methods
 }
 
+#pragma warning restore SYSLIB1054 // 
 #pragma warning restore IDE0290 // Use primary constructor

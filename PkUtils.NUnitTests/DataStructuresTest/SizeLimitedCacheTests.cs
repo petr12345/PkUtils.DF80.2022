@@ -6,6 +6,7 @@ using PK.PkUtils.Interfaces;
 
 namespace PK.PkUtils.NUnitTests.DataStructuresTest;
 
+#pragma warning disable IDE0079   // Remove unnecessary suppressions
 #pragma warning disable CA1859    // Change type of variable ...
 #pragma warning disable IDE0305 // Collection initialization can be simplified
 

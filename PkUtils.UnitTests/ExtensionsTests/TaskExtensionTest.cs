@@ -12,7 +12,7 @@ namespace PK.PkUtils.UnitTests.ExtensionsTests
 {
 
     /// <summary>
-    /// This is a test class for TaskExtensions
+    /// This is a test class for TypeExtension
     /// </summary>
     [TestClass()]
     public class TaskExtensionTest
@@ -20,18 +20,18 @@ namespace PK.PkUtils.UnitTests.ExtensionsTests
         #region Tests
 
         /// <summary>
-        /// A test for TaskExtensions.ExecuteSynchronously
+        /// A test for TypeExtension.ExecuteSynchronously
         /// </summary>
         [TestMethod()]
         public void ExecuteSynchronously_Test_01()
         {
             Task<int> t = null!;
 
-            Assert.ThrowsExactly<ArgumentNullException>(() => TaskEx.ExecuteSynchronously(t));
+            Assert.ThrowsExactly<ArgumentNullException>(() => TaskExtension.ExecuteSynchronously(t));
         }
 
         /// <summary>
-        /// A test for TaskExtensions.ExecuteSynchronously
+        /// A test for TypeExtension.ExecuteSynchronously
         /// </summary>
         [TestMethod()]
         public void ExecuteSynchronously_Test_02()
@@ -42,11 +42,11 @@ namespace PK.PkUtils.UnitTests.ExtensionsTests
             }
 
             Task<int> testedTask = Task.Run(() => FnGetInt());
-            Assert.ThrowsExactly<InvalidOperationException>(() => TaskEx.ExecuteSynchronously(testedTask));
+            Assert.ThrowsExactly<InvalidOperationException>(() => TaskExtension.ExecuteSynchronously(testedTask));
         }
 
         /// <summary>
-        /// A test for TaskExtensions.ExecuteSynchronously
+        /// A test for TypeExtension.ExecuteSynchronously
         /// </summary>
         [TestMethod()]
         public void ExecuteSynchronously_Test_03()
@@ -54,7 +54,7 @@ namespace PK.PkUtils.UnitTests.ExtensionsTests
             const int primeRange = 999999;
             Task<int> primeTask = Task.Run(
                 () => Primes.GeneratePrimesInRange(primeRange).Last());
-            int result = TaskEx.ExecuteSynchronously(primeTask);
+            int result = TaskExtension.ExecuteSynchronously(primeTask);
 
             Trace.WriteLine(result.ToString());
         }

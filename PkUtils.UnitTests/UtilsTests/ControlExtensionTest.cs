@@ -10,8 +10,8 @@ using PK.PkUtils.Extensions;
 namespace PK.PkUtils.UnitTests.UtilsTests;
 
 /// <summary>
-/// This is a test class for ControlExtension and is intended
-/// to contain all ControlExtension Unit Tests
+/// This is a test class for ControlExtensions and is intended
+/// to contain all ControlExtensions Unit Tests
 ///</summary>
 [TestClass()]
 public class ControlExtensionTest
@@ -26,7 +26,7 @@ public class ControlExtensionTest
     {
         Control parent = new Form();
         IEnumerable<Control> expected = [];
-        /* IEnumerable<Control> actual = ControlExtension.AllControls(parent); */
+        /* IEnumerable<Control> actual = ControlExtensions.AllControls(parent); */
         IEnumerable<Control> actual = parent.AllControls();
 
         // If you want to ensure to collections have exactly the same set of members regardless of order, 
@@ -42,7 +42,7 @@ public class ControlExtensionTest
     }
 
     /// <summary>
-    /// A test for ControlExtension.CheckNotDisposed
+    /// A test for ControlExtensions.CheckNotDisposed
     /// </summary>
     [TestMethod()]
     public void ControlExtension_CheckNotDisposedTest_01()
@@ -53,7 +53,7 @@ public class ControlExtensionTest
     }
 
     /// <summary>
-    /// A test for ControlExtension.CheckNotDisposed
+    /// A test for ControlExtensions.CheckNotDisposed
     ///</summary>
     [TestMethod()]
     public void ControlExtension_CheckNotDisposedTest_02()
@@ -65,7 +65,7 @@ public class ControlExtensionTest
     }
 
     /// <summary>
-    /// A test for ControlExtension.CheckNotDisposed
+    /// A test for ControlExtensions.CheckNotDisposed
     /// </summary>
     [TestMethod()]
     public void ControlExtension_CheckNotDisposedTest_03()

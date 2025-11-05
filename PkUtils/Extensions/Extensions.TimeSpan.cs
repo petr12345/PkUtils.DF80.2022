@@ -10,7 +10,7 @@ using static System.Globalization.CultureInfo;
 namespace PK.PkUtils.Extensions;
 
 /// <summary> Static class implementing a TimeSpan extension methods. </summary>
-public static class TimeSpanEx
+public static class TimeSpanExtensions
 {
     /// <summary> A TimeSpan extension method that converts a span to a  readable string. </summary>
     ///

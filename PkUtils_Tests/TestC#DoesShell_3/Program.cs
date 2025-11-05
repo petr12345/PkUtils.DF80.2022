@@ -27,7 +27,7 @@ namespace WinTester3
                 Debug.Assert(null != _settings);
 
                 string strVal = _settings.MainFormEdge;
-                var result = EnumExtension.ToEnum<ShellApi.AppBarEdges>(strVal);
+                var result = EnumExtensions.ToEnum<ShellApi.AppBarEdges>(strVal);
 
                 return result;
             }

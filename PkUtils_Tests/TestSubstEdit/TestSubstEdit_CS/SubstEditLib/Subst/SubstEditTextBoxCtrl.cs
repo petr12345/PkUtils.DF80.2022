@@ -120,10 +120,8 @@ namespace PK.SubstEditLib.Subst
         /// <exception cref="ArgumentNullException">Method is null</exception>
         public void AddKeyStroke(Keys key, KeyboardEventHandler method)
         {
-            if (method == null)
-            {
-                throw new ArgumentNullException(nameof(method));
-            }
+            ArgumentNullException.ThrowIfNull(method);
+
             // First use, create dictionary. Slower but saves memory a bit
             _keyTraps ??= [];
             // Add key+handler to dictionary

@@ -77,5 +77,3 @@ public sealed class ApplicationStorageTests
     }
     #endregion // Tests
 }
-
-#pragma warning restore NUnit2005

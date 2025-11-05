@@ -6,11 +6,11 @@ using System.Text;
 
 namespace PK.PkUtils.WinApi;
 
+#pragma warning disable IDE0079   // Remove unnecessary suppressions
 #pragma warning disable VSSpell001  // Spell Check
 #pragma warning disable 1591        // Missing XML comment for publicly visible type or member...
 #pragma warning disable CA1069      // The enum member ... has the same constant value as member ...
 #pragma warning disable CA1401      // P/Invoke method should not be visible
-#pragma warning disable IDE0079     // Remove unnecessary suppression
 #pragma warning disable IDE0130     // Namespace "..." does not match folder structure
 #pragma warning disable SYSLIB1054  // Use 'LibraryImportAttribute' instead of 'DllImportAttribute' to generate P/Invoke marshalling code at compile time
 

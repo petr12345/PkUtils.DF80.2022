@@ -9,7 +9,7 @@ using System.Runtime.InteropServices;
 
 namespace PK.PkUtils.WinApi;
 
-
+#pragma warning disable IDE0079  // Remove unnecessary suppression
 #pragma warning disable 1591  // Missing XML comment for publicly visible type or member...
 #pragma warning disable CA1401  // P/Invoke method should not be visible
 #pragma warning disable CA1806  // The HRESULT of some API is not used

@@ -4,9 +4,9 @@ using PK.PkUtils.Extensions;
 
 namespace PK.PkUtils.NUnitTests.ExtensionsTests;
 
-/// <summary> Unit Tests of class <see cref="ExceptionExtension"/>. </summary>
+/// <summary> Unit Tests of class <see cref="ExceptionExtensions"/>. </summary>
 [TestFixture]
-public class ExceptionExtensionTest
+public class ExceptionExtensionsTest
 {
     #region Tests
     #region AllInnerExceptions Tests

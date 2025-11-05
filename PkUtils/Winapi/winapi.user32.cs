@@ -7,12 +7,13 @@ using System.Runtime.InteropServices;
 using System.Text;
 using System.Windows.Forms;
 
+#pragma warning disable IDE0079   // Remove unnecessary suppressions
 #pragma warning disable IDE0130 // Namespace "..." does not match folder structure
 
 
 namespace PK.PkUtils.WinApi;
 
-
+#pragma warning disable IDE0079  // Remove unnecessary suppression
 #pragma warning disable VSSpell001
 #pragma warning disable 1591        // Missing XML comment for publicly visible type or member...
 #pragma warning disable IDE0251     // Member can be made 'readonly'	

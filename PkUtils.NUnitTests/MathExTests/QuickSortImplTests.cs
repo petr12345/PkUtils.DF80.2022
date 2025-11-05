@@ -5,6 +5,7 @@ using PK.PkUtils.MathEx;
 
 namespace PK.PkUtils.NUnitTests.MathExTests;
 
+#pragma warning disable IDE0079   // Remove unnecessary suppressions
 #pragma warning disable CA1859    // Change type of variable ...
 #pragma warning disable IDE0305 // Collection initialization can be simplified
 

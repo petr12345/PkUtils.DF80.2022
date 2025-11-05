@@ -111,7 +111,7 @@ public class BSIDTests
             Assert.That(id_2nd, Is.Not.EqualTo(nullObj));
             Assert.That(id_2nd, Is.Not.EqualTo(id_dummy));
             Assert.That(id_2nd.Equals(id_2nd), Is.True);
-            Assert.That(id_2nd.Equals(id_1st), Is.True);
+            Assert.That(id_2nd, Is.EqualTo(id_1st));
         }
     }
     #endregion // Tests_Methods

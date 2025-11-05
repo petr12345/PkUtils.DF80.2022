@@ -16,6 +16,8 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 [assembly: SupportedOSPlatform("windows")]
+[assembly: AssemblyVersion("1.12.16.0")]
+[assembly: AssemblyFileVersion("1.12.16.0")]
 [assembly: Parallelize(Scope = ExecutionScope.MethodLevel)]
 
 // Setting ComVisible to false makes the types in this assembly not visible 

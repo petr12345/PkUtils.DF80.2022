@@ -2,6 +2,7 @@
 // 
 using PK.PkUtils.Comparers;
 
+#pragma warning disable IDE0079   // Remove unnecessary suppressions
 #pragma warning disable NUnit2045 // Use Assert.Multiple
 
 namespace PK.PkUtils.NUnitTests.ComparersTest;

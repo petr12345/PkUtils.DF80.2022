@@ -1,8 +1,10 @@
 ﻿// Ignore Spelling: Utils, Concat
 // 
+
+#pragma warning disable IDE0079   // Remove unnecessary suppressions
+#pragma warning disable IDE0079   // Remove unnecessary suppressions
 #pragma warning disable NUnit2045 // Use Assert.Multiple
 #pragma warning disable IDE0039	// Use local function
-#pragma warning disable IDE0079   // Remove unnecessary suppression
 #pragma warning disable IDE0305 // Collection initialization can be simplified
 
 
@@ -14,7 +16,7 @@ namespace PK.PkUtils.NUnitTests.ExtensionsTests;
 /// This is a test class for static class EnumerableExtensions.
 /// </summary>
 [TestFixture()]
-public class EnumerableExtensionTest
+public class EnumerableExtensionsTest
 {
     #region Auxiliary_methods
 

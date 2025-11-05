@@ -8,6 +8,7 @@ using PK.PkUtils.LogTimingStatistic;
 
 namespace PK.PkUtils.NUnitTests.LogTimingStatisticTests;
 
+#pragma warning disable IDE0079   // Remove unnecessary suppressions
 #pragma warning disable CA1859    // Change type of variable ...
 
 [TestFixture()]

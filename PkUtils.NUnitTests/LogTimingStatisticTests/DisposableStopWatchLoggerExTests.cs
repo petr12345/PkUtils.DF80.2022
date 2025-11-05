@@ -6,6 +6,7 @@ using PK.PkUtils.LogTimingStatistic;
 
 namespace PK.PkUtils.NUnitTests.LogTimingStatisticTests;
 
+#pragma warning disable IDE0079   // Remove unnecessary suppressions
 #pragma warning disable CA1859    // Change type of variable ...
 
 [TestFixture()]
@@ -25,9 +26,12 @@ public class DisposableStopWatchLoggerExTests
         var logger = new DisposableStopWatchLoggerEx(dumper, _actionName, _actionDetails, scope);
 
         // Assert
-        Assert.That(logger.IsDisposed, Is.False);
-        Assert.That(logger.ActionName, Is.EqualTo(_actionName));
-        Assert.That(logger.ActionDetails, Is.EqualTo(_actionDetails));
+        using (Assert.EnterMultipleScope())
+        {
+            Assert.That(logger.IsDisposed, Is.False);
+            Assert.That(logger.ActionName, Is.EqualTo(_actionName));
+            Assert.That(logger.ActionDetails, Is.EqualTo(_actionDetails));
+        }
     }
 
     [Test()]

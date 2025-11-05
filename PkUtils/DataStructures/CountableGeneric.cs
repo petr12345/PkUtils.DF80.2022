@@ -136,7 +136,7 @@ public class CountableGeneric<T> : ICountable, IDisposableEx
     {
         int nIncludingDescendants = CountIncludingDescendants;
         int nDescendants = CountDescendants;
-        string strType = TypeExtension.TypeToReadable(this.GetType());
+        string strType = TypeExtensions.TypeToReadable(this.GetType());
         string strRes = string.Format(CultureInfo.InvariantCulture,
           "Instance of '{0}', created in order as {1}. In total there is {2} living instances including {3} descendants.",
           strType, Order, nIncludingDescendants, nDescendants);

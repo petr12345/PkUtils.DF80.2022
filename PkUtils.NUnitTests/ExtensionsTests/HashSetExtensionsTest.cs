@@ -9,7 +9,7 @@ namespace PK.PkUtils.NUnitTests.ExtensionsTests;
 /// This is a test class for <see cref="HashSetExtensions"/> 
 ///</summary>
 [TestFixture()]
-public class HashSetExtensionTest
+public class HashSetExtensionsTest
 {
     #region Tests
 

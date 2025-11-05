@@ -4,6 +4,7 @@ using System.Globalization;
 using System.Reflection;
 using PK.PkUtils.Reflection;
 
+#pragma warning disable IDE0079   // Remove unnecessary suppressions
 #pragma warning disable CA1822 // Member ... does not access instance data and can be marked as static
 #pragma warning disable IDE0059   // Avoid unnecessary value assignments
 #pragma warning disable IDE0060   // Remove unused parameter

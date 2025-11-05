@@ -11,7 +11,7 @@ namespace PK.PkUtils.Extensions;
 /// <summary>
 /// Wrapper class around IDisposableEx extension methods.
 /// </summary>
-public static class DisposableExtension
+public static class DisposableExtensions
 {
     /// <summary>
     /// Checks whether the specified <paramref name="obj"/> is not <c>null</c> and has not been disposed.

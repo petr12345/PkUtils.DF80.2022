@@ -11,7 +11,7 @@ namespace PK.PkUtils.Extensions;
 
 /// <summary> A static class implementing Enum-related methods and extensions. </summary>
 [CLSCompliant(true)]
-public static class EnumExtension
+public static class EnumExtensions
 {
     #region Public Methods
 

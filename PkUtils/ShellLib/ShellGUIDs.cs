@@ -20,6 +20,7 @@
 using System;
 using System.Diagnostics.CodeAnalysis;
 
+#pragma warning disable IDE0079  // Remove unnecessary suppression
 #pragma warning disable IDE0090 // Use 'new(...)'
 
 namespace PK.PkUtils.ShellLib;
