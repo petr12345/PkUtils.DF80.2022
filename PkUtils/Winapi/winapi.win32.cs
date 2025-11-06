@@ -3947,9 +3947,9 @@ public static class Win32
 }
 
 #pragma warning restore SYSLIB1054
-#pragma warning restore IDE0079
 #pragma warning restore IDE0130
 #pragma warning restore CA1401
 #pragma warning restore CA1069
 #pragma warning restore 1591
 #pragma warning restore VSSpell001
+#pragma warning restore IDE0079

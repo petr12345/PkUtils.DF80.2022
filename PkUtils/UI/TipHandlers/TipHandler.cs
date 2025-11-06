@@ -129,18 +129,18 @@ public abstract class TipHandler : WindowMessageHook
     /// <summary>
     /// global variable; draw highlighted text by different color when true
     /// </summary>
-    protected static bool g_bDrawSelHighlighted = true;
+    private static bool g_bDrawSelHighlighted = true;
 
     /// <summary>
     /// global variable: how many milliseconds wait before showing tip
     /// </summary>
-    protected static uint g_nTipTimeMsec = 200; // .2 sec
+    private static uint g_nTipTimeMsec = 200; // .2 sec
 
     /// <summary>
     /// global variable; when nonzero, indicates how soon should be tooltip re-displayed
     /// after it is canceled by mouse click
     /// </summary>
-    protected static uint g_nTipTimeAfterMouse = 1000; // 1 sec
+    private static uint g_nTipTimeAfterMouse = 1000; // 1 sec
 
     /// <summary>
     /// the tip window
@@ -210,6 +210,24 @@ public abstract class TipHandler : WindowMessageHook
     #endregion // Constructor(s)
 
     #region Properties
+
+    /// <summary>
+    /// Draw highlighted text by different color when true
+    /// </summary>
+    public static bool DrawSelHighlighted
+    {
+        get { return g_bDrawSelHighlighted; }
+        set { g_bDrawSelHighlighted = value; }
+    }
+
+    /// <summary>
+    /// how many milliseconds wait before showing tip
+    /// </summary>
+    public static uint TipTimeMsec
+    {
+        get { return g_nTipTimeMsec; }
+        set { g_nTipTimeMsec = value; }
+    }
 
     /// <summary>
     /// Property affecting a time period how soon is tooltip re-displayed after canceling.<br/>

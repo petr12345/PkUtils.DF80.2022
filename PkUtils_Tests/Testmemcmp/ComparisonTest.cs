@@ -30,11 +30,11 @@ namespace PK.Testmemcmp
 
         #region Methods
 
-        public static void DoTest(TestMode mode, IDumper dumper, int nParallelThreadsCount, int nArrayLength)
+        public static void DoTest(TestMode mode, IDumper dumper, int parallelThreadsCount, int arrayLength)
         {
             dumper.CheckArgNotNull(nameof(dumper));
-            if (nParallelThreadsCount <= 0) throw new ArgumentException("value must be positive", "nParallelThreadsCount");
-            if (nArrayLength <= 0) throw new ArgumentException("value must be positive", "nArrayLength");
+            if (parallelThreadsCount <= 0) throw new ArgumentException("value must be positive", nameof(parallelThreadsCount));
+            if (arrayLength <= 0) throw new ArgumentException("value must be positive", nameof(arrayLength));
 
             if (!Enum.IsDefined(typeof(TestMode), mode))
             {
@@ -45,7 +45,7 @@ namespace PK.Testmemcmp
             {
                 dumper.DumpLine(string.Format(CultureInfo.InvariantCulture,
                   "---- Testing '{0}', nArrayLength = {1}, nParallelThreadsCount = {2} ----",
-                  mode, Conversions.IntegerToReadable(nArrayLength), nParallelThreadsCount));
+                  mode, Conversions.IntegerToReadable(arrayLength), parallelThreadsCount));
             }
 
             ThreadStart ts = null;
@@ -56,7 +56,7 @@ namespace PK.Testmemcmp
                     {
                         ts = new ThreadStart(delegate
                         {
-                            byte[] arrA = GenerateArray(nArrayLength);
+                            byte[] arrA = GenerateArray(arrayLength);
                             byte[] arrB = arrA.DeepClone();
 
                             for (int j = 0; j < LOOP_COUNT; j++)
@@ -65,7 +65,7 @@ namespace PK.Testmemcmp
                                 if (!bEqual)
                                 {
                                     dumper.DumpLine(string.Format(CultureInfo.InvariantCulture,
-                          "Comparison has FAILED returning FALSE, nArrayLength =  '{0}'", nArrayLength));
+                          "Comparison has FAILED returning FALSE, nArrayLength =  '{0}'", arrayLength));
                                     break;
                                 }
                             }
@@ -77,7 +77,7 @@ namespace PK.Testmemcmp
                     {
                         ts = new ThreadStart(delegate
                         {
-                            byte[] arrA = GenerateArray(nArrayLength);
+                            byte[] arrA = GenerateArray(arrayLength);
                             byte[] arrB = arrA.DeepClone();
 
                             for (int j = 0; j < LOOP_COUNT; j++)
@@ -88,7 +88,7 @@ namespace PK.Testmemcmp
                                 if (!bEqual)
                                 {
                                     dumper.DumpLine(string.Format(CultureInfo.InvariantCulture,
-                          "Comparison has FAILED returning FALSE, nArrayLength =  '{0}'", nArrayLength));
+                          "Comparison has FAILED returning FALSE, nArrayLength =  '{0}'", arrayLength));
                                     break;
                                 }
                             }
@@ -97,7 +97,7 @@ namespace PK.Testmemcmp
                     break;
             }
 
-            Thread[] threads = new Thread[nParallelThreadsCount];
+            Thread[] threads = new Thread[parallelThreadsCount];
             for (int i = 0; i < threads.Length; ++i)
             {
                 threads[i] = new Thread(ts);

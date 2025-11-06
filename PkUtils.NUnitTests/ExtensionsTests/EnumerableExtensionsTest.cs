@@ -2,7 +2,6 @@
 // 
 
 #pragma warning disable IDE0079   // Remove unnecessary suppressions
-#pragma warning disable IDE0079   // Remove unnecessary suppressions
 #pragma warning disable NUnit2045 // Use Assert.Multiple
 #pragma warning disable IDE0039	// Use local function
 #pragma warning disable IDE0305 // Collection initialization can be simplified
@@ -1366,6 +1365,6 @@ public class EnumerableExtensionsTest
 }
 
 #pragma warning restore IDE0305
-#pragma warning restore IDE0079
 #pragma warning restore IDE0039
 #pragma warning restore NUnit2045
+#pragma warning restore IDE0079

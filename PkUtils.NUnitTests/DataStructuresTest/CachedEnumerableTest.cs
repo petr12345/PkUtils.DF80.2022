@@ -6,6 +6,7 @@ using PK.PkUtils.Interfaces;
 
 namespace PK.PkUtils.NUnitTests.DataStructuresTest;
 
+#pragma warning disable IDE0079  // Remove unnecessary suppression
 #pragma warning disable IDE0290   // Use primary constructor
 #pragma warning disable IDE0300   // Simplify collection initialization
 #pragma warning disable IDE0305   // Collection initialization can be simplified
@@ -646,3 +647,4 @@ public class CachedEnumerableTest
 #pragma warning restore IDE0305
 #pragma warning restore IDE0300
 #pragma warning restore IDE0290
+#pragma warning restore IDE0079

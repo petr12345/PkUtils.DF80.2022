@@ -221,7 +221,7 @@ public class ListBoxTipHandler : TipHandler
             {
                 bool bSel = false;
 
-                if (g_bDrawSelHighlighted)
+                if (TipHandler.DrawSelHighlighted)
                 {
                     bSel = pListBox.GetSelected((int)nItem);
                 }

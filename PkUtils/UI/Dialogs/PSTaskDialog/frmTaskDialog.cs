@@ -52,7 +52,7 @@ public partial class frmTaskDialog : Form
     private int _defaultButtonIndex;
     private Control _focusControl;
 
-    private eTaskDialogButtons _buttons = eTaskDialogButtons.YesNoCancel;
+    private TaskDialogButtons _buttons = TaskDialogButtons.YesNoCancel;
 
     private bool _expanded;
     private readonly bool _isVista;
@@ -229,11 +229,11 @@ public partial class frmTaskDialog : Form
     }
 
     /// <summary>
-    /// The set of displayed <see cref="eTaskDialogButtons"/> buttons, combined into bitmask.
+    /// The set of displayed <see cref="TaskDialogButtons"/> buttons, combined into bitmask.
     /// </summary>
     [Browsable(true)]
     [DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)]
-    public eTaskDialogButtons Buttons
+    public TaskDialogButtons Buttons
     {
         get { return _buttons; }
         set { _buttons = value; }
@@ -396,7 +396,7 @@ public partial class frmTaskDialog : Form
         // Setup Buttons
         switch (_buttons)
         {
-            case eTaskDialogButtons.YesNo:
+            case TaskDialogButtons.YesNo:
                 bt1.Visible = false;
                 bt2.Text = "&Yes";
                 bt2.DialogResult = DialogResult.Yes;
@@ -405,7 +405,7 @@ public partial class frmTaskDialog : Form
                 this.AcceptButton = bt2;
                 this.CancelButton = bt3;
                 break;
-            case eTaskDialogButtons.YesNoCancel:
+            case TaskDialogButtons.YesNoCancel:
                 bt1.Text = "&Yes";
                 bt1.DialogResult = DialogResult.Yes;
                 bt2.Text = "&No";
@@ -415,7 +415,7 @@ public partial class frmTaskDialog : Form
                 this.AcceptButton = bt1;
                 this.CancelButton = bt3;
                 break;
-            case eTaskDialogButtons.OKCancel:
+            case TaskDialogButtons.OKCancel:
                 bt1.Visible = false;
                 bt2.Text = "&OK";
                 bt2.DialogResult = DialogResult.OK;
@@ -424,7 +424,7 @@ public partial class frmTaskDialog : Form
                 this.AcceptButton = bt2;
                 this.CancelButton = bt3;
                 break;
-            case eTaskDialogButtons.OK:
+            case TaskDialogButtons.OK:
                 bt1.Visible = false;
                 bt2.Visible = false;
                 bt3.Text = "&OK";
@@ -432,33 +432,33 @@ public partial class frmTaskDialog : Form
                 this.AcceptButton = bt3;
                 this.CancelButton = bt3;
                 break;
-            case eTaskDialogButtons.Close:
+            case TaskDialogButtons.Close:
                 bt1.Visible = false;
                 bt2.Visible = false;
                 bt3.Text = "&Close";
                 bt3.DialogResult = DialogResult.Cancel;
                 this.CancelButton = bt3;
                 break;
-            case eTaskDialogButtons.Cancel:
+            case TaskDialogButtons.Cancel:
                 bt1.Visible = false;
                 bt2.Visible = false;
                 bt3.Text = "&Cancel";
                 bt3.DialogResult = DialogResult.Cancel;
                 this.CancelButton = bt3;
                 break;
-            case eTaskDialogButtons.None:
+            case TaskDialogButtons.None:
                 bt1.Visible = false;
                 bt2.Visible = false;
                 bt3.Visible = false;
                 break;
         }
 
-        this.ControlBox = (Buttons == eTaskDialogButtons.Cancel ||
-                           Buttons == eTaskDialogButtons.Close ||
-                           Buttons == eTaskDialogButtons.OKCancel ||
-                           Buttons == eTaskDialogButtons.YesNoCancel);
+        this.ControlBox = (Buttons == TaskDialogButtons.Cancel ||
+                           Buttons == TaskDialogButtons.Close ||
+                           Buttons == TaskDialogButtons.OKCancel ||
+                           Buttons == TaskDialogButtons.YesNoCancel);
 
-        if (!show_verify_checkbox && string.IsNullOrEmpty(ExpandedInfo) && _buttons == eTaskDialogButtons.None)
+        if (!show_verify_checkbox && string.IsNullOrEmpty(ExpandedInfo) && _buttons == TaskDialogButtons.None)
             pnlButtons.Visible = false;
         else
             for_height += pnlButtons.Height;

@@ -2,6 +2,7 @@
 //
 using PK.PkUtils.DataStructures;
 
+#pragma warning disable IDE0079   // Remove unnecessary suppressions
 #pragma warning disable VSSpell001
 
 namespace PK.PkUtils.NUnitTests.DataStructuresTest;
@@ -150,3 +151,4 @@ public class RepositoryTests
     #endregion // Tests_ToString
 }
 #pragma warning restore VSSpell001
+#pragma warning restore IDE0079

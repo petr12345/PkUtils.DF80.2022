@@ -240,7 +240,7 @@ public class ComboBoxTipHandler : TipHandler
 
     /// <summary> Default constructor. </summary>
     public ComboBoxTipHandler()
-        : this(g_nTipTimeMsec)
+        : this(TipHandler.TipTimeMsec)
     { }
 
     /// <summary> Single-argument constructor. </summary>
@@ -303,10 +303,10 @@ public class ComboBoxTipHandler : TipHandler
     }
 
     /// <summary>
-    /// Is visible the vertical scrollbar on the window listbox part of the ComboBox ?
+    /// Is visible the vertical scroll bar on the window listbox part of the ComboBox ?
     /// </summary>
     /// <returns>True if visible, false if not.</returns>
-    public bool IsVerticalScrollbarVisible()
+    public bool IsVerticalScrollBarVisible()
     {
         IntPtr hList;
         bool bScrollBar = false;
@@ -561,7 +561,7 @@ public class ComboBoxTipHandler : TipHandler
                     rcTipText.Offset(nCxOffset, 0);
 
                     // set highlighted status
-                    TipWindow.DrawHighlighted = g_bDrawSelHighlighted && bHighlited;
+                    TipWindow.DrawHighlighted = TipHandler.DrawSelHighlighted && bHighlited;
 
                     // move tip window over list text
                     sz = new Size(rcTipText.Width + 8, rcTipText.Height);
@@ -680,7 +680,7 @@ public class ComboBoxTipHandler : TipHandler
                     //
                     // When the property IntegralHeight is set to true, the control automatically resizes 
                     // to ensure that an item is not partially displayed. 
-                    // If you want to maintain the original size of the ComboBox based on the space 
+                    // If you want to maintain the original size of your ComboBox based on the space 
                     // requirements of your form, that property should be set to false. 
                     // For more info, see
                     // http://stackoverflow.com/questions/3868907/ComboBox-maxdopdownitems-is-not-working-when-adding-items-using-the-click-event
@@ -776,7 +776,7 @@ public class ComboBoxTipHandler : TipHandler
         Rectangle rcVisible = pComboBox.ClientRectangle;
         int cxDelta = SystemInformation.Border3DSize.Width;
 
-        if (IsVerticalScrollbarVisible())
+        if (IsVerticalScrollBarVisible())
         {
             cxDelta += SystemInformation.VerticalScrollBarWidth;
         }

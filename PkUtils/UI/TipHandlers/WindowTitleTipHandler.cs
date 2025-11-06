@@ -44,7 +44,7 @@ namespace PK.PkUtils.UI.TipHandlers
             ///            false otherwise. Use 'true' value with care! </returns>
             protected override bool MouseLLHookMeth(IntPtr wParam, Win32.MSLLHOOKSTRUCT mss)
             {
-                switch ((int)wParam)
+                switch (checked((int)wParam))
                 {
                     case (int)Win32.WM.WM_LBUTTONDOWN:
                     case (int)Win32.WM.WM_LBUTTONDBLCLK:
@@ -367,7 +367,7 @@ namespace PK.PkUtils.UI.TipHandlers
             IntPtr lParam = Win32.MAKELPARAM((ushort)ptInScreen.X, (ushort)ptInScreen.Y);
             IntPtr hitTest = User32.SendMessage(HookedHWND, (int)Win32.WM.WM_NCHITTEST, IntPtr.Zero, lParam);
 
-            if ((int)hitTest == (int)Win32.MousePositionCode.HTCAPTION)
+            if (checked((int)hitTest) == (int)Win32.MousePositionCode.HTCAPTION)
             {
                 // Must avoid displaying any tooltip, if there is another modal MessageBox or modal dialog overlapping the window.
                 // Checks that by involving WndFromPoint

@@ -64,5 +64,5 @@ public class DisposableExtensionsTest
     #endregion // Tests
 }
 
-#pragma warning restore IDE0079
 #pragma warning restore CA1859    // Change type of variable ...
+#pragma warning restore IDE0079   // Remove unnecessary suppressions

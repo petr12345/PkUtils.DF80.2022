@@ -62,7 +62,7 @@ namespace TestTaskDialog
              "Don't show me this message again",
              "Radio Option 1|Radio Option 2|Radio Option 3",
              "Command &Button 1|Command Button 2\nLine 2\nLine 3|Command Button 3",
-             eTaskDialogButtons.OKCancel,
+             TaskDialogButtons.OKCancel,
              eSysIcons.Information,
              eSysIcons.Warning);
             UpdateResult(res);
@@ -82,7 +82,7 @@ namespace TestTaskDialog
               "Any expanded content text for the message box is shown here and the text will automatically wrap as needed.",
               "Optional footer text with an icon can be included",
               "ARRGHH! Don't show me this again!!!!",
-              eTaskDialogButtons.YesNoCancel,
+              TaskDialogButtons.YesNoCancel,
               eSysIcons.Information,
               eSysIcons.Error);
 
@@ -95,7 +95,7 @@ namespace TestTaskDialog
               "Any expanded content text for the message box is shown here and the text will automatically wrap as needed.",
               null,
               "ARRGHH! Don't show me this again!!!!",
-              PSTaskDialog.eTaskDialogButtons.OK,
+              PSTaskDialog.TaskDialogButtons.OK,
               PSTaskDialog.eSysIcons.Warning,
               PSTaskDialog.eSysIcons.Error);
             */
@@ -114,7 +114,7 @@ namespace TestTaskDialog
               "MessageBox Title",
               "The main instruction text for the message box is shown here.",
               "The content text for the message box is shown here and the text will automatically wrap as needed.",
-              eTaskDialogButtons.OK,
+              TaskDialogButtons.OK,
               eSysIcons.Warning);
             UpdateResult(res);
         }

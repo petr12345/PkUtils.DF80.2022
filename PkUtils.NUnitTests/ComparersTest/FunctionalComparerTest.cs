@@ -70,4 +70,3 @@ public class FunctionalComparerTest
     #endregion // Tests
 }
 
-#pragma warning restore IDE0039

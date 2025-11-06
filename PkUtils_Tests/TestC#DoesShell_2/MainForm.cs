@@ -148,7 +148,7 @@ namespace WinTester2
               "Error",
               "Unable to find suitable file.",
               "You may need to modify the code of testing project to fixup this problem",
-              eTaskDialogButtons.OK,
+              TaskDialogButtons.OK,
               eSysIcons.Warning);
         }
         #endregion // Protected Non-static Methods
@@ -250,7 +250,7 @@ namespace WinTester2
                   "Success",
                   "Copying of following files complete without errors:",
                   allSources,
-                  eTaskDialogButtons.OK,
+                  TaskDialogButtons.OK,
                   eSysIcons.Information);
             }
             else
@@ -260,7 +260,7 @@ namespace WinTester2
                   "Error",
                   "Copying of following files completed with errors!",
                   allSources,
-                  eTaskDialogButtons.OK,
+                  TaskDialogButtons.OK,
                   eSysIcons.Warning);
             }
         }
@@ -307,7 +307,7 @@ namespace WinTester2
                       "Success",
                       "Moving of following files complete without errors:",
                       allSources,
-                      eTaskDialogButtons.OK,
+                      TaskDialogButtons.OK,
                       eSysIcons.Information);
                 }
                 else
@@ -317,7 +317,7 @@ namespace WinTester2
                       "Error",
                       "Moving of following files completed with errors!",
                       allSources,
-                      eTaskDialogButtons.OK,
+                      TaskDialogButtons.OK,
                       eSysIcons.Warning);
                 }
             }
@@ -363,7 +363,7 @@ namespace WinTester2
                       "Success",
                       "Deleting of following files complete without errors:",
                       allSources,
-                      eTaskDialogButtons.OK,
+                      TaskDialogButtons.OK,
                       eSysIcons.Information);
                 }
                 else
@@ -373,7 +373,7 @@ namespace WinTester2
                       "Error",
                       "Deleting of following files completed with errors!",
                       allSources,
-                      eTaskDialogButtons.OK,
+                      TaskDialogButtons.OK,
                       eSysIcons.Warning);
                 }
             }
@@ -404,7 +404,7 @@ namespace WinTester2
                   "Success",
                   "Following file has been added to System Recent List:",
                   strFile,
-                  eTaskDialogButtons.OK,
+                  TaskDialogButtons.OK,
                   eSysIcons.Information);
             }
             else
@@ -421,7 +421,7 @@ namespace WinTester2
               "Success",
               "The System Recent List has been cleared",
               null,
-              eTaskDialogButtons.OK,
+              TaskDialogButtons.OK,
               eSysIcons.Information);
         }
 

@@ -770,9 +770,9 @@ public class FieldsUtilsTest
 }
 
 #pragma warning restore IDE0018
-#pragma warning restore IDE0079
 #pragma warning restore IDE0090
 #pragma warning restore IDE0300
 #pragma warning restore IDE0305
 #pragma warning restore CA2211
 #pragma warning restore NUnit2045
+#pragma warning restore IDE0079

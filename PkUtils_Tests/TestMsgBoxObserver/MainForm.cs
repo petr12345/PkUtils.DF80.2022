@@ -167,7 +167,7 @@ namespace PK.TestMsgBoxObserver
                   strTitle,
                   strMsg,
                   strContent,
-                  eTaskDialogButtons.OK,
+                  TaskDialogButtons.OK,
                   eSysIcons.Information);
             }
         }

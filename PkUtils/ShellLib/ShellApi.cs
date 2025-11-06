@@ -23,9 +23,10 @@ using System.Text;
 
 namespace PK.PkUtils.ShellLib;
 
-#pragma warning disable IDE0079   // Remove unnecessary suppressions
+#pragma warning disable IDE0079     // Remove unnecessary suppressions
 #pragma warning disable SYSLIB1054  // Use 'LibraryImportAttribute' instead of 'DllImportAttribute' to generate P/Invoke marshalling code at compile time
-#pragma warning disable CA1401  // P/Invoke method should not be visible
+#pragma warning disable CA1069      // Enums values should not be duplicated
+#pragma warning disable CA1401      // P/Invoke method should not be visible
 
 /// <summary> A wrapper providing several interop declarations of APIS from shell32.dll. </summary>
 public static class ShellApi
@@ -1330,4 +1331,6 @@ public static class ShellApi
 }
 
 #pragma warning restore CA1401
+#pragma warning restore CA1069
 #pragma warning restore SYSLIB1054
+#pragma warning restore IDE0079

@@ -24,6 +24,7 @@ using PK.PkUtils.UI.PSTaskDialog;
 namespace PK.PkUtils.UI.Dialogs.PSTaskDialog;
 
 #region Typedefs
+
 /// <summary> Values that represent eSysIcons. </summary>
 public enum eSysIcons
 {
@@ -36,8 +37,9 @@ public enum eSysIcons
     /// <summary> An enum constant representing the error option. </summary>
     Error
 };
-/// <summary> Values that represent eTaskDialogButtons. </summary>
-public enum eTaskDialogButtons
+
+/// <summary> Values that represent TaskDialogButtons. </summary>
+public enum TaskDialogButtons
 {
     /// <summary> An enum constant representing the yes no option. </summary>
     YesNo,
@@ -183,19 +185,19 @@ public static class cTaskDialog
     ///
     /// <returns> . </returns>
     public static DialogResult ShowTaskDialogBox(
-      IWin32Window Owner,
-      string Title,
-      string MainInstruction,
-      string Content,
-      string ExpandedInfo,
-      string Footer,
-      string VerificationText,
-      string RadioButtons,
-      string CommandButtons,
-      eTaskDialogButtons Buttons,
-      eSysIcons MainIcon,
-      eSysIcons FooterIcon,
-      int DefaultIndex)
+        IWin32Window Owner,
+        string Title,
+        string MainInstruction,
+        string Content,
+        string ExpandedInfo,
+        string Footer,
+        string VerificationText,
+        string RadioButtons,
+        string CommandButtons,
+        TaskDialogButtons Buttons,
+        eSysIcons MainIcon,
+        eSysIcons FooterIcon,
+        int DefaultIndex)
     {
         DialogResult result;
         OnTaskDialogShown?.Invoke(null, EventArgs.Empty);
@@ -265,12 +267,12 @@ public static class cTaskDialog
 
             vtd.CommonButtons = Buttons switch
             {
-                eTaskDialogButtons.YesNo => VistaTaskDialogCommonButtons.Yes | VistaTaskDialogCommonButtons.No,
-                eTaskDialogButtons.YesNoCancel => VistaTaskDialogCommonButtons.Yes | VistaTaskDialogCommonButtons.No | VistaTaskDialogCommonButtons.Cancel,
-                eTaskDialogButtons.OKCancel => VistaTaskDialogCommonButtons.Ok | VistaTaskDialogCommonButtons.Cancel,
-                eTaskDialogButtons.OK => VistaTaskDialogCommonButtons.Ok,
-                eTaskDialogButtons.Close => VistaTaskDialogCommonButtons.Close,
-                eTaskDialogButtons.Cancel => VistaTaskDialogCommonButtons.Cancel,
+                TaskDialogButtons.YesNo => VistaTaskDialogCommonButtons.Yes | VistaTaskDialogCommonButtons.No,
+                TaskDialogButtons.YesNoCancel => VistaTaskDialogCommonButtons.Yes | VistaTaskDialogCommonButtons.No | VistaTaskDialogCommonButtons.Cancel,
+                TaskDialogButtons.OKCancel => VistaTaskDialogCommonButtons.Ok | VistaTaskDialogCommonButtons.Cancel,
+                TaskDialogButtons.OK => VistaTaskDialogCommonButtons.Ok,
+                TaskDialogButtons.Close => VistaTaskDialogCommonButtons.Close,
+                TaskDialogButtons.Cancel => VistaTaskDialogCommonButtons.Cancel,
                 _ => 0,
             };
             switch (MainIcon)
@@ -291,10 +293,10 @@ public static class cTaskDialog
 
             vtd.EnableHyperlinks = false;
             vtd.ShowProgressBar = false;
-            vtd.AllowDialogCancellation = Buttons == eTaskDialogButtons.Cancel ||
-                                           Buttons == eTaskDialogButtons.Close ||
-                                           Buttons == eTaskDialogButtons.OKCancel ||
-                                           Buttons == eTaskDialogButtons.YesNoCancel;
+            vtd.AllowDialogCancellation = Buttons == TaskDialogButtons.Cancel ||
+                                           Buttons == TaskDialogButtons.Close ||
+                                           Buttons == TaskDialogButtons.OKCancel ||
+                                           Buttons == TaskDialogButtons.YesNoCancel;
             vtd.CallbackTimer = false;
             vtd.ExpandedByDefault = false;
             vtd.ExpandFooterArea = false;
@@ -379,7 +381,7 @@ public static class cTaskDialog
       string VerificationText,
       string RadioButtons,
       string CommandButtons,
-      eTaskDialogButtons Buttons,
+      TaskDialogButtons Buttons,
       eSysIcons MainIcon,
       eSysIcons FooterIcon)
     {
@@ -410,7 +412,7 @@ public static class cTaskDialog
       string VerificationText,
       string RadioButtons,
       string CommandButtons,
-      eTaskDialogButtons Buttons,
+      TaskDialogButtons Buttons,
       eSysIcons MainIcon,
       eSysIcons FooterIcon)
     {
@@ -442,7 +444,7 @@ public static class cTaskDialog
       string ExpandedInfo,
       string Footer,
       string VerificationText,
-      eTaskDialogButtons Buttons,
+      TaskDialogButtons Buttons,
       eSysIcons MainIcon,
       eSysIcons FooterIcon)
     {
@@ -473,7 +475,7 @@ public static class cTaskDialog
       string ExpandedInfo,
       string Footer,
       string VerificationText,
-      eTaskDialogButtons Buttons,
+      TaskDialogButtons Buttons,
       eSysIcons MainIcon,
       eSysIcons FooterIcon)
     {
@@ -498,7 +500,7 @@ public static class cTaskDialog
       string Title,
       string MainInstruction,
       string Content,
-      eTaskDialogButtons Buttons,
+      TaskDialogButtons Buttons,
       eSysIcons MainIcon)
     {
         return MessageBox(Owner, Title, MainInstruction, Content, "", "", "", Buttons, MainIcon, eSysIcons.Information);
@@ -520,7 +522,7 @@ public static class cTaskDialog
       string Title,
       string MainInstruction,
       string Content,
-      eTaskDialogButtons Buttons,
+      TaskDialogButtons Buttons,
       eSysIcons MainIcon)
     {
         return MessageBox(null, Title, MainInstruction, Content, "", "", "", Buttons, MainIcon, eSysIcons.Information);
@@ -558,7 +560,7 @@ public static class cTaskDialog
       int DefaultIndex)
     {
         DialogResult res = ShowTaskDialogBox(Owner, Title, MainInstruction, Content, ExpandedInfo, Footer, VerificationText,
-                                             RadioButtons, "", eTaskDialogButtons.OKCancel, MainIcon, FooterIcon, DefaultIndex);
+                                             RadioButtons, "", TaskDialogButtons.OKCancel, MainIcon, FooterIcon, DefaultIndex);
         if (res == DialogResult.OK)
             return RadioButtonResult;
         else
@@ -596,7 +598,7 @@ public static class cTaskDialog
       int DefaultIndex)
     {
         DialogResult res = ShowTaskDialogBox(null, Title, MainInstruction, Content, ExpandedInfo, Footer, VerificationText,
-                                             RadioButtons, "", eTaskDialogButtons.OKCancel, MainIcon, FooterIcon, DefaultIndex);
+                                             RadioButtons, "", TaskDialogButtons.OKCancel, MainIcon, FooterIcon, DefaultIndex);
         if (res == DialogResult.OK)
             return RadioButtonResult;
         else
@@ -733,7 +735,7 @@ public static class cTaskDialog
       eSysIcons FooterIcon)
     {
         DialogResult res = ShowTaskDialogBox(Owner, Title, MainInstruction, Content, ExpandedInfo, Footer, VerificationText,
-                                             "", CommandButtons, ShowCancelButton ? eTaskDialogButtons.Cancel : eTaskDialogButtons.None,
+                                             "", CommandButtons, ShowCancelButton ? TaskDialogButtons.Cancel : TaskDialogButtons.None,
                                              MainIcon, FooterIcon);
         if (res == DialogResult.OK)
             return CommandButtonResult;
@@ -768,7 +770,7 @@ public static class cTaskDialog
       eSysIcons FooterIcon)
     {
         DialogResult res = ShowTaskDialogBox(null, Title, MainInstruction, Content, ExpandedInfo, Footer, VerificationText,
-                                             "", CommandButtons, ShowCancelButton ? eTaskDialogButtons.Cancel : eTaskDialogButtons.None,
+                                             "", CommandButtons, ShowCancelButton ? TaskDialogButtons.Cancel : TaskDialogButtons.None,
                                              MainIcon, FooterIcon);
         if (res == DialogResult.OK)
             return CommandButtonResult;

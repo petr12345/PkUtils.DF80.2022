@@ -468,10 +468,7 @@ namespace PK.TestWeakRef
 
         protected void GenerateNewNobjects(int N)
         {
-            if (N <= 0)
-            {
-                throw new ArgumentException("This argument value must be positive", "N");
-            }
+            ArgumentOutOfRangeException.ThrowIfNegativeOrZero(N);
             Debug.Assert(this.IsGenerating);
 
             SubscriberType generatedType = this._genType.Value;
