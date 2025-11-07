@@ -1,8 +1,9 @@
 ﻿using System.Collections.Generic;
 using System.Windows.Forms;
 using PK.SubstEditLib.Subst;
+using PK.TestTgSchema.TextBoxCtrls;
 
-namespace TestTgSchema
+namespace PK.TestTgSchema.UserCtrls
 {
     public partial class TaggingSchemaGeneralClassBasedUserCtrl : UserControl
     {

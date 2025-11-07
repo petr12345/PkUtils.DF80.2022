@@ -187,7 +187,7 @@ namespace TestCompositeImages.CustomBlocks
             // Link loadBitmaps to createCompositeBitmap.  
             // The provided predicate ensures that createCompositeBitmap accepts the  
             // collection of bitmaps only if that collection has at least one member.
-            loadBitmaps.LinkTo(createCompositeBitmap, bitmaps => bitmaps.Count() > 0);
+            loadBitmaps.LinkTo(createCompositeBitmap, bitmaps => bitmaps.Any());
 
             // Also link loadBitmaps to operationCancelled. 
             // When createCompositeBitmap rejects the message, loadBitmaps  

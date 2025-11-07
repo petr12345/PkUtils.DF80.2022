@@ -63,8 +63,8 @@ namespace TestTaskDialog
              "Radio Option 1|Radio Option 2|Radio Option 3",
              "Command &Button 1|Command Button 2\nLine 2\nLine 3|Command Button 3",
              TaskDialogButtons.OKCancel,
-             eSysIcons.Information,
-             eSysIcons.Warning);
+             SystemIconType.Information,
+             SystemIconType.Warning);
             UpdateResult(res);
         }
 
@@ -83,8 +83,8 @@ namespace TestTaskDialog
               "Optional footer text with an icon can be included",
               "ARRGHH! Don't show me this again!!!!",
               TaskDialogButtons.YesNoCancel,
-              eSysIcons.Information,
-              eSysIcons.Error);
+              SystemIconType.Information,
+              SystemIconType.Error);
 
             /*
             DialogResult res = PSTaskDialog.cTaskDialog.MessageBox(
@@ -96,8 +96,8 @@ namespace TestTaskDialog
               null,
               "ARRGHH! Don't show me this again!!!!",
               PSTaskDialog.TaskDialogButtons.OK,
-              PSTaskDialog.eSysIcons.Warning,
-              PSTaskDialog.eSysIcons.Error);
+              PSTaskDialog.SystemIconType.Warning,
+              PSTaskDialog.SystemIconType.Error);
             */
 
             UpdateResult(res);
@@ -115,7 +115,7 @@ namespace TestTaskDialog
               "The main instruction text for the message box is shown here.",
               "The content text for the message box is shown here and the text will automatically wrap as needed.",
               TaskDialogButtons.OK,
-              eSysIcons.Warning);
+              SystemIconType.Warning);
             UpdateResult(res);
         }
 
@@ -134,8 +134,8 @@ namespace TestTaskDialog
               "Optional footer text with an icon can be included",
               "Don't show this message again",
               "Radio Option 1|Radio Option 2|Radio Option 3|Radio Option 4|Radio Option 5",
-              eSysIcons.Information,
-              eSysIcons.Warning);
+              SystemIconType.Information,
+              SystemIconType.Warning);
 
             lbResult.Text = "ShowRadioBox return value : " + idx.ToString();
         }
@@ -156,8 +156,8 @@ namespace TestTaskDialog
               "Don't show this message again",
               "Command Button 1|Command Button 2|Command Button 3|Command Button 4",
               true,
-              eSysIcons.Information,
-              eSysIcons.Warning);
+              SystemIconType.Information,
+              SystemIconType.Warning);
 
             lbResult.Text = "ShowCommandBox return value : " + idx.ToString();
         }

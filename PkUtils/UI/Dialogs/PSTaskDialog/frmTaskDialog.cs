@@ -30,8 +30,8 @@ public partial class frmTaskDialog : Form
 {
     #region Private fields
 
-    private eSysIcons _mainIcon = eSysIcons.Question;
-    private eSysIcons _footerIcon = eSysIcons.Warning;
+    private SystemIconType _mainIcon = SystemIconType.Question;
+    private SystemIconType _footerIcon = SystemIconType.Warning;
 
     private string _mainInstruction = "Main Instruction Text";
     private int _mainInstructionHeight;
@@ -91,7 +91,7 @@ public partial class frmTaskDialog : Form
     /// The kind of main icon being used for the Task Dialog.
     /// </summary>
     [DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)]
-    public eSysIcons MainIcon
+    public SystemIconType MainIcon
     {
         get { return _mainIcon; }
         set { _mainIcon = value; }
@@ -101,7 +101,7 @@ public partial class frmTaskDialog : Form
     /// The kind of icon displayed in the footer of the Task Dialog.
     /// </summary>
     [DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)]
-    public eSysIcons FooterIcon
+    public SystemIconType FooterIcon
     {
         get { return _footerIcon; }
         set { _footerIcon = value; }
@@ -286,16 +286,16 @@ public partial class frmTaskDialog : Form
         // Setup Main Instruction
         switch (MainIcon)
         {
-            case eSysIcons.Information:
+            case SystemIconType.Information:
                 imgMain.Image = SystemIcons.Information.ToBitmap();
                 break;
-            case eSysIcons.Question:
+            case SystemIconType.Question:
                 imgMain.Image = SystemIcons.Question.ToBitmap();
                 break;
-            case eSysIcons.Warning:
+            case SystemIconType.Warning:
                 imgMain.Image = SystemIcons.Warning.ToBitmap();
                 break;
-            case eSysIcons.Error:
+            case SystemIconType.Error:
                 imgMain.Image = SystemIcons.Error.ToBitmap();
                 break;
         }
@@ -470,19 +470,19 @@ public partial class frmTaskDialog : Form
 
             switch (FooterIcon)
             {
-                case eSysIcons.Information:
+                case SystemIconType.Information:
                     // SystemIcons.Information.ToBitmap().GetThumbnailImage(16, 16, null, IntPtr.Zero);
                     imgFooter.Image = ResizeBitmap(SystemIcons.Information.ToBitmap(), 16, 16);
                     break;
-                case eSysIcons.Question:
+                case SystemIconType.Question:
                     // SystemIcons.Question.ToBitmap().GetThumbnailImage(16, 16, null, IntPtr.Zero);
                     imgFooter.Image = ResizeBitmap(SystemIcons.Question.ToBitmap(), 16, 16);
                     break;
-                case eSysIcons.Warning:
+                case SystemIconType.Warning:
                     // SystemIcons.Warning.ToBitmap().GetThumbnailImage(16, 16, null, IntPtr.Zero);
                     imgFooter.Image = ResizeBitmap(SystemIcons.Warning.ToBitmap(), 16, 16);
                     break;
-                case eSysIcons.Error:
+                case SystemIconType.Error:
                     // SystemIcons.Error.ToBitmap().GetThumbnailImage(16, 16, null, IntPtr.Zero);
                     imgFooter.Image = ResizeBitmap(SystemIcons.Error.ToBitmap(), 16, 16);
                     break;
@@ -665,16 +665,16 @@ public partial class frmTaskDialog : Form
         {
             switch (MainIcon)
             {
-                case eSysIcons.Error:
+                case SystemIconType.Error:
                     System.Media.SystemSounds.Hand.Play();
                     break;
-                case eSysIcons.Information:
+                case SystemIconType.Information:
                     System.Media.SystemSounds.Asterisk.Play();
                     break;
-                case eSysIcons.Question:
+                case SystemIconType.Question:
                     System.Media.SystemSounds.Asterisk.Play();
                     break;
-                case eSysIcons.Warning:
+                case SystemIconType.Warning:
                     System.Media.SystemSounds.Exclamation.Play();
                     break;
             }

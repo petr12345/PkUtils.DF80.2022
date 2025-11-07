@@ -26,6 +26,9 @@
     <Folder Include="ResourceBinaries\" />
   </ItemGroup>
   <ItemGroup>
+    <PackageReference Include="System.Resources.ResourceManager" Version="4.3.0" />
+  </ItemGroup>
+  <ItemGroup>
     <ProjectReference Include="..\..\PkUtils\PkUtils.DF80.2022.csproj" />
   </ItemGroup>
   <ItemGroup>

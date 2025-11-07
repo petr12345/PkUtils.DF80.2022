@@ -28,9 +28,7 @@
     <Compile Update="UserCtrls\TaggingSchemaGeneralEnumBaseUserCtrl.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Update="UserCtrls\TaggingSchema_ComponentslUserCtrl.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
+    <Compile Update="UserCtrls\TaggingSchema_ComponentslUserCtrl.cs" />
     <Compile Update="UserCtrls\TaggingSchema_LinesEnumBasedUserCtrl.cs">
       <SubType>UserControl</SubType>
     </Compile>

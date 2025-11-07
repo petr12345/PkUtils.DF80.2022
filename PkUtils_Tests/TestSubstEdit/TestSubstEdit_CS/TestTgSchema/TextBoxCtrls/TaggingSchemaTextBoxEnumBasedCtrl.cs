@@ -1,5 +1,5 @@
 ﻿
-namespace TestTgSchema
+namespace PK.TestTgSchema.TextBoxCtrls
 {
     public partial class TaggingSchemaTextBoxEnumBasedCtrl : TaggingSchemaTextBoxGenericCtrl<EFieldLineType>
     {

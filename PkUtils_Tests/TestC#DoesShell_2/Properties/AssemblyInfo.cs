@@ -1,4 +1,5 @@
 using System.Reflection;
+using System.Resources;
 using System.Runtime.Versioning;
 
 //
@@ -15,6 +16,7 @@ using System.Runtime.Versioning;
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 [assembly: SupportedOSPlatform("windows")]
+[assembly: NeutralResourcesLanguage("en")]
 
 //
 // Version information for an assembly consists of the following four values:

@@ -1,4 +1,4 @@
-﻿namespace TestTgSchema
+﻿namespace PK.TestTgSchema.UserCtrls
 {
     partial class TaggingSchema_LinesEnumBasedUserCtrl
     {

@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Globalization;
 using System.IO;
-using System.Runtime.Serialization;
 using System.Runtime.Serialization.Formatters.Binary;
 using System.Text;
 using System.Windows.Forms;
@@ -9,7 +8,8 @@ using PK.PkUtils.XmlSerialization;
 using PK.SubstEditLib.Subst;
 
 #pragma warning disable SYSLIB0011 // BinaryFormatter serialization is obsolete and should not be used.
-namespace TestTgSchema
+
+namespace PK.TestTgSchema.TextBoxCtrls
 {
     /// <summary>
     /// Generic control extending the base SubstEditTextBoxCtrl ( adds IO-functionality ).
@@ -43,7 +43,7 @@ namespace TestTgSchema
         /// <param name="strOpenFile"></param>
         /// <param name="fmt"></param>
         /// <returns></returns>
-        public bool DoOpen(string strOpenFile, eFileFmt fmt)
+        public bool DoOpen(string strOpenFile, FileFormatType fmt)
         {
             string strPlain;
             SubstLogData<TFIELDID> logData;
@@ -53,29 +53,27 @@ namespace TestTgSchema
             {
                 switch (fmt)
                 {
-                    case eFileFmt.fmtBinary:
+                    case FileFormatType.fmtBinary:
                         using (Stream stream = new FileStream(strOpenFile, FileMode.Open, FileAccess.Read, FileShare.Read))
                         {
-                            IFormatter formatter = new BinaryFormatter();
+                            BinaryFormatter formatter = new();
                             logData = formatter.Deserialize(stream) as SubstLogData<TFIELDID>;
                         }
                         TheHook.Assign(logData);
                         bOk = true;
                         break;
 
-                    case eFileFmt.fmtPlainText:
+                    case FileFormatType.fmtPlainText:
                         using (FileStream fs = new(strOpenFile, FileMode.Open, FileAccess.Read))
                         {
-                            using (StreamReader sr = new(fs))
-                            {
-                                strPlain = sr.ReadToEnd();
-                                this.AssignPlainText(strPlain);
-                            }
+                            using StreamReader sr = new(fs);
+                            strPlain = sr.ReadToEnd();
+                            this.AssignPlainText(strPlain);
                         }
                         bOk = true;
                         break;
 
-                    case eFileFmt.fmtXml:
+                    case FileFormatType.fmtXml:
                         {
                             var serializer = new XMLSerializerAdapter<SubstLogData<TFIELDID>>();
                             logData = serializer.ReadFile(strOpenFile);
@@ -112,7 +110,7 @@ namespace TestTgSchema
         /// <param name="fmt"></param>
         /// <param name="encoding"></param>
         /// <returns></returns>
-        public bool DoSaveAs(string strSaveFile, eFileFmt fmt, Encoding encoding)
+        public bool DoSaveAs(string strSaveFile, FileFormatType fmt, Encoding encoding)
         {
             SubstLogData<TFIELDID> logData;
             bool bOk = false;
@@ -121,7 +119,7 @@ namespace TestTgSchema
             {
                 switch (fmt)
                 {
-                    case eFileFmt.fmtBinary:
+                    case FileFormatType.fmtBinary:
                         TheHook.PhysData.ExportLogAll(logData = new SubstLogData<TFIELDID>());
                         using (FileStream fs = new(strSaveFile, FileMode.OpenOrCreate, FileAccess.Write))
                         {
@@ -131,18 +129,16 @@ namespace TestTgSchema
                         }
                         break;
 
-                    case eFileFmt.fmtPlainText:
+                    case FileFormatType.fmtPlainText:
                         using (FileStream fs = new(strSaveFile, FileMode.OpenOrCreate, FileAccess.Write))
                         {
-                            using (StreamWriter sw = new(fs, Encoding.Unicode))
-                            {
-                                sw.Write(TheHook.GetPlainText());
-                            }
+                            using StreamWriter sw = new(fs, Encoding.Unicode);
+                            sw.Write(TheHook.GetPlainText());
                         }
                         bOk = true;
                         break;
 
-                    case eFileFmt.fmtXml:
+                    case FileFormatType.fmtXml:
                         TheHook.PhysData.ExportLogAll(logData = new SubstLogData<TFIELDID>());
                         var serializer = new XMLSerializerAdapter<SubstLogData<TFIELDID>>();
                         /* writing without xml declaration line
@@ -203,7 +199,7 @@ namespace TestTgSchema
                         }
                         else
                         {
-                            bOk = DoSaveAs(saveDlg.FileName, (eFileFmt)saveDlg.FilterIndex, encoding);
+                            bOk = DoSaveAs(saveDlg.FileName, (FileFormatType)saveDlg.FilterIndex, encoding);
                         }
                         break;
 
@@ -232,7 +228,7 @@ namespace TestTgSchema
 
             sb.Append(Environment.NewLine);
             sb.Append("Call stack: ");
-            sb.Append(ex.StackTrace.ToString());
+            sb.Append(ex.StackTrace);
             System.Windows.Forms.MessageBox.Show(
                 sb.ToString(),
                 strErr,
@@ -252,7 +248,7 @@ namespace TestTgSchema
 
             if (0 < (nDex = strClassName.LastIndexOf('.')))
             {
-                strClassName = strClassName.Substring(nDex + 1);
+                strClassName = strClassName[(nDex + 1)..];
             }
 
             return strClassName;
@@ -264,7 +260,7 @@ namespace TestTgSchema
     /// File format enum; the order of valid values ( fmtBinary through fmtXml ) matches to 
     /// the order of items in FileDialog FilterIndex.
     /// </summary>
-    public enum eFileFmt
+    public enum FileFormatType
     {
         fmtNone = 0,
         fmtXml,

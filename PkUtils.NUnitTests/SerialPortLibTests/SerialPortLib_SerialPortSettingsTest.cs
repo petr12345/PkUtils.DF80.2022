@@ -25,7 +25,7 @@ public class SerialPortLib_SerialPortSettingsTest
         using (Assert.EnterMultipleScope())
         {
             Assert.That(b2, Is.InstanceOf<SerialPortSettingsBase>());
-            Assert.That(b1.Equals(b2));
+            Assert.That(b1, Is.EqualTo(b2));
             Assert.That(b1.GetHashCode(), Is.EqualTo(b2.GetHashCode()));
         }
     }

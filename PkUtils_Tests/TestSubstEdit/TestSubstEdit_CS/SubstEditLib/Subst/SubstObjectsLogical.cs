@@ -15,6 +15,11 @@ using tLogPos = System.Int32;
 // - one could use structures with implicit casts;
 // see more info on http://www.codeguru.com/forum/showthread.php?p=1817937
 
+
+#pragma warning disable IDE0079  // Remove unnecessary suppression
+#pragma warning disable CA1859   // Change type of variable ...
+#pragma warning disable IDE0057  // Use range operator
+
 namespace PK.SubstEditLib.Subst
 {
     /// <summary>
@@ -135,8 +140,7 @@ namespace PK.SubstEditLib.Subst
 
         public override bool Equals(object obj)
         {
-            LogInfo<TFIELDID> other;
-            return (null != (other = obj as LogInfo<TFIELDID>)) && Equals(other);
+            return (obj is LogInfo<TFIELDID> other) && Equals(other);
         }
 
         [Conditional("Debug")]
@@ -165,7 +169,6 @@ namespace PK.SubstEditLib.Subst
         {
             if (reader.IsStartElement())
             {
-                IXmlSerializable iSer;
                 bool bSkip = true;
 
                 // 1. read position
@@ -188,11 +191,11 @@ namespace PK.SubstEditLib.Subst
 
                         /* _what = new TFIELDID(); */
                         ConstructorInfo constructorInfo = typeof(TFIELDID).GetConstructor(
-                            BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance, null, new Type[] { }, null);
-                        _what = (TFIELDID)constructorInfo.Invoke(new object[] { });
+                            BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance, null, [], null);
+                        _what = (TFIELDID)constructorInfo.Invoke([]);
                     }
 
-                    if (null != (iSer = What as IXmlSerializable))
+                    if (What is IXmlSerializable iSer)
                     {
                         iSer.ReadXml(reader);
                     }
@@ -225,8 +228,7 @@ namespace PK.SubstEditLib.Subst
             // 1. write position
             writer.WriteElementString(_strAttrPosition, Pos.ToString(CultureInfo.InvariantCulture));
             // 2. write TFIELDID
-            IXmlSerializable iSer;
-            if (null == (iSer = What as IXmlSerializable))
+            if (What is not IXmlSerializable iSer)
             {
                 iSer = new NodeSerializer<TFIELDID>(What, typeof(TFIELDID).IsEnum);
             }
@@ -258,7 +260,7 @@ namespace PK.SubstEditLib.Subst
 
         public bool Equals(LogInfo<TFIELDID> other)
         {
-            bool result = false;
+            bool result;
 
             if (other is null)
                 result = false;
@@ -557,8 +559,7 @@ namespace PK.SubstEditLib.Subst
 
         public override bool Equals(object obj)
         {
-            SubstLogData<TFIELDID> other;
-            return (null != (other = obj as SubstLogData<TFIELDID>)) && Equals(other);
+            return (obj is SubstLogData<TFIELDID> other) && Equals(other);
         }
 
         public override int GetHashCode()
@@ -587,7 +588,6 @@ namespace PK.SubstEditLib.Subst
             int itmplen;
             LogInfo<TFIELDID> lplogInf;
             ISubstDescr<TFIELDID> lpDesc;
-            tLogPos iLogPos = 0;
             tLogPos iLogCopied = 0;
             IList<LogInfo<TFIELDID>> logList = logData.GetLogList;
             string strTmp;
@@ -597,6 +597,8 @@ namespace PK.SubstEditLib.Subst
 
             for (int ii = 0, nCount = logList.Count; ii < nCount; ii++)
             {
+                tLogPos iLogPos;
+
                 lplogInf = logList[ii];
                 if (null != (lpDesc = mapKeeper.FindMapItem(lplogInf.What)))
                 {
@@ -872,3 +874,7 @@ namespace PK.SubstEditLib.Subst
         #endregion // IEquatable<SubstLogData<TFIELDID>> Members
     };
 }
+
+#pragma warning restore IDE0057   // Use range operator
+#pragma warning restore CA1859    // Change type of variable ...
+#pragma warning restore IDE0079  // Remove unnecessary suppression

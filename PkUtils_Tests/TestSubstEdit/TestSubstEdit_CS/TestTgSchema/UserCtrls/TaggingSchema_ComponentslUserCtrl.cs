@@ -1,7 +1,7 @@
 ﻿
-namespace TestTgSchema
+namespace PK.TestTgSchema.UserCtrls
 {
-    public partial class TaggingSchema_ComponentslUserCtrl : TestTgSchema.TaggingSchemaGeneralClassBasedUserCtrl
+    public partial class TaggingSchema_ComponentslUserCtrl : TaggingSchemaGeneralClassBasedUserCtrl
     {
         #region Constructor(s)
         public TaggingSchema_ComponentslUserCtrl()

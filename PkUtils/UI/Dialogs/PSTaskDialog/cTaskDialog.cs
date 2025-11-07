@@ -25,8 +25,8 @@ namespace PK.PkUtils.UI.Dialogs.PSTaskDialog;
 
 #region Typedefs
 
-/// <summary> Values that represent eSysIcons. </summary>
-public enum eSysIcons
+/// <summary> Values that represent SystemIconType. </summary>
+public enum SystemIconType
 {
     /// <summary> An enum constant representing the information option. </summary>
     Information,
@@ -195,8 +195,8 @@ public static class cTaskDialog
         string RadioButtons,
         string CommandButtons,
         TaskDialogButtons Buttons,
-        eSysIcons MainIcon,
-        eSysIcons FooterIcon,
+        SystemIconType MainIcon,
+        SystemIconType FooterIcon,
         int DefaultIndex)
     {
         DialogResult result;
@@ -277,18 +277,18 @@ public static class cTaskDialog
             };
             switch (MainIcon)
             {
-                case eSysIcons.Information: vtd.MainIcon = VistaTaskDialogIcon.Information; break;
-                case eSysIcons.Question: vtd.MainIcon = VistaTaskDialogIcon.Information; break;
-                case eSysIcons.Warning: vtd.MainIcon = VistaTaskDialogIcon.Warning; break;
-                case eSysIcons.Error: vtd.MainIcon = VistaTaskDialogIcon.Error; break;
+                case SystemIconType.Information: vtd.MainIcon = VistaTaskDialogIcon.Information; break;
+                case SystemIconType.Question: vtd.MainIcon = VistaTaskDialogIcon.Information; break;
+                case SystemIconType.Warning: vtd.MainIcon = VistaTaskDialogIcon.Warning; break;
+                case SystemIconType.Error: vtd.MainIcon = VistaTaskDialogIcon.Error; break;
             }
 
             switch (FooterIcon)
             {
-                case eSysIcons.Information: vtd.FooterIcon = VistaTaskDialogIcon.Information; break;
-                case eSysIcons.Question: vtd.FooterIcon = VistaTaskDialogIcon.Information; break;
-                case eSysIcons.Warning: vtd.FooterIcon = VistaTaskDialogIcon.Warning; break;
-                case eSysIcons.Error: vtd.FooterIcon = VistaTaskDialogIcon.Error; break;
+                case SystemIconType.Information: vtd.FooterIcon = VistaTaskDialogIcon.Information; break;
+                case SystemIconType.Question: vtd.FooterIcon = VistaTaskDialogIcon.Information; break;
+                case SystemIconType.Warning: vtd.FooterIcon = VistaTaskDialogIcon.Warning; break;
+                case SystemIconType.Error: vtd.FooterIcon = VistaTaskDialogIcon.Error; break;
             }
 
             vtd.EnableHyperlinks = false;
@@ -382,8 +382,8 @@ public static class cTaskDialog
       string RadioButtons,
       string CommandButtons,
       TaskDialogButtons Buttons,
-      eSysIcons MainIcon,
-      eSysIcons FooterIcon)
+      SystemIconType MainIcon,
+      SystemIconType FooterIcon)
     {
         return ShowTaskDialogBox(Owner, Title, MainInstruction, Content, ExpandedInfo, Footer, VerificationText, RadioButtons, CommandButtons, Buttons, MainIcon, FooterIcon, 0);
     }
@@ -413,8 +413,8 @@ public static class cTaskDialog
       string RadioButtons,
       string CommandButtons,
       TaskDialogButtons Buttons,
-      eSysIcons MainIcon,
-      eSysIcons FooterIcon)
+      SystemIconType MainIcon,
+      SystemIconType FooterIcon)
     {
         return ShowTaskDialogBox(null, Title, MainInstruction, Content, ExpandedInfo, Footer, VerificationText, RadioButtons, CommandButtons, Buttons, MainIcon, FooterIcon, 0);
     }
@@ -445,8 +445,8 @@ public static class cTaskDialog
       string Footer,
       string VerificationText,
       TaskDialogButtons Buttons,
-      eSysIcons MainIcon,
-      eSysIcons FooterIcon)
+      SystemIconType MainIcon,
+      SystemIconType FooterIcon)
     {
         return ShowTaskDialogBox(Owner, Title, MainInstruction, Content, ExpandedInfo, Footer, VerificationText, "", "", Buttons, MainIcon, FooterIcon);
     }
@@ -476,8 +476,8 @@ public static class cTaskDialog
       string Footer,
       string VerificationText,
       TaskDialogButtons Buttons,
-      eSysIcons MainIcon,
-      eSysIcons FooterIcon)
+      SystemIconType MainIcon,
+      SystemIconType FooterIcon)
     {
         return ShowTaskDialogBox(null, Title, MainInstruction, Content, ExpandedInfo, Footer, VerificationText, "", "", Buttons, MainIcon, FooterIcon);
     }
@@ -501,9 +501,9 @@ public static class cTaskDialog
       string MainInstruction,
       string Content,
       TaskDialogButtons Buttons,
-      eSysIcons MainIcon)
+      SystemIconType MainIcon)
     {
-        return MessageBox(Owner, Title, MainInstruction, Content, "", "", "", Buttons, MainIcon, eSysIcons.Information);
+        return MessageBox(Owner, Title, MainInstruction, Content, "", "", "", Buttons, MainIcon, SystemIconType.Information);
     }
 
     /// <summary>
@@ -523,9 +523,9 @@ public static class cTaskDialog
       string MainInstruction,
       string Content,
       TaskDialogButtons Buttons,
-      eSysIcons MainIcon)
+      SystemIconType MainIcon)
     {
-        return MessageBox(null, Title, MainInstruction, Content, "", "", "", Buttons, MainIcon, eSysIcons.Information);
+        return MessageBox(null, Title, MainInstruction, Content, "", "", "", Buttons, MainIcon, SystemIconType.Information);
     }
     #endregion // MessageBox
 
@@ -555,8 +555,8 @@ public static class cTaskDialog
       string Footer,
       string VerificationText,
       string RadioButtons,
-      eSysIcons MainIcon,
-      eSysIcons FooterIcon,
+      SystemIconType MainIcon,
+      SystemIconType FooterIcon,
       int DefaultIndex)
     {
         DialogResult res = ShowTaskDialogBox(Owner, Title, MainInstruction, Content, ExpandedInfo, Footer, VerificationText,
@@ -593,8 +593,8 @@ public static class cTaskDialog
       string Footer,
       string VerificationText,
       string RadioButtons,
-      eSysIcons MainIcon,
-      eSysIcons FooterIcon,
+      SystemIconType MainIcon,
+      SystemIconType FooterIcon,
       int DefaultIndex)
     {
         DialogResult res = ShowTaskDialogBox(null, Title, MainInstruction, Content, ExpandedInfo, Footer, VerificationText,
@@ -631,8 +631,8 @@ public static class cTaskDialog
       string Footer,
       string VerificationText,
       string RadioButtons,
-      eSysIcons MainIcon,
-      eSysIcons FooterIcon)
+      SystemIconType MainIcon,
+      SystemIconType FooterIcon)
     {
         return ShowRadioBox(Owner, Title, MainInstruction, Content, ExpandedInfo, Footer, VerificationText, RadioButtons, MainIcon, FooterIcon, 0);
     }
@@ -658,7 +658,7 @@ public static class cTaskDialog
       string RadioButtons,
       int DefaultIndex)
     {
-        return ShowRadioBox(Owner, Title, MainInstruction, Content, "", "", "", RadioButtons, eSysIcons.Question, eSysIcons.Information, DefaultIndex);
+        return ShowRadioBox(Owner, Title, MainInstruction, Content, "", "", "", RadioButtons, SystemIconType.Question, SystemIconType.Information, DefaultIndex);
     }
 
     /// <summary>
@@ -680,7 +680,7 @@ public static class cTaskDialog
       string Content,
       string RadioButtons)
     {
-        return ShowRadioBox(Owner, Title, MainInstruction, Content, "", "", "", RadioButtons, eSysIcons.Question, eSysIcons.Information, 0);
+        return ShowRadioBox(Owner, Title, MainInstruction, Content, "", "", "", RadioButtons, SystemIconType.Question, SystemIconType.Information, 0);
     }
 
     /// <summary>
@@ -700,7 +700,7 @@ public static class cTaskDialog
       string Content,
       string RadioButtons)
     {
-        return ShowRadioBox(null, Title, MainInstruction, Content, "", "", "", RadioButtons, eSysIcons.Question, eSysIcons.Information, 0);
+        return ShowRadioBox(null, Title, MainInstruction, Content, "", "", "", RadioButtons, SystemIconType.Question, SystemIconType.Information, 0);
     }
     #endregion // ShowRadioBox
 
@@ -731,8 +731,8 @@ public static class cTaskDialog
       string VerificationText,
       string CommandButtons,
       bool ShowCancelButton,
-      eSysIcons MainIcon,
-      eSysIcons FooterIcon)
+      SystemIconType MainIcon,
+      SystemIconType FooterIcon)
     {
         DialogResult res = ShowTaskDialogBox(Owner, Title, MainInstruction, Content, ExpandedInfo, Footer, VerificationText,
                                              "", CommandButtons, ShowCancelButton ? TaskDialogButtons.Cancel : TaskDialogButtons.None,
@@ -766,8 +766,8 @@ public static class cTaskDialog
       string VerificationText,
       string CommandButtons,
       bool ShowCancelButton,
-      eSysIcons MainIcon,
-      eSysIcons FooterIcon)
+      SystemIconType MainIcon,
+      SystemIconType FooterIcon)
     {
         DialogResult res = ShowTaskDialogBox(null, Title, MainInstruction, Content, ExpandedInfo, Footer, VerificationText,
                                              "", CommandButtons, ShowCancelButton ? TaskDialogButtons.Cancel : TaskDialogButtons.None,
@@ -790,7 +790,7 @@ public static class cTaskDialog
     /// <returns> . </returns>
     public static int ShowCommandBox(IWin32Window Owner, string Title, string MainInstruction, string Content, string CommandButtons, bool ShowCancelButton)
     {
-        return ShowCommandBox(Owner, Title, MainInstruction, Content, "", "", "", CommandButtons, ShowCancelButton, eSysIcons.Question, eSysIcons.Information);
+        return ShowCommandBox(Owner, Title, MainInstruction, Content, "", "", "", CommandButtons, ShowCancelButton, SystemIconType.Question, SystemIconType.Information);
     }
 
     /// <summary> Shows the command box. </summary>
@@ -804,7 +804,7 @@ public static class cTaskDialog
     /// <returns> . </returns>
     public static int ShowCommandBox(string Title, string MainInstruction, string Content, string CommandButtons, bool ShowCancelButton)
     {
-        return ShowCommandBox(null, Title, MainInstruction, Content, "", "", "", CommandButtons, ShowCancelButton, eSysIcons.Question, eSysIcons.Information);
+        return ShowCommandBox(null, Title, MainInstruction, Content, "", "", "", CommandButtons, ShowCancelButton, SystemIconType.Question, SystemIconType.Information);
     }
     #endregion // ShowCommandBox
     #endregion // Methods

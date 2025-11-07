@@ -3,8 +3,11 @@
 using PK.PkUtils.Cloning.Binary;
 using PK.PkUtils.DataStructures;
 
+#pragma warning disable IDE0079  // Remove unnecessary suppression
 #pragma warning disable IDE0059   // Avoid unnecessary value assignments
-#pragma warning disable 1718   // Suppress locally the warning CS1718: Comparison made to same variable; did you mean to compare something else?
+#pragma warning disable 1718      // Suppress locally the warning CS1718: Comparison made to same variable; did you mean to compare something else?
+#pragma warning disable NUnit2010 // Use Is.Not.EqualTo constraint instead of direct comparison for better assertion messages in case of failure
+#pragma warning disable NUnit2043 // Use Is.LessThanOrEqualTo constraint instead of direct comparison for better assertion messages in case of failure
 
 
 namespace PK.PkUtils.NUnitTests.DataStructuresTest;
@@ -304,5 +307,9 @@ public class BSIDTests
     #endregion // Tests_IComparable_BSID
     #endregion // Tests
 }
+
+#pragma warning restore NUnit2043
+#pragma warning restore NUnit2010
 #pragma warning restore 1718
 #pragma warning restore IDE0059
+#pragma warning restore IDE0079
