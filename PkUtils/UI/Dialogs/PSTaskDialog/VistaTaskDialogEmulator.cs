@@ -19,14 +19,14 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Drawing;
 using System.Windows.Forms;
-using PK.PkUtils.UI.Dialogs.PSTaskDialog;
 
-namespace PK.PkUtils.UI.PSTaskDialog;
+
+namespace PK.PkUtils.UI.Dialogs.PSTaskDialog;
 
 /// <summary>
 /// The form emulating the TaskDialog (on pre-Vista systems, or if emulation is enforced ). 
 /// </summary>
-public partial class frmTaskDialog : Form
+public partial class VistaTaskDialogEmulator : Form
 {
     #region Private fields
 
@@ -39,24 +39,14 @@ public partial class frmTaskDialog : Form
 
     private readonly List<RadioButton> _radioButtonCtrls = [];
     private string _radioButtons = string.Empty;
-
-    /* PetrK 07/08/2013: commented-out as not used for anything
-    private int _initialRadioButtonIndex; */
-
-    /* PetrK 04/24/2012: commented-out as not used for anything
-    private List<Button> _cmdButtons = new List<Button>(); */
-
     private string _commandButtons = string.Empty;
     private int _commandButtonClicked = -1;
-
     private int _defaultButtonIndex;
     private Control _focusControl;
-
     private TaskDialogButtons _buttons = TaskDialogButtons.YesNoCancel;
-
     private bool _expanded;
-    private readonly bool _isVista;
     private bool _formBuilt;
+    private readonly bool _isVista;
 
     private const int MAIN_INSTRUCTION_LEFT_MARGIN = 46;
     private const int MAIN_INSTRUCTION_RIGHT_MARGIN = 8;
@@ -67,12 +57,12 @@ public partial class frmTaskDialog : Form
     /// <summary>
     /// The default argument-less constructor.
     /// </summary>
-    public frmTaskDialog()
+    public VistaTaskDialogEmulator()
     {
         InitializeComponent();
 
         _isVista = VistaTaskDialog.IsAvailableOnThisOS;
-        if (!_isVista && cTaskDialog.UseToolWindowOnXP) // <- shall we use the smaller toolbar?
+        if (!_isVista && VistaTaskDialogManager.UseToolWindowOnXP) // <- shall we use the smaller toolbar?
         {
             this.FormBorderStyle = FormBorderStyle.FixedToolWindow;
         }
@@ -180,15 +170,6 @@ public partial class frmTaskDialog : Form
         get { return _radioButtons; }
         set { _radioButtons = value; }
     }
-
-    // PetrK 07/08/2013: commented-out as not used for anything
-    /* 
-    public int InitialRadioButtonIndex
-    {
-      get { return _initialRadioButtonIndex; } 
-      set { _initialRadioButtonIndex = value; } 
-    }
-    */
 
     /// <summary>
     /// Returns the index of checked radio button ( if there is any ).
@@ -515,13 +496,6 @@ public partial class frmTaskDialog : Form
         base.OnShown(args);
     }
 
-    /* PetrK 04/24/2012: commented-out as not needed
-    protected override void OnLoad(EventArgs args)
-    {
-      base.OnLoad(e);
-    }
-    */
-
     /// <summary>
     /// Clean up any resources being used.
     /// </summary>
@@ -546,6 +520,27 @@ public partial class frmTaskDialog : Form
     #endregion // Protected Overrides
 
     #region Protected Utilities
+
+    /// <summary>
+    /// Maps a <see cref="SystemIconType"/> value to the corresponding system sound.
+    /// </summary>
+    /// <param name="icon">The icon type used to determine which system sound to play.</param>
+    /// <returns>
+    /// A <see cref="System.Media.SystemSound"/> instance corresponding to the provided icon.
+    /// Returns <c>null</c> when there is no associated system sound for the icon value.
+    /// </returns>
+    protected static System.Media.SystemSound GetSystemSoundForIcon(SystemIconType icon)
+    {
+        // Map SystemIconType to the appropriate system sound.
+        return icon switch
+        {
+            SystemIconType.Error => System.Media.SystemSounds.Hand,
+            SystemIconType.Information => System.Media.SystemSounds.Asterisk,
+            SystemIconType.Question => System.Media.SystemSounds.Asterisk,
+            SystemIconType.Warning => System.Media.SystemSounds.Exclamation,
+            _ => null
+        };
+    }
 
     /// <summary>
     /// Resizes the input image and returns the image with a new size.
@@ -661,23 +656,10 @@ public partial class frmTaskDialog : Form
 
     private void FrmTaskDialog_Shown(object sender, EventArgs args)
     {
-        if (cTaskDialog.PlaySystemSounds)
+        if (VistaTaskDialogManager.PlaySystemSounds)
         {
-            switch (MainIcon)
-            {
-                case SystemIconType.Error:
-                    System.Media.SystemSounds.Hand.Play();
-                    break;
-                case SystemIconType.Information:
-                    System.Media.SystemSounds.Asterisk.Play();
-                    break;
-                case SystemIconType.Question:
-                    System.Media.SystemSounds.Asterisk.Play();
-                    break;
-                case SystemIconType.Warning:
-                    System.Media.SystemSounds.Exclamation.Play();
-                    break;
-            }
+            System.Media.SystemSound sound = GetSystemSoundForIcon(MainIcon);
+            sound?.Play();
         }
         _focusControl?.Focus();
     }

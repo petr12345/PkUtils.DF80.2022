@@ -143,7 +143,7 @@ namespace WinTester2
 
         protected void UnableToFindMsg()
         {
-            cTaskDialog.MessageBox(
+            VistaTaskDialogManager.MessageBox(
               this,
               "Error",
               "Unable to find suitable file.",
@@ -245,7 +245,7 @@ namespace WinTester2
 
             if (retVal)
             {
-                cTaskDialog.MessageBox(
+                VistaTaskDialogManager.MessageBox(
                   this,
                   "Success",
                   "Copying of following files complete without errors:",
@@ -255,7 +255,7 @@ namespace WinTester2
             }
             else
             {
-                cTaskDialog.MessageBox(
+                VistaTaskDialogManager.MessageBox(
                   this,
                   "Error",
                   "Copying of following files completed with errors!",
@@ -302,7 +302,7 @@ namespace WinTester2
 
                 if (retVal)
                 {
-                    cTaskDialog.MessageBox(
+                    VistaTaskDialogManager.MessageBox(
                       this,
                       "Success",
                       "Moving of following files complete without errors:",
@@ -312,7 +312,7 @@ namespace WinTester2
                 }
                 else
                 {
-                    cTaskDialog.MessageBox(
+                    VistaTaskDialogManager.MessageBox(
                       this,
                       "Error",
                       "Moving of following files completed with errors!",
@@ -358,7 +358,7 @@ namespace WinTester2
 
                 if (retVal)
                 {
-                    cTaskDialog.MessageBox(
+                    VistaTaskDialogManager.MessageBox(
                       this,
                       "Success",
                       "Deleting of following files complete without errors:",
@@ -368,7 +368,7 @@ namespace WinTester2
                 }
                 else
                 {
-                    cTaskDialog.MessageBox(
+                    VistaTaskDialogManager.MessageBox(
                       this,
                       "Error",
                       "Deleting of following files completed with errors!",
@@ -399,7 +399,7 @@ namespace WinTester2
             if (!string.IsNullOrEmpty(strFile))
             {
                 ShellLib.ShellAddRecent.AddToList(strFile);
-                cTaskDialog.MessageBox(
+                VistaTaskDialogManager.MessageBox(
                   this,
                   "Success",
                   "Following file has been added to System Recent List:",
@@ -416,7 +416,7 @@ namespace WinTester2
         private void btnClearList_Click(object sender, System.EventArgs e)
         {
             ShellLib.ShellAddRecent.ClearList();
-            cTaskDialog.MessageBox(
+            VistaTaskDialogManager.MessageBox(
               this,
               "Success",
               "The System Recent List has been cleared",

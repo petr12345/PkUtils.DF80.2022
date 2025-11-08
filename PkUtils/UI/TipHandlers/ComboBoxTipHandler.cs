@@ -1,4 +1,4 @@
-// Ignore Spelling: listbox, Msec, popup, preprocess, tooltip, tooltips, Utils
+// Ignore Spelling: listbox, Msec, popup, preprocess, tooltip, tooltips, scrollbar, Utils
 //
 using System;
 using System.Diagnostics;
@@ -178,7 +178,7 @@ public class ComboBoxTipHandler : TipHandler
                                 // Get the item rectangle
                                 ListBox_GetItemRect(hList, (int)nItem, out User32.RECT rect);
                                 // And by posting WM_MOUSEMOVE ensures that the item will be immediately selected;
-                                // even when the mouse is still over the scroolbar...
+                                // even when the mouse is still over the scrollbar...
                                 User32.PostMessage(hList, (int)Win32.WM.WM_MOUSEMOVE, 0,
                                     (IntPtr)Win32.MAKELONG((ushort)(rect.left + 1), (ushort)(rect.top + 1)));
                             }
@@ -492,12 +492,8 @@ public class ComboBoxTipHandler : TipHandler
             // That's why there is a test regarding WndFromPoint
             IntPtr hFromPoint = WndFromPoint(ptInScreen);
             IntPtr hHooked = pComboBox.Handle;
-            int nCxOffset = 0;
+            int nCxOffset = -(1 + TipWindow.Margins.Width / 2);
 
-            /*
-            if ((hFromPoint == hListBx) || (hFromPoint == hHooked)|| (hFromPoint == GetParent(hHooked)))
-               Must be without the last 'or':
-            */
             if ((hFromPoint == hListBx) || (hFromPoint == hHooked))
             {   // Get text and text rectangle for item under mouse
                 nItem = OnGetItemInfo(ptClient, true, out _, out rcText, out _);
@@ -512,7 +508,7 @@ public class ComboBoxTipHandler : TipHandler
             }
             else if (nItem != GetCurItem())
             {
-                bool bHighlited;
+                bool bHighlighted;
 
                 TipWindow.Cancel(); // new item, or no item: cancel popup text
 
@@ -523,7 +519,7 @@ public class ComboBoxTipHandler : TipHandler
                 // the edited text in combo cooperate their own built-in way ... ).
                 if (GetComboType() != (uint)Win32.ComboType.CBS_SIMPLE)
                 {
-                    bHighlited = true;
+                    bHighlighted = true;
                     if ((hListBx != IntPtr.Zero) && bTipWasVisible)
                     {
                         User32.SendMessage(hListBx, Win32.LB_SETCURSEL, (IntPtr)nItem, IntPtr.Zero);
@@ -532,8 +528,8 @@ public class ComboBoxTipHandler : TipHandler
                 else
                 {
                     int nLbSelItem = (int)User32.SendMessage(hListBx, Win32.LB_GETCURSEL, IntPtr.Zero, IntPtr.Zero);
-                    bHighlited = (nLbSelItem == nItem);
-                    nCxOffset = 1;
+                    bHighlighted = (nLbSelItem == nItem);
+                    nCxOffset += 1;
                 }
 
                 // please don't show the tooltip when the list is scrolling
@@ -546,26 +542,23 @@ public class ComboBoxTipHandler : TipHandler
                 }
                 else if (!IsRectCompletelyVisible(rcText))
                 {
-                    Rectangle rcBox;
-                    Size sz;
-                    Point ptLocation;
-
                     // new item, and not entirely visible: prepare popup tip
                     OnGetItemInfo(ptClient, false, out _, out Rectangle rcTipText, out string sText);
+
                     // set tip text to that of item
                     TipWindow.Text = sText;
 
                     // need text rectangle in screen coordinates
-                    rcBox = User32.GetWindowRect(pComboBox.Handle);
+                    Rectangle rcBox = User32.GetWindowRect(pComboBox.Handle);
                     rcTipText.Offset(rcBox.X, rcBox.Y);
                     rcTipText.Offset(nCxOffset, 0);
 
                     // set highlighted status
-                    TipWindow.DrawHighlighted = TipHandler.DrawSelHighlighted && bHighlited;
+                    TipWindow.DrawHighlighted = TipHandler.DrawSelHighlighted && bHighlighted;
 
                     // move tip window over list text
-                    sz = new Size(rcTipText.Width + 8, rcTipText.Height);
-                    ptLocation = new Point(rcTipText.Left + 1, rcTipText.Top);
+                    Size sz = new Size(rcTipText.Width + 8, rcTipText.Height);
+                    Point ptLocation = new Point(rcTipText.Left + 1, rcTipText.Top);
                     TipWindow.Size = sz;
                     TipWindow.MoveAsTopmost(ptLocation);
                     TipWindow.ShowDelayed((int)TipTimeDelayMsec); // show popup text delayed

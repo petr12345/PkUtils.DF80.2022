@@ -153,7 +153,7 @@ namespace PK.TestMsgBoxObserver
                   "Since your system is {0}, you can enjoy the TaskDialog.", sysVer);
                 GenerateText(out strMsg, out string strTitle);
 
-                cTaskDialog.MessageBox(
+                VistaTaskDialogManager.MessageBox(
                   this,
                   strTitle,
                   strMsg,

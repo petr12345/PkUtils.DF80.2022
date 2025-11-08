@@ -44,7 +44,7 @@ public class PopupTooltip : Control, IPopupText
             this.Visible = true;
             this.AcceptsReturn = false;
             this.SetStyle(ControlStyles.Selectable, false);
-            this.Size = new System.Drawing.Size(100, 20);
+            this.Size = new Size(100, 20);
             this.Text = string.Empty;
 
             this._owner = tooltip;

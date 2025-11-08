@@ -22,7 +22,7 @@ using System.IO;
 using System.Reflection;
 using System.Windows.Forms;
 
-namespace PK.PkUtils.UI.PSTaskDialog;
+namespace PK.PkUtils.UI.Dialogs.PSTaskDialog;
 
 public partial class CommandButton : Button
 {

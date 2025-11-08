@@ -17,7 +17,6 @@
 using System;
 using System.Collections.Generic;
 using System.Windows.Forms;
-using PK.PkUtils.UI.PSTaskDialog;
 
 #pragma warning disable IDE0305 // Collection initialization can be simplified
 
@@ -59,7 +58,7 @@ public enum TaskDialogButtons
 #endregion // Typedefs
 
 /// <summary> Dialog for setting the task. </summary>
-public static class cTaskDialog
+public static class VistaTaskDialogManager
 {
     #region Fields
     #region Public Static Fields
@@ -329,7 +328,7 @@ public static class cTaskDialog
         else
         {
             // [OPTION 2] Show Emulated Form
-            using frmTaskDialog td = new();
+            using VistaTaskDialogEmulator td = new();
             td.Title = Title;
             td.MainInstruction = MainInstruction;
             td.Content = Content;

@@ -1,4 +1,4 @@
-﻿// Ignore Spelling: Utils
+﻿// Ignore Spelling: Utils, Nullable
 // 
 using System;
 using System.Collections.Generic;
