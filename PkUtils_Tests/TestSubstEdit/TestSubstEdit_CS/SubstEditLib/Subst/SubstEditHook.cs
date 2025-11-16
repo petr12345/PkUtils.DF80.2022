@@ -1,10 +1,11 @@
-﻿using System;
+﻿// Ignore Spelling: keydown lbutton dblclk mousemove subst phys log fn txt bx sel info mgr epilogue prologue usr phpos lpph txtboxbaselogdata txtboxselinfo undoableedit emscrollcaret emsetsel ememptyundobuffer vk end home ctrl substedittextboxctrl
+//
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Drawing;
 using System.Globalization;
 using System.Runtime.CompilerServices;
-using System.Text;
 using System.Windows.Forms;
 using PK.PkUtils.Interfaces;
 using PK.PkUtils.MessageHooking;
@@ -28,18 +29,28 @@ namespace PK.SubstEditLib.Subst;
 #pragma warning disable IDE0290  // Use primary constructor
 
 /// <summary>
-/// Selection change event arguments
+/// Selection change event arguments containing selection information.
 /// </summary>
 [CLSCompliant(true)]
-public class SelChagedEventArgs : EventArgs
+public class SelChangedEventArgs : EventArgs
 {
+    /// <summary>
+    /// Backing field for selection info.
+    /// </summary>
     protected readonly TextBoxSelInfo _selInfo;
 
-    public SelChagedEventArgs(TextBoxSelInfo selInfo)
+    /// <summary>
+    /// Initializes a new instance of <see cref="SelChangedEventArgs"/> with the provided selection info.
+    /// </summary>
+    /// <param name="selInfo">Selection information to include in the event.</param>
+    public SelChangedEventArgs(TextBoxSelInfo selInfo)
     {
         _selInfo = selInfo;
     }
 
+    /// <summary>
+    /// Gets the selection information carried by this event.
+    /// </summary>
     public TextBoxSelInfo SelectionInfo
     {
         get { return _selInfo; }
@@ -47,7 +58,8 @@ public class SelChagedEventArgs : EventArgs
 }
 
 /// <summary>
-/// The hook of the text control or RichText control.
+/// The hook implementation for a text control (TextBoxBase / RichTextBox etc.) that manages
+/// substitution-aware editing, undo/redo and clipboard operations.
 /// </summary>
 [CLSCompliant(true)]
 public class SubstEditHook<TFIELDID> : WindowMessageHook, IModified, IUndoable, IClipboardable
@@ -55,7 +67,7 @@ public class SubstEditHook<TFIELDID> : WindowMessageHook, IModified, IUndoable, 
     #region Typedefs
 
     /// <summary>
-    /// The argument for FindPosOutsidePhys
+    /// Direction used by FindPosOutsidePhys to determine a closest outside-of-field position.
     /// </summary>
     protected enum FindDirection
     {
@@ -65,18 +77,33 @@ public class SubstEditHook<TFIELDID> : WindowMessageHook, IModified, IUndoable, 
     };
 
     /// <summary>
-    /// "data storage" maintaining edit control status. Used for undo/redo.
+    /// "Data storage" maintaining edit control status. Used for undo/redo.
     /// </summary>
     protected class StatusRecord
     {
+        /// <summary>
+        /// Selection info snapshot.
+        /// </summary>
         protected readonly TextBoxSelInfo _selInfo;
+        /// <summary>
+        /// Logical substitution data snapshot.
+        /// </summary>
         protected readonly SubstLogData<TFIELDID> _logData;
 
+        /// <summary>
+        /// Initializes a new instance of <see cref="StatusRecord"/> with selection info and log data.
+        /// </summary>
+        /// <param name="selInfo">Selection information snapshot.</param>
+        /// <param name="logData">Logical substitution data snapshot.</param>
         protected internal StatusRecord(TextBoxSelInfo selInfo, SubstLogData<TFIELDID> logData)
         {
             _selInfo = selInfo;
             _logData = logData;
         }
+
+        /// <summary>
+        /// Returns a diagnostic string describing the record.
+        /// </summary>
         public virtual string Say
         {
             get
@@ -88,10 +115,17 @@ public class SubstEditHook<TFIELDID> : WindowMessageHook, IModified, IUndoable, 
             }
         }
 
+        /// <summary>
+        /// Gets the stored selection information.
+        /// </summary>
         protected internal TextBoxSelInfo SelInfo
         {
             get { return _selInfo; }
         }
+
+        /// <summary>
+        /// Gets the stored logical substitution data.
+        /// </summary>
         protected internal SubstLogData<TFIELDID> LogData
         {
             get { return _logData; }
@@ -104,16 +138,36 @@ public class SubstEditHook<TFIELDID> : WindowMessageHook, IModified, IUndoable, 
     protected class SubstUndoableEdit : UndoableAbstractEdit
     {
         #region Fields
+        /// <summary>
+        /// Reference to the hook that created this edit.
+        /// </summary>
         protected readonly SubstEditHook<TFIELDID> _hook;
+        /// <summary>
+        /// Snapshot before the operation.
+        /// </summary>
         protected readonly StatusRecord _before;
+        /// <summary>
+        /// Snapshot after the operation.
+        /// </summary>
         protected readonly StatusRecord _after;
         #endregion // Fields
 
         #region Constructors
+        /// <summary>
+        /// Initializes a new instance of <see cref="SubstUndoableEdit"/> bound to the given hook.
+        /// </summary>
+        /// <param name="hook">Owning hook instance.</param>
         protected internal SubstUndoableEdit(SubstEditHook<TFIELDID> hook)
         {
             _hook = hook;
         }
+
+        /// <summary>
+        /// Initializes a new instance of <see cref="SubstUndoableEdit"/> with before/after snapshots.
+        /// </summary>
+        /// <param name="hook">Owning hook instance.</param>
+        /// <param name="before">Snapshot before change.</param>
+        /// <param name="after">Snapshot after change.</param>
         protected internal SubstUndoableEdit(SubstEditHook<TFIELDID> hook, StatusRecord before, StatusRecord after)
           : this(hook)
         {
@@ -124,26 +178,30 @@ public class SubstEditHook<TFIELDID> : WindowMessageHook, IModified, IUndoable, 
 
         #region Properties
 
+        /// <summary>
+        /// Diagnostic representation of the edit.
+        /// </summary>
         public override string Say
         {
             get
             {
-                string strRes = string.Format(
-                    CultureInfo.InvariantCulture,
-                    "SubstUndoableEdit: (_before={0}, _after={1})",
-                    _before.Say,
-                    _after.Say);
-
+                string strRes = $"SubstUndoableEdit: (_before={_before.Say}, _after={_after.Say})";
                 return strRes;
             }
         }
 
 
+        /// <summary>
+        /// Gets the selection info before the edit (may be null).
+        /// </summary>
         protected internal TextBoxSelInfo SelBefore
         {
             get { return _before?.SelInfo; }
         }
 
+        /// <summary>
+        /// Gets the selection info after the edit (may be null).
+        /// </summary>
         protected internal TextBoxSelInfo SelAfter
         {
             get { return _after?.SelInfo; }
@@ -151,6 +209,9 @@ public class SubstEditHook<TFIELDID> : WindowMessageHook, IModified, IUndoable, 
         #endregion // Properties
 
         #region Methods
+        /// <summary>
+        /// Performs the undo operation by restoring the 'before' snapshot.
+        /// </summary>
         public override void Undo()
         {
             if (null != _before.LogData)
@@ -163,6 +224,10 @@ public class SubstEditHook<TFIELDID> : WindowMessageHook, IModified, IUndoable, 
             }
             base.Undo();
         }
+
+        /// <summary>
+        /// Performs the redo operation by restoring the 'after' snapshot.
+        /// </summary>
         public override void Redo()
         {
             if (null != _after.LogData)
@@ -175,6 +240,10 @@ public class SubstEditHook<TFIELDID> : WindowMessageHook, IModified, IUndoable, 
             }
             base.Redo();
         }
+
+        /// <summary>
+        /// Clears any sub-undo buffers held by this edit. Not used in this implementation.
+        /// </summary>
         public override void EmptyUndoBuffer()
         {
         }
@@ -185,39 +254,37 @@ public class SubstEditHook<TFIELDID> : WindowMessageHook, IModified, IUndoable, 
     #region Fields
 
     /// <summary>
-    /// The hooked control ( like TextBox, RichTextBox etc.)
-    /// Note: The hook SubstEditHook is NOT an owner of that control.
+    /// The hooked control (like TextBox, RichTextBox etc.). This hook does not own the control.
     /// </summary>
     protected TextBoxBase _textBx;
 
     /// <summary>
-    /// The runtime data ( in the beginning constructed from stored SubstLogData )
+    /// The runtime physical data constructed from stored SubstLogData.
     /// </summary>
     protected SubstPhysData<TFIELDID> _physData = new();
 
-    /// <summary> The redraw-lock object. </summary>
+    /// <summary> The redraw-lock object used while updating the control. </summary>
     private LockRedraw _rLock;
 
     private UndoManager _undoMgr;
     private StatusRecord _lastStatus;
 
     /// <summary>
-    /// If nonzero, the hook fn just delegates to original functionality.
-    /// See IsLockedOrigFn.
+    /// Lock counter: when nonzero the hook delegates to original functionality.
     /// </summary>
     private int _nLockHookLevel;
 
     /// <summary>
-    /// Becomes nonzero during CallOrigProc. See also OrigCallLevel.
+    /// Call level counter used during CallOrigProc.
     /// </summary>
     private int _nOrigCallLevel;
 
     /// <summary>
-    /// The event raised when textbox becomes modified ("dirty")
+    /// The event raised when textbox becomes modified ("dirty").
     /// </summary>
     private ModifiedEventHandler _evModified;
 
-    private EventHandler<SelChagedEventArgs> _evSelChaged;
+    private EventHandler<SelChangedEventArgs> _evSelChanged;
 
     // change notification lock
     private int _nChangeNotifyLock;
@@ -226,7 +293,7 @@ public class SubstEditHook<TFIELDID> : WindowMessageHook, IModified, IUndoable, 
     private int _nChangeModifyTempCount;
 
     // flag indicating the modification ('dirty') state
-    private bool _bModified;
+    private bool _isModified;
 
     private int _undoCounter;
     private int _redoCounter;
@@ -234,10 +301,19 @@ public class SubstEditHook<TFIELDID> : WindowMessageHook, IModified, IUndoable, 
 
     #region Constructor(s)
 
+    /// <summary>
+    /// Initializes a new instance of <see cref="SubstEditHook{TFIELDID}"/> for the given text box.
+    /// </summary>
+    /// <param name="textBx">The TextBoxBase to hook.</param>
     public SubstEditHook(TextBoxBase textBx)
       : this(textBx, null)
     { }
 
+    /// <summary>
+    /// Initializes a new instance of <see cref="SubstEditHook{TFIELDID}"/> for the given text box and initial log data.
+    /// </summary>
+    /// <param name="textBx">The TextBoxBase to hook.</param>
+    /// <param name="logData">Optional initial logical substitution data.</param>
     public SubstEditHook(TextBoxBase textBx, SubstLogData<TFIELDID> logData)
     {
         _textBx = textBx;
@@ -255,76 +331,103 @@ public class SubstEditHook<TFIELDID> : WindowMessageHook, IModified, IUndoable, 
     #region Properties
 
     /// <summary>
-    /// The event raised if selection has been changed. This one is missing in "classic" text box.
+    /// Event raised when the selection changes. Subscribers receive <see cref="SelChangedEventArgs"/>.
     /// </summary>
-    public event EventHandler<SelChagedEventArgs> EventSelChaged
+    public event EventHandler<SelChangedEventArgs> EventSelChanged
     {
         [MethodImpl(MethodImplOptions.Synchronized)]
-        add { this._evSelChaged += value; }
+        add { this._evSelChanged += value; }
         [MethodImpl(MethodImplOptions.Synchronized)]
-        remove { this._evSelChaged -= value; }
+        remove { this._evSelChanged -= value; }
     }
 
+    /// <summary>
+    /// Gets the logical substitution data representation (log form).
+    /// </summary>
     public SubstLogData<TFIELDID> LogData
     {
         get { return _physData; }
     }
 
+    /// <summary>
+    /// Gets the physical substitution data used for editing.
+    /// </summary>
     public SubstPhysData<TFIELDID> PhysData
     {
         get { return _physData; }
     }
 
+    /// <summary>
+    /// Diagnostic string describing this hook instance.
+    /// </summary>
     public virtual string Say
     {
         get
         {
-            StringBuilder sb = new();
-
-            sb.AppendFormat(
+            string managerSay = (null == this._undoMgr) ? "null" : _undoMgr.Say;
+            string physDataSay = (null == this._physData) ? "null" : _physData.Say;
+            string result = string.Format(
                 CultureInfo.InvariantCulture,
-                "SubstEditHook: (_undoMgr={0})",
-                (null == this._undoMgr) ? "null" : _undoMgr.Say);
-            return sb.ToString();
+                "SubstEditHook: (_undoMgr={0}, _physData={1})",
+                managerSay,
+                physDataSay);
+
+            return result;
         }
     }
 
-    protected UndoManager UndoMgr
-    {
-        get { return _undoMgr; }
-    }
+    /// <summary>
+    /// Gets the underlying UndoManager (protected access).
+    /// </summary>
+    protected UndoManager UndoMgr { get => _undoMgr; }
 
+    /// <summary>
+    /// Gets the last status record currently stored (protected access).
+    /// </summary>
     protected StatusRecord LastStatus
     {
-        get { return _lastStatus; }
+        get => _lastStatus;
     }
 
+    /// <summary>
+    /// Indicates whether the hook is locked to call original functions.
+    /// </summary>
     protected bool IsLockedOrigFn
     {
-        get { return _nLockHookLevel > 0; }
+        get => _nLockHookLevel > 0;
     }
 
+    /// <summary>
+    /// Gets the current orig-call nesting level (protected access).
+    /// </summary>
     protected int OrigCallLevel
     {
-        get { return _nOrigCallLevel; }
+        get => _nOrigCallLevel;
     }
 
-    protected int GetUndoCounter
+    /// <summary>
+    /// Gets the internal undo counter (protected access).
+    /// </summary>
+    protected int UndoCounter
     {
-        get { return _undoCounter; }
+        get => _undoCounter;
     }
 
-    protected int GetRedoCounter
+    /// <summary>
+    /// Gets the internal redo counter (protected access).
+    /// </summary>
+    protected int RedoCounter
     {
-        get { return _redoCounter; }
+        get => _redoCounter;
     }
+
     /// <summary>
     /// Assigns a substitution map to the physical data.
     /// </summary>
-    /// <param name="substMap">The substitution map to assign.</param>
-    public void AssignSubstMap(IEnumerable<ISubstDescr<TFIELDID>> substMap)
+    /// <param name="substMap">The substitution descriptors to set.</param>
+    public void SetSubstitutionMap(IEnumerable<ISubstitutionDescriptor<TFIELDID>> substMap)
     {
-        _physData.AssignSubstMap(substMap);
+        _physData.SetSubstitutionMap(substMap);
     }
 
     /// <summary>
@@ -337,9 +440,9 @@ public class SubstEditHook<TFIELDID> : WindowMessageHook, IModified, IUndoable, 
     }
 
     /// <summary>
-    /// Sets the selection in the text box.
+    /// Sets the selection in the hooked text box using given selection info.
     /// </summary>
-    /// <param name="info">The selection information to set.</param>
+    /// <param name="info">Selection information to apply.</param>
     public void SetSelInfo(TextBoxSelInfo info)
     {
         if (info.IsAllSelection || !info.IsCaretLast)
@@ -353,7 +456,7 @@ public class SubstEditHook<TFIELDID> : WindowMessageHook, IModified, IUndoable, 
     }
 
     /// <summary>
-    /// Restores focus to the text box while preserving the selection information.
+    /// Restores focus to the text box while preserving selection information.
     /// </summary>
     public void RestoreFocus()
     {
@@ -373,7 +476,7 @@ public class SubstEditHook<TFIELDID> : WindowMessageHook, IModified, IUndoable, 
     }
 
     /// <summary>
-    /// Initializes the text to the physical string in PhysData.GetPhysStr.
+    /// Initializes the control text to the physical representation from <see cref="PhysData"/>.
     /// </summary>
     public void InitializeText()
     {
@@ -381,9 +484,9 @@ public class SubstEditHook<TFIELDID> : WindowMessageHook, IModified, IUndoable, 
     }
 
     /// <summary>
-    /// Assigns the contents from another SubstLogData instance.
+    /// Assigns the contents from another <see cref="SubstLogData{TFIELDID}"/> instance.
     /// </summary>
-    /// <param name="rhs">The SubstLogData instance to assign from.</param>
+    /// <param name="rhs">Source logical data to assign.</param>
     public void Assign(SubstLogData<TFIELDID> rhs)
     {
         PhysData.Assign(rhs);
@@ -393,7 +496,7 @@ public class SubstEditHook<TFIELDID> : WindowMessageHook, IModified, IUndoable, 
     /// <summary>
     /// Assigns the contents from plain text.
     /// </summary>
-    /// <param name="strPlain">The plain text to assign.</param>
+    /// <param name="strPlain">Plain text to parse and assign.</param>
     public void AssignPlainText(string strPlain)
     {
         PhysData.AssignPlainText(strPlain);
@@ -401,16 +504,16 @@ public class SubstEditHook<TFIELDID> : WindowMessageHook, IModified, IUndoable, 
     }
 
     /// <summary>
-    /// Gets the plain text representation of the data.
+    /// Gets the plain text representation (logical text without fields).
     /// </summary>
-    /// <returns>The plain text.</returns>
+    /// <returns>The plain/logical text.</returns>
     public string GetPlainText()
     {
         return PhysData.GetPlainText();
     }
 
     /// <summary>
-    /// Deletes the contents of the physical data and initializes the text.
+    /// Deletes all contents of the physical data and updates the control text.
     /// </summary>
     public void DeleteContents()
     {
@@ -419,11 +522,11 @@ public class SubstEditHook<TFIELDID> : WindowMessageHook, IModified, IUndoable, 
     }
 
     /// <summary>
-    /// Converts a line and column to a character position.
+    /// Converts a line and column pair to a character position in the control.
     /// </summary>
-    /// <param name="line">The line number.</param>
-    /// <param name="col">The column number.</param>
-    /// <returns>The character position.</returns>
+    /// <param name="line">Zero-based line index.</param>
+    /// <param name="col">Zero-based column index.</param>
+    /// <returns>Character index corresponding to line and column.</returns>
     public int LineCol2CharPos(int line, int col)
     {
         int suma;
@@ -436,6 +539,12 @@ public class SubstEditHook<TFIELDID> : WindowMessageHook, IModified, IUndoable, 
         return suma;
     }
 
+    /// <summary>
+    /// Finds the nearest position outside a physical field for a given physical position.
+    /// </summary>
+    /// <param name="iorig">Original physical position.</param>
+    /// <param name="direction">Direction hint to pick left/right boundary.</param>
+    /// <returns>Position outside of any field close to input.</returns>
     protected tPhysPos FindPosOutsidePhys(tPhysPos iorig, FindDirection direction)
     {
         PhysInfo<TFIELDID> lpPhys;
@@ -456,10 +565,10 @@ public class SubstEditHook<TFIELDID> : WindowMessageHook, IModified, IUndoable, 
     }
 
     /// <summary>
-    /// Inserts a new field at the caret position.
+    /// Inserts a new substitution field at the current caret position.
     /// </summary>
-    /// <param name="what">The field identifier to insert.</param>
-    /// <returns>True if the field was inserted; otherwise, false.</returns>
+    /// <param name="what">Field identifier to insert.</param>
+    /// <returns>True if insertion occurred; otherwise false.</returns>
     public bool InsertNewInfo(TFIELDID what)
     {
         Debug.Assert(this.IsHooked);
@@ -503,16 +612,9 @@ public class SubstEditHook<TFIELDID> : WindowMessageHook, IModified, IUndoable, 
     #region Protected Methods
 
     /// <summary>
-    /// Dispose(bool disposing) executes in two distinct scenarios.
-    /// If disposing equals true, the method has been called directly
-    /// or indirectly by a user's code. Managed and unmanaged resources
-    /// can be disposed.
-    /// If disposing equals false, the method has been called by the 
-    /// runtime from inside the finalizer and you should not reference 
-    /// other objects. Only unmanaged resources can be disposed.
+    /// Releases resources used by this hook.
     /// </summary>
-    /// <param name="disposing"> If true, is called by IDisposable.Dispose. 
-    /// Otherwise it is called by finalizer.</param>
+    /// <param name="disposing">True when called from Dispose, false when called from the finalizer.</param>
     protected override void Dispose(bool disposing)
     {
         // Check to see if Dispose has already been called.
@@ -533,24 +635,35 @@ public class SubstEditHook<TFIELDID> : WindowMessageHook, IModified, IUndoable, 
     #region General helpers
 
     /// <summary>
-    /// Get the hooked control
+    /// Gets the hooked TextBoxBase control (protected access).
     /// </summary>
-    /// <returns></returns>
+    /// <returns>The hooked TextBoxBase.</returns>
     protected internal TextBoxBase GetTextBox()
     {
         return _textBx;
     }
 
+    /// <summary>
+    /// Increments hook lock counter to delegate handling to original window procedure.
+    /// </summary>
     protected void LockHookFn()
     {
         _nLockHookLevel++;
     }
 
+    /// <summary>
+    /// Decrements hook lock counter to restore hook processing.
+    /// </summary>
     protected void UnlockHookFn()
     {
         _nLockHookLevel--;
     }
 
+    /// <summary>
+    /// Calls the original window procedure while tracking original call level.
+    /// </summary>
+    /// <param name="m">Windows message to forward.</param>
+    /// <returns>Result returned by the original procedure.</returns>
     protected override IntPtr CallOrigProc(ref Message m)
     {
         IntPtr result;
@@ -562,6 +675,10 @@ public class SubstEditHook<TFIELDID> : WindowMessageHook, IModified, IUndoable, 
         return result;
     }
 
+    /// <summary>
+    /// Sets the control text to the provided physical string while preventing reentrant hook processing.
+    /// </summary>
+    /// <param name="strTxt">The physical string to set in the control.</param>
     protected void SetPhysText(string strTxt)
     {
         LockHookFn();
@@ -569,6 +686,10 @@ public class SubstEditHook<TFIELDID> : WindowMessageHook, IModified, IUndoable, 
         UnlockHookFn();
     }
 
+    /// <summary>
+    /// Asserts that selection boundaries are not within physical fields (debug only).
+    /// </summary>
+    /// <param name="sel">Selection information to validate.</param>
     [Conditional("Debug")]
     protected void AssertSelValidity(TextBoxSelInfo sel)
     {
@@ -589,9 +710,9 @@ public class SubstEditHook<TFIELDID> : WindowMessageHook, IModified, IUndoable, 
     #region Undo_redo helpers
 
     /// <summary>
-    /// Getting the data and selection info ( as a new created object )
+    /// Creates and returns a snapshot of current selection and data for undo/redo.
     /// </summary>
-    /// <returns></returns>
+    /// <returns>A new <see cref="StatusRecord"/> representing current state.</returns>
     protected StatusRecord GetStatusRecord()
     {
         SubstLogData<TFIELDID> temp = new();
@@ -600,9 +721,9 @@ public class SubstEditHook<TFIELDID> : WindowMessageHook, IModified, IUndoable, 
     }
 
     /// <summary>
-    /// Setting the data and selection info
+    /// Restores state from a provided status record (data and selection).
     /// </summary>
-    /// <param name="record">The status record containing data and selection info.</param>
+    /// <param name="record">The status record to apply.</param>
     protected void SetStatusRecord(StatusRecord record)
     {
         if (null != record.LogData)
@@ -615,6 +736,9 @@ public class SubstEditHook<TFIELDID> : WindowMessageHook, IModified, IUndoable, 
         }
     }
 
+    /// <summary>
+    /// Empties the internal edit control undo buffer by forwarding EM_EMPTYUNDOBUFFER to the control.
+    /// </summary>
     protected void EmptyEditCtrlUndoBuffer()
     {
         LockHookFn();
@@ -622,6 +746,9 @@ public class SubstEditHook<TFIELDID> : WindowMessageHook, IModified, IUndoable, 
         UnlockHookFn();
     }
 
+    /// <summary>
+    /// Starts collecting an undo snapshot if none recorded yet.
+    /// </summary>
     protected void OpenUndoInfo()
     {
         if (null == LastStatus)
@@ -633,6 +760,10 @@ public class SubstEditHook<TFIELDID> : WindowMessageHook, IModified, IUndoable, 
         }
     }
 
+    /// <summary>
+    /// Closes an undo snapshot and adds an undoable edit if something changed.
+    /// </summary>
+    /// <returns>True if an undo record was created; otherwise false.</returns>
     protected bool CloseUndoInfo()
     {
         bool result = false;
@@ -666,12 +797,19 @@ public class SubstEditHook<TFIELDID> : WindowMessageHook, IModified, IUndoable, 
         return result;
     }
 
+    /// <summary>
+    /// Increments the internal undo counter (protected access).
+    /// </summary>
     protected void IncUndoCounter()
     {
         _undoCounter = (_undoCounter < int.MaxValue) ? (_undoCounter + 1) : 0;
         /* more simple if the type of it is uint ( not cls-compliant)
         unchecked { _undoCounter++; } */
     }
+
+    /// <summary>
+    /// Increments the internal redo counter (protected access).
+    /// </summary>
     protected void IncRedoCounter()
     {
         _redoCounter = (_redoCounter < int.MaxValue) ? (_redoCounter + 1) : 0;
@@ -683,9 +821,9 @@ public class SubstEditHook<TFIELDID> : WindowMessageHook, IModified, IUndoable, 
     #region Hooking Fn
 
     /// <summary>
-    /// Auxiliary helper called from HookWindow. 
+    /// Called when the hook is attached to a window. Subscribes to TextChanged and prepares redraw lock.
     /// </summary>
-    /// <param name="pExtraInfo"></param>
+    /// <param name="pExtraInfo">Optional extra info passed from HookWindow.</param>
     protected override void OnHookup(Object pExtraInfo)
     {
         base.OnHookup(pExtraInfo);
@@ -694,9 +832,9 @@ public class SubstEditHook<TFIELDID> : WindowMessageHook, IModified, IUndoable, 
     }
 
     /// <summary>
-    /// Auxiliary helper called from HookWindow. 
+    /// Called when the hook is detached. Unsubscribes events and clears redraw lock.
     /// </summary>
-    /// <param name="pExtraInfo"></param>
+    /// <param name="pExtraInfo">Optional extra info passed from Unhook.</param>
     protected override void OnUnhook(Object pExtraInfo)
     {
         _textBx.TextChanged -= OnTextBx_TextChanged;
@@ -705,9 +843,9 @@ public class SubstEditHook<TFIELDID> : WindowMessageHook, IModified, IUndoable, 
     }
 
     /// <summary>
-    /// internal hooking wndproc fn
+    /// Processes window messages for the hooked control. This is the core message handler.
     /// </summary>
-    /// <param name="m"></param>
+    /// <param name="m">Reference to the Windows message to process.</param>
     protected override void HookWindowProc(ref Message m)
     {
         TextBoxSelInfo selChanged = null;
@@ -849,7 +987,7 @@ public class SubstEditHook<TFIELDID> : WindowMessageHook, IModified, IUndoable, 
         // send the selection change event
         if (null != selChanged)
         {
-            this.RaiseSelChaged(selChanged);
+            this.RaiseSelChanged(selChanged);
         }
     }
     #endregion // Hooking Fn
@@ -857,7 +995,7 @@ public class SubstEditHook<TFIELDID> : WindowMessageHook, IModified, IUndoable, 
     #region Text Changed
 
     /// <summary>
-    /// The lock depth
+    /// Gets the current change notification lock depth (protected access).
     /// </summary>
     protected int ChangeNotifyLock
     {
@@ -868,11 +1006,18 @@ public class SubstEditHook<TFIELDID> : WindowMessageHook, IModified, IUndoable, 
         }
     }
 
+    /// <summary>
+    /// Indicates whether change notifications are currently locked.
+    /// </summary>
+    /// <returns>True when locked; otherwise false.</returns>
     protected bool IsChangeNotifyLocked()
     {
         return (0 < ChangeNotifyLock);
     }
 
+    /// <summary>
+    /// Prologue called before a sequence of changes to suppress immediate change events.
+    /// </summary>
     protected void NotifyFixPrologue()
     {
         Debug.Assert(_nChangeNotifyLock >= 0);
@@ -882,6 +1027,9 @@ public class SubstEditHook<TFIELDID> : WindowMessageHook, IModified, IUndoable, 
         }
     }
 
+    /// <summary>
+    /// Epilogue called after a sequence of changes to re-enable change notifications and fire modified events if needed.
+    /// </summary>
     protected void NotifyFixEpilogue()
     {
         if (0 == --_nChangeNotifyLock)
@@ -900,12 +1048,20 @@ public class SubstEditHook<TFIELDID> : WindowMessageHook, IModified, IUndoable, 
         this._nChangeModifyTempCount = 0;
     }
 
-    private void ChangeModifyTempCountIncrement()
+    /// <summary>
+    /// Increments the temporary modification counter used to decide whether to raise modified events.
+    /// </summary>
+    protected void ChangeModifyTempCountIncrement()
     {
         this._nChangeModifyTempCount++;
     }
 
-    protected void OnTextBx_TextChanged(object sender, EventArgs e)
+    /// <summary>
+    /// Handles control TextChanged event: either counts modifications or raises modified immediately.
+    /// </summary>
+    /// <param name="sender">Event sender.</param>
+    /// <param name="args">Event arguments.</param>
+    protected void OnTextBx_TextChanged(object sender, EventArgs args)
     {
         if (IsChangeNotifyLocked())
         {
@@ -917,19 +1073,29 @@ public class SubstEditHook<TFIELDID> : WindowMessageHook, IModified, IUndoable, 
         }
     }
 
-    protected void RaiseSelChaged(TextBoxSelInfo sel)
+    /// <summary>
+    /// Raises the selection changed event with provided selection.
+    /// </summary>
+    /// <param name="sel">Selection info to include in event.</param>
+    protected void RaiseSelChanged(TextBoxSelInfo sel)
     {
-        if ((null != _evSelChaged) && (null != sel))
+        if ((null != _evSelChanged) && (null != sel))
         {
-            _evSelChaged(this, new SelChagedEventArgs(sel));
+            _evSelChanged(this, new SelChangedEventArgs(sel));
         }
     }
 
+    /// <summary>
+    /// Raises the modified event to subscribers.
+    /// </summary>
     protected void RaiseModified()
     {
-        _evModified?.Invoke(this, new EventArgs());
+        _evModified?.Invoke(this, EventArgs.Empty);
     }
 
+    /// <summary>
+    /// Called when the control becomes modified. Default implementation sets IsModified flag.
+    /// </summary>
     protected virtual void OnModified()
     {
         this.SetModified();
@@ -940,12 +1106,23 @@ public class SubstEditHook<TFIELDID> : WindowMessageHook, IModified, IUndoable, 
     #region Private Methods
     #region Special handlers
 
+    private static void SuppressControlKey()
+    {
+        byte[] state = new byte[256];
+        User32.GetKeyboardState(state);
+
+        // Unset CTRL key
+        state[(int)Win32.VK.VK_CONTROL] &= 0x7F;
+
+        User32.SetKeyboardState(state);
+    }
+
     /// <summary>
-    /// The handler of HandleCreated event
+    /// Handler for TextBox.HandleCreated: reattaches the hook if needed.
     /// </summary>
-    /// <param name="sender"></param>
-    /// <param name="e"></param>
-    private void OnTextBx_HandleCreated(object sender, EventArgs e)
+    /// <param name="sender">Event sender.</param>
+    /// <param name="args">Event arguments.</param>
+    private void OnTextBx_HandleCreated(object sender, EventArgs args)
     {
         Debug.Assert(null != _textBx);
         if (!IsHooked)
@@ -955,11 +1132,11 @@ public class SubstEditHook<TFIELDID> : WindowMessageHook, IModified, IUndoable, 
     }
 
     /// <summary>
-    /// Helper method called by HookWindowProc.
+    /// Deletes the currently selected region responding to WM_CHAR backspace semantics.
     /// </summary>
-    /// <param name="selInf"></param>
-    /// <param name="lParam"></param>
-    /// <returns></returns>
+    /// <param name="selInf">Selection information describing what to delete.</param>
+    /// <param name="lParam">Original lParam for the WM_CHAR call.</param>
+    /// <returns>Result of forwarded WM_CHAR backspace call.</returns>
     private IntPtr DeleteSel_WmCharBack(
         TextBoxSelInfo selInf,
         LPARAM lParam)
@@ -974,11 +1151,11 @@ public class SubstEditHook<TFIELDID> : WindowMessageHook, IModified, IUndoable, 
     }
 
     /// <summary>
-    /// Helper method called by HookWindowProc.
+    /// Deletes the currently selected region responding to VK_DELETE semantics.
     /// </summary>
-    /// <param name="selInf"></param>
-    /// <param name="lParam"></param>
-    /// <returns></returns>
+    /// <param name="selInf">Selection information describing what to delete.</param>
+    /// <param name="lParam">Original lParam for the VK call.</param>
+    /// <returns>Result of forwarded VK_DELETE keydown call.</returns>
     private LRESULT DeleteSel_VKDelete(
         TextBoxSelInfo selInf,
         LPARAM lParam)
@@ -993,12 +1170,13 @@ public class SubstEditHook<TFIELDID> : WindowMessageHook, IModified, IUndoable, 
     }
 
     /// <summary>
-    /// Helper method called by HookWindowProc.
+    /// Handles WM_CHAR input that is neither backspace nor printable by forwarding it to the default window proc 
+    /// and syncing PhysData if the control text changes.
     /// </summary>
-    /// <param name="selInf"></param>
-    /// <param name="wParam"></param>
-    /// <param name="lParam"></param>
-    /// <returns></returns>
+    /// <param name="selInf">Selection info.</param>
+    /// <param name="wParam">Character code.</param>
+    /// <param name="lParam">lParam from message.</param>
+    /// <returns>Result of forwarded WM_CHAR.</returns>
     private LRESULT DeleteSel_WmCharStrange(
         TextBoxSelInfo selInf,
         WPARAM wParam,
@@ -1021,11 +1199,11 @@ public class SubstEditHook<TFIELDID> : WindowMessageHook, IModified, IUndoable, 
     }
 
     /// <summary>
-    /// Helper method called by HookWindowProc.
+    /// Handles backspace when there is no selection, with special handling for fields and CRLF.
     /// </summary>
-    /// <param name="selInf"></param>
-    /// <param name="lParam"></param>
-    /// <returns></returns>
+    /// <param name="selInf">Current selection info (caret position).</param>
+    /// <param name="lParam">Original lParam value.</param>
+    /// <returns>Result of forwarded WM_CHAR backspace operations.</returns>
     private LRESULT BackspaceDeleteNotSel(
         TextBoxSelInfo selInf,
         LPARAM lParam)
@@ -1073,16 +1251,15 @@ public class SubstEditHook<TFIELDID> : WindowMessageHook, IModified, IUndoable, 
     }
 
     /// <summary>
-    /// Helper method called by HookWindowProc.
+    /// Handles VK_DELETE when there is no selection, with special handling for fields and CRLF.
     /// </summary>
-    /// <param name="selInf"></param>
-    /// <param name="lParam"></param>
-    /// <returns></returns>
+    /// <param name="selInf">Current selection info.</param>
+    /// <param name="lParam">Original lParam value.</param>
+    /// <returns>Result of forwarded keydown delete calls.</returns>
     private LRESULT VkDeleteNotSel(
         TextBoxSelInfo selInf,
         LPARAM lParam)
     {
-        byte[] pbKeyState = new byte[256];
         string strTmp, strRight;
         PhysInfo<TFIELDID> lpPhys;
         int iCaret, iEnd, nDelLimit;
@@ -1107,10 +1284,7 @@ public class SubstEditHook<TFIELDID> : WindowMessageHook, IModified, IUndoable, 
                 nDelLimit = iCaret + 1;
             }
             PhysData.DeleteAllBetween(iCaret, iEnd);
-
-            User32.GetKeyboardState(pbKeyState);
-            pbKeyState[(int)Win32.VK.VK_CONTROL] &= 0x7F;
-            User32.SetKeyboardState(pbKeyState);
+            SuppressControlKey();
             for (int ii = iCaret; ii < nDelLimit; ii++)
             {
                 lRes = CallOrigProc((int)Win32.WM.WM_KEYDOWN, (IntPtr)Win32.VK.VK_DELETE, lParam);
@@ -1134,12 +1308,12 @@ public class SubstEditHook<TFIELDID> : WindowMessageHook, IModified, IUndoable, 
     }
 
     /// <summary>
-    /// Helper method called by HookWindowProc.
+    /// Handles character insertion (WM_CHAR) and updates the physical data accordingly.
     /// </summary>
-    /// <param name="selInf"></param>
-    /// <param name="wParam"></param>
-    /// <param name="lParam"></param>
-    /// <returns></returns>
+    /// <param name="selInf">Selection/caret position before insertion.</param>
+    /// <param name="wParam">Character code.</param>
+    /// <param name="lParam">Original lParam value.</param>
+    /// <returns>Result of forwarded WM_CHAR message.</returns>
     private LRESULT WmCharDoInsetChar(
         TextBoxSelInfo selInf,
         WPARAM wParam,
@@ -1147,8 +1321,8 @@ public class SubstEditHook<TFIELDID> : WindowMessageHook, IModified, IUndoable, 
     {
         string strNew, strOld;
         int iCaret = selInf.CaretChar;
-        int oldUndoCounter = this.GetUndoCounter;
-        int oldRedoCounter = this.GetRedoCounter;
+        int oldUndoCounter = this.UndoCounter;
+        int oldRedoCounter = this.RedoCounter;
         LRESULT lRes = IntPtr.Zero;
 
 #if DEBUG
@@ -1160,7 +1334,7 @@ public class SubstEditHook<TFIELDID> : WindowMessageHook, IModified, IUndoable, 
 #endif
         lRes = CallOrigProc((int)Win32.WM.WM_CHAR, wParam, lParam);
 
-        if (oldUndoCounter != this.GetUndoCounter || oldRedoCounter != this.GetRedoCounter)
+        if (oldUndoCounter != this.UndoCounter || oldRedoCounter != this.RedoCounter)
         {   // it was not "regular" char insertion at all, but a shortcut to undo or redo
             EmptyEditCtrlUndoBuffer();
         }
@@ -1177,22 +1351,18 @@ public class SubstEditHook<TFIELDID> : WindowMessageHook, IModified, IUndoable, 
     }
 
     /// <summary>
-    /// Helper method called by HookWindowProc.
+    /// Moves caret horizontally while skipping internal field ranges.
     /// </summary>
-    /// <param name="wParam"></param>
-    /// <param name="lParam"></param>
-    /// <returns></returns>
+    /// <param name="wParam">Virtual key parameter.</param>
+    /// <param name="lParam">Original lParam.</param>
+    /// <returns>Result of forwarded keydown.</returns>
     private LRESULT MyMoveCaretHorizontal(WPARAM wParam, LPARAM lParam)
     {
-        byte[] pbKeyState = new byte[256];
-
         Debug.Assert((wParam.ToInt32() == (int)Win32.VK.VK_LEFT) ||
             (wParam.ToInt32() == (int)Win32.VK.VK_RIGHT) ||
             (wParam.ToInt32() == (int)Win32.VK.VK_HOME) ||
             (wParam.ToInt32() == (int)Win32.VK.VK_END));
-        User32.GetKeyboardState(pbKeyState);
-        pbKeyState[(int)Win32.VK.VK_CONTROL] &= 0x7F;
-        User32.SetKeyboardState(pbKeyState);
+        SuppressControlKey();
 
         LRESULT lRes = CallOrigProc((int)Win32.WM.WM_KEYDOWN, wParam, lParam);
         while (null != PhysData.FindPhysInfoPosIsIn(GetSelInfo().CaretChar))
@@ -1203,17 +1373,20 @@ public class SubstEditHook<TFIELDID> : WindowMessageHook, IModified, IUndoable, 
         return lRes;
     }
 
+    /// <summary>
+    /// Moves caret vertically while skipping internal field ranges.
+    /// </summary>
+    /// <param name="wParam">Virtual key parameter.</param>
+    /// <param name="lParam">Original lParam.</param>
+    /// <returns>Result of forwarded keydown.</returns>
     private LRESULT MyMoveCaretVertical(WPARAM wParam, LPARAM lParam)
     {
-        byte[] pbKeyState = new byte[256];
         tPhysPos tPosCurrent;
         LRESULT lRes;
 
         Debug.Assert((wParam.ToInt32() == (int)Win32.VK.VK_UP) ||
             (wParam.ToInt32() == (int)Win32.VK.VK_DOWN));
-        User32.GetKeyboardState(pbKeyState);
-        pbKeyState[(int)Win32.VK.VK_CONTROL] &= 0x7F;
-        User32.SetKeyboardState(pbKeyState);
+        SuppressControlKey();
 
         lRes = CallOrigProc((int)Win32.WM.WM_KEYDOWN, wParam, lParam);
         if (null != PhysData.FindPhysInfoPosIsIn(tPosCurrent = GetSelInfo().CaretChar))
@@ -1233,12 +1406,12 @@ public class SubstEditHook<TFIELDID> : WindowMessageHook, IModified, IUndoable, 
     }
 
     /// <summary>
-    /// Helper method called by HookWindowProc.
+    /// Handles WM_CHAR message processing for the hook, including clipboard/selection shortcuts and backspace handling.
     /// </summary>
-    /// <param name="wParam"></param>
-    /// <param name="lParam"></param>
-    /// <param name="bHandled"></param>
-    /// <returns></returns>
+    /// <param name="wParam">Character code passed in the message.</param>
+    /// <param name="lParam">Original lParam from the message.</param>
+    /// <param name="bHandled">Reference parameter to indicate whether message was handled.</param>
+    /// <returns>Result to be placed into message.Result if handled.</returns>
     private LRESULT MyOnWmChar(WPARAM wParam, LPARAM lParam, ref bool bHandled)
     {
         TextBoxSelInfo newSel;
@@ -1293,10 +1466,10 @@ public class SubstEditHook<TFIELDID> : WindowMessageHook, IModified, IUndoable, 
     }
 
     /// <summary>
-    /// Helper method called by HookWindowProc.
+    /// Handles VK_DELETE (key down) behavior for the hook.
     /// </summary>
-    /// <param name="lParam"></param>
-    /// <returns></returns>
+    /// <param name="lParam">Original lParam value passed with the key event.</param>
+    /// <returns>Result of deletion handling.</returns>
     private LRESULT MyOnVk_Delete(LPARAM lParam)
     {
         TextBoxSelInfo oldSel = GetSelInfo();
@@ -1312,14 +1485,13 @@ public class SubstEditHook<TFIELDID> : WindowMessageHook, IModified, IUndoable, 
     }
 
     /// <summary>
-    /// Helper method called by HookWindowProc.
+    /// Handles WM_LBUTTONDOWN by snapping clicks outside of fields to nearest allowed position.
     /// </summary>
-    /// <param name="wParam"></param>
-    /// <param name="lParam"></param>
-    /// <returns></returns>
+    /// <param name="wParam">wParam from message.</param>
+    /// <param name="lParam">lParam from message.</param>
+    /// <returns>Result of forwarded WM_LBUTTONDOWN processing.</returns>
     private LRESULT MyOnWmLButtonDown(WPARAM wParam, LPARAM lParam)
     {
-        /* uint fwKeys = wParam; */
         Point pt = Win32.GetPointFromLParam(lParam.ToInt32());
         int iround;
         Point pttmp;
@@ -1343,11 +1515,11 @@ public class SubstEditHook<TFIELDID> : WindowMessageHook, IModified, IUndoable, 
     }
 
     /// <summary>
-    /// Helper method called by HookWindowProc.
+    /// Handles WM_MOUSEMOVE during selection to keep selection outside fields.
     /// </summary>
-    /// <param name="wParam"></param>
-    /// <param name="lParam"></param>
-    /// <returns></returns>
+    /// <param name="wParam">wParam from message.</param>
+    /// <param name="lParam">lParam from message.</param>
+    /// <returns>Result of forwarded WM_MOUSEMOVE processing.</returns>
     private LRESULT MyOnWmMouseMove(WPARAM wParam, LPARAM lParam)
     {
         uint fwKeys = unchecked((uint)wParam.ToInt32());
@@ -1377,12 +1549,12 @@ public class SubstEditHook<TFIELDID> : WindowMessageHook, IModified, IUndoable, 
     }
 
     /// <summary>
-    /// Helper method called by HookWindowProc.
+    /// Adjusts internal substitution data after a text insertion.
     /// </summary>
-    /// <param name="iPos">The position at which insertion occurs.</param>
-    /// <param name="strOldText">The old text before insertion.</param>
-    /// <param name="strNewText">The new text after insertion.</param>
-    /// <returns>True if the data was modified, otherwise false.</returns>
+    /// <param name="iPos">Position where insertion occurred.</param>
+    /// <param name="strOldText">Old text before insertion.</param>
+    /// <param name="strNewText">New text after insertion.</param>
+    /// <returns>True if the physical data was modified.</returns>
     private bool ModifyDataOnInsertion(
         int iPos,
         string strOldText,
@@ -1399,10 +1571,6 @@ public class SubstEditHook<TFIELDID> : WindowMessageHook, IModified, IUndoable, 
             Debug.Assert(delta > 0);
             Debug.Assert(strOldText.Substring(0, iPos) == strNewText.Substring(0, iPos));
 
-            /*
-            int irold = oldLength - iPos;
-            Debug.Assert(strOldText.Right(irold) == strNewText.Right(irold));
-            */
             strTmp = strNewText.Substring(iPos, delta);
             PhysData.InsertText(iPos, strTmp);
             Debug.Assert(PhysData.GetPhysStr == strNewText);
@@ -1412,11 +1580,10 @@ public class SubstEditHook<TFIELDID> : WindowMessageHook, IModified, IUndoable, 
     }
 
     /// <summary>
-    /// Exports the selected contents as a plain text
-    /// and puts the resulting plain text on the clipboard.
+    /// Exports the selected contents as plain text and places it on the clipboard, optionally cutting.
     /// </summary>
-    /// <param name="bCut"></param>
-    /// <returns></returns>
+    /// <param name="bCut">True to cut (remove) selection after copying; false to copy only.</param>
+    /// <returns>Non-zero IntPtr on success; zero otherwise.</returns>
     private LRESULT MyCopy(bool bCut)
     {
         TextBoxSelInfo selInf = this.GetSelInfo();
@@ -1426,7 +1593,9 @@ public class SubstEditHook<TFIELDID> : WindowMessageHook, IModified, IUndoable, 
         {
             SubstLogData<TFIELDID> tempData = new();
             PhysData.ExportLogSel(selInf, tempData);
-            Clipboard.SetText(tempData.GetPlainText());
+            string plainText = tempData.GetPlainText();
+
+            Clipboard.SetText(plainText);
             if (bCut)
             {
                 this.MyOnVk_Delete(1);
@@ -1437,11 +1606,9 @@ public class SubstEditHook<TFIELDID> : WindowMessageHook, IModified, IUndoable, 
     }
 
     /// <summary>
-    /// Pastes the clipboard contents as a plain text, 
-    /// converts the plain text to field list and logical string,
-    /// and inserts the result on current selection position.
+    /// Pastes plain text from the clipboard, parses it into substitution data and inserts it into the model.
     /// </summary>
-    /// <returns></returns>
+    /// <returns>Zero IntPtr (unused).</returns>
     private LRESULT MyOnPaste()
     {
         string strPaste = Clipboard.GetText();
@@ -1475,6 +1642,9 @@ public class SubstEditHook<TFIELDID> : WindowMessageHook, IModified, IUndoable, 
 
     #region IModified Members
 
+    /// <summary>
+    /// Event triggered when the modified state changes.
+    /// </summary>
     public event ModifiedEventHandler EventModified
     {
         [MethodImpl(MethodImplOptions.Synchronized)]
@@ -1483,21 +1653,18 @@ public class SubstEditHook<TFIELDID> : WindowMessageHook, IModified, IUndoable, 
         remove { _evModified -= value; }
     }
 
-    public bool IsModified
-    {
-        get
-        {
-            return _bModified;
-        }
-    }
+    /// <summary>
+    /// Gets a value indicating whether the content has been modified.
+    /// </summary>
+    public bool IsModified { get => _isModified; }
 
     /// <summary>
-    /// Nomen est omen
+    /// Sets the modified flag and raises Modified event when true.
     /// </summary>
-    /// <param name="bValue"></param>
+    /// <param name="bValue">New modified value.</param>
     public void SetModified(bool bValue)
     {
-        if (this._bModified = bValue)
+        if (this._isModified = bValue)
         {
             RaiseModified();
         }
@@ -1519,7 +1686,7 @@ public class SubstEditHook<TFIELDID> : WindowMessageHook, IModified, IUndoable, 
     }
 
     /// <summary>
-    /// Performs an undo operation.
+    /// Performs an undo operation via the internal undo manager.
     /// </summary>
     public void Undo()
     {
@@ -1533,7 +1700,7 @@ public class SubstEditHook<TFIELDID> : WindowMessageHook, IModified, IUndoable, 
     }
 
     /// <summary>
-    /// Performs a redo operation.
+    /// Performs a redo operation via the internal undo manager.
     /// </summary>
     public void Redo()
     {
@@ -1547,7 +1714,7 @@ public class SubstEditHook<TFIELDID> : WindowMessageHook, IModified, IUndoable, 
     }
 
     /// <summary>
-    /// Empties the undo buffer.
+    /// Empties the undo buffer and clears last status snapshot.
     /// </summary>
     public void EmptyUndoBuffer()
     {
@@ -1579,7 +1746,7 @@ public class SubstEditHook<TFIELDID> : WindowMessageHook, IModified, IUndoable, 
     }
 
     /// <summary>
-    /// Cuts the selected text to the clipboard.
+    /// Cuts the selected text to the clipboard using the control's Cut.
     /// </summary>
     public void Cut()
     {
@@ -1587,7 +1754,7 @@ public class SubstEditHook<TFIELDID> : WindowMessageHook, IModified, IUndoable, 
     }
 
     /// <summary>
-    /// Copies the selected text to the clipboard.
+    /// Copies the selected text to the clipboard using the control's Copy.
     /// </summary>
     public void Copy()
     {
@@ -1595,7 +1762,7 @@ public class SubstEditHook<TFIELDID> : WindowMessageHook, IModified, IUndoable, 
     }
 
     /// <summary>
-    /// Pastes the clipboard contents into the text box.
+    /// Pastes clipboard contents into the text box using the control's Paste.
     /// </summary>
     public void Paste()
     {

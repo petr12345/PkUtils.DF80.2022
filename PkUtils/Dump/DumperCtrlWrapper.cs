@@ -1,4 +1,4 @@
-﻿// Ignore Spelling: PK, CTRL, Preprocess, Utils
+﻿// Ignore Spelling: PK, CTRL, Preprocess, preprocessing, Utils
 //
 
 using System;
@@ -61,11 +61,14 @@ public class DumperCtrlWrapper<CTRL> : IDumperEx, IDisposableEx where CTRL : Con
     /// <summary>   (Immutable) record representing log message. </summary>
     protected record LogEntry
     {
-        /// <summary>   Gets the textual content of the log entry. </summary>
+        /// <summary> Gets the textual content of the log entry. </summary>
         public string Text { get; }
 
-        /// <summary>   Gets the severity level of the log message. </summary>
+        /// <summary> Gets the severity level of the log message. </summary>
         public MessageLevel Level { get; }
+
+        /// <summary> Gets initializes the Date/Time of the event creation. </summary>
+        public DateTime Created { get; init; } = DateTime.Now;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="LogEntry"/> record with the specified text and message level.

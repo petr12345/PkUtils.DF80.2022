@@ -206,10 +206,10 @@ public class PhysInfo<TFIELDID> : IDeepCloneable<PhysInfo<TFIELDID>>
 };
 
 /// <summary>
-/// SubstPhysData  keeps "substitution physical data", 
-/// i.e. an internal data of CSubstEdit control used during its editing.
+/// SubstPhysData keeps "substitution physical data", 
+/// i.e. an internal data of <see cref="SubstEditTextBoxCtrl"/> control used during its editing.
 /// Note: SubstPhysData do have to be serialized; 
-/// they all are reconstructed from serialied SubstLogData.
+/// they all are reconstructed from serialized SubstLogData.
 /// </summary>
 [CLSCompliant(true)]
 public class SubstPhysData<TFIELDID> : SubstLogData<TFIELDID>
@@ -227,7 +227,7 @@ public class SubstPhysData<TFIELDID> : SubstLogData<TFIELDID>
       : base()
     {
     }
-    public SubstPhysData(IEnumerable<ISubstDescr<TFIELDID>> substMap)
+    public SubstPhysData(IEnumerable<ISubstitutionDescriptor<TFIELDID>> substMap)
       : base(substMap)
     {
     }
@@ -406,9 +406,9 @@ public class SubstPhysData<TFIELDID> : SubstLogData<TFIELDID>
     {
         tLogPos logpos;
 
-        if (null == MapKeeper.FindMapItem(what))
+        if (null == MapKeeper.FindDescriptor(what))
         {
-            Debug.Assert(false, "Cannot find speficied field argument in the substitution map");
+            Debug.Assert(false, "Cannot find specified field argument in the substitution map");
             return null;
         }
 
@@ -418,19 +418,20 @@ public class SubstPhysData<TFIELDID> : SubstLogData<TFIELDID>
 
     public PhysInfo<TFIELDID> InsertNewInfo(tPhysPos phpos, LogInfo<TFIELDID> logInfo)
     {
+        ArgumentNullException.ThrowIfNull(logInfo);
+
         string newphysStr;
-        ISubstDescr<TFIELDID> lpDesc;
+        ISubstitutionDescriptor<TFIELDID> lpDesc;
         PhysInfo<TFIELDID> lpPhysBefore;
         LogInfo<TFIELDID> lpLogBefore;
         TFIELDID what;
 
-        if (null == (lpDesc = MapKeeper.FindMapItem(what = logInfo.What)))
+        if (null == (lpDesc = MapKeeper.FindDescriptor(what = logInfo.What)))
         {
-            Debug.Assert(false, "Cannot find speficied field argument in the substitution map");
+            Debug.Assert(false, "Cannot find specified field argument in the substitution map");
             return null;
         }
-        int ilen = lpDesc.DrawnText.Length;
-        //tLogPos logpos = logInfo.Pos;
+        int ilen = lpDesc.DisplayText.Length;
         PhysInfo<TFIELDID> physInfo = new(what, phpos, phpos + ilen);
 
         if (null != (lpPhysBefore = FindPhysInfoAfter(phpos)))
@@ -446,7 +447,7 @@ public class SubstPhysData<TFIELDID> : SubstLogData<TFIELDID>
             AppendPhysToList(physInfo);
         }
 
-        newphysStr = GetPhysStr.Insert(phpos, lpDesc.DrawnText);
+        newphysStr = GetPhysStr.Insert(phpos, lpDesc.DisplayText);
 #if DEBUG
         string strTempNew = LogStr2PhysStr(this);
         Debug.Assert(newphysStr == strTempNew);
@@ -463,6 +464,8 @@ public class SubstPhysData<TFIELDID> : SubstLogData<TFIELDID>
     /// <returns></returns>
     public bool DeleteOneInfo(PhysInfo<TFIELDID> lpInf)
     {
+        ArgumentNullException.ThrowIfNull(lpInf);
+
         LogInfo<TFIELDID> lpLog;
         string strTmp;
         bool result = false;
@@ -577,6 +580,7 @@ public class SubstPhysData<TFIELDID> : SubstLogData<TFIELDID>
 
     public int InsertData(tPhysPos physIndex, SubstLogData<TFIELDID> logData)
     {
+        ArgumentNullException.ThrowIfNull(logData);
         int nSuma = 0;
 
         if (this.InsertText(physIndex, logData.GetLogStr))
@@ -640,6 +644,7 @@ public class SubstPhysData<TFIELDID> : SubstLogData<TFIELDID>
     /// <param name="logData"></param>
     protected void ExportLogListAll(SubstLogData<TFIELDID> logData)
     {
+        ArgumentNullException.ThrowIfNull(logData);
         ExportLogListSel(null, logData);
     }
 
@@ -655,9 +660,11 @@ public class SubstPhysData<TFIELDID> : SubstLogData<TFIELDID>
     /// <param name="logData"></param>
     protected void ExportLogListSel(TextBoxSelInfo selInf, SubstLogData<TFIELDID> logData)
     {
+        ArgumentNullException.ThrowIfNull(logData);
+
         LogInfo<TFIELDID> logInfOld, logInfNew;
         PhysInfo<TFIELDID> physInf;
-        ISubstDescr<TFIELDID> lpDesc;
+        ISubstitutionDescriptor<TFIELDID> lpDesc;
         List<PhysInfo<TFIELDID>> listExported;
         tPhysPos suma;
 
@@ -675,18 +682,18 @@ public class SubstPhysData<TFIELDID> : SubstLogData<TFIELDID>
         }
 
         /* no, subst. map is not assigned here, but the caller may do it
-            logData.AssignSubstMap(this.GetSubstMap);
+            logData.SetSubstitutionMap(this.GetSubstMap);
         */
         for (int nDex = 0, nCount = listExported.Count; nDex < nCount; nDex++)
         {
             physInf = listExported[nDex];
             logInfOld = FindMatch(physInf);
-            if (null != (lpDesc = MapKeeper.FindMapItem(logInfOld.What)))
+            if (null != (lpDesc = MapKeeper.FindDescriptor(logInfOld.What)))
             {
                 if (null != (logInfNew = logData.AppenNewLogInfo(physInf.What)))
                 {
                     logInfNew.SetPos(physInf.GetStart - suma);
-                    suma += lpDesc.DrawnText.Length;
+                    suma += lpDesc.DisplayText.Length;
                 }
             }
         }
@@ -700,10 +707,11 @@ public class SubstPhysData<TFIELDID> : SubstLogData<TFIELDID>
     /// <param name="logData"></param>
     public void ExportLogAll(SubstLogData<TFIELDID> logData)
     {
+        ArgumentNullException.ThrowIfNull(logData);
         logData.ClearContentsLogical();
         ExportLogListAll(logData);
         logData.SetLogStr(PhysStr2logStr(this, this.MapKeeper));
-        logData.AssignSubstMap(this.GetSubstMap);
+        logData.SetSubstitutionMap(this.GetSubstMap);
     }
 
     /// <summary>
@@ -731,7 +739,7 @@ public class SubstPhysData<TFIELDID> : SubstLogData<TFIELDID>
                 strLog = strLog.Substring(nLogSelBeg, nLogSelEnd - nLogSelBeg);
             }
             logData.SetLogStr(strLog);
-            logData.AssignSubstMap(this.GetSubstMap);
+            logData.SetSubstitutionMap(this.GetSubstMap);
         }
     }
     #endregion // conversions between log and phys positions
@@ -887,7 +895,7 @@ public class SubstPhysData<TFIELDID> : SubstLogData<TFIELDID>
         int nDex, nCount;
         LogInfo<TFIELDID> lplogInf;
         PhysInfo<TFIELDID> physInf;
-        ISubstDescr<TFIELDID> lpDesc;
+        ISubstitutionDescriptor<TFIELDID> lpDesc;
         tPhysPos suma;
 
         Debug.Assert(0 == PhysList.Count);
@@ -895,9 +903,9 @@ public class SubstPhysData<TFIELDID> : SubstLogData<TFIELDID>
         for (suma = 0, nDex = 0, nCount = logData.GetLogList.Count; nDex < nCount; nDex++)
         {
             lplogInf = logData.GetLogList[nDex];
-            if (null != (lpDesc = MapKeeper.FindMapItem(lplogInf.What)))
+            if (null != (lpDesc = MapKeeper.FindDescriptor(lplogInf.What)))
             {
-                ilen = lpDesc.DrawnText.Length;
+                ilen = lpDesc.DisplayText.Length;
                 if (null != (physInf = AddNewPhysInfo(lplogInf.What)))
                 {
                     tPhysPos start = suma + lplogInf.Pos;
@@ -915,7 +923,7 @@ public class SubstPhysData<TFIELDID> : SubstLogData<TFIELDID>
 
     private static string PhysStr2logStr(
         SubstPhysData<TFIELDID> physData,
-        SubstMapKeeper<TFIELDID> mapKeeper)
+        SubstitutionMapKeeper<TFIELDID> mapKeeper)
     {
         PhysInfo<TFIELDID> physInf;
         int itmplen, istart, idone;
@@ -932,7 +940,7 @@ public class SubstPhysData<TFIELDID> : SubstLogData<TFIELDID>
         for (idone = 0, nDex = 0, nSize = physData.PhysList.Count; nDex < nSize; nDex++)
         {
             physInf = physData.PhysList[nDex];
-            if (null != mapKeeper.FindMapItem(physInf.What))
+            if (null != mapKeeper.FindDescriptor(physInf.What))
             {
                 if (idone < (istart = physInf.GetStart))
                 {

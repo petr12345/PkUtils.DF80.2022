@@ -44,9 +44,9 @@ namespace PK.TestTgSchema.UserCtrls
             this.SchemaTextBxCtrl.Text = strTxt;
         }
 
-        public void AssignSubstMap(IEnumerable<ISubstDescr<EFieldLineType>> substMap)
+        public void SetSubstitutionMap(IEnumerable<ISubstitutionDescriptor<EFieldLineType>> substMap)
         {
-            this.SchemaTextBxCtrl.AssignSubstMap(substMap);
+            this.SchemaTextBxCtrl.SetSubstitutionMap(substMap);
         }
 
         public void FocusEditCtrl()

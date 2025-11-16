@@ -51,12 +51,12 @@ public class SubstEditTextBoxCtrl<TFIELDID> : TextBox, IModified, IClipboardable
     /// <summary>
     /// The event raised if selection has been changed. This one is missing in "classic" text box.
     /// </summary>
-    public event EventHandler<SelChagedEventArgs> EventSelChaged
+    public event EventHandler<SelChangedEventArgs> EventSelChanged
     {
         [MethodImpl(MethodImplOptions.Synchronized)]
-        add { this.TheHook.EventSelChaged += value; }
+        add { this.TheHook.EventSelChanged += value; }
         [MethodImpl(MethodImplOptions.Synchronized)]
-        remove { this.TheHook.EventSelChaged -= value; }
+        remove { this.TheHook.EventSelChanged -= value; }
     }
     #endregion // Properties
 
@@ -66,9 +66,9 @@ public class SubstEditTextBoxCtrl<TFIELDID> : TextBox, IModified, IClipboardable
     /// Assigns the substitution amp
     /// </summary>
     /// <param name="substMap"></param>
-    public void AssignSubstMap(IEnumerable<ISubstDescr<TFIELDID>> substMap)
+    public void SetSubstitutionMap(IEnumerable<ISubstitutionDescriptor<TFIELDID>> substMap)
     {
-        _hook.AssignSubstMap(substMap);
+        _hook.SetSubstitutionMap(substMap);
     }
 
     /// <summary>
