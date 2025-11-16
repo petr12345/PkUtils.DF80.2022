@@ -41,10 +41,8 @@ namespace TestCompositeImages.Program
             IEnumerable<string> supportedImageExtensions,
             CancellationTokenSource cancellationTokenSource)
         {
-            if (path == null)
-                throw new ArgumentNullException(nameof(path));
-            if (supportedImageExtensions == null)
-                throw new ArgumentNullException(nameof(supportedImageExtensions));
+            ArgumentNullException.ThrowIfNull(path, nameof(path));
+            ArgumentNullException.ThrowIfNull(supportedImageExtensions, nameof(supportedImageExtensions));
 
             List<Bitmap> bitmaps = [];
 

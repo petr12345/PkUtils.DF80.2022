@@ -3,6 +3,7 @@
 using System.Globalization;
 using PK.PkUtils.IO;
 
+#pragma warning disable IDE0079   // Remove unnecessary suppressions
 #pragma warning disable VSSpell001
 #pragma warning disable IDE0057 // Use range operator
 #pragma warning disable IDE0305 // Collection initialization can be simplified

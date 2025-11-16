@@ -8,6 +8,8 @@ using System.IO;
 using Microsoft.Win32.SafeHandles;
 using PK.PkUtils.WinApi;
 
+#pragma warning disable IDE0130 // Namespace "..." does not match folder structure
+
 namespace Microsoft.Experimental.IO;
 
 /// <summary>
@@ -603,3 +605,4 @@ public static class LongPathFile
     }
     #endregion // Private Members
 }
+#pragma warning restore IDE0130

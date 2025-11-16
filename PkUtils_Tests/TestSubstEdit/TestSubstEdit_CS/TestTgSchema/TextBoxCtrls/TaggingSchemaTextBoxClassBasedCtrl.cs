@@ -1,5 +1,4 @@
-﻿
-namespace TestTgSchema
+﻿namespace PK.TestTgSchema.TextBoxCtrls
 {
     public partial class TaggingSchemaTextBoxClassBasedCtrl : TaggingSchemaTextBoxGenericCtrl<FieldTypeId>
     {

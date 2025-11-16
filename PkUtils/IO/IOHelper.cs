@@ -1,15 +1,4 @@
-﻿/***************************************************************************************************************
-*
-* FILE NAME:   .\IO\IOHelper.cs
-*
-* AUTHOR:      Petr Kodet
-*
-* DESCRIPTION: The file contains definition of generic class ApplicationStorage
-*
-**************************************************************************************************************/
-
-
-// Ignore Spelling: fi, Dest, Utils
+﻿// Ignore Spelling: fi, Dest, Utils
 //
 using System;
 using System.IO;

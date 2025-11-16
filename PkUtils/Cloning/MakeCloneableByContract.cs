@@ -1,14 +1,4 @@
-﻿/***************************************************************************************************************
-*
-* FILE NAME:   .\Cloning\CloneHelperByContract.cs
-*
-* AUTHOR:      Petr Kodet
-*
-* DESCRIPTION: The generic class MakeCloneableByContact
-*
-**************************************************************************************************************/
-
-// Ignore Spelling: Cloneable, Utils
+﻿// Ignore Spelling: Cloneable, Utils
 //
 using System;
 using System.Runtime.Serialization;

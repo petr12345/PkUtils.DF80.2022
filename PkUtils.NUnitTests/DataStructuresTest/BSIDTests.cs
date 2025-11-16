@@ -3,7 +3,11 @@
 using PK.PkUtils.Cloning.Binary;
 using PK.PkUtils.DataStructures;
 
-#pragma warning disable 1718   // Suppress locally the warning CS1718: Comparison made to same variable; did you mean to compare something else?
+#pragma warning disable IDE0079  // Remove unnecessary suppression
+#pragma warning disable IDE0059   // Avoid unnecessary value assignments
+#pragma warning disable 1718      // Suppress locally the warning CS1718: Comparison made to same variable; did you mean to compare something else?
+#pragma warning disable NUnit2010 // Use Is.Not.EqualTo constraint instead of direct comparison for better assertion messages in case of failure
+#pragma warning disable NUnit2043 // Use Is.LessThanOrEqualTo constraint instead of direct comparison for better assertion messages in case of failure
 
 
 namespace PK.PkUtils.NUnitTests.DataStructuresTest;
@@ -80,7 +84,7 @@ public class BSIDTests
         object id_2nd = new BSID(_sUpper);
         bool equal_2nd = StringComparer.InvariantCulture.Equals(id_2nd.ToString(), _sUpper);
 
-        Assert.That(equal_2nd, Is.EqualTo(true));
+        Assert.That(equal_2nd, Is.True);
     }
 
     [Test]
@@ -102,15 +106,15 @@ public class BSIDTests
 
         using (Assert.EnterMultipleScope())
         {
-            Assert.That(id_1st.Equals(nullObj), Is.False);
-            Assert.That(id_1st.Equals(id_dummy), Is.False);
+            Assert.That(id_1st, Is.Not.EqualTo(nullObj));
+            Assert.That(id_1st, Is.Not.EqualTo(id_dummy));
             Assert.That(id_1st.Equals(id_1st), Is.True);
             Assert.That(id_1st.Equals(id_2nd), Is.True);
 
-            Assert.That(id_2nd.Equals(nullObj), Is.False);
-            Assert.That(id_2nd.Equals(id_dummy), Is.False);
+            Assert.That(id_2nd, Is.Not.EqualTo(nullObj));
+            Assert.That(id_2nd, Is.Not.EqualTo(id_dummy));
             Assert.That(id_2nd.Equals(id_2nd), Is.True);
-            Assert.That(id_2nd.Equals(id_1st), Is.True);
+            Assert.That(id_2nd, Is.EqualTo(id_1st));
         }
     }
     #endregion // Tests_Methods
@@ -235,17 +239,20 @@ public class BSIDTests
         BSID id_1st = new BSID(_sLower);
         BSID id_2nd = new BSID(_sUpper);
 
-        Assert.That(id_1st.Equals(id_null), Is.False);
-        Assert.That(id_1st.Equals(id_dummy), Is.False);
+        using (Assert.EnterMultipleScope())
+        {
+            Assert.That(id_1st.Equals(id_null), Is.False);
+            Assert.That(id_1st.Equals(id_dummy), Is.False);
 
-        Assert.That(id_1st.Equals(id_1st), Is.True);
-        Assert.That(id_1st.Equals(id_2nd), Is.True);
+            Assert.That(id_1st.Equals(id_1st), Is.True);
+            Assert.That(id_1st.Equals(id_2nd), Is.True);
 
-        Assert.That(id_2nd.Equals(id_null), Is.False);
-        Assert.That(id_2nd.Equals(id_dummy), Is.False);
+            Assert.That(id_2nd.Equals(id_null), Is.False);
+            Assert.That(id_2nd.Equals(id_dummy), Is.False);
 
-        Assert.That(id_2nd.Equals(id_2nd), Is.True);
-        Assert.That(id_2nd.Equals(id_1st), Is.True);
+            Assert.That(id_2nd.Equals(id_2nd), Is.True);
+            Assert.That(id_2nd.Equals(id_1st), Is.True);
+        }
     }
     #endregion // Tests_IEquatable_BSID
 
@@ -283,18 +290,26 @@ public class BSIDTests
         BSID id_1st = new BSID(_sLower);
         BSID id_2nd = new BSID(_sUpper);
 
-        Assert.That(id_dummy.CompareTo(id_dummy), Is.Zero);
-        Assert.That(id_1st.CompareTo(id_1st), Is.Zero);
-        Assert.That(id_1st.CompareTo(id_2nd), Is.Zero);
-        Assert.That(id_2nd.CompareTo(id_1st), Is.Zero);
+        using (Assert.EnterMultipleScope())
+        {
+            Assert.That(id_dummy.CompareTo(id_dummy), Is.Zero);
+            Assert.That(id_1st.CompareTo(id_1st), Is.Zero);
+            Assert.That(id_1st.CompareTo(id_2nd), Is.Zero);
+            Assert.That(id_2nd.CompareTo(id_1st), Is.Zero);
 
-        Assert.That(string.Compare(_sLower, _sDummy), Is.LessThan(0));
-        Assert.That(id_1st.CompareTo(id_dummy), Is.LessThan(0));
+            Assert.That(string.Compare(_sLower, _sDummy), Is.LessThan(0));
+            Assert.That(id_1st.CompareTo(id_dummy), Is.LessThan(0));
 
-        Assert.That(string.Compare(_sDummy, _sLower), Is.GreaterThan(0));
-        Assert.That(id_dummy.CompareTo(id_1st), Is.GreaterThan(0));
+            Assert.That(string.Compare(_sDummy, _sLower), Is.GreaterThan(0));
+            Assert.That(id_dummy.CompareTo(id_1st), Is.GreaterThan(0));
+        }
     }
     #endregion // Tests_IComparable_BSID
     #endregion // Tests
 }
+
+#pragma warning restore NUnit2043
+#pragma warning restore NUnit2010
 #pragma warning restore 1718
+#pragma warning restore IDE0059
+#pragma warning restore IDE0079

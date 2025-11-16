@@ -8,6 +8,9 @@ using System.Windows.Forms;
 
 namespace PK.PkUtils.UI.Dialogs.TaskDialogs;
 
+#pragma warning disable IDE0028  //  Collection initialization can be simplified
+#pragma warning disable IDE0059  // Avoid unnecessary value assignments
+
 /// <summary> Implements several utilities as example of usage of <see cref="TaskDialog"/> </summary>
 public static class TaskDialogWrapper
 {
@@ -276,8 +279,8 @@ public static class TaskDialogWrapper
 
         for (int ii = 0, numCommands = commands.Length; ii < numCommands; ii++)
         {
-            var cmd = commands[ii];
-            TaskDialogCommandLinkButton btn = new(cmd.Text, cmd.DescriptionText) { Tag = cmd.Tag };
+            (string Text, string DescriptionText, object Tag) = commands[ii];
+            TaskDialogCommandLinkButton btn = new(Text, DescriptionText) { Tag = Tag };
             buttons.Add(btn);
             if (ii == defaultButtonIndex)
                 defaultButton = btn;
@@ -503,3 +506,5 @@ public static class TaskDialogWrapper
     }
     #endregion // Private Methods
 }
+#pragma warning restore IDE0059
+#pragma warning restore IDE0028

@@ -3,6 +3,7 @@
 using System.Reflection;
 using PK.PkUtils.Reflection;
 
+#pragma warning disable IDE0079   // Remove unnecessary suppressions
 #pragma warning disable IDE0018   // Inline variable declaration
 #pragma warning disable IDE0090   // 'new' expression can be simplified
 #pragma warning disable IDE0300   // Simplify collection initialization
@@ -526,16 +527,22 @@ public class PropertiesUtilsTest
         {
             actual = PropertiesUtils.GetAllInstanceProperties(typeof(C), strPropertyName);
             listActual = actual.ToList();
-            Assert.That(listActual.Count, Is.EqualTo(1));
-            Assert.That(listActual.First().Name, Is.EqualTo(strPropertyName));
+            using (Assert.EnterMultipleScope())
+            {
+                Assert.That(listActual.Count(), Is.EqualTo(1));
+                Assert.That(listActual.First().Name, Is.EqualTo(strPropertyName));
+            }
         }
 
         foreach (string strPropertyName in P_arr_D_NonStaticPropertisNames)
         {
             actual = PropertiesUtils.GetAllInstanceProperties(typeof(D), strPropertyName);
             listActual = actual.ToList();
-            Assert.That(listActual.Count, Is.EqualTo(1));
-            Assert.That(listActual.First().Name, Is.EqualTo(strPropertyName));
+            using (Assert.EnterMultipleScope())
+            {
+                Assert.That(listActual.Count(), Is.EqualTo(1));
+                Assert.That(listActual.First().Name, Is.EqualTo(strPropertyName));
+            }
         }
 
         foreach (string strPropertyName in P_arrInvalidPropertisNames)

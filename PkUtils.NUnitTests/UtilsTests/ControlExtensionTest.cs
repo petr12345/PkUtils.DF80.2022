@@ -6,8 +6,8 @@ using PK.PkUtils.Extensions;
 namespace PK.PkUtils.NUnitTests.UtilsTests;
 
 /// <summary>
-/// This is a test class for ControlExtension and is intended
-/// to contain all ControlExtension Unit Tests
+/// This is a test class for ControlExtensions and is intended
+/// to contain all ControlExtensions Unit Tests
 ///</summary>
 [TestFixture()]
 public class ControlExtensionTest
@@ -23,7 +23,7 @@ public class ControlExtensionTest
         // Arrange
         Control parent = new Form();
         IEnumerable<Control> expected = [];
-        /* IEnumerable<Control> actual = ControlExtension.AllControls(parent); */
+        /* IEnumerable<Control> actual = ControlExtensions.AllControls(parent); */
         IEnumerable<Control> actual = parent.AllControls();
 
         // Act
@@ -42,7 +42,7 @@ public class ControlExtensionTest
         Assert.That(areEquivalent_2, Is.True);
     }
 
-    /// <summary>   A test for ControlExtension.CheckNotDisposed. </summary>
+    /// <summary>   A test for ControlExtensions.CheckNotDisposed. </summary>
     [Test()]
     public void ControlExtension_CheckNotDisposedTest_01()
     {
@@ -52,7 +52,7 @@ public class ControlExtensionTest
     }
 
     /// <summary>
-    /// A test for ControlExtension.CheckNotDisposed
+    /// A test for ControlExtensions.CheckNotDisposed
     ///</summary>
     [Test()]
     public void ControlExtension_CheckNotDisposedTest_02()
@@ -64,7 +64,7 @@ public class ControlExtensionTest
     }
 
     /// <summary>
-    /// A test for ControlExtension.CheckNotDisposed
+    /// A test for ControlExtensions.CheckNotDisposed
     /// </summary>
     [Test()]
     public void ControlExtension_CheckNotDisposedTest_03()

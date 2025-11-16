@@ -5,7 +5,9 @@ using PK.PkUtils.MathEx;
 
 namespace PK.PkUtils.NUnitTests.MathExTests;
 
+#pragma warning disable IDE0079   // Remove unnecessary suppressions
 #pragma warning disable CA1859    // Change type of variable ...
+#pragma warning disable IDE0305 // Collection initialization can be simplified
 
 
 /// <summary> This is a test class for <see cref="QuickSortImpl"/> </summary>
@@ -74,7 +76,7 @@ public class QuickSortImplTests
     [Test()]
     public void SortArray_0_ElementsTest()
     {
-        int[] arr = Array.Empty<int>();
+        int[] arr = [];
 
         arr = _sorter.SortArray(arr);
         Assert.That(arr.IsSorted(), Is.True);
@@ -84,7 +86,7 @@ public class QuickSortImplTests
     [TestCase(3)]
     public void SortArray_1_ElementTest(int i)
     {
-        int[] arr = new int[] { i };
+        int[] arr = [i];
 
         arr = _sorter.SortArray(arr);
         Assert.That(arr.IsSorted(), Is.True);
@@ -95,7 +97,7 @@ public class QuickSortImplTests
     [TestCase(0, 1)]
     public void SortArray_2_ElementsTest(int i, int j)
     {
-        int[] arr = new int[] { i, j };
+        int[] arr = [i, j];
 
         arr = _sorter.SortArray(arr);
         Assert.That(arr.IsSorted(), Is.True);
@@ -133,5 +135,5 @@ public class QuickSortImplTests
 
     #endregion // Tests
 }
-
+#pragma warning restore IDE0305
 #pragma warning restore CA1859    // Change type of variable ...

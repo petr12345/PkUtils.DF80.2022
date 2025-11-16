@@ -1,14 +1,4 @@
-﻿/***************************************************************************************************************
-*
-* FILE NAME:   .\IO\FileSearchRecursive.cs
-*
-* AUTHOR:      Petr Kodet
-*
-* DESCRIPTION:  Contains class FileSearchRecursive, derived from abstract class FileSearchBase
-*
-**************************************************************************************************************/
-
-// Ignore Spelling: Utils
+﻿// Ignore Spelling: Utils
 //
 using System;
 using System.Collections.Generic;

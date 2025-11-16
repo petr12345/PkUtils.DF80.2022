@@ -1,14 +1,4 @@
-﻿/***************************************************************************************************************
-*
-* FILE NAME:   .\Program.cs
-*
-* AUTHOR:      Petr Kodet
-*
-* DESCRIPTION: The file contains definition of class Program
-*
-**************************************************************************************************************/
-
-#define USE_CUSTOM_PORT_SETTINGS
+﻿#define USE_CUSTOM_PORT_SETTINGS
 
 using System;
 using System.Diagnostics.CodeAnalysis;

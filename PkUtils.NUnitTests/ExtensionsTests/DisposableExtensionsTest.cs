@@ -1,0 +1,68 @@
+﻿// Ignore Spelling: PkUtils, Utils
+// 
+using System.Windows.Forms;
+using PK.PkUtils.Extensions;
+using PK.PkUtils.Interfaces;
+
+#pragma warning disable IDE0079   // Remove unnecessary suppressions
+#pragma warning disable CA1859    // Change type of variable ...
+
+namespace PK.PkUtils.NUnitTests.ExtensionsTests;
+
+/// <summary>
+/// This is a test class for <see cref="DisposableExtensions"/>.
+/// </summary>
+[TestFixture()]
+public class DisposableExtensionsTest
+{
+    #region Auxiliary_types
+
+    /// <summary>
+    /// An example of Form-derived class implementing IDisposableEx
+    /// </summary>
+    public class MySpecificForm : Form, IDisposableEx
+    {
+        #region IDisposableEx Members
+        bool IDisposableEx.IsDisposed
+        {
+            get { return this.IsDisposed; }
+        }
+        #endregion
+    }
+    #endregion // Auxiliary_types
+
+    #region Tests
+
+    /// <summary> A test for DisposableExtensions.CheckNotDisposed. </summary>
+    [Test()]
+    public void DisposableExtension_CheckNotDisposedTest_01()
+    {
+        IDisposableEx obj = null!;
+
+        Assert.Throws<ArgumentNullException>(() => obj.CheckNotDisposed(nameof(obj)));
+    }
+
+    /// <summary> A test for DisposableExtensions.CheckNotDisposed. </summary>
+    [Test()]
+    public void DisposableExtension_CheckNotDisposedTest_02()
+    {
+        IDisposableEx form = new MySpecificForm();
+
+        form.Dispose();
+
+        Assert.Throws<ObjectDisposedException>(() => form.CheckNotDisposed(nameof(form)));
+    }
+
+    /// <summary> A test for DisposableExtensions.CheckNotDisposed. </summary>
+    [Test()]
+    public void DisposableExtension_CheckNotDisposedTest_03()
+    {
+        IDisposableEx obj = new MySpecificForm();
+
+        obj.CheckNotDisposed(nameof(obj));
+    }
+    #endregion // Tests
+}
+
+#pragma warning restore CA1859    // Change type of variable ...
+#pragma warning restore IDE0079   // Remove unnecessary suppressions

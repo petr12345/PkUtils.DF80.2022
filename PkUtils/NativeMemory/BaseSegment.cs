@@ -223,7 +223,7 @@ public class BaseSegment : IDisposable
                 Invariant($"Value of {nameof(nBufferEffectiveSize)} must be positive, but {nBufferEffectiveSize} is not."));
         }
         // Determine buffer complete size and mutex name.  See also the comment regarding _nBufferSize 
-        nBufferComplete = nBufferEffectiveSize + 2 * Marshal.SizeOf(typeof(long));
+        nBufferComplete = nBufferEffectiveSize + 2 * Marshal.SizeOf<long>();
 
         _isSynchronized = synchronized;
 
@@ -504,7 +504,7 @@ public class BaseSegment : IDisposable
         get
         {
             int nTemp = BufferCompleteSize;
-            int nSubstract = 2 * Marshal.SizeOf(typeof(long));
+            int nSubstract = 2 * Marshal.SizeOf<long>();
             int nResult = 0;
 
             if (nTemp >= nSubstract)
@@ -644,10 +644,10 @@ public class BaseSegment : IDisposable
         using IDisposable writeLock = AcquireLock();
         byte* dest = (byte*)NativeDataAsVoidPtr;
 
-        dest += Marshal.SizeOf(typeof(long)); // skip first long in the buffer that keeps the size of the buffer itself
-        *(long*)dest = dataLen;               // store the size of following data
-        dest += Marshal.SizeOf(typeof(long)); // increment pointer again
-        Marshal.Copy(data, 0, (IntPtr)dest, (int)dataLen);  // now store the data
+        dest += Marshal.SizeOf<long>(); // skip first long in the buffer that keeps the size of the buffer itself
+        *(long*)dest = dataLen; // store the size of following data
+        dest += Marshal.SizeOf<long>(); // increment pointer again
+        Marshal.Copy(data, 0, (IntPtr)dest, (int)dataLen); // now store the data
     }
 
     /// <summary>
@@ -662,9 +662,9 @@ public class BaseSegment : IDisposable
         long dataLen;
         byte* source = (byte*)NativeDataAsVoidPtr;
 
-        source += Marshal.SizeOf(typeof(long)); // skip first long in the buffer that keeps the size of the buffer itself
-        dataLen = *(long*)source;               // get the stored data Length
-        source += Marshal.SizeOf(typeof(long)); // set the source data pointer to start of serialized object graph
+        source += Marshal.SizeOf<long>(); // skip first long in the buffer that keeps the size of the buffer itself
+        dataLen = *(long*)source; // get the stored data Length
+        source += Marshal.SizeOf<long>(); // set the source data pointer to start of serialized object graph
 
         // Create a byte array to hold the serialized data
         byte[] data = new byte[dataLen];

@@ -45,7 +45,6 @@ namespace PK.TestMsgBoxObserver
             this.Icon = Resources.App;
             _wrapper = new DumperCtrlTextBoxWrapper(this._textBoxMessages);
             InstallObserver();
-            UpdateButtons();
         }
         #endregion // Constructor(s)
 
@@ -84,15 +83,7 @@ namespace PK.TestMsgBoxObserver
                 "Any message you want, {0} {1}.", strFirst, strSecond);
             strCaption = strFirst;
         }
-
         #endregion // Protected Methods
-
-        #region Private Methods
-
-        private void UpdateButtons()
-        {
-        }
-        #endregion //  Private Methods
         #endregion // Methods
 
         #region IDisposable Members
@@ -162,13 +153,13 @@ namespace PK.TestMsgBoxObserver
                   "Since your system is {0}, you can enjoy the TaskDialog.", sysVer);
                 GenerateText(out strMsg, out string strTitle);
 
-                cTaskDialog.MessageBox(
+                VistaTaskDialogManager.MessageBox(
                   this,
                   strTitle,
                   strMsg,
                   strContent,
-                  eTaskDialogButtons.OK,
-                  eSysIcons.Information);
+                  TaskDialogButtons.OK,
+                  SystemIconType.Information);
             }
         }
 

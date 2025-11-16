@@ -1,13 +1,13 @@
 // Ignore Spelling: Utils
 // 
 
-namespace PK.PkUtils.UI.PSTaskDialog
+namespace PK.PkUtils.UI.Dialogs.PSTaskDialog;
+
+/// <summary>
+/// The button which is used inside a task dialog frmTaskDialog.
+/// </summary>
+partial class CommandButton
 {
-  /// <summary>
-  /// The button which is used inside a task dialog frmTaskDialog.
-  /// </summary>
-  partial class CommandButton
-  {
     /// <summary>
     /// Required designer variable.
     /// </summary>
@@ -21,9 +21,8 @@ namespace PK.PkUtils.UI.PSTaskDialog
     /// </summary>
     private void InitializeComponent()
     {
-      components = new System.ComponentModel.Container();
+        components = new System.ComponentModel.Container();
     }
 
     #endregion
-  }
 }

@@ -15,6 +15,11 @@ using tLogPos = System.Int32;
 // - one could use structures with implicit casts;
 // see more info on http://www.codeguru.com/forum/showthread.php?p=1817937
 
+
+#pragma warning disable IDE0079  // Remove unnecessary suppression
+#pragma warning disable CA1859   // Change type of variable ...
+#pragma warning disable IDE0057  // Use range operator
+
 namespace PK.SubstEditLib.Subst
 {
     /// <summary>
@@ -135,8 +140,7 @@ namespace PK.SubstEditLib.Subst
 
         public override bool Equals(object obj)
         {
-            LogInfo<TFIELDID> other;
-            return (null != (other = obj as LogInfo<TFIELDID>)) && Equals(other);
+            return (obj is LogInfo<TFIELDID> other) && Equals(other);
         }
 
         [Conditional("Debug")]
@@ -159,13 +163,12 @@ namespace PK.SubstEditLib.Subst
         /// <param name="reader"></param>
         /// <remarks>  
         /// ReadXml MUST read the wrapper element, including all of its contents.
-        /// <see cref="http://social.msdn.microsoft.com/Forums/en-US/xmlandnetfx/thread/27e77baa-67d0-4e15-a345-a6c314e924de"/>
+        /// For more information, see: http://social.msdn.microsoft.com/Forums/en-US/xmlandnetfx/thread/27e77baa-67d0-4e15-a345-a6c314e924de
         /// </remarks>
         public void ReadXml(System.Xml.XmlReader reader)
         {
             if (reader.IsStartElement())
             {
-                IXmlSerializable iSer;
                 bool bSkip = true;
 
                 // 1. read position
@@ -188,11 +191,11 @@ namespace PK.SubstEditLib.Subst
 
                         /* _what = new TFIELDID(); */
                         ConstructorInfo constructorInfo = typeof(TFIELDID).GetConstructor(
-                            BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance, null, new Type[] { }, null);
-                        _what = (TFIELDID)constructorInfo.Invoke(new object[] { });
+                            BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance, null, [], null);
+                        _what = (TFIELDID)constructorInfo.Invoke([]);
                     }
 
-                    if (null != (iSer = What as IXmlSerializable))
+                    if (What is IXmlSerializable iSer)
                     {
                         iSer.ReadXml(reader);
                     }
@@ -215,24 +218,28 @@ namespace PK.SubstEditLib.Subst
         /// <summary>
         /// Writes the LogInfo contents (attributes, contents, child elements).
         /// </summary>
-        /// <param name="writer"></param>
-        /// <remarks>  
+        /// <param name="writer">
+        /// The <see cref="System.Xml.XmlWriter"/> to which the object contents will be written.
+        /// This writer is positioned at the start of the element that represents the object, and should be used to write the object's contents (attributes, elements, etc.), but not the wrapper element itself.
+        /// </param>
+        /// <remarks>
         /// WriteXml should NOT write the wrapper element.
-        /// <see cref="http://social.msdn.microsoft.com/Forums/en-US/xmlandnetfx/thread/27e77baa-67d0-4e15-a345-a6c314e924de"/>
+        /// For more information, see:
+        /// https://learn.microsoft.com/en-us/dotnet/api/system.xml.serialization.ixmlserializable.writexml#remarks
         /// </remarks>
         public void WriteXml(System.Xml.XmlWriter writer)
         {
             // 1. write position
             writer.WriteElementString(_strAttrPosition, Pos.ToString(CultureInfo.InvariantCulture));
             // 2. write TFIELDID
-            IXmlSerializable iSer;
-            if (null == (iSer = What as IXmlSerializable))
+            if (What is not IXmlSerializable iSer)
             {
                 iSer = new NodeSerializer<TFIELDID>(What, typeof(TFIELDID).IsEnum);
             }
             writer.WriteStartElement(_strAttrFieldType);
             iSer.WriteXml(writer);
             writer.WriteEndElement();
+
         }
         #endregion // IXmlSerializable Members
 
@@ -258,7 +265,7 @@ namespace PK.SubstEditLib.Subst
 
         public bool Equals(LogInfo<TFIELDID> other)
         {
-            bool result = false;
+            bool result;
 
             if (other is null)
                 result = false;
@@ -464,9 +471,11 @@ namespace PK.SubstEditLib.Subst
 
         /// <summary>
         /// Get the "plain text".
-        /// For illustration, this may look like "&lt;<ProjectTitle>&gt;"
+        /// For illustration, this may look like "&lt;ProjectTitle&gt;".
         /// </summary>
-        /// <returns></returns>
+        /// <returns>
+        /// The plain text representation, with fields replaced by their drawn text.
+        /// </returns>
         public string GetPlainText()
         {
             // 1. Initialize temporary data
@@ -557,8 +566,7 @@ namespace PK.SubstEditLib.Subst
 
         public override bool Equals(object obj)
         {
-            SubstLogData<TFIELDID> other;
-            return (null != (other = obj as SubstLogData<TFIELDID>)) && Equals(other);
+            return (obj is SubstLogData<TFIELDID> other) && Equals(other);
         }
 
         public override int GetHashCode()
@@ -587,7 +595,6 @@ namespace PK.SubstEditLib.Subst
             int itmplen;
             LogInfo<TFIELDID> lplogInf;
             ISubstDescr<TFIELDID> lpDesc;
-            tLogPos iLogPos = 0;
             tLogPos iLogCopied = 0;
             IList<LogInfo<TFIELDID>> logList = logData.GetLogList;
             string strTmp;
@@ -597,6 +604,8 @@ namespace PK.SubstEditLib.Subst
 
             for (int ii = 0, nCount = logList.Count; ii < nCount; ii++)
             {
+                tLogPos iLogPos;
+
                 lplogInf = logList[ii];
                 if (null != (lpDesc = mapKeeper.FindMapItem(lplogInf.What)))
                 {
@@ -689,11 +698,11 @@ namespace PK.SubstEditLib.Subst
 
             if ((startIndex < 0) || (startIndex > strOldLog.Length))
             {
-                throw new ArgumentException("Argument out of range", "startIndex");
+                throw new ArgumentException("Argument out of range", nameof(startIndex));
             }
             if ((nReplacedLenght < 0) || (nReplacedLenght > strOldLog.Length - startIndex))
             {
-                throw new ArgumentException("Argument out of range", "nReplacedLenght");
+                throw new ArgumentException("Argument out of range", nameof(nReplacedLenght));
             }
             // find all affected fields ( fields for which the deletion index in text precedes the field )
             List<LogInfo<TFIELDID>> listAffected = GetLogList.FindAll(info => (startIndex < info.Pos));
@@ -728,10 +737,7 @@ namespace PK.SubstEditLib.Subst
         /// <see cref="ReplaceLogTextPart"/>
         protected void ReplaceLogTextAllThrough(string strOldPart, string strNewPart)
         {
-            if (string.IsNullOrEmpty(strOldPart))
-            {
-                throw new ArgumentException("Must be a non-empty string", "strOldPart");
-            }
+            ArgumentNullException.ThrowIfNullOrEmpty(strOldPart);
 
             int nDexFound;
             int nOldPart = strOldPart.Length;
@@ -801,12 +807,12 @@ namespace PK.SubstEditLib.Subst
         }
 
         /// <summary>
-        /// Reads the object contents from its XML representation.
+        /// Reads the object contents from its XML representation using the specified <see cref="System.Xml.XmlReader"/>.
         /// </summary>
-        /// <param name="reader"></param>
+        /// <param name="reader">The <see cref="System.Xml.XmlReader"/> from which the object contents will be read.</param>
         /// <remarks>  
         /// ReadXml MUST read the wrapper element, including all of its contents.
-        /// <see cref="http://social.msdn.microsoft.com/Forums/en-US/xmlandnetfx/thread/27e77baa-67d0-4e15-a345-a6c314e924de"/>
+        /// For more information, see: http://social.msdn.microsoft.com/Forums/en-US/xmlandnetfx/thread/27e77baa-67d0-4e15-a345-a6c314e924de
         /// </remarks>
         public void ReadXml(System.Xml.XmlReader reader)
         {
@@ -827,10 +833,14 @@ namespace PK.SubstEditLib.Subst
         /// <summary>
         /// Writes the object contents (attributes, contents, child elements).
         /// </summary>
-        /// <param name="writer"></param>
-        /// <remarks>  
+        /// <param name="writer">
+        /// The <see cref="System.Xml.XmlWriter"/> to which the object contents will be written.
+        /// This writer is positioned at the start of the element that represents the object, and should be used to write the object's contents (attributes, elements, etc.), but not the wrapper element itself.
+        /// </param>
+        /// <remarks>
         /// WriteXml should NOT write the wrapper element.
-        /// <see cref="http://social.msdn.microsoft.com/Forums/en-US/xmlandnetfx/thread/27e77baa-67d0-4e15-a345-a6c314e924de"/>
+        /// For more information, see:
+        /// https://learn.microsoft.com/en-us/dotnet/api/system.xml.serialization.ixmlserializable.writexml#remarks
         /// </remarks>
         public void WriteXml(System.Xml.XmlWriter writer)
         {
@@ -874,4 +884,9 @@ namespace PK.SubstEditLib.Subst
         }
         #endregion // IEquatable<SubstLogData<TFIELDID>> Members
     };
+
 }
+
+#pragma warning restore IDE0057   // Use range operator
+#pragma warning restore CA1859    // Change type of variable ...
+#pragma warning restore IDE0079  // Remove unnecessary suppression

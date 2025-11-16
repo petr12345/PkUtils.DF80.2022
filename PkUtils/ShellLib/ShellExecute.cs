@@ -1,13 +1,3 @@
-/***************************************************************************************************************
-*
-* FILE NAME:   .\ShellLib\IFolderFilter.cs
-*
-* AUTHOR:      Petr Kodet
-*
-* DESCRIPTION: The file contains definition of IFolderFilter
-*
-**************************************************************************************************************/
-
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //
 // Microsoft Public License (MS-PL) notice
@@ -27,6 +17,10 @@
 // Ignore Spelling: Utils
 //
 using System;
+
+#pragma warning disable IDE0079  // Remove unnecessary suppression
+#pragma warning disable IDE0290   // Use primary constructor
+#pragma warning disable CA1069    // Enums values should not be duplicated
 
 namespace PK.PkUtils.ShellLib;
 
@@ -414,3 +408,7 @@ public class ShellExecute
     }
     #endregion // Methods
 }
+
+#pragma warning restore CA1069    // Enums values should not be duplicated
+#pragma warning restore IDE0290   // Use primary constructor
+#pragma warning restore IDE0079   // Remove unnecessary suppression

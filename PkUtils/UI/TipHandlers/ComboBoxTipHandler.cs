@@ -1,4 +1,4 @@
-// Ignore Spelling: listbox, Msec, popup, preprocess, tooltip, tooltips, Utils
+// Ignore Spelling: listbox, Msec, popup, preprocess, tooltip, tooltips, scrollbar, Utils
 //
 using System;
 using System.Diagnostics;
@@ -9,6 +9,9 @@ using PK.PkUtils.MessageHooking;
 using PK.PkUtils.WinApi;
 
 namespace PK.PkUtils.UI.TipHandlers;
+
+#pragma warning disable IDE0079  // Remove unnecessary suppression
+#pragma warning disable SYSLIB1054  // Use 'LibraryImportAttribute' instead of 'DllImportAttribute' to generate P/Invoke marshalling code at compile time
 
 /// <summary>   Supports tooltips for ComboBoxes. </summary>
 [CLSCompliant(false)]
@@ -175,7 +178,7 @@ public class ComboBoxTipHandler : TipHandler
                                 // Get the item rectangle
                                 ListBox_GetItemRect(hList, (int)nItem, out User32.RECT rect);
                                 // And by posting WM_MOUSEMOVE ensures that the item will be immediately selected;
-                                // even when the mouse is still over the scroolbar...
+                                // even when the mouse is still over the scrollbar...
                                 User32.PostMessage(hList, (int)Win32.WM.WM_MOUSEMOVE, 0,
                                     (IntPtr)Win32.MAKELONG((ushort)(rect.left + 1), (ushort)(rect.top + 1)));
                             }
@@ -237,7 +240,7 @@ public class ComboBoxTipHandler : TipHandler
 
     /// <summary> Default constructor. </summary>
     public ComboBoxTipHandler()
-        : this(g_nTipTimeMsec)
+        : this(TipHandler.TipTimeMsec)
     { }
 
     /// <summary> Single-argument constructor. </summary>
@@ -300,10 +303,10 @@ public class ComboBoxTipHandler : TipHandler
     }
 
     /// <summary>
-    /// Is visible the vertical scrollbar on the window listbox part of the ComboBox ?
+    /// Is visible the vertical scroll bar on the window listbox part of the ComboBox ?
     /// </summary>
     /// <returns>True if visible, false if not.</returns>
-    public bool IsVerticalScrollbarVisible()
+    public bool IsVerticalScrollBarVisible()
     {
         IntPtr hList;
         bool bScrollBar = false;
@@ -489,12 +492,8 @@ public class ComboBoxTipHandler : TipHandler
             // That's why there is a test regarding WndFromPoint
             IntPtr hFromPoint = WndFromPoint(ptInScreen);
             IntPtr hHooked = pComboBox.Handle;
-            int nCxOffset = 0;
+            int nCxOffset = -(1 + TipWindow.Margins.Width / 2);
 
-            /*
-            if ((hFromPoint == hListBx) || (hFromPoint == hHooked)|| (hFromPoint == GetParent(hHooked)))
-               Must be without the last 'or':
-            */
             if ((hFromPoint == hListBx) || (hFromPoint == hHooked))
             {   // Get text and text rectangle for item under mouse
                 nItem = OnGetItemInfo(ptClient, true, out _, out rcText, out _);
@@ -509,7 +508,7 @@ public class ComboBoxTipHandler : TipHandler
             }
             else if (nItem != GetCurItem())
             {
-                bool bHighlited;
+                bool bHighlighted;
 
                 TipWindow.Cancel(); // new item, or no item: cancel popup text
 
@@ -520,7 +519,7 @@ public class ComboBoxTipHandler : TipHandler
                 // the edited text in combo cooperate their own built-in way ... ).
                 if (GetComboType() != (uint)Win32.ComboType.CBS_SIMPLE)
                 {
-                    bHighlited = true;
+                    bHighlighted = true;
                     if ((hListBx != IntPtr.Zero) && bTipWasVisible)
                     {
                         User32.SendMessage(hListBx, Win32.LB_SETCURSEL, (IntPtr)nItem, IntPtr.Zero);
@@ -529,8 +528,8 @@ public class ComboBoxTipHandler : TipHandler
                 else
                 {
                     int nLbSelItem = (int)User32.SendMessage(hListBx, Win32.LB_GETCURSEL, IntPtr.Zero, IntPtr.Zero);
-                    bHighlited = (nLbSelItem == nItem);
-                    nCxOffset = 1;
+                    bHighlighted = (nLbSelItem == nItem);
+                    nCxOffset += 1;
                 }
 
                 // please don't show the tooltip when the list is scrolling
@@ -543,26 +542,23 @@ public class ComboBoxTipHandler : TipHandler
                 }
                 else if (!IsRectCompletelyVisible(rcText))
                 {
-                    Rectangle rcBox;
-                    Size sz;
-                    Point ptLocation;
-
                     // new item, and not entirely visible: prepare popup tip
                     OnGetItemInfo(ptClient, false, out _, out Rectangle rcTipText, out string sText);
+
                     // set tip text to that of item
                     TipWindow.Text = sText;
 
                     // need text rectangle in screen coordinates
-                    rcBox = User32.GetWindowRect(pComboBox.Handle);
+                    Rectangle rcBox = User32.GetWindowRect(pComboBox.Handle);
                     rcTipText.Offset(rcBox.X, rcBox.Y);
                     rcTipText.Offset(nCxOffset, 0);
 
                     // set highlighted status
-                    TipWindow.DrawHighlighted = g_bDrawSelHighlighted && bHighlited;
+                    TipWindow.DrawHighlighted = TipHandler.DrawSelHighlighted && bHighlighted;
 
                     // move tip window over list text
-                    sz = new Size(rcTipText.Width + 8, rcTipText.Height);
-                    ptLocation = new Point(rcTipText.Left + 1, rcTipText.Top);
+                    Size sz = new(rcTipText.Width + 8, rcTipText.Height);
+                    Point ptLocation = new(rcTipText.Left + 1, rcTipText.Top);
                     TipWindow.Size = sz;
                     TipWindow.MoveAsTopmost(ptLocation);
                     TipWindow.ShowDelayed((int)TipTimeDelayMsec); // show popup text delayed
@@ -677,7 +673,7 @@ public class ComboBoxTipHandler : TipHandler
                     //
                     // When the property IntegralHeight is set to true, the control automatically resizes 
                     // to ensure that an item is not partially displayed. 
-                    // If you want to maintain the original size of the ComboBox based on the space 
+                    // If you want to maintain the original size of your ComboBox based on the space 
                     // requirements of your form, that property should be set to false. 
                     // For more info, see
                     // http://stackoverflow.com/questions/3868907/ComboBox-maxdopdownitems-is-not-working-when-adding-items-using-the-click-event
@@ -773,7 +769,7 @@ public class ComboBoxTipHandler : TipHandler
         Rectangle rcVisible = pComboBox.ClientRectangle;
         int cxDelta = SystemInformation.Border3DSize.Width;
 
-        if (IsVerticalScrollbarVisible())
+        if (IsVerticalScrollBarVisible())
         {
             cxDelta += SystemInformation.VerticalScrollBarWidth;
         }
@@ -811,3 +807,5 @@ public class ComboBoxTipHandler : TipHandler
     #endregion // Protected_Methods
     #endregion // Methods
 }
+#pragma warning restore SYSLIB1054
+#pragma warning restore IDE0079

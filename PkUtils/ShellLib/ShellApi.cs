@@ -1,13 +1,3 @@
-/***************************************************************************************************************
-*
-* FILE NAME:   .\ShellLib\ShellApi.cs
-*
-* AUTHOR:      Petr Kodet
-*
-* DESCRIPTION: The file contains definition ShellApi
-*
-**************************************************************************************************************/
-
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //
 // Microsoft Public License (MS-PL) notice
@@ -33,7 +23,10 @@ using System.Text;
 
 namespace PK.PkUtils.ShellLib;
 
+#pragma warning disable IDE0079     // Remove unnecessary suppressions
 #pragma warning disable SYSLIB1054  // Use 'LibraryImportAttribute' instead of 'DllImportAttribute' to generate P/Invoke marshalling code at compile time
+#pragma warning disable CA1069      // Enums values should not be duplicated
+#pragma warning disable CA1401      // P/Invoke method should not be visible
 
 /// <summary> A wrapper providing several interop declarations of APIS from shell32.dll. </summary>
 public static class ShellApi
@@ -135,7 +128,7 @@ public static class ShellApi
 
         /// <summary> Gets the string stored in <see cref="pOleStr"/>. </summary>
         /// <returns> The string. </returns>
-        public string GetString()
+        public readonly string GetString()
         {
             if (uType == 0) // STRRET_WSTR
             {
@@ -411,7 +404,7 @@ public static class ShellApi
         /// </summary>
         public ShellApi.AppBarEdges Edge
         {
-            get { return (ShellApi.AppBarEdges)uEdge; }
+            readonly get { return (ShellApi.AppBarEdges)uEdge; }
             set { uEdge = (uint)value; }
         }
         #endregion // Properties
@@ -1337,4 +1330,7 @@ public static class ShellApi
     #endregion // Methods
 }
 
+#pragma warning restore CA1401
+#pragma warning restore CA1069
 #pragma warning restore SYSLIB1054
+#pragma warning restore IDE0079

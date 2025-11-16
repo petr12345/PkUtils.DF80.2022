@@ -5,116 +5,120 @@ using System.Linq;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using PK.PkUtils.Comparers;
 
+#pragma warning disable CA1806   // suppress "result of '... call is not used"
 #pragma warning disable IDE0039  // suppress "use local functions" warning
 
-namespace PK.PkUtils.UnitTests.ComparersTest
+
+namespace PK.PkUtils.UnitTests.ComparersTest;
+
+#region Tests
+
+/// <summary>
+/// This is a test class for FunctionalEqualityComparer generic
+///</summary>
+[TestClass()]
+public class FuncEqualityComparerTest
 {
-    #region Tests
+    /// <summary>
+    /// A test for FunctionalEqualityComparer constructor
+    /// </summary>
+    [TestMethod()]
+    public void FuncEqualityComparer_Constructor_01()
+    {
+        Assert.ThrowsExactly<ArgumentNullException>(() =>
+        {
+            new FunctionalEqualityComparer<int>(null);
+        });
+    }
 
     /// <summary>
-    /// This is a test class for FunctionalEqualityComparer generic
-    ///</summary>
-    [TestClass()]
-    public class FuncEqualityComparerTest
+    /// A test for FunctionalEqualityComparer constructor
+    /// </summary>
+    [TestMethod()]
+    public void FuncEqualityComparer_Constructor_02()
     {
-        /// <summary>
-        /// A test for FunctionalEqualityComparer constructor
-        /// </summary>
-        [TestMethod()]
-        public void FuncEqualityComparer_Constructor_01()
+        Assert.ThrowsExactly<ArgumentNullException>(() =>
         {
-            Assert.ThrowsExactly<ArgumentNullException>(() =>
-            {
-                new FunctionalEqualityComparer<int>(null);
-            });
-        }
-
-        /// <summary>
-        /// A test for FunctionalEqualityComparer constructor
-        /// </summary>
-        [TestMethod()]
-        public void FuncEqualityComparer_Constructor_02()
-        {
-            Assert.ThrowsExactly<ArgumentNullException>(() =>
-            {
-                new FunctionalEqualityComparer<int>((x, y) => x == y, null);
-            });
-        }
-
-        /// <summary>
-        /// A test for FunctionalEqualityComparer constructor
-        /// </summary>
-        [TestMethod()]
-        public void FuncEqualityComparer_Constructor_03()
-        {
-            var comparer = new FunctionalEqualityComparer<int>((x, y) => x == y, x => x);
-        }
-
-        /// <summary>
-        /// A test for FunctionalEqualityComparer.Equals
-        /// </summary>
-        [TestMethod()]
-        public void FuncEqualityComparer_CompareTest_01()
-        {
-            var comparer = new FunctionalEqualityComparer<int>((x, y) => Math.Abs(x) == Math.Abs(y), x => Math.Abs(x));
-
-            foreach (var x in Enumerable.Range(2, 7).ToList())
-            {
-                Assert.IsTrue(comparer.Equals(x, x));
-                Assert.IsTrue(comparer.Equals(x, -x));
-            }
-        }
-
-        /// <summary>
-        /// A test for FunctionalEqualityComparer.Equals
-        /// </summary>
-        [TestMethod()]
-        public void FuncEqualityComparer_CompareTest_02()
-        {
-            Func<string, string, bool> f = (x, y) => (x.Length == y.Length);
-            Func<string, int> h = (s => s.Length);
-            var comparer = new FunctionalEqualityComparer<string>(f, h);
-
-            Assert.IsTrue(comparer.Equals("aaa", "AAA"));
-            Assert.IsTrue(comparer.Equals("aaaa", "wXyZ"));
-            Assert.IsFalse(comparer.Equals("aaa", "w"));
-        }
-
-        /// <summary>
-        /// A test for FunctionalEqualityComparer.CreateNullSafeComparer
-        /// </summary>
-        [TestMethod()]
-        public void FuncEqualityComparer_CreateNullSafeComparerTest_01()
-        {
-            Func<string, string, bool> f = null!;
-            Func<string, int> h = null!;
-            Assert.ThrowsExactly<ArgumentNullException>(() =>
-            {
-                FunctionalEqualityComparer.CreateNullSafeComparer<string>(f, h);
-            });
-        }
-
-        /// <summary>
-        /// A test for FunctionalEqualityComparer.CreateNullSafeComparer
-        /// </summary>
-        [TestMethod()]
-        public void FuncEqualityComparer_CreateNullSafeComparerTest_02()
-        {
-            Func<string, string, bool> f = (x, y) => (x.Length == y.Length);
-            Func<string, int> h = x => x.Length;
-            var comparer = FunctionalEqualityComparer.CreateNullSafeComparer<string>(f, h);
-
-            Assert.IsTrue(comparer.Equals("aaa", "AAA"));
-            Assert.IsTrue(comparer.Equals("aaa", "XYZ"));
-
-            Assert.IsFalse(comparer.Equals(null!, "pqr"));
-            Assert.IsFalse(comparer.Equals("pqr", null!));
-
-            Assert.IsTrue(comparer.Equals(null!, null!));
-            Assert.IsFalse(comparer.Equals(null!, string.Empty));
-            Assert.IsFalse(comparer.Equals(string.Empty, null!));
-        }
-        #endregion // Tests
+            new FunctionalEqualityComparer<int>((x, y) => x == y, null);
+        });
     }
-#pragma warning restore IDE0039
+
+    /// <summary>
+    /// A test for FunctionalEqualityComparer constructor
+    /// </summary>
+    [TestMethod()]
+    public void FuncEqualityComparer_Constructor_03()
+    {
+        var comparer = new FunctionalEqualityComparer<int>((x, y) => x == y, x => x);
+    }
+
+    /// <summary>
+    /// A test for FunctionalEqualityComparer.Equals
+    /// </summary>
+    [TestMethod()]
+    public void FuncEqualityComparer_CompareTest_01()
+    {
+        var comparer = new FunctionalEqualityComparer<int>((x, y) => Math.Abs(x) == Math.Abs(y), x => Math.Abs(x));
+
+        foreach (var x in Enumerable.Range(2, 7).ToList())
+        {
+            Assert.IsTrue(comparer.Equals(x, x));
+            Assert.IsTrue(comparer.Equals(x, -x));
+        }
+    }
+
+    /// <summary>
+    /// A test for FunctionalEqualityComparer.Equals
+    /// </summary>
+    [TestMethod()]
+    public void FuncEqualityComparer_CompareTest_02()
+    {
+        Func<string, string, bool> f = (x, y) => (x.Length == y.Length);
+        Func<string, int> h = (s => s.Length);
+        var comparer = new FunctionalEqualityComparer<string>(f, h);
+
+        Assert.IsTrue(comparer.Equals("aaa", "AAA"));
+        Assert.IsTrue(comparer.Equals("aaaa", "wXyZ"));
+        Assert.IsFalse(comparer.Equals("aaa", "w"));
+    }
+
+    /// <summary>
+    /// A test for FunctionalEqualityComparer.CreateNullSafeComparer
+    /// </summary>
+    [TestMethod()]
+    public void FuncEqualityComparer_CreateNullSafeComparerTest_01()
+    {
+        Func<string, string, bool> f = null!;
+        Func<string, int> h = null!;
+        Assert.ThrowsExactly<ArgumentNullException>(() =>
+        {
+            FunctionalEqualityComparer.CreateNullSafeComparer<string>(f, h);
+        });
+    }
+
+    /// <summary>
+    /// A test for FunctionalEqualityComparer.CreateNullSafeComparer
+    /// </summary>
+    [TestMethod()]
+    public void FuncEqualityComparer_CreateNullSafeComparerTest_02()
+    {
+        Func<string, string, bool> f = (x, y) => (x.Length == y.Length);
+        Func<string, int> h = x => x.Length;
+        var comparer = FunctionalEqualityComparer.CreateNullSafeComparer<string>(f, h);
+
+        Assert.IsTrue(comparer.Equals("aaa", "AAA"));
+        Assert.IsTrue(comparer.Equals("aaa", "XYZ"));
+
+        Assert.IsFalse(comparer.Equals(null!, "pqr"));
+        Assert.IsFalse(comparer.Equals("pqr", null!));
+
+        Assert.IsTrue(comparer.Equals(null!, null!));
+        Assert.IsFalse(comparer.Equals(null!, string.Empty));
+        Assert.IsFalse(comparer.Equals(string.Empty, null!));
+    }
+    #endregion // Tests
 }
+
+#pragma warning restore CA1806
+#pragma warning restore IDE0039
+

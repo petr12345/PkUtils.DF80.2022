@@ -11,6 +11,7 @@ using PK.PkUtils.Threading;
 
 namespace PK.PkUtils.UnitTests.NativeMemoryTests;
 
+#pragma warning disable CA1806   // suppress "result of '... call is not used"
 #pragma warning disable VSTHRD200 // Use "Async" suffix for async methods
 
 /// <summary>
@@ -396,5 +397,7 @@ public class SharedMemoryTest
     #endregion // Tests_write_read_multithread
     #endregion // Tests
 }
+
 #pragma warning restore VSTHRD200 // Use "Async" suffix for async methods
+#pragma warning restore CA1806   // restore "result of '... call is not used"
 

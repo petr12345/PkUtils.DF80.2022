@@ -120,7 +120,7 @@ void CPhysInfo<TFIELDID>::Dump(CDumpContext& dc) const
 
 ////////////////////////////////////////////
 
-IMPLEMENT_DYNCREATE_T(CSubstPhysData, TFIELDID, CSubstLogData)
+IMPLEMENT_DYNCREATE_T(CSubstPhysData, TFIELDID, CSubstLogData<TFIELDID>)
 
 template<class TFIELDID> 
 CSubstPhysData<TFIELDID>::CSubstPhysData() : CSubstLogData<TFIELDID>()
@@ -162,7 +162,7 @@ void CSubstPhysData<TFIELDID>::ClearContentsPhys(void)
 template<class TFIELDID> 
 void CSubstPhysData<TFIELDID>::DeleteContents(void)
 {
-    CSubstLogData::DeleteContents();
+    CSubstLogData<TFIELDID>::DeleteContents();
     ClearContentsPhys();
 }
 
@@ -200,9 +200,9 @@ void CSubstPhysData<TFIELDID>::MoveAllInfoIfPhysGreaterEq(tPhysPos greaterOrEq, 
     CLogInfo<TFIELDID>*  lpLogTmp;
     CPhysInfo<TFIELDID>* lpPhysTmp;
 
-    for(nDex = 0, nSize = LogListC().GetSize(); nDex < nSize; nDex++)
+    for(nDex = 0, nSize = this->LogListC().GetSize(); nDex < nSize; nDex++)
     {
-        VERIFY(lpLogTmp = LogListC().GetAt(nDex));
+        VERIFY(lpLogTmp = this->LogListC().GetAt(nDex));
         VERIFY(lpPhysTmp = PhysListC().GetAt(nDex));
         ASSERT(lpPhysTmp->What() == lpLogTmp->What());
         if (lpPhysTmp->GetStart() >= greaterOrEq)
@@ -347,7 +347,7 @@ CPhysInfo<TFIELDID>*  CSubstPhysData<TFIELDID>::InsertNewInfo(
     tLogPos       logpos;
     SubstDescr<TFIELDID> const* lpDesc;
 
-    if (NULL == (lpDesc = FindMapItem(what)))
+    if (NULL == (lpDesc = this->FindMapItem(what)))
     {
         ASSERT(FALSE); return NULL;
     }
@@ -369,7 +369,7 @@ CPhysInfo<TFIELDID>*  CSubstPhysData<TFIELDID>::InsertNewInfo(
     CPhysInfo<TFIELDID>*   lpPhysBefore;
     CLogInfo<TFIELDID>*    lpLogBefore;
 
-    if (NULL == (lpDesc = FindMapItem(what = lpLogInfo->What())))
+    if (NULL == (lpDesc = this->FindMapItem(what = lpLogInfo->What())))
     {
         ASSERT(FALSE); return NULL;
     }
@@ -389,20 +389,20 @@ CPhysInfo<TFIELDID>*  CSubstPhysData<TFIELDID>::InsertNewInfo(
     {
         lpLogBefore = FindMatch(lpPhysBefore);
         MoveAllPhysInfoGreaterEq(phpos, ilen);
-        InsertLogInfo(lpLogBefore, lpLogInfo);
-        InsertPhysInfo(lpPhysBefore, lpPhysInfo);
+        this->InsertLogInfo(lpLogBefore, lpLogInfo);
+        this->InsertPhysInfo(lpPhysBefore, lpPhysInfo);
     }
     else
     {
-        AppendLogInfo(lpLogInfo);
-        AppendPhysToList(lpPhysInfo);
+        this->AppendLogInfo(lpLogInfo);
+        this->AppendPhysToList(lpPhysInfo);
     }
 
     oldphysStr = StrPhysStr();
     strLeft  = oldphysStr.Left((int)phpos);
     strRight = oldphysStr.Right((int)(oldphysStr.GetLength() - phpos));
     newphysStr = strLeft + lpTxt + strRight;
-    ASSERT(newphysStr == LogStr2PhysStr(*this));
+    ASSERT(newphysStr == this->LogStr2PhysStr(*this));
     SetPhysStr(newphysStr);
 
     return lpPhysInfo;
@@ -423,8 +423,8 @@ BOOL CSubstPhysData<TFIELDID>::DeleteOneInfo(
         start = lpInf->GetStart();
         ilen = lpInf->GetLength();
 
-        RemovPhysInfo(lpInf);
-        RemoveLogInfo(lpLog);
+        this->RemovPhysInfo(lpInf);
+        this->RemoveLogInfo(lpLog);
         if (ilen > 0)
         {
             MoveAllPhysInfoGreaterEq(start, -ilen);
@@ -465,12 +465,12 @@ size_t CSubstPhysData<TFIELDID>::DeleteAllBetween(
         SetPhysStr(strPhys);
 
         nStart = PhysPos2LogPos(start);
-        strLog = extractSubstr(GetLogStr(), nStart, log_dx);
-        SetLogStr(strLog);
+        strLog = extractSubstr(this->GetLogStr(), nStart, log_dx);
+        this->SetLogStr(strLog);
         MoveAllInfoIfPhysGreaterEq(start, -log_dx);
 
 #ifdef _DEBUG
-        strTmp = LogStr2PhysStr(*this);
+        strTmp = this->LogStr2PhysStr(*this);
         ASSERT(strTmp == strPhys);
 #endif
     }
@@ -502,13 +502,13 @@ BOOL CSubstPhysData<TFIELDID>::InsertText(
         if ((ilen = strText.GetLength()) > 0)
         {
             CString  strPhysNew(GetPhysStr());
-            CString  strLogNew(GetLogStr());
+            CString  strLogNew(this->GetLogStr());
 
             strPhysNew.Insert((int)physIndex, sztext);
             strLogNew.Insert((int)logIndex, sztext);
 
             SetPhysStr(strPhysNew);
-            SetLogStr(strLogNew);
+            this->SetLogStr(strLogNew);
             MoveAllInfoIfPhysGreaterEq(physIndex, ilen);
 #ifdef DEBUG
 			CString  strTmp = PhysStr2logStr(*this, &this->MapKeeper());
@@ -592,7 +592,7 @@ void CSubstPhysData<TFIELDID>::AppendAsPhysInfo(
     for (suma = 0, nDex = 0, nCount = logData.LogListC().GetCount(); nDex <nCount; nDex++)
     {
         VERIFY(lplogInf = logData.LogListC().GetAt(nDex));
-        if (lpDesc = MapKeeper().FindMapItem(lplogInf->What()))
+        if (lpDesc = this->MapKeeper().FindMapItem(lplogInf->What()))
         {
             ilen = _tcslen(lpTxt = lpDesc->lpTxt);
             if (physInf = AddNewPhysInfo(lplogInf->What()))
@@ -615,7 +615,7 @@ void CSubstPhysData<TFIELDID>::AssignPhysFromLog(CSubstLogData<TFIELDID> const &
     // DON'T call DeleteContents or ClearContentsLogical - logical contents must be preserved
     ClearContentsPhys();
     AppendAsPhysInfo(logData);
-    SetPhysStr(LogStr2PhysStr(logData));
+    SetPhysStr(this->LogStr2PhysStr(logData));
 }
 
 // "Exporting" the data in this.LogList to the output logData.LogList 
@@ -668,7 +668,7 @@ void CSubstPhysData<TFIELDID>::ExportLogListSel(
     {
         VERIFY(physInf = listExported->GetAt(nDex));
         VERIFY(logInfOld = FindMatch(physInf));
-        if (lpDesc = FindMapItem(logInfOld->What()))
+        if (lpDesc = this->FindMapItem(logInfOld->What()))
         {
             if (logInfNew = logData.AppenNewLogInfo(physInf->What()))
             {
@@ -749,7 +749,7 @@ void  CSubstPhysData<TFIELDID>::AssignPhysList(CSubstPhysList<TFIELDID> const &l
 template<class TFIELDID> 
 CSubstPhysData<TFIELDID>& CSubstPhysData<TFIELDID>::operator = (CSubstLogData<TFIELDID> const & rhs)
 {
-    CSubstLogData::operator = (rhs);
+    CSubstLogData<TFIELDID>::operator = (rhs);
     AssignPhysFromLog(*this);
 
     return *this;
@@ -812,7 +812,7 @@ CString CSubstPhysData<TFIELDID>::PhysStr2logStr(
 template<class TFIELDID> 
 void CSubstPhysData<TFIELDID>::Serialize(CArchive& ar)
 {
-    CSubstLogData::Serialize(ar);
+    CSubstLogData<TFIELDID>::Serialize(ar);
 
     if (ar.IsLoading())
     {

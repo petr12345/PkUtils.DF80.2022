@@ -1,4 +1,6 @@
-﻿namespace TestTgSchema
+﻿using PK.TestTgSchema.TextBoxCtrls;
+
+namespace PK.TestTgSchema.UserCtrls
 {
     partial class TaggingSchemaGeneralClassBasedUserCtrl
     {
@@ -28,7 +30,7 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this._SchemaTextBxCtrl = new TestTgSchema.TaggingSchemaTextBoxClassBasedCtrl();
+            this._SchemaTextBxCtrl = new TaggingSchemaTextBoxClassBasedCtrl();
             this.SuspendLayout();
             // 
             // _SchemaTextBxCtrl

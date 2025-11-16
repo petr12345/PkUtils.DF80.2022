@@ -1,14 +1,4 @@
-﻿/***************************************************************************************************************
-*
-* FILE NAME:   .\DataStructures\CountMap.cs
-*
-* AUTHOR:      Petr Kodet
-*
-* DESCRIPTION: The file contains implementation of CountMap, used in Countable object
-*
-**************************************************************************************************************/
-
-// Ignore Spelling: Utils, Dict
+﻿// Ignore Spelling: Utils, Dict
 //
 using System;
 using System.Collections.Generic;
@@ -200,7 +190,7 @@ public class CountMap : Singleton<CountMap>, IDisposable
         int result = 0;
 
         SlimLock.EnterReadLock();
-        /* following is not needed here, as it is called both by CoundtEact and CountDescendants
+        /* following is not needed here, as it is called both by CountExact and CountDescendants
          * TestTypeIsCountable(t);
          */
         try

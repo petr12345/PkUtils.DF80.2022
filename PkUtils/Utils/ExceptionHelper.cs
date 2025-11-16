@@ -1,15 +1,4 @@
-﻿/***************************************************************************************************************
-*
-* FILE NAME:   .\Utils\ExceptionHelper.cs
-*
-* AUTHOR:      Petr Kodet
-*
-* DESCRIPTION: The class ExceptionHelper
-*
-**************************************************************************************************************/
-
-
-// Ignore Spelling: Utils, Rethrow, Rethrown
+﻿// Ignore Spelling: Utils, Rethrow, Rethrown
 //
 using System;
 using System.Globalization;
@@ -162,14 +151,14 @@ public class RethrownException : Exception
 
         if (this.InnerException != null)
         {
-            string[] textArray1 = new string[6] {
+            string[] textArray1 = [
                 text2,
                 " ---> ",
                 this.InnerException.ToString(),
                 Environment.NewLine,
                 "   ",
                 _strEndOfInnerExceptionStack
-            };
+            ];
             text2 = string.Concat(textArray1);
         }
         if (this.StackTrace != null)

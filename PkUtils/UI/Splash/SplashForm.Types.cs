@@ -25,6 +25,8 @@ using PK.PkUtils.Extensions;
 using PK.PkUtils.Threading;
 using PK.PkUtils.Utils;
 
+#pragma warning disable IDE0290     // Use primary constructor
+
 namespace PK.PkUtils.UI.Splash;
 
 public partial class SplashForm : Form, ISplashWindow

@@ -9,7 +9,7 @@ using PK.PkUtils.Extensions;
 namespace PK.PkUtils.UnitTests.ExtensionsTests
 {
     /// <summary>
-    /// This is a test class for TypeExtension and is intended
+    /// This is a test class for TypeExtensions and is intended
     /// to contain all TypeExtensionTest Unit Tests
     /// </summary>
     [TestClass()]
@@ -20,7 +20,7 @@ namespace PK.PkUtils.UnitTests.ExtensionsTests
         public interface IStackedForm { }
         public class StackedFormWrapper<TForm> : IStackedForm, IDisposable where TForm : Form
         {
-            public void Dispose() { }
+            public void Dispose() { GC.SuppressFinalize(this); }
         }
         public class FormWrapperPlainDerived<TForm> : StackedFormWrapper<TForm> where TForm : Form { };
         public class MainStackedFormWrapper<TForm> : StackedFormWrapper<TForm> where TForm : Form { }
@@ -65,7 +65,7 @@ namespace PK.PkUtils.UnitTests.ExtensionsTests
             Type t = typeof(System.Windows.Forms.Form);
             Type interfaceType = typeof(IDisposable);
 
-            actual = TypeExtension.HasTheInterface(t, interfaceType);
+            actual = TypeExtensions.HasTheInterface(t, interfaceType);
             Assert.IsTrue(actual);
         }
 
@@ -120,11 +120,11 @@ namespace PK.PkUtils.UnitTests.ExtensionsTests
         public void TypeExtension_TypeToReadableTest()
         {
             Type t = typeof(System.Drawing.Point);
-            string actual = TypeExtension.TypeToReadable(t);
+            string actual = TypeExtensions.TypeToReadable(t);
             Assert.AreEqual("Point", actual);
 
             t = typeof(System.Collections.Generic.List<System.Drawing.Rectangle>);
-            actual = TypeExtension.TypeToReadable(t);
+            actual = TypeExtensions.TypeToReadable(t);
             Assert.AreEqual("List`1[Rectangle]", actual);
         }
         #endregion // Tests

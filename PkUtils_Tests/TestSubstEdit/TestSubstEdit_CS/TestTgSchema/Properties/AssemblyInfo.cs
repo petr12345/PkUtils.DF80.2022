@@ -1,4 +1,5 @@
 ﻿using System.Reflection;
+using System.Resources;
 using System.Runtime.InteropServices;
 using System.Runtime.Versioning;
 
@@ -13,6 +14,7 @@ using System.Runtime.Versioning;
 [assembly: AssemblyCopyright("Copyright © PK 2015")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
+[assembly: NeutralResourcesLanguage("en")]
 [assembly: SupportedOSPlatform("windows")]
 
 // Setting ComVisible to false makes the types in this assembly not visible 

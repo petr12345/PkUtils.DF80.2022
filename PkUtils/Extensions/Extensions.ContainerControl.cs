@@ -1,15 +1,4 @@
-﻿/***************************************************************************************************************
-*
-* FILE NAME:   .\Extensions\ContainerControl.cs
-*
-* AUTHOR:      Petr Kodet
-*
-* DESCRIPTION:
-*   The file contains extension-class ContainerControlExtension.
-*
-**************************************************************************************************************/
-
-// Ignore Spelling: Utils, ctrl
+﻿// Ignore Spelling: Utils, ctrl
 //
 using System;
 using System.Windows.Forms;
@@ -22,7 +11,7 @@ namespace PK.PkUtils.Extensions;
 /// </summary>
 /// <seealso href="http://msdn.microsoft.com/en-us/library/system.windows.forms.containercontrol(v=vs.110).aspx">
 /// System.Windows.Forms.ContainerControl class</seealso>
-public static class ContainerControlExtension
+public static class ContainerControlExtensions
 {
     /// <summary> A ContainerControl extension method that returns the value of WinForms non-public field
     /// ContainerControl.focusedControl.

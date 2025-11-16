@@ -1,4 +1,5 @@
 using System.Reflection;
+using System.Resources;
 using System.Runtime.Versioning;
 
 //
@@ -15,6 +16,7 @@ using System.Runtime.Versioning;
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 [assembly: SupportedOSPlatform("windows")]
+[assembly: NeutralResourcesLanguage("en")]
 
 // The Common Language Specification (CLS) defines naming restrictions, data types, 
 // and rules to which assemblies must conform if they are to be used across programming languages. 

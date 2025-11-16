@@ -73,7 +73,7 @@ public class XObjectExtensionsTests
 
         // Assert
         Assert.That(path, Does.Contain(expectedLineInfo));
-        path = path.Substring(path.IndexOf(expectedLineInfo) + expectedLineInfo.Length).TrimStart();
+        path = path[(path.IndexOf(expectedLineInfo) + expectedLineInfo.Length)..].TrimStart();
         Assert.That(path, Does.StartWith("/root/child/subchild"));
 
     }

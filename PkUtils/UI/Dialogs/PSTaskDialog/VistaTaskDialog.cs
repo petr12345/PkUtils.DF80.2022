@@ -26,6 +26,8 @@ using System.Windows.Forms;
 //
 // <remarks/>
 //------------------------------------------------------------------
+
+#pragma warning disable IDE0079  // Remove unnecessary suppression
 #pragma warning disable CA2020 // Prevent behavioral change
 #pragma warning disable IDE0290 // Use primary constructor
 #pragma warning disable IDE0301 // Simplify collection initialization

@@ -36,16 +36,20 @@ public class EventsUtilsTest
     [Test()]
     public void EventsUtils_RemoveEventHandlerTest()
     {
-        ComboBox cb = new System.Windows.Forms.ComboBox();
-        cb.Items.AddRange(new object[] { "aaa", "bbb", "ccc", "ddd" });
+        ComboBox cb = new ComboBox();
+        cb.Items.AddRange(["aaa", "bbb", "ccc", "ddd"]);
         TestSubscriber ts = new TestSubscriber();
 
         // subscribe 
         cb.SelectedIndexChanged += new EventHandler(ts.OnSelectedIndexChanged);
+
         // check the effect of it
         cb.SelectedIndex = 1;
-        Assert.That(cb.SelectedIndex, Is.EqualTo(1));
-        Assert.That(ts.HandlerCalled, Is.True);
+        using (Assert.EnterMultipleScope())
+        {
+            Assert.That(cb.SelectedIndex, Is.EqualTo(1));
+            Assert.That(ts.HandlerCalled, Is.True);
+        }
 
         // unsubscribe 
         MethodInfo mInfo = ts.GetType().GetInstanceMethod(nameof(ts.OnSelectedIndexChanged));

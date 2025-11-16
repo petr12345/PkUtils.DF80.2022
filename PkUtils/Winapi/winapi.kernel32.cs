@@ -12,6 +12,7 @@ using ComTypes = System.Runtime.InteropServices.ComTypes;
 
 namespace PK.PkUtils.WinApi;
 
+#pragma warning disable IDE0079  // Remove unnecessary suppression
 #pragma warning disable IDE0057     // Substring can be simplified
 #pragma warning disable IDE0251     // Member can be made 'readonly'
 #pragma warning disable CA1401      // P/Invoke method should not be visible

@@ -7,20 +7,21 @@ using System.Runtime.InteropServices;
 using System.Text;
 using System.Windows.Forms;
 
+#pragma warning disable IDE0079   // Remove unnecessary suppressions
 #pragma warning disable IDE0130 // Namespace "..." does not match folder structure
 
 
 namespace PK.PkUtils.WinApi;
 
-
+#pragma warning disable IDE0079  // Remove unnecessary suppression
 #pragma warning disable VSSpell001
 #pragma warning disable 1591        // Missing XML comment for publicly visible type or member...
 #pragma warning disable IDE0251     // Member can be made 'readonly'	
+#pragma warning disable IDE0290     // Use primary constructor
 #pragma warning disable CA1069      // The enum member ... has the same constant value as member ...
 #pragma warning disable CA1401      // P/Invoke method should not be visible
 #pragma warning disable CA1806      // The HRESULT of some API is not used
 #pragma warning disable SYSLIB1054  // Use 'LibraryImportAttribute' instead of 'DllImportAttribute' to generate P/Invoke marshalling code at compile time
-
 
 /// <summary> Helper class containing User32 API functions. </summary>
 [CLSCompliant(false)]
@@ -3672,6 +3673,7 @@ public static class User32
 #pragma warning restore CA1806
 #pragma warning restore CA1401
 #pragma warning restore CA1069
+#pragma warning restore IDE0290
 #pragma warning restore IDE0251   
 #pragma warning restore 1591
 #pragma warning restore VSSpell001

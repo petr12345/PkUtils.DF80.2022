@@ -9,7 +9,7 @@ using PK.PkUtils.Interfaces;
 namespace PK.PkUtils.UnitTests.ExtensionsTests
 {
     /// <summary>
-    /// This is a test class for DisposableExtension and is intended
+    /// This is a test class for DisposableExtensions and is intended
     /// to contain all DisposableExtensionTest Unit Tests
     /// </summary>
     [TestClass()]
@@ -34,7 +34,7 @@ namespace PK.PkUtils.UnitTests.ExtensionsTests
         #region Tests
 
         /// <summary>
-        /// A test for DisposableExtension.CheckNotDisposed
+        /// A test for DisposableExtensions.CheckNotDisposed
         /// </summary>
         [TestMethod()]
         public void DisposableExtension_CheckNotDisposedTest_01()
@@ -48,7 +48,7 @@ namespace PK.PkUtils.UnitTests.ExtensionsTests
         }
 
         /// <summary>
-        /// A test for DisposableExtension.CheckNotDisposed
+        /// A test for DisposableExtensions.CheckNotDisposed
         /// </summary>
         [TestMethod()]
         public void DisposableExtension_CheckNotDisposedTest_02()
@@ -63,7 +63,7 @@ namespace PK.PkUtils.UnitTests.ExtensionsTests
         }
 
         /// <summary>
-        /// A test for DisposableExtension.CheckNotDisposed
+        /// A test for DisposableExtensions.CheckNotDisposed
         /// </summary>
         [TestMethod()]
         public void DisposableExtension_CheckNotDisposedTest_03()

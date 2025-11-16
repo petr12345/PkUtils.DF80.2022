@@ -1,13 +1,3 @@
-/***************************************************************************************************************
-*
-* FILE NAME:   .\UI\TipHandlers\PopupTooltip.cs
-*
-* AUTHOR:      Petr Kodet
-*
-* DESCRIPTION: The file contains definition of class PopupTooltip
-*
-**************************************************************************************************************/
-
 // Ignore Spelling: Utils, Popup, Tooltip, msec
 //
 using System;
@@ -54,7 +44,7 @@ public class PopupTooltip : Control, IPopupText
             this.Visible = true;
             this.AcceptsReturn = false;
             this.SetStyle(ControlStyles.Selectable, false);
-            this.Size = new System.Drawing.Size(100, 20);
+            this.Size = new Size(100, 20);
             this.Text = string.Empty;
 
             this._owner = tooltip;

@@ -1,14 +1,4 @@
-﻿/***************************************************************************************************************
-*
-* FILE NAME:   .\IO\FilePathHelper.cs
-*
-* AUTHOR:      Petr Kodet
-*
-* DESCRIPTION: The class FilePathHelper, contains file-system related utilities.
-*
-**************************************************************************************************************/
-
-// Ignore Spelling: Utils, Subfolder, Stackoverflow
+﻿// Ignore Spelling: Utils, Subfolder, Stackoverflow
 //
 using System;
 using System.Collections.Generic;

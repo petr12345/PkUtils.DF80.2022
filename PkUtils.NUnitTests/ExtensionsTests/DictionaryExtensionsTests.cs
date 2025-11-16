@@ -4,6 +4,7 @@ using PK.PkUtils.Extensions;
 
 namespace PK.PkUtils.NUnitTests.ExtensionsTests;
 
+#pragma warning disable IDE0079   // Remove unnecessary suppressions
 #pragma warning disable CA1859    // Change type of variable ...
 
 /// <summary>   (Unit Test Fixture) of a class <see cref="DictionaryExtensions"/>. </summary>

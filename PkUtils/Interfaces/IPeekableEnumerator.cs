@@ -1,15 +1,4 @@
-﻿/***************************************************************************************************************
-*
-* FILE NAME:   .\Interfaces\IPeekAbleEnumerator.cs
-*
-* AUTHOR:      Petr Kodet
-*
-* DESCRIPTION: The file contains definition of interfaces IPeekAbleEnumerator, IPeekAbleEnumerator<T>,
-*              IPeekAbleIEnumerable, IPeekAbleIEnumerable<T>
-*
-**************************************************************************************************************/
-
-// Ignore Spelling: Utils
+﻿// Ignore Spelling: Utils
 //
 using System;
 using System.Collections;

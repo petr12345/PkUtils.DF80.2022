@@ -1,14 +1,4 @@
-﻿/***************************************************************************************************************
-*
-* FILE NAME:   .\Threading\WorkerThread.cs
-*
-* AUTHOR:      Petr Kodet
-*
-* DESCRIPTION: The file contains definition of class WorkerThread
-*
-**************************************************************************************************************/
-
-// Ignore Spelling: Utils, Unstarted
+﻿// Ignore Spelling: Utils, Unstarted
 //
 using System;
 using System.Diagnostics;
@@ -33,7 +23,7 @@ public class WorkerThread : Repository<Thread>, IDisposableEx
     /// If used, will be created by the thread who called the constructor, 
     /// and set by the code using the thread ( either manually or by calling Join(int milliseconds) ).
     /// </summary>
-    protected ManualResetEvent _evWaitExit;
+    protected ManualResetEvent _eventWaitExit;
     #endregion  // Fields
 
     #region Constructor(s)
@@ -61,7 +51,7 @@ public class WorkerThread : Repository<Thread>, IDisposableEx
     ///   If false, a new thread will be created. </param>
     /// 
     /// <param name="createWaitExitEvent"> If true, the constructor will create a new
-    ///   <see cref="ManualResetEvent"/> object and assign that to field <see cref="_evWaitExit "/>. </param>
+    ///   <see cref="ManualResetEvent"/> object and assign that to field <see cref="_eventWaitExit "/>. </param>
     public WorkerThread(bool attach, bool createWaitExitEvent)
       : this(ThreadPriority.Normal, attach, createWaitExitEvent)
     { }
@@ -77,12 +67,12 @@ public class WorkerThread : Repository<Thread>, IDisposableEx
     ///   System.Threading.Thread.CurrentThread. If false, a new thread will be created. </param>
     /// 
     /// <param name="createWaitExitEvent"> If true, the constructor will create a new
-    ///   <see cref="ManualResetEvent"/> object and assign that to field <see cref="_evWaitExit "/>. </param>
+    ///   <see cref="ManualResetEvent"/> object and assign that to field <see cref="_eventWaitExit "/>. </param>
     public WorkerThread(ThreadPriority priority, bool attach, bool createWaitExitEvent)
     {
         if (createWaitExitEvent)
         {
-            _evWaitExit = new ManualResetEvent(false);
+            _eventWaitExit = new ManualResetEvent(false);
         }
 
         if (attach)
@@ -208,7 +198,7 @@ public class WorkerThread : Repository<Thread>, IDisposableEx
     /// </summary>
     public ManualResetEvent EventWaitExit
     {
-        get { return _evWaitExit; }
+        get { return _eventWaitExit; }
     }
 
     /// <summary>
@@ -333,7 +323,7 @@ public class WorkerThread : Repository<Thread>, IDisposableEx
         if (null != EventWaitExit)
         {
             EventWaitExit.Close();
-            _evWaitExit = null;
+            _eventWaitExit = null;
         }
     }
 

@@ -1,15 +1,4 @@
-﻿/***************************************************************************************************************
-*
-* FILE NAME:   .\Extensions\Control.cs
-*
-* AUTHOR:      Petr Kodet
-*
-* DESCRIPTION:
-*   The file contains extension class ControlExtension
-*
-**************************************************************************************************************/
-
-// Ignore Spelling: Utils, ctrl
+﻿// Ignore Spelling: Utils, ctrl
 //
 using System;
 using System.Collections.Generic;
@@ -25,7 +14,7 @@ namespace PK.PkUtils.Extensions;
 /// </summary>
 /// <seealso href="http://msdn.microsoft.com/en-us/library/system.windows.forms.control(v=vs.110).aspx">
 /// System.Windows.Forms.Control class</seealso>
-public static class ControlExtension
+public static class ControlExtensions
 {
     #region Non-generic controls search
 

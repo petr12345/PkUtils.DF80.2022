@@ -7,7 +7,7 @@ using PK.PkUtils.Extensions;
 namespace PK.PkUtils.UnitTests.ExtensionsTests
 {
     /// <summary>
-    /// This is a test class for TypeExtension and is intended
+    /// This is a test class for TypeExtensions and is intended
     /// to contain all TypeExtensionTest Unit Tests
     /// </summary>
     [TestClass()]

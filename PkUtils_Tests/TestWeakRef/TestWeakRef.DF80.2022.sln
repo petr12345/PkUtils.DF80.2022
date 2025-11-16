@@ -2,7 +2,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.4.33205.214
 MinimumVisualStudioVersion = 16.0.0
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TestWeakRefDF80.2022", "TestWeakRefDF80.2022.csproj", "{051C5A61-78CD-4910-8E1D-E111EC376DB4}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TestWeakRef.DF80.2022", "TestWeakRef.DF80.2022.csproj", "{051C5A61-78CD-4910-8E1D-E111EC376DB4}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PkUtils.DF80.2022", "..\..\PkUtils\PkUtils.DF80.2022.csproj", "{C0562198-DA06-4E3D-970F-06462E1BEB32}"
 EndProject

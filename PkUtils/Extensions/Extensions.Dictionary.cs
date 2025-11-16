@@ -1,15 +1,4 @@
-﻿/***************************************************************************************************************
-*
-* FILE NAME:   .\Extensions\Extensions.Collections.cs
-*
-* AUTHOR:      Petr Kodet
-*
-* DESCRIPTION:
-*   The file contains extension-methods class DictionaryExtensions
-*
-**************************************************************************************************************/
-
-// Ignore Spelling: Utils, Memberwise
+﻿// Ignore Spelling: Utils, Memberwise
 // 
 
 using System;

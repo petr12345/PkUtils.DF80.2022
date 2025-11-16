@@ -571,7 +571,7 @@ CString CSubstLogData<TFIELDID>::GetPlainText() const
 template<class TFIELDID> 
 CSubstLogData<TFIELDID> & CSubstLogData<TFIELDID>::operator = (LPCTSTR szLogStr)
 {
-    Clear();
+    this->Clear();
     SetLogStr(szLogStr);
     return *this;
 }

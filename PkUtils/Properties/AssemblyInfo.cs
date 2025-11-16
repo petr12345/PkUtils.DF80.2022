@@ -1,15 +1,4 @@
-﻿/***************************************************************************************************************
-*
-* FILE NAME:   .\Properties\AssemblyInfo.cs
-*
-* AUTHOR:      Petr Kodet
-*
-* DESCRIPTION: The file contains Assembly-related attributes.
-*
-**************************************************************************************************************/
-
-
-using System.Reflection;
+﻿using System.Reflection;
 using System.Resources;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;

@@ -15,8 +15,9 @@ using System;
 using System.Text;
 using System.Windows.Forms;
 using PK.PkUtils.UI.Dialogs.PSTaskDialog;
+using PK.TestTaskDialog.Properties;
 
-namespace TestTaskDialog
+namespace PK.TestTaskDialog
 {
     public partial class TestForm : Form
     {
@@ -25,7 +26,7 @@ namespace TestTaskDialog
         public TestForm()
         {
             InitializeComponent();
-            this.Icon = PK.TestTaskDialog.Properties.Resources.App;
+            this.Icon = Resources.App;
         }
         #endregion // Constructor(s)
 
@@ -36,9 +37,9 @@ namespace TestTaskDialog
             StringBuilder sb = new();
 
             sb.Append("Result : " + Enum.GetName(typeof(DialogResult), res) + Environment.NewLine);
-            sb.Append("RadioButtonIndex : " + cTaskDialog.RadioButtonResult.ToString() + Environment.NewLine);
-            sb.Append("CommandButtonIndex : " + cTaskDialog.CommandButtonResult.ToString() + Environment.NewLine);
-            sb.Append("Verify CheckBox : " + (cTaskDialog.VerificationChecked ? "true" : "false"));
+            sb.Append("RadioButtonIndex : " + VistaTaskDialogManager.RadioButtonResult.ToString() + Environment.NewLine);
+            sb.Append("CommandButtonIndex : " + VistaTaskDialogManager.CommandButtonResult.ToString() + Environment.NewLine);
+            sb.Append("Verify CheckBox : " + (VistaTaskDialogManager.VerificationChecked ? "true" : "false"));
 
             lbResult.Text = sb.ToString();
         }
@@ -46,13 +47,13 @@ namespace TestTaskDialog
 
         #region Event handlers
 
-        private void button1_Click(object sender, EventArgs e)
+        private void OnButtonFullExample_Click(object sender, EventArgs e)
         {
-            cTaskDialog.ForceEmulationMode = checkBox1.Checked;
-            try { cTaskDialog.EmulatedFormWidth = Convert.ToInt32(edWidth.Text); }
-            catch (Exception) { cTaskDialog.EmulatedFormWidth = 450; }
+            VistaTaskDialogManager.ForceEmulationMode = checkBoxForceEmulation.Checked;
+            try { VistaTaskDialogManager.EmulatedFormWidth = Convert.ToInt32(edWidth.Text); }
+            catch (Exception) { VistaTaskDialogManager.EmulatedFormWidth = 450; }
 
-            DialogResult res = cTaskDialog.ShowTaskDialogBox(
+            DialogResult res = VistaTaskDialogManager.ShowTaskDialogBox(
               this,
              "Task Dialog Title",
              "The main instruction text for the TaskDialog goes here.",
@@ -62,19 +63,19 @@ namespace TestTaskDialog
              "Don't show me this message again",
              "Radio Option 1|Radio Option 2|Radio Option 3",
              "Command &Button 1|Command Button 2\nLine 2\nLine 3|Command Button 3",
-             eTaskDialogButtons.OKCancel,
-             eSysIcons.Information,
-             eSysIcons.Warning);
+             TaskDialogButtons.OKCancel,
+             SystemIconType.Information,
+             SystemIconType.Warning);
             UpdateResult(res);
         }
 
-        private void button2_Click(object sender, EventArgs e)
+        private void OnButtonMessageBoxExample_Click(object sender, EventArgs e)
         {
-            cTaskDialog.ForceEmulationMode = checkBox1.Checked;
-            try { cTaskDialog.EmulatedFormWidth = Convert.ToInt32(edWidth.Text); }
-            catch (Exception) { cTaskDialog.EmulatedFormWidth = 450; }
+            VistaTaskDialogManager.ForceEmulationMode = checkBoxForceEmulation.Checked;
+            try { VistaTaskDialogManager.EmulatedFormWidth = Convert.ToInt32(edWidth.Text); }
+            catch (Exception) { VistaTaskDialogManager.EmulatedFormWidth = 450; }
 
-            DialogResult res = cTaskDialog.MessageBox(
+            DialogResult res = VistaTaskDialogManager.MessageBox(
               this,
               "MessageBox Title",
               "The main instruction text for the message box is shown here.",
@@ -82,50 +83,50 @@ namespace TestTaskDialog
               "Any expanded content text for the message box is shown here and the text will automatically wrap as needed.",
               "Optional footer text with an icon can be included",
               "ARRGHH! Don't show me this again!!!!",
-              eTaskDialogButtons.YesNoCancel,
-              eSysIcons.Information,
-              eSysIcons.Error);
+              TaskDialogButtons.YesNoCancel,
+              SystemIconType.Information,
+              SystemIconType.Error);
 
             /*
-            DialogResult res = PSTaskDialog.cTaskDialog.MessageBox(
+            DialogResult res = PSTaskDialog.VistaTaskDialogManager.MessageBox(
               this,
-              "OnRAMP Design Suite",
+              "XYZ Design Suite",
               "The model is not configured properly.",
-              "The local structures have not been successfully updated with the OnRAMP Model.",
+              "The local structures have not been successfully updated with the XYZ Design Suite Model.",
               "Any expanded content text for the message box is shown here and the text will automatically wrap as needed.",
               null,
               "ARRGHH! Don't show me this again!!!!",
-              PSTaskDialog.eTaskDialogButtons.OK,
-              PSTaskDialog.eSysIcons.Warning,
-              PSTaskDialog.eSysIcons.Error);
+              PSTaskDialog.TaskDialogButtons.OK,
+              PSTaskDialog.SystemIconType.Warning,
+              PSTaskDialog.SystemIconType.Error);
             */
 
             UpdateResult(res);
         }
 
-        private void button3_Click(object sender, EventArgs e)
+        private void OnButtonSimpleMessageBoxExample_Click(object sender, EventArgs e)
         {
-            cTaskDialog.ForceEmulationMode = checkBox1.Checked;
-            try { cTaskDialog.EmulatedFormWidth = Convert.ToInt32(edWidth.Text); }
-            catch (Exception) { cTaskDialog.EmulatedFormWidth = 450; }
+            VistaTaskDialogManager.ForceEmulationMode = checkBoxForceEmulation.Checked;
+            try { VistaTaskDialogManager.EmulatedFormWidth = Convert.ToInt32(edWidth.Text); }
+            catch (Exception) { VistaTaskDialogManager.EmulatedFormWidth = 450; }
 
-            DialogResult res = cTaskDialog.MessageBox(
+            DialogResult res = VistaTaskDialogManager.MessageBox(
               this,
               "MessageBox Title",
               "The main instruction text for the message box is shown here.",
               "The content text for the message box is shown here and the text will automatically wrap as needed.",
-              eTaskDialogButtons.OK,
-              eSysIcons.Warning);
+              TaskDialogButtons.OK,
+              SystemIconType.Warning);
             UpdateResult(res);
         }
 
-        private void button4_Click(object sender, EventArgs e)
+        private void OnButtonRadioBoxExample_Click(object sender, EventArgs e)
         {
-            cTaskDialog.ForceEmulationMode = checkBox1.Checked;
-            try { cTaskDialog.EmulatedFormWidth = Convert.ToInt32(edWidth.Text); }
-            catch (Exception) { cTaskDialog.EmulatedFormWidth = 450; }
+            VistaTaskDialogManager.ForceEmulationMode = checkBoxForceEmulation.Checked;
+            try { VistaTaskDialogManager.EmulatedFormWidth = Convert.ToInt32(edWidth.Text); }
+            catch (Exception) { VistaTaskDialogManager.EmulatedFormWidth = 450; }
 
-            int idx = cTaskDialog.ShowRadioBox(
+            int idx = VistaTaskDialogManager.ShowRadioBox(
               this,
               "RadioBox Title",
               "The main instruction text for the radiobox is shown here.",
@@ -134,19 +135,19 @@ namespace TestTaskDialog
               "Optional footer text with an icon can be included",
               "Don't show this message again",
               "Radio Option 1|Radio Option 2|Radio Option 3|Radio Option 4|Radio Option 5",
-              eSysIcons.Information,
-              eSysIcons.Warning);
+              SystemIconType.Information,
+              SystemIconType.Warning);
 
             lbResult.Text = "ShowRadioBox return value : " + idx.ToString();
         }
 
-        private void button5_Click(object sender, EventArgs e)
+        private void OnButtonCommandBoxExample_Click(object sender, EventArgs e)
         {
-            cTaskDialog.ForceEmulationMode = checkBox1.Checked;
-            try { cTaskDialog.EmulatedFormWidth = Convert.ToInt32(edWidth.Text); }
-            catch (Exception) { cTaskDialog.EmulatedFormWidth = 450; }
+            VistaTaskDialogManager.ForceEmulationMode = checkBoxForceEmulation.Checked;
+            try { VistaTaskDialogManager.EmulatedFormWidth = Convert.ToInt32(edWidth.Text); }
+            catch (Exception) { VistaTaskDialogManager.EmulatedFormWidth = 450; }
 
-            int idx = cTaskDialog.ShowCommandBox(
+            int idx = VistaTaskDialogManager.ShowCommandBox(
               this,
               "CommandBox Title",
               "The main instruction text for the commandbox is shown here.",
@@ -156,33 +157,33 @@ namespace TestTaskDialog
               "Don't show this message again",
               "Command Button 1|Command Button 2|Command Button 3|Command Button 4",
               true,
-              eSysIcons.Information,
-              eSysIcons.Warning);
+              SystemIconType.Information,
+              SystemIconType.Warning);
 
             lbResult.Text = "ShowCommandBox return value : " + idx.ToString();
         }
 
-        private void btAsterisk_Click(object sender, EventArgs e)
+        private void OnBtAsterisk_Click(object sender, EventArgs e)
         {
             System.Media.SystemSounds.Asterisk.Play();
         }
 
-        private void btQuestion_Click(object sender, EventArgs e)
+        private void OnBtQuestion_Click(object sender, EventArgs e)
         {
             System.Media.SystemSounds.Question.Play();
         }
 
-        private void btHand_Click(object sender, EventArgs e)
+        private void OnBtHand_Click(object sender, EventArgs e)
         {
             System.Media.SystemSounds.Hand.Play();
         }
 
-        private void btExclamation_Click(object sender, EventArgs e)
+        private void OnBtExclamation_Click(object sender, EventArgs e)
         {
             System.Media.SystemSounds.Exclamation.Play();
         }
 
-        private void btBeep_Click(object sender, EventArgs e)
+        private void OnBtBeep_Click(object sender, EventArgs e)
         {
             System.Media.SystemSounds.Beep.Play();
         }

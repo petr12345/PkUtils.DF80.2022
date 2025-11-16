@@ -176,7 +176,7 @@ namespace WinTester
             if (args.iUnknown == IntPtr.Zero)
                 return;
 
-            Marshal.QueryInterface(args.iUnknown, ref ShellGUIDs.IID_IFolderFilterSite, out nint iFolderFilterSite);
+            Marshal.QueryInterface(args.iUnknown, in ShellGUIDs.IID_IFolderFilterSite, out nint iFolderFilterSite);
 
             Object obj = Marshal.GetTypedObjectForIUnknown(iFolderFilterSite, ShellFunctions.GetFolderFilterSiteType());
             IFolderFilterSite folderFilterSite = (IFolderFilterSite)obj;

@@ -6,6 +6,7 @@ using System.Text;
 
 namespace PK.PkUtils.WinApi;
 
+#pragma warning disable IDE0079   // Remove unnecessary suppressions
 #pragma warning disable VSSpell001  // Spell Check
 #pragma warning disable 1591        // Missing XML comment for publicly visible type or member...
 #pragma warning disable CA1069      // The enum member ... has the same constant value as member ...
@@ -3951,3 +3952,4 @@ public static class Win32
 #pragma warning restore CA1069
 #pragma warning restore 1591
 #pragma warning restore VSSpell001
+#pragma warning restore IDE0079

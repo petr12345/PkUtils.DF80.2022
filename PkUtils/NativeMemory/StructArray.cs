@@ -28,7 +28,7 @@ public unsafe class StructArray<S> : UnmanagedPtr where S : struct
     /// </summary>
     /// <param name="nStructuresToAllocate">An initial amount of structures for which  the memory block will be  allocated.</param>
     public StructArray(int nStructuresToAllocate)
-      : base(unchecked(nStructuresToAllocate * Marshal.SizeOf(typeof(S))))
+      : base(unchecked(nStructuresToAllocate * Marshal.SizeOf<S>()))
     {
         _size = nStructuresToAllocate;
     }
@@ -56,19 +56,23 @@ public unsafe class StructArray<S> : UnmanagedPtr where S : struct
         get { return _size; }
     }
 
-    /// <summary> Get the pointer to n-th ( nDex-th ) structure. Accompanies the indexer. </summary>
-    /// <exception cref="ArgumentOutOfRangeException"> Thrown when <paramref name="nDex"/> has invalid value. </exception>
-    /// <param name="nDex"> An array index. </param>
-    /// <returns>   Pointer to nDex-th  structure. </returns>
-    public IntPtr GetStructurePtr(int nDex)
+    /// <summary>
+    /// Returns a pointer to the structure at the specified index within the native memory array.
+    /// </summary>
+    /// <param name="index">The zero-based index of the structure to retrieve.</param>
+    /// <returns>A pointer to the structure at the specified index.</returns>
+    /// <exception cref="ArgumentOutOfRangeException">
+    /// Thrown when <paramref name="index"/> is less than zero or greater than or equal to <see cref="Size"/>.
+    /// </exception>
+    public IntPtr GetStructurePtr(int index)
     {
-        if ((nDex < 0) || (nDex >= Size))
+        if ((index < 0) || (index >= Size))
         {
             throw new ArgumentOutOfRangeException(
-                nameof(nDex), nDex, $"Value of {nameof(nDex)} can't be negative and must be less than current size {Size}.");
+                nameof(index), index, $"Value of {nameof(index)} can't be negative and must be less than current size {Size}.");
         }
 
-        return (IntPtr)(((byte*)base.PtrToUnmanagedMemory) + nDex * Marshal.SizeOf(typeof(S)));
+        return (IntPtr)(((byte*)base.PtrToUnmanagedMemory) + index * Marshal.SizeOf<S>());
     }
 
     /// <summary> Indexer to get items within this collection using array index syntax. </summary>
@@ -94,7 +98,7 @@ public unsafe class StructArray<S> : UnmanagedPtr where S : struct
                 nameof(nStructuresToAllocate), nStructuresToAllocate, $"Value of {nameof(nStructuresToAllocate)} can't be negative.");
         }
 
-        IntPtr result = base.Realloc(unchecked(nStructuresToAllocate * Marshal.SizeOf(typeof(S))));
+        IntPtr result = base.Realloc(unchecked(nStructuresToAllocate * Marshal.SizeOf<S>()));
         // OK to assign new size, no exception happened
         _size = nStructuresToAllocate;
 

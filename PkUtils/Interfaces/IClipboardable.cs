@@ -1,14 +1,4 @@
-﻿/***************************************************************************************************************
-*
-* FILE NAME:   .\Interfaces\IClipboardable.cs
-*
-* AUTHOR:      Petr Kodet
-*
-* DESCRIPTION: The file contains definition of interface IClipboardable
-*
-**************************************************************************************************************/
-
-// Ignore Spelling: Utils, Clipboardable
+﻿// Ignore Spelling: Utils, Clipboardable
 //
 using System;
 

@@ -1,15 +1,4 @@
-﻿/***************************************************************************************************************
-*
-* FILE NAME:   .\Comparers\KeyEqualityComparer.cs
-*
-* AUTHOR:      Petr Kodet
-*
-* DESCRIPTION:  Contains the class KeyEqualityComparer implementing IEqualityComparer
-*
-**************************************************************************************************************/
-
-
-// Ignore Spelling: Comparers, Utils
+﻿// Ignore Spelling: Comparers, Utils
 //
 using System;
 using System.Collections.Generic;

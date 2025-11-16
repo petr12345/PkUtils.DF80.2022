@@ -1,14 +1,4 @@
-﻿/***************************************************************************************************************
-*
-* FILE NAME:   .\Interfaces\ISuspendable.cs
-*
-* AUTHOR:      Petr Kodet
-*
-* DESCRIPTION: The file contains definition of interface ISuspendable
-*
-**************************************************************************************************************/
-
-// Ignore Spelling: Utils, Suspendable, Haltable
+﻿// Ignore Spelling: Utils, Suspendable, Haltable
 //
 using System;
 

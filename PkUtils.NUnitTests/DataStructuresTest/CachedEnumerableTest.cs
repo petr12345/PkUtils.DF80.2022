@@ -6,6 +6,12 @@ using PK.PkUtils.Interfaces;
 
 namespace PK.PkUtils.NUnitTests.DataStructuresTest;
 
+#pragma warning disable IDE0079  // Remove unnecessary suppression
+#pragma warning disable IDE0290   // Use primary constructor
+#pragma warning disable IDE0300   // Simplify collection initialization
+#pragma warning disable IDE0305   // Collection initialization can be simplified
+#pragma warning disable NUnit2045 // Suppress 'Call independent Assert statements from inside an Assert.EnterMultipleScope or Assert.Multiple'
+
 /// <summary>
 /// This is a test class for CachedEnumerable generic
 ///</summary>
@@ -72,11 +78,14 @@ public class CachedEnumerableTest
     [Test]
     public void CachedEnumerable_Parsing_04()
     {
-        CachedEnumerable<string> enumerab = new CachedEnumerable<string>(Enumerable.Empty<string>());
+        CachedEnumerable<string> enumerab = new CachedEnumerable<string>([]);
 
-        Assert.That(enumerab.Status, Is.EqualTo(ParseStatus.ParseNotInitialized));
-        Assert.That(enumerab.Any(), Is.False);
-        Assert.That(enumerab.Status, Is.EqualTo(ParseStatus.ParsedOk));
+        using (Assert.EnterMultipleScope())
+        {
+            Assert.That(enumerab.Status, Is.EqualTo(ParseStatus.ParseNotInitialized));
+            Assert.That(enumerab.Any(), Is.False);
+            Assert.That(enumerab.Status, Is.EqualTo(ParseStatus.ParsedOk));
+        }
     }
 
     /// <summary> A test for CachedEnumerable parsing, which should succeed. </summary>
@@ -177,10 +186,13 @@ public class CachedEnumerableTest
 
             for (int jj = 0; jj < arrInput.Length; jj++)
             {
-                Assert.That(en.CanPeek, Is.True);
-                Assert.That(enumerab.Status, Is.EqualTo(ParseStatus.Parsing));
-                Assert.That(en.Peek, Is.EqualTo(arrInput[jj]));
-                Assert.That(en.MoveNext(), Is.True);
+                using (Assert.EnterMultipleScope())
+                {
+                    Assert.That(en.CanPeek, Is.True);
+                    Assert.That(enumerab.Status, Is.EqualTo(ParseStatus.Parsing));
+                    Assert.That(en.Peek, Is.EqualTo(arrInput[jj]));
+                    Assert.That(en.MoveNext(), Is.True);
+                }
             }
             enumerab.ResetCache();
         }
@@ -207,14 +219,20 @@ public class CachedEnumerableTest
             // ii/ if there was a previous enumerator, test that Current and Peek throws ArgumentException
             if (en_PrevGeneration != null)
             {
-                Assert.Throws<ArgumentException>(() => { int dDummyVal = en_PrevGeneration.Current; });
-                Assert.Throws<ArgumentException>(() => { int dDummyVal = en_PrevGeneration.Peek; });
+                using (Assert.EnterMultipleScope())
+                {
+                    Assert.Throws<ArgumentException>(() => { int dDummyVal = en_PrevGeneration.Current; });
+                    Assert.Throws<ArgumentException>(() => { int dDummyVal = en_PrevGeneration.Peek; });
+                }
             }
 
             // iii/ test functionality of current enumerator
-            Assert.That(en_CurrentGeneration.CanPeek, Is.True);
-            Assert.That(enumerab.Status, Is.EqualTo(ParseStatus.Parsing));
-            Assert.That(en_CurrentGeneration.Peek, Is.EqualTo(arrInput[0]));
+            using (Assert.EnterMultipleScope())
+            {
+                Assert.That(en_CurrentGeneration.CanPeek, Is.True);
+                Assert.That(enumerab.Status, Is.EqualTo(ParseStatus.Parsing));
+                Assert.That(en_CurrentGeneration.Peek, Is.EqualTo(arrInput[0]));
+            }
 
             // iv/ reset cache, invalidating all enumerators created so far
             enumerab.ResetCache();
@@ -270,9 +288,12 @@ public class CachedEnumerableTest
         int[] arrInput = { 0, 1, 2, 3 };
         CachedEnumerable<int> enumerab = new CachedEnumerable<int>(arrInput);
 
-        Assert.That(enumerab.Status, Is.EqualTo(ParseStatus.ParseNotInitialized));
-        Assert.That(enumerab.ResumeParsing(), Is.True);
-        Assert.That(enumerab.Status, Is.EqualTo(ParseStatus.ParseNotInitialized));
+        using (Assert.EnterMultipleScope())
+        {
+            Assert.That(enumerab.Status, Is.EqualTo(ParseStatus.ParseNotInitialized));
+            Assert.That(enumerab.ResumeParsing(), Is.True);
+            Assert.That(enumerab.Status, Is.EqualTo(ParseStatus.ParseNotInitialized));
+        }
     }
 
     /// <summary>
@@ -337,30 +358,42 @@ public class CachedEnumerableTest
         AuxIntCachedEnumerable<int> enumerab = new AuxIntCachedEnumerable<int>(arrInput, nFirstSmallMaxSize);
 
         // i/ play with status ParseStatus.ParseNotInitialized
-        Assert.That(enumerab.Status, Is.EqualTo(ParseStatus.ParseNotInitialized));
-        Assert.That(enumerab.ResumeParsing(), Is.True);
-        Assert.That(enumerab.Status, Is.EqualTo(ParseStatus.ParseNotInitialized));
+        using (Assert.EnterMultipleScope())
+        {
+            Assert.That(enumerab.Status, Is.EqualTo(ParseStatus.ParseNotInitialized));
+            Assert.That(enumerab.ResumeParsing(), Is.True);
+            Assert.That(enumerab.Status, Is.EqualTo(ParseStatus.ParseNotInitialized));
+        }
 
         // ii/ play with status ParseStatus.Parsing
         IPeekAbleEnumerator<int> en = enumerab.GetPeekAbleEnumerator();
-        Assert.That(en.CanPeek, Is.True);
-        Assert.That(enumerab.Status, Is.EqualTo(ParseStatus.Parsing));
-        Assert.That(enumerab.ResumeParsing(), Is.True);
-        Assert.That(enumerab.Status, Is.EqualTo(ParseStatus.Parsing));
+        using (Assert.EnterMultipleScope())
+        {
+            Assert.That(en.CanPeek, Is.True);
+            Assert.That(enumerab.Status, Is.EqualTo(ParseStatus.Parsing));
+            Assert.That(enumerab.ResumeParsing(), Is.True);
+            Assert.That(enumerab.Status, Is.EqualTo(ParseStatus.Parsing));
+        }
 
         // iii/ play with status ParseStatus.ParsePrematureEnd, when max buffer size is still small
         enumerab.FillBuffer(999);
-        Assert.That(enumerab.CachedItemsCount, Is.EqualTo(nFirstSmallMaxSize));
-        Assert.That(enumerab.Status, Is.EqualTo(ParseStatus.ParsePrematureEnd));
-        Assert.That(enumerab.ResumeParsing(), Is.False);
-        Assert.That(enumerab.Status, Is.EqualTo(ParseStatus.ParsePrematureEnd));
+        using (Assert.EnterMultipleScope())
+        {
+            Assert.That(enumerab.CachedItemsCount, Is.EqualTo(nFirstSmallMaxSize));
+            Assert.That(enumerab.Status, Is.EqualTo(ParseStatus.ParsePrematureEnd));
+            Assert.That(enumerab.ResumeParsing(), Is.False);
+            Assert.That(enumerab.Status, Is.EqualTo(ParseStatus.ParsePrematureEnd));
+        }
 
         // iv/ play with status ParseStatus.ParsePrematureEnd, when max buffer size is enlarged
         enumerab.MaxBufferSize = int.MaxValue;
-        Assert.That(enumerab.ResumeParsing(), Is.True);
-        Assert.That(enumerab.Status, Is.EqualTo(ParseStatus.Parsing));
-        Assert.That(enumerab.FillBuffer(), Is.EqualTo(arrInput.Length));
-        Assert.That(enumerab.Status, Is.EqualTo(ParseStatus.ParsedOk));
+        using (Assert.EnterMultipleScope())
+        {
+            Assert.That(enumerab.ResumeParsing(), Is.True);
+            Assert.That(enumerab.Status, Is.EqualTo(ParseStatus.Parsing));
+            Assert.That(enumerab.FillBuffer(), Is.EqualTo(arrInput.Length));
+            Assert.That(enumerab.Status, Is.EqualTo(ParseStatus.ParsedOk));
+        }
     }
     #endregion // Tests_ResumeParsing
 
@@ -430,6 +463,7 @@ public class CachedEnumerableTest
     {
         CachedEnumerable<int> enumerab = new CachedEnumerable<int>(Enumerable.Range(0, 10));
         IPeekAbleEnumerator<int> en = enumerab.GetPeekAbleEnumerator();
+        Assert.That(en, Is.Not.Null);
         enumerab.Dispose();
         enumerab.Dispose();
     }
@@ -512,6 +546,8 @@ public class CachedEnumerableTest
             {
                 // Do NOT use using (Assert.EnterMultipleScope())
                 // because of problem System.InvalidOperationException : The assertion scope was disposed out of order.
+                // Best Practice: Avoid using assertion scopes inside parallel test code.
+
                 // using (Assert.EnterMultipleScope())
                 {
                     Assert.That(en.CanPeek, Is.True);
@@ -573,6 +609,7 @@ public class CachedEnumerableTest
         IPeekAbleEnumerator<MyRectangle> enRects = enData.GetPeekAbleEnumerator();
         // makes sense, as MyRectangle derives from MyShape, but covariance is needed to let compiler allow that
         IPeekAbleEnumerator<MyShape> enShapes = enRects;
+        Assert.That(enShapes.CanPeek, Is.True);
     }
 
     /// <summary> A test for covariance of IPeekAbleEnumerable ( compilation of assignment ). </summary>
@@ -585,6 +622,7 @@ public class CachedEnumerableTest
         IPeekAbleEnumerable<MyRectangle> enDataRectangles = new CachedEnumerable<MyRectangle>(arrInput);
         // makes sense, as MyRectangle derives from MyShape, but covariance is needed to let compiler allow that
         IPeekAbleEnumerable<MyShape> enDatShapes = enDataRectangles;
+        Assert.That(enDatShapes.GetPeekAbleEnumerator(), Is.Not.Null);
     }
 
     /// <summary> A test for covariance of ICachedEnumerable ( compilation of assignment ). </summary>
@@ -595,9 +633,18 @@ public class CachedEnumerableTest
 
         // enumerable with more derived type
         ICachedEnumerable<MyRectangle> enDataRectangles = new CachedEnumerable<MyRectangle>(arrInput);
+
         // makes sense, as MyRectangle derives from MyShape, but covariance is needed to let compiler allow that
-        ICachedEnumerable<MyShape> enDatShapes = enDataRectangles;
+        ICachedEnumerable<MyShape> enDataShapes = enDataRectangles;
+
+        Assert.That(enDataShapes.CachedItemsCount, Is.Zero);
     }
     #endregion // Tests_Covariance
     #endregion // Tests
 }
+
+#pragma warning restore NUnit2045
+#pragma warning restore IDE0305
+#pragma warning restore IDE0300
+#pragma warning restore IDE0290
+#pragma warning restore IDE0079

@@ -1,14 +1,4 @@
-﻿/***************************************************************************************************************
-*
-* FILE NAME:   .\Utils\ErrorPresenterBase.cs
-*
-* AUTHOR:      Petr Kodet
-*
-* DESCRIPTION: The file contains implementation of the class ErrorPresenterBase
-*
-**************************************************************************************************************/
-
-// Ignore Spelling: Utils
+﻿// Ignore Spelling: Utils
 //
 using System;
 using System.Collections.Generic;
@@ -20,7 +10,11 @@ using PK.PkUtils.Interfaces;
 using PK.PkUtils.Reflection;
 using PK.PkUtils.UI.Dialogs.MsgBoxes;
 
+#pragma warning disable IDE0290     // Use primary constructor
+
+
 namespace PK.PkUtils.Utils;
+
 
 /// <summary>
 /// A base class implementing IErrorPresenter interface.
@@ -283,26 +277,25 @@ public class ErrorPresenterBase : IErrorPresenter
     {
         ArgumentNullException.ThrowIfNull(info);
 
-        string strTmp;
         bool result = false;
 
         if (obj != null)
         {
-            if (null != (strTmp = (obj as string)))
+            if (obj is string strTmp)
             {
                 info.MessageCaption = strTmp;
             }
-            else if (obj is MessageBoxButtons)
+            else if (obj is MessageBoxButtons buttons)
             {
-                info.MessageButtons = (MessageBoxButtons)obj;
+                info.MessageButtons = buttons;
             }
-            else if (obj is MessageBoxIcon)
+            else if (obj is MessageBoxIcon icon)
             {
-                info.MessageIcon = (MessageBoxIcon)obj;
+                info.MessageIcon = icon;
             }
-            else if (obj is MessageBoxDefaultButton)
+            else if (obj is MessageBoxDefaultButton defaultButton)
             {
-                info.MessageDefaultButton = (MessageBoxDefaultButton)obj;
+                info.MessageDefaultButton = defaultButton;
             }
             else
             {
@@ -345,3 +338,5 @@ public class ErrorPresenterBase : IErrorPresenter
     }
     #endregion // IErrorPresenter Members
 }
+
+#pragma warning restore IDE0290     // Use primary constructor

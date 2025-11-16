@@ -42,7 +42,7 @@ namespace PK.TestConcurrency
             if (!Enum.IsDefined(typeof(TestMode), mode))
             {
                 string strErr = string.Format(CultureInfo.InvariantCulture, "Invalid value of mode = '{0}'", mode);
-                throw new ArgumentException(strErr, "mode");
+                throw new ArgumentException(strErr, nameof(mode));
             }
             else
             {

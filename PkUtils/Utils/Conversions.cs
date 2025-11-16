@@ -1,16 +1,4 @@
-﻿/***************************************************************************************************************
-*
-* FILE NAME:   .\Utils\Conversions.cs
-*
-* AUTHOR:      Petr Kodet
-*
-* DESCRIPTION:
-*   The file contains the static class Conversions
-*   
-*
-**************************************************************************************************************/
-
-// Ignore Spelling: Utils, Cloneable
+﻿// Ignore Spelling: Utils, Cloneable
 //
 
 using System;

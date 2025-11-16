@@ -1,21 +1,11 @@
-﻿/***************************************************************************************************************
-*
-* FILE NAME:   .\Interfaces\IModified.cs
-*
-* AUTHOR:      Petr Kodet
-*
-* DESCRIPTION: The file contains definition of interface IModified
-*
-**************************************************************************************************************/
-
-// Ignore Spelling: Utils
+﻿// Ignore Spelling: Utils
 //
 using System;
 
-namespace PK.PkUtils.Interfaces;
+namespace PK.SubstEditLib.Subst;
 
 /// <summary>
-/// A delegate used by <see cref="IModified.evModified"/>event.
+/// A delegate used by <see cref="IModified.EventModified"/>event.
 /// </summary>
 /// <param name="sender">The source of the event.</param>
 /// <param name="e">The vent-specific data.</param>
@@ -31,7 +21,7 @@ public interface IModified
     /// <summary>
     /// The event raised when the property <see cref="IsModified"/> becomes true.
     /// </summary>
-    event ModifiedEventHandler evModified;
+    event ModifiedEventHandler EventModified;
 
     /// <summary>
     /// Returns true if the object has been modified; false otherwise.
@@ -40,7 +30,7 @@ public interface IModified
 
     /// <summary>
     /// Sets the value of related property <see cref="IsModified "/> to given <paramref name="bValue"/>. <br/>
-    /// If the new value is true, the event <see cref="evModified"/> will be raised.
+    /// If the new value is true, the event <see cref="EventModified"/> will be raised.
     /// </summary>
     /// <param name="bValue">The new value of related property.</param>
     void SetModified(bool bValue);

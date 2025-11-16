@@ -315,11 +315,15 @@ public partial class MsgBoxYesNoAllPanelBased : Form
         UpdateSize(true);
     }
 
-    /// <summary> Raises the <see cref="Form.Closing" /> event. </summary>
-    /// <param name="args"> A <see cref="System.ComponentModel.CancelEventArgs" /> that contains the event data. </param>
-    protected override void OnClosing(CancelEventArgs args)
+    /// <summary>
+    /// Called when the form is being closed. Caches the current <see cref="Form.Location"/>
+    /// into the private field <c>_lastLocation</c> so the form's previous position can be
+    /// restored on subsequent displays.
+    /// </summary>
+    /// <param name="args">A <see cref="FormClosingEventArgs"/> that contains the event data for the closing event.</param>
+    protected override void OnFormClosing(FormClosingEventArgs args)
     {
-        base.OnClosing(args);
+        base.OnFormClosing(args);
         _lastLocation = this.Location;
     }
     #endregion // Protected Methods

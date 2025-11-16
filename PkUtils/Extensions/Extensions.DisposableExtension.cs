@@ -11,22 +11,25 @@ namespace PK.PkUtils.Extensions;
 /// <summary>
 /// Wrapper class around IDisposableEx extension methods.
 /// </summary>
-public static class DisposableExtension
+public static class DisposableExtensions
 {
     /// <summary>
-    /// Throws <see cref="ArgumentNullException"/> in case the object is null.
-    /// Throws <see cref="ObjectDisposedException"/> in case the object is not null, 
-    /// but its IDisposableEx.IsDisposed property returns true.
+    /// Checks whether the specified <paramref name="obj"/> is not <c>null</c> and has not been disposed.
+    /// <para>
+    /// Throws an <see cref="ArgumentNullException"/> if <paramref name="obj"/> is <c>null</c>.
+    /// Throws an <see cref="ObjectDisposedException"/> if <paramref name="obj"/> is not <c>null</c> but its <see cref="IDisposableEx.IsDisposed"/> property returns <c>true</c>.
+    /// </para>
     /// </summary>
-    /// 
-    /// <exception cref="ArgumentNullException"> Thrown when a supplied object is null. </exception>
-    /// <exception cref="ObjectDisposedException"> Thrown when a supplied object has been disposed. </exception>
-    /// 
-    /// <param name="obj"> The object being checked. </param>
-    /// <param name="objectName"> The name of the object ( for instance the name 
-    /// of formal argument in the calling code).
-    /// This name will appear in resulting exception text. </param>
-    public static void CheckNotDisposed(
+    /// <param name="obj">The object to check for <c>null</c> and disposal state.</param>
+    /// <param name="objectName">
+    /// The name of the object (for example, the name of the formal argument in the calling code).
+    /// This name will appear in the exception message if an exception is thrown.
+    /// </param>
+    /// <returns>The original <paramref name="obj"/> if it is not <c>null</c> and not disposed.</returns>
+    /// <exception cref="ArgumentNullException">Thrown when <paramref name="obj"/> is <c>null</c>.</exception>
+    /// <exception cref="ObjectDisposedException">Thrown when <paramref name="obj"/> has been disposed.</exception>
+    /// <returns> The original value of <paramref name="obj"/>. </returns>
+    public static IDisposableEx CheckNotDisposed(
         this IDisposableEx obj,
         [CallerArgumentExpression(nameof(obj))] string objectName = null)
     {
@@ -36,6 +39,8 @@ public static class DisposableExtension
             throw new ObjectDisposedException(string.IsNullOrEmpty(objectName) ?
               obj.GetType().FullName : objectName);
         }
+
+        return obj;
     }
 }
 

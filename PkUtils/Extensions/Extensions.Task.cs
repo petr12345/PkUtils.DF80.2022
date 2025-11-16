@@ -1,15 +1,4 @@
-﻿/***************************************************************************************************************
-*
-* FILE NAME:   .\Extensions\Extensions.Task.cs
-*
-* AUTHOR:      Petr Kodet
-*
-* DESCRIPTION:
-*   The file contains extension-methods class AssemblyExtensions
-*
-**************************************************************************************************************/
-
-// Ignore Spelling: Utils
+﻿// Ignore Spelling: Utils
 //
 using System;
 using System.Reflection;
@@ -25,12 +14,16 @@ namespace PK.PkUtils.Extensions;
 /// <summary>
 /// Implements extension methods for <see cref="Assembly"/>.
 /// </summary>
-public static class TaskEx
+/// <remarks>
+/// Naming note: The class is named 'TaskExtension' (singular) instead of the expected 'TaskExtensions',
+/// to prevent naming collision with 'System.Threading.Tasks.TaskExtensions'.
+/// </remarks>
+public static class TaskExtension
 {
     #region Extension Methods
 
     /// <summary>
-    /// A TaskExtensions extension method that executes synchronously the task operation
+    /// A TypeExtension extension method that executes synchronously the task operation
     /// and returns the result of the task.
     /// </summary>
     /// <exception cref="ArgumentNullException"> Thrown when a supplied task is null. </exception>
@@ -68,7 +61,7 @@ public static class TaskEx
         return result;
     }
 
-    /// <summary> A TaskExtensions extension method that executes synchronously the task operation. </summary>
+    /// <summary> A TypeExtension extension method that executes synchronously the task operation. </summary>
     /// <exception cref="ArgumentNullException">    Thrown when a supplied task is null. </exception>
     ///
     /// <param name="t">    The task to act on. Can't be null. </param>

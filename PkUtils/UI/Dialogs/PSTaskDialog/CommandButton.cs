@@ -18,9 +18,11 @@ using System;
 using System.ComponentModel;
 using System.Drawing;
 using System.Drawing.Drawing2D;
+using System.IO;
+using System.Reflection;
 using System.Windows.Forms;
 
-namespace PK.PkUtils.UI.PSTaskDialog;
+namespace PK.PkUtils.UI.Dialogs.PSTaskDialog;
 
 public partial class CommandButton : Button
 {
@@ -33,9 +35,9 @@ public partial class CommandButton : Button
     private const int TOP_MARGIN = 10;
     private const int ARROW_WIDTH = 19;
 
-    private enum eButtonState { Normal, MouseOver, Down }
+    private enum ButtonState { Normal, MouseOver, Down }
 
-    private eButtonState _State = eButtonState.Normal;
+    private ButtonState _state = ButtonState.Normal;
 
     #endregion
 
@@ -151,11 +153,11 @@ public partial class CommandButton : Button
             return "";
 
         string s = this.Text;
-        string[] lines = s.Split(new char[] { '\n' });
+        string[] lines = s.Split(['\n']);
         s = "";
         for (int i = 1; i < lines.Length; i++)
             s += lines[i] + "\n";
-        return s.Trim(new char[] { '\n' });
+        return s.Trim(['\n']);
     }
 
     private SizeF GetLargeTextSizeF()
@@ -189,8 +191,43 @@ public partial class CommandButton : Button
     protected override void OnCreateControl()
     {
         base.OnCreateControl();
-        _imgArrow1 = new Bitmap(this.GetType(), "green_arrow1.png");
-        _imgArrow2 = new Bitmap(this.GetType(), "green_arrow2.png");
+        _imgArrow1 = LoadEmbeddedImage("green_arrow1.png");
+        _imgArrow2 = LoadEmbeddedImage("green_arrow2.png");
+    }
+
+    /// <summary>
+    /// Loads an embedded image from the control's assembly by searching manifest resource names
+    /// and returns a fully independent Bitmap (stream safely disposed).
+    /// </summary>
+    /// <param name="fileName">The file name of the embedded resource (e.g. "green_arrow1.png").</param>
+    protected Bitmap LoadEmbeddedImage(string fileName)
+    {
+        Bitmap result = null;
+        Assembly asm = this.GetType().Assembly;
+
+        // Find a resource name that ends with the provided file name (case-insensitive).
+        string resourceName = null;
+        foreach (string name in asm.GetManifestResourceNames())
+        {
+            if (name.EndsWith(fileName, StringComparison.OrdinalIgnoreCase))
+            {
+                resourceName = name;
+                break;
+            }
+        }
+
+        if (resourceName != null)
+        {
+            using Stream stream = asm.GetManifestResourceStream(resourceName);
+            if (stream != null)
+            {
+                // Create a temporary Image from the stream then clone into a Bitmap so the stream can be closed.
+                using Image tmp = Image.FromStream(stream);
+                result = new Bitmap(tmp);
+            }
+        }
+
+        return result;
     }
 
     //--------------------------------------------------------------------------------
@@ -214,9 +251,9 @@ public partial class CommandButton : Button
 
         if (Enabled)
         {
-            switch (_State)
+            switch (_state)
             {
-                case eButtonState.Normal:
+                case ButtonState.Normal:
                     args.Graphics.FillRectangle(Brushes.White, newRect);
                     if (base.Focused)
                         args.Graphics.DrawRectangle(new Pen(Color.SkyBlue, 1), newRect);
@@ -225,7 +262,7 @@ public partial class CommandButton : Button
                     text_color = Color.DarkBlue;
                     break;
 
-                case eButtonState.MouseOver:
+                case ButtonState.MouseOver:
                     brush = new LinearGradientBrush(newRect, Color.White, Color.WhiteSmoke, mode);
                     args.Graphics.FillRectangle(brush, newRect);
                     args.Graphics.DrawRectangle(new Pen(Color.Silver, 1), newRect);
@@ -233,7 +270,7 @@ public partial class CommandButton : Button
                     text_color = Color.Blue;
                     break;
 
-                case eButtonState.Down:
+                case ButtonState.Down:
                     brush = new LinearGradientBrush(newRect, Color.WhiteSmoke, Color.White, mode);
                     args.Graphics.FillRectangle(brush, newRect);
                     args.Graphics.DrawRectangle(new Pen(Color.DarkGray, 1), newRect);
@@ -249,17 +286,17 @@ public partial class CommandButton : Button
             text_color = Color.DarkBlue;
         }
 
-        string largetext = this.GetLargeText();
-        string smalltext = this.GetSmallText();
+        string largeText = this.GetLargeText();
+        string smallText = this.GetSmallText();
 
         SizeF szL = GetLargeTextSizeF();
-        //e.Graphics.DrawString(largetext, base.Font, new SolidBrush(text_color), new RectangleF(new PointF(LEFT_MARGIN + _imgArrow1.Width + 5, TOP_MARGIN), szL));
-        TextRenderer.DrawText(args.Graphics, largetext, base.Font, new Rectangle(LEFT_MARGIN + _imgArrow1.Width + 5, TOP_MARGIN, (int)szL.Width, (int)szL.Height), text_color, TextFormatFlags.Default);
+        //e.Graphics.DrawString(largeText, base.Font, new SolidBrush(text_color), new RectangleF(new PointF(LEFT_MARGIN + _imgArrow1.Width + 5, TOP_MARGIN), szL));
+        TextRenderer.DrawText(args.Graphics, largeText, base.Font, new Rectangle(LEFT_MARGIN + _imgArrow1.Width + 5, TOP_MARGIN, (int)szL.Width, (int)szL.Height), text_color, TextFormatFlags.Default);
 
-        if (!string.IsNullOrEmpty(smalltext))
+        if (!string.IsNullOrEmpty(smallText))
         {
             SizeF szS = GetSmallTextSizeF();
-            args.Graphics.DrawString(smalltext, _smallFont, new SolidBrush(text_color), new RectangleF(new PointF(LEFT_MARGIN + _imgArrow1.Width + 8, TOP_MARGIN + (int)szL.Height), szS));
+            args.Graphics.DrawString(smallText, _smallFont, new SolidBrush(text_color), new RectangleF(new PointF(LEFT_MARGIN + _imgArrow1.Width + 8, TOP_MARGIN + (int)szL.Height), szS));
         }
 
         args.Graphics.DrawImage(img, new Point(LEFT_MARGIN, TOP_MARGIN + (int)(szL.Height / 2) - img.Height / 2));
@@ -271,7 +308,7 @@ public partial class CommandButton : Button
     /// <param name="args">  An EventArgs that contains the event data. </param>
     protected override void OnMouseLeave(System.EventArgs args)
     {
-        _State = eButtonState.Normal;
+        _state = ButtonState.Normal;
         this.Invalidate();
         base.OnMouseLeave(args);
     }
@@ -282,7 +319,7 @@ public partial class CommandButton : Button
     /// <param name="args">  An EventArgs that contains the event data. </param>
     protected override void OnMouseEnter(EventArgs args)
     {
-        _State = eButtonState.MouseOver;
+        _state = ButtonState.MouseOver;
         this.Invalidate();
         base.OnMouseEnter(args);
     }
@@ -293,7 +330,7 @@ public partial class CommandButton : Button
     /// <param name="args">  An EventArgs that contains the event data. </param>
     protected override void OnMouseUp(MouseEventArgs args)
     {
-        _State = eButtonState.MouseOver;
+        _state = ButtonState.MouseOver;
         this.Invalidate();
         base.OnMouseUp(args);
     }
@@ -304,7 +341,7 @@ public partial class CommandButton : Button
     /// <param name="args">  An EventArgs that contains the event data. </param>
     protected override void OnMouseDown(MouseEventArgs args)
     {
-        _State = eButtonState.Down;
+        _state = ButtonState.Down;
         this.Invalidate();
         base.OnMouseDown(args);
     }

@@ -1,14 +1,4 @@
-﻿/***************************************************************************************************************
-*
-* FILE NAME:   .\IO\FileSearchExtension.cs
-*
-* AUTHOR:      Petr Kodet
-*
-* DESCRIPTION:  The file contains static class FileSearchExtension
-*
-**************************************************************************************************************/
-
-// Ignore Spelling: Utils
+﻿// Ignore Spelling: Utils
 //
 using System;
 using System.Collections.Generic;

@@ -1,18 +1,9 @@
-﻿/***************************************************************************************************************
-*
-* FILE NAME:   .\UI\Stack\FormStackId.cs
-*
-* AUTHOR:      Petr Kodet
-*
-* DESCRIPTION: The file contains definition of class FormStackId, derived from FormStac.StackId
-*
-**************************************************************************************************************/
-
-
-// Ignore Spelling: TDATA, Utils
+﻿// Ignore Spelling: TDATA, Utils
 //
 using System;
 using System.Collections.Generic;
+
+#pragma warning disable IDE0290   // Use primary constructor
 
 namespace PK.PkUtils.UI.Stack;
 
@@ -111,6 +102,16 @@ public class FormStackId<TDATA> : FormStack.StackId, IEquatable<FormStackId<TDAT
     }
 
     /// <summary>
+    /// Overrides the base object.Equals(object) to ensure correct equality semantics.
+    /// </summary>
+    /// <param name="obj">The object to compare with the current FormStackId.</param>
+    /// <returns>true if the objects are considered equal, false otherwise.</returns>
+    public override bool Equals(object obj)
+    {
+        return (obj is FormStackId<TDATA> other) ? Equals(other) : base.Equals(obj);
+    }
+
+    /// <summary>
     /// Overrides the implementation of the base class, in order to support additional data in this class
     /// </summary>
     /// <param name="other">The object to compare with the current FormStackId. </param>
@@ -180,3 +181,4 @@ public class FormStackId<TDATA> : FormStack.StackId, IEquatable<FormStackId<TDAT
     }
     #endregion // IEquatable<FormStackId> Members
 }
+#pragma warning restore IDE0290   // Use primary constructor

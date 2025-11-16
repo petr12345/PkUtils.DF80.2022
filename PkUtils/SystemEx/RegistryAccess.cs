@@ -1,14 +1,4 @@
-﻿/***************************************************************************************************************
-* 
-* FILE NAME:   .\SystemEx\RegistryAccess.cs
-*
-* AUTHOR:      Petr Kodet
-*
-* DESCRIPTION: The file contains definition of class RegistryAccess
-*
-**************************************************************************************************************/
-
-// Ignore Spelling: Utils
+﻿// Ignore Spelling: Utils
 // 
 using System.Windows.Forms;
 

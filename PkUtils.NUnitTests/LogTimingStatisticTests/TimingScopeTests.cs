@@ -3,6 +3,7 @@
 using PK.PkUtils.LogTimingStatistic;
 namespace PK.PkUtils.NUnitTests.LogTimingStatisticTests;
 
+#pragma warning disable IDE0079  // Remove unnecessary suppression
 #pragma warning disable CA1859    // Change type of variable ...
 
 [TestFixture()]
@@ -35,8 +36,11 @@ public class TimingScopeTests
         ITimingTopic topic2 = scope.TryGetTopic(_topicName2);
 
         // Assert
-        Assert.That(topic1, Is.Not.Null);
-        Assert.That(topic2, Is.Not.Null);
+        using (Assert.EnterMultipleScope())
+        {
+            Assert.That(topic1, Is.Not.Null);
+            Assert.That(topic2, Is.Not.Null);
+        }
     }
 
 
@@ -65,14 +69,17 @@ public class TimingScopeTests
         ITimingScope scope = new TimingScope();
 
         // Act            
-        var topic1 = scope.AddOccurrence(_topicName1, TimeSpan.FromSeconds(222));
-        var topic2 = scope.AddOccurrence(_topicName2, TimeSpan.FromSeconds(444));
-        var all = scope.GetAllTopics();
+        ITimingTopic topic1 = scope.AddOccurrence(_topicName1, TimeSpan.FromSeconds(222));
+        ITimingTopic topic2 = scope.AddOccurrence(_topicName2, TimeSpan.FromSeconds(444));
+        IReadOnlyList<ITimingTopic> all = scope.GetAllTopics();
 
         // Assert
-        Assert.That(all, Contains.Item(topic1));
-        Assert.That(all, Contains.Item(topic2));
-        Assert.That(all.Count, Is.EqualTo(2));
+        using (Assert.EnterMultipleScope())
+        {
+            Assert.That(all, Contains.Item(topic1));
+            Assert.That(all, Contains.Item(topic2));
+            Assert.That(all, Has.Count.EqualTo(2));
+        }
     }
 
     [Test()]

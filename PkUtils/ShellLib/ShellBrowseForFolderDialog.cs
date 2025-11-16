@@ -1,13 +1,3 @@
-/***************************************************************************************************************
-*
-* FILE NAME:   .\ShellLib\ShellBrowseForFolderDialog.cs
-*
-* AUTHOR:      Petr Kodet
-*
-* DESCRIPTION: The file contains definition of class ShellBrowseForFolderDialog
-*
-**************************************************************************************************************/
-
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //
 // Microsoft Public License (MS-PL) notice
@@ -32,7 +22,9 @@ using System.Runtime.InteropServices;
 using System.Windows.Forms;
 using static PK.PkUtils.ShellLib.ShellApi;
 
-#pragma warning disable IDE0290 // Use primary constructor
+#pragma warning disable IDE0079     // Remove unnecessary suppressions
+#pragma warning disable IDE0290     // Use primary constructor
+#pragma warning disable SYSLIB1054  // Use 'LibraryImportAttribute' instead of 'DllImportAttribute' to generate P/Invoke marshalling code at compile time
 
 namespace PK.PkUtils.ShellLib;
 
@@ -649,7 +641,7 @@ public class ShellBrowseForFolderDialog
             lpszTitle = Title,
             ulFlags = (uint)DetailsFlags,
             lParam = 0,
-            lpfn = new ShellApi.BrowseCallbackProc(this.myBrowseCallbackProc)
+            lpfn = new ShellApi.BrowseCallbackProc(this.MyBrowseCallbackProc)
         };
 
         // Show dialog
@@ -753,7 +745,7 @@ public class ShellBrowseForFolderDialog
 
     #region Private Methods
 
-    private int myBrowseCallbackProc(IntPtr hwnd, uint uMsg, IntPtr lParam, IntPtr lpData)
+    private int MyBrowseCallbackProc(IntPtr hwnd, uint uMsg, IntPtr lParam, IntPtr lpData)
     {
         switch ((BrowseForFolderMessagesFrom)uMsg)
         {
@@ -846,4 +838,6 @@ public class ShellBrowseForFolderDialog
     #endregion // Methods
 }
 
+#pragma warning restore SYSLIB1054 // Use 'LibraryImportAttribute' instead of 'DllImportAttribute' to generate P/Invoke marshalling code at compile time
 #pragma warning restore IDE0290 // Use primary constructor
+#pragma warning restore IDE0079  // Remove unnecessary suppressions

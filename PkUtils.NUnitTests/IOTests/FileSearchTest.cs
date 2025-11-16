@@ -5,6 +5,8 @@ using System.Diagnostics;
 using System.Globalization;
 using PK.PkUtils.IO;
 
+#pragma warning disable IDE0305 // Collection initialization can be simplified
+
 
 namespace PK.PkUtils.NUnitTests.IOTests;
 
@@ -347,3 +349,4 @@ public class FileSearchTest
     }
     #endregion // Tests
 }
+#pragma warning restore IDE0305

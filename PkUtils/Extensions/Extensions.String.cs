@@ -1,15 +1,4 @@
-﻿/***************************************************************************************************************
-*
-* FILE NAME:   .\Extensions\Extensions.String.cs
-*
-* AUTHOR:      Petr Kodet
-*
-* DESCRIPTION:
-*   The file contains extension-methods class StringExtension
-*
-**************************************************************************************************************/
-
-// Ignore Spelling: Utils
+﻿// Ignore Spelling: Utils
 //
 using System;
 using System.Collections.Generic;
@@ -24,7 +13,7 @@ namespace PK.PkUtils.Extensions;
 /// <summary>
 /// Implements extension methods for strings
 /// </summary>
-public static class StringExtension
+public static class StringExtensions
 {
     #region Extension Methods
 
@@ -81,7 +70,7 @@ public static class StringExtension
     public static T Parse<T>(this string value, bool ignoreCase = false)
         where T : Enum
     {
-        return EnumExtension.Parse<T>(value, ignoreCase);
+        return EnumExtensions.Parse<T>(value, ignoreCase);
     }
 
     /// <summary>
@@ -102,7 +91,7 @@ public static class StringExtension
     public static T ToEnum<T>(this string value, T fallBackValue, bool ignoreCase = false)
         where T : struct, Enum
     {
-        return EnumExtension.ToEnum<T>(value, fallBackValue, ignoreCase);
+        return EnumExtensions.ToEnum<T>(value, fallBackValue, ignoreCase);
     }
     #endregion // Conversions_string_enum
 

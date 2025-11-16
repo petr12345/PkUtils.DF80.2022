@@ -221,7 +221,7 @@ public class ListBoxTipHandler : TipHandler
             {
                 bool bSel = false;
 
-                if (g_bDrawSelHighlighted)
+                if (TipHandler.DrawSelHighlighted)
                 {
                     bSel = pListBox.GetSelected((int)nItem);
                 }
@@ -235,7 +235,7 @@ public class ListBoxTipHandler : TipHandler
                     string sText;   // item text
                     Rectangle rc;   // item text rectangle in popup tip
                     int nMargCx = TipWindow.Margins.Width;
-                    int deltaCx = nMargCx / 2 - 2;
+                    int deltaCx = 1 + nMargCx / 2;
 
                     // new item, and not wholly visible: prepare popup tip
                     OnGetItemInfo(ptClient, false, out _, out rc, out sText);

@@ -10,6 +10,8 @@ using PK.PkUtils.Reflection;
 
 namespace PK.PkUtils.UnitTests.ReflectionTests;
 
+#pragma warning disable IDE0059   // Avoid unnecessary value assignments
+
 /// <summary>
 /// This is a test class for MethodsUtils and is intended
 /// to contain all MethodsUtils Unit Tests
@@ -651,3 +653,4 @@ public class MethodsUtilsTest
     }
     #endregion // Accessing_MethodInfo_Full_Scope_tests
 }
+#pragma warning restore IDE0059

@@ -239,7 +239,17 @@ public static class ProcessUtils
         }
         finally
         {
-            RmEndSession(handle);
+            // Only try to end a session we actually opened
+            if (handle != 0)
+            {
+                int endResult = RmEndSession(handle);
+                if (endResult != 0)
+                {
+                    // Log the error; don't throw from finally (would hide earlier exceptions)
+                    Trace.WriteLine(string.Format(CultureInfo.InvariantCulture,
+                        "RmEndSession failed (0x{0:X}): {1}", endResult, ErrorCodeToString(endResult)));
+                }
+            }
         }
 
         return processes;

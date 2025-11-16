@@ -1,13 +1,4 @@
-﻿/***************************************************************************************************************
-*
-* FILE NAME:   .\UI\Stack\IStackedForm.cs
-*
-* AUTHOR:      Petr Kodet
-*
-* DESCRIPTION: The file contains definition of interface IStackedForm
-*
-**************************************************************************************************************/
-///////////////////////////////////////////////////////////////////////////////////////////////////////////////
+﻿///////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //
 // MSDN license agreement notice
 // 
@@ -27,6 +18,8 @@ using System.Threading;
 using System.Windows.Forms;
 
 namespace PK.PkUtils.UI.Stack;
+
+#pragma warning disable IDE0290     // Use primary constructor
 
 /// <summary>
 /// Interface that is mandatory for any class which works as an StackId - an identifier of stacked Form.
@@ -126,7 +119,7 @@ public interface IStackedForm
     /// <summary>
     /// The event raised when the Form is closed
     /// </summary>
-    event EventHandler<EventFormStackItemClosedArgs> evStackItemClosed;
+    event EventHandler<EventFormStackItemClosedArgs> EventStackItemClosed;
 
     /// <summary>
     /// The event used to signalize when the Form data preloading has finished.,

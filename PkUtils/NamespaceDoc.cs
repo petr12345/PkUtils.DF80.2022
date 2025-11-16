@@ -1,14 +1,4 @@
-﻿/***************************************************************************************************************
-*
-* FILE NAME:   .\WeakRefs\NamespaceDoc.cs
-*
-* AUTHOR:      Petr Kodet
-*
-* DESCRIPTION: Contains the class NamespaceDoc
-*
-**************************************************************************************************************/
-
-// Ignore Spelling: Utils, Comparers, Api, Interop
+﻿// Ignore Spelling: Utils, Comparers, Api, Interop, namespaces
 //
 
 #pragma warning disable IDE0130 // Namespace "..." does not match folder structure

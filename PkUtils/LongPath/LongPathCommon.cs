@@ -11,6 +11,8 @@ using System.Runtime.InteropServices;
 using System.Text;
 using PK.PkUtils.WinApi;
 
+#pragma warning disable IDE0130 // Namespace "..." does not match folder structure
+
 namespace Microsoft.Experimental.IO;
 
 internal static class LongPathCommon
@@ -385,3 +387,4 @@ internal static class LongPathCommon
     #endregion // Private Fields
     #endregion // Private Members
 }
+#pragma warning restore IDE0130

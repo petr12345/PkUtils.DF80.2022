@@ -1,18 +1,10 @@
-﻿/***************************************************************************************************************
-*
-* FILE NAME:   .\Utils\MemUtils.cs
-*
-* AUTHOR:      Petr Kodet
-*
-* DESCRIPTION: The utility class MemUtils
-*
-**************************************************************************************************************/
-
-// Ignore Spelling: Utils, Mem, memcmp
+﻿// Ignore Spelling: Utils, Mem, memcmp
 //
 using System;
 
 namespace PK.PkUtils.Utils;
+
+#pragma warning disable IDE1006 // Naming rule violation
 
 /// <summary>
 /// Static class with several memory-related utilities.
@@ -136,3 +128,5 @@ public static class MemUtils
     }
     #endregion // Methods
 }
+
+#pragma warning restore IDE1006 // Naming rule violation

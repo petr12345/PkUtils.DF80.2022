@@ -7,6 +7,9 @@ using System.Windows.Forms.VisualStyles;
 using PK.PkUtils.Extensions;
 using PK.PkUtils.Interfaces;
 
+#pragma warning disable IDE0290     // Use primary constructor
+
+
 namespace PK.PkUtils.UI.Controls;
 
 public partial class MultiSelectTreeView : TreeView

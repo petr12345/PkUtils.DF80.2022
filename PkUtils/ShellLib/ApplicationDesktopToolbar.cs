@@ -311,15 +311,12 @@ public class ApplicationDesktopToolbar : Form
         return (retVal != IntPtr.Zero);
     }
 
-    /// <summary>
-    /// Returns the Win32 handle to the autohide appbar. 
-    /// </summary>
-    /// <param name="edge">The enum representing the particular Appbar position we are interested in.</param>
-    /// <returns>The return value is IntPtr.Zero if an error occurs or if no autohide appbar is associated with the given edge.</returns>
+    /// <summary> Returns the Win32 handle to the auto-hide appbar. </summary>
+    /// <returns>The return value is IntPtr.Zero if an error occurs or if no auto-hide appbar appbar is associated.</returns>
     /// <seealso href="http://msdn.microsoft.com/en-us/library/windows/desktop/bb787945(v=vs.85).aspx">
     /// MSDN help about ABM_GETAUTOHIDEBAR message
     /// </seealso>
-    protected IntPtr AppbarGetAutoHideBar(ShellApi.AppBarEdges edge)
+    protected IntPtr AppbarGetAutoHideBar()
     {
         // prepare data structure of message
         ShellApi.APPBARDATA msgData = PrepareAppbarData();
@@ -408,14 +405,12 @@ public class ApplicationDesktopToolbar : Form
         base.OnLoad(args);
     }
 
-    /// <summary>
-    /// Overwrites the virtual method of the predecessor, to provide custom processing.
-    /// </summary>
-    /// <param name="args">Provides data for a cancel able event. </param>
-    protected override void OnClosing(CancelEventArgs args)
+    /// <summary> Overwrites the virtual method of the predecessor, to provide custom processing. </summary>
+    /// <param name="args">Provides data for a cancel-able Form closing event. </param>
+    protected override void OnFormClosing(FormClosingEventArgs args)
     {
         AppbarRemove();
-        base.OnClosing(args);
+        base.OnFormClosing(args);
     }
 
     /// <summary>

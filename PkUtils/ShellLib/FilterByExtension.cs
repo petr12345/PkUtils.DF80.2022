@@ -1,13 +1,3 @@
-/***************************************************************************************************************
-*
-* FILE NAME:   .\ShellLib\FilterByExtension.cs
-*
-* AUTHOR:      Petr Kodet
-*
-* DESCRIPTION: The file contains definition of class FilterByExtension 
-*
-**************************************************************************************************************/
-
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //
 // Microsoft Public License (MS-PL) notice
@@ -31,6 +21,8 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.InteropServices;
+
+#pragma warning disable IDE0290     // Use primary constructor
 
 namespace PK.PkUtils.ShellLib;
 

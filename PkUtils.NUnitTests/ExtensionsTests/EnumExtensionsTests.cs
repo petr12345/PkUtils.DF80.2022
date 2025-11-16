@@ -4,9 +4,9 @@ using System.Collections.ObjectModel;
 using System.Windows.Forms;
 using PK.PkUtils.Extensions;
 
-namespace PK.PkUtils.NUnitTests.UtilsTests;
+namespace PK.PkUtils.NUnitTests.ExtensionsTests;
 
-/// <summary> (Unit Test Fixture) class testing <see cref="EnumExtension"/>. </summary>
+/// <summary> (Unit Test Fixture) class testing <see cref="EnumExtensions"/>. </summary>
 [TestFixture()]
 public class EnumExtensionsTests
 {
@@ -107,7 +107,7 @@ public class EnumExtensionsTests
         foreach (var p in testPairs)
         {
             MessageBoxButtons expected = p.ConvertedVal;
-            MessageBoxButtons actual = EnumExtension.Parse<MessageBoxButtons>(p.StringVal, ignoreCase: false);
+            MessageBoxButtons actual = EnumExtensions.Parse<MessageBoxButtons>(p.StringVal, ignoreCase: false);
             Assert.That(actual, Is.EqualTo(expected));
         }
     }
@@ -128,7 +128,7 @@ public class EnumExtensionsTests
         foreach (var p in testPairs)
         {
             MessageBoxButtons expected = p.ConvertedVal;
-            MessageBoxButtons actual = EnumExtension.ToEnum<MessageBoxButtons>(p.StringVal);
+            MessageBoxButtons actual = EnumExtensions.ToEnum<MessageBoxButtons>(p.StringVal);
 
             Assert.That(actual, Is.EqualTo(expected));
         }
@@ -150,7 +150,7 @@ public class EnumExtensionsTests
         foreach (var p in testPairs)
         {
             MessageBoxButtons expected = p.ConvertedVal;
-            MessageBoxButtons actual = EnumExtension.ToEnum<MessageBoxButtons>(p.StringVal);
+            MessageBoxButtons actual = EnumExtensions.ToEnum<MessageBoxButtons>(p.StringVal);
 
             Assert.That(actual, Is.EqualTo(expected));
         }
@@ -172,7 +172,7 @@ public class EnumExtensionsTests
         foreach (var p in testPairs)
         {
             MessageBoxButtons expected = p.ConvertedVal;
-            MessageBoxButtons actual = EnumExtension.Parse<MessageBoxButtons>(
+            MessageBoxButtons actual = EnumExtensions.Parse<MessageBoxButtons>(
               p.StringVal, ignoreCase: true);
 
             Assert.That(actual, Is.EqualTo(expected));
@@ -212,7 +212,7 @@ public class EnumExtensionsTests
         foreach (var p in testPairs)
         {
             MultiHue expected = p.ConvertedVal;
-            MultiHue actual = EnumExtension.Parse<MultiHue>(p.StringVal, ignoreCase: false);
+            MultiHue actual = EnumExtensions.Parse<MultiHue>(p.StringVal, ignoreCase: false);
 
             Assert.That(actual, Is.EqualTo(expected));
         }
@@ -234,7 +234,7 @@ public class EnumExtensionsTests
         foreach (var p in testPairs)
         {
             MultiHue expected = p.ConvertedVal;
-            MultiHue actual = EnumExtension.ToEnum<MultiHue>(p.StringVal);
+            MultiHue actual = EnumExtensions.ToEnum<MultiHue>(p.StringVal);
 
             Assert.That(actual, Is.EqualTo(expected));
         }
@@ -269,7 +269,7 @@ public class EnumExtensionsTests
         foreach (var p in testPairs)
         {
             MultiHue expected = p.ConvertedVal;
-            MultiHue actual = EnumExtension.ToEnum<MultiHue>(p.StringVal);
+            MultiHue actual = EnumExtensions.ToEnum<MultiHue>(p.StringVal);
 
             Assert.That(actual, Is.EqualTo(expected));
         }
@@ -302,7 +302,7 @@ public class EnumExtensionsTests
         foreach (var p in testPairs)
         {
             MultiHue expected = p.ConvertedVal;
-            MultiHue actual = EnumExtension.Parse<MultiHue>(p.StringVal, ignoreCase: true);
+            MultiHue actual = EnumExtensions.Parse<MultiHue>(p.StringVal, ignoreCase: true);
 
             Assert.That(actual, Is.EqualTo(expected));
         }
