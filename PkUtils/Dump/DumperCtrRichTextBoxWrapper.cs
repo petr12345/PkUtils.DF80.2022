@@ -28,17 +28,7 @@ public class DumperCtrRichTextBoxWrapper : DumperCtrlTextBoxBaseWrapper<RichText
     /// <param name="ctrl">  The wrapped WinForms control. </param>
     /// <param name="maxMsgHistoryItems"> The maximum length of internal queue of recently added text items. </param>
     public DumperCtrRichTextBoxWrapper(RichTextBox ctrl, int maxMsgHistoryItems)
-      : this(ctrl, maxMsgHistoryItems, _defaultShouldPreprocessItems)
-    { }
-
-    /// <summary> Constructor accepting three input arguments. </summary>
-    ///
-    /// <param name="ctrl">                  The wrapped WinForms control. </param>
-    /// <param name="maxMsgHistoryItems">    The maximum length of internal queue of recently added text items. </param>
-    /// <param name="shouldPreprocessItems"> Initializes the value of property ShouldPreprocessItems.  
-    /// If true,  the method <see cref="DumperCtrlWrapper{CTRL}.PreprocessAddedText "/>will be called upon adding the new text item. </param>
-    public DumperCtrRichTextBoxWrapper(RichTextBox ctrl, int maxMsgHistoryItems, bool shouldPreprocessItems)
-      : base(ctrl, maxMsgHistoryItems, shouldPreprocessItems)
+      : base(ctrl, maxMsgHistoryItems)
     { }
     #endregion // Constructor(s)
 
@@ -73,7 +63,7 @@ public class DumperCtrRichTextBoxWrapper : DumperCtrlTextBoxBaseWrapper<RichText
         rtb.SelectionLength = 0;
         rtb.SelectionColor = color ?? foreColor;
 
-        rtb.AppendText(entry.Text);
+        rtb.AppendText(FinalEntryText(entry));
         rtb.SelectionColor = foreColor;
 
         _hasAddedTextBefore = true;
