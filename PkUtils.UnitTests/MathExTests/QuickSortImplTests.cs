@@ -6,9 +6,14 @@ using System.Linq;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using PK.PkUtils.MathEx;
 
-#pragma warning disable IDE0300   // Simplify collection initialization
 
-namespace PK.PkUtils.NUnitTests.MathExTests;
+#pragma warning disable IDE0079   // Remove unnecessary suppressions
+#pragma warning disable IDE0300   // Simplify collection initialization
+#pragma warning disable IDE0301   // Collection initialization simplified
+#pragma warning disable IDE0305 // Collection initialization can be simplified
+#pragma warning disable CA1859    // Change return type of method 
+
+namespace PK.PkUtils.UnitTests.MathExTests;
 
 [TestClass()]
 public class QuickSortImplTests
@@ -149,4 +154,9 @@ public class QuickSortImplTests
 
     #endregion // Tests
 }
-#pragma warning restore IDE0300
+
+#pragma warning restore CA1859     // Change return type of method 
+#pragma warning restore IDE0305 // Collection initialization can be simplified
+#pragma warning restore IDE0301    // Collection initialization simplified
+#pragma warning restore IDE0300    // Simplify collection initialization
+#pragma warning restore IDE0079    // Remove unnecessary suppressions

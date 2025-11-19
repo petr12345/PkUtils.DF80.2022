@@ -22,7 +22,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.InteropServices;
 
-#pragma warning disable IDE0290     // Use primary constructor
+#pragma warning disable IDE0079   // Remove unnecessary suppressions
+#pragma warning disable IDE0290   // Use primary constructor
+#pragma warning disable CA1806    //  ShouldShow calls StrRetToBSTR but does not use the HRESULT 
 
 namespace PK.PkUtils.ShellLib;
 
@@ -150,3 +152,6 @@ public class FilterByExtension : IFolderFilter
     }
     #endregion // IFolderFilter members
 }
+
+#pragma warning restore IDE0290
+#pragma warning restore CA1806

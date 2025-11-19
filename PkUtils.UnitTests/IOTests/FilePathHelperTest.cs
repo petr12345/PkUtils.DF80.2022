@@ -8,6 +8,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using PK.PkUtils.IO;
 
 #pragma warning disable IDE0057 // Use range operator
+#pragma warning disable IDE0305 // Collection initialization can be simplified
 
 namespace PK.PkUtils.UnitTests.IOTests;
 
@@ -409,7 +410,7 @@ public class FilePathHelperTest
     [TestMethod()]
     public void FilePathHelper_CheckIsValidFolderStringTest_02()
     {
-        string[] arrPath = new string[] {
+        string[] arrPath = [
          @"\",
         @"/",
         @"c:\",
@@ -420,7 +421,7 @@ public class FilePathHelperTest
         @"c:\Tools\M602",
         @"c:\Tools\M602\",
         @"c:\Tools\M602/",
-        };
+        ];
 
         int nDim0 = arrPath.GetLength(0);
         for (int ii = 0; ii < nDim0; ii++)
@@ -1182,4 +1183,5 @@ public class FilePathHelperTest
     #endregion // Tests
 }
 
+#pragma warning restore IDE0305 // Collection initialization can be simplified
 #pragma warning restore IDE0057 // Use range operator

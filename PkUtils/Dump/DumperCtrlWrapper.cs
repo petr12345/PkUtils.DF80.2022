@@ -10,6 +10,9 @@ using System.Windows.Forms;
 using PK.PkUtils.Extensions;
 using PK.PkUtils.Interfaces;
 
+#pragma warning disable IDE0079 // Remove unnecessary suppressions
+#pragma warning disable IDE0031 // Null check can be simplified
+
 namespace PK.PkUtils.Dump;
 
 /// <summary> The wrapper around a general WinForms control, providing the IDumper-behavior for that control.
@@ -488,3 +491,5 @@ public class DumperCtrlWrapper<CTRL> : IDumperEx, IDisposableEx where CTRL : Con
     }
     #endregion // IDumperEx Members
 }
+#pragma warning restore IDE0031 // Null check can be simplified
+#pragma warning restore IDE0079 // Remove unnecessary suppressions

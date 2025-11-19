@@ -8,6 +8,8 @@ using System.Linq;
 using System.Reflection;
 using PK.PkUtils.DataStructures;
 
+#pragma warning disable IDE0079 // Remove unnecessary suppressions
+#pragma warning disable IDE0031 // Null check can be simplified
 #pragma warning disable IDE0290 // Use primary constructor
 
 namespace PK.PkUtils.SerialPortLib;
@@ -396,5 +398,6 @@ public class SerialPortManager : Repository<SerialPort>, IDisposable
     }
     #endregion // Event handlers
 }
-
 #pragma warning restore IDE0290 // Use primary constructor
+#pragma warning restore IDE0031 // Null check can be simplified
+#pragma warning restore IDE0079 // Remove unnecessary suppressions

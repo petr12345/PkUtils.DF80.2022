@@ -25,6 +25,7 @@ using static PK.PkUtils.ShellLib.ShellApi;
 #pragma warning disable IDE0079     // Remove unnecessary suppressions
 #pragma warning disable IDE0290     // Use primary constructor
 #pragma warning disable SYSLIB1054  // Use 'LibraryImportAttribute' instead of 'DllImportAttribute' to generate P/Invoke marshalling code at compile time
+#pragma warning disable CA1806 // GetMalloc calls SHGetMalloc but does not use the HRESULT 
 
 namespace PK.PkUtils.ShellLib;
 
@@ -840,4 +841,5 @@ public class ShellBrowseForFolderDialog
 
 #pragma warning restore SYSLIB1054 // Use 'LibraryImportAttribute' instead of 'DllImportAttribute' to generate P/Invoke marshalling code at compile time
 #pragma warning restore IDE0290 // Use primary constructor
+#pragma warning restore CA1806 // GetMalloc calls SHGetMalloc but does not use the HRESULT
 #pragma warning restore IDE0079  // Remove unnecessary suppressions

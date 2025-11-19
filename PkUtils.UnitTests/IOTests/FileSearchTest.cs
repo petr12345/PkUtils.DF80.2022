@@ -11,6 +11,8 @@ using PK.PkUtils.IO;
 
 #nullable enable
 
+#pragma warning disable IDE0305   // Collection initialization can be simplified
+
 namespace PK.PkUtils.UnitTests.IOTests;
 
 /// <summary>
@@ -301,7 +303,7 @@ public class FileSearchTest
     [TestMethod()]
     public void FileSearch_SearchFilesTest_01()
     {
-        Action<string> dumpFn = str => Debug.WriteLine(str);
+        static void dumpFn(string str) => Debug.WriteLine(str);
         string strPathA = Environment.GetFolderPath(Environment.SpecialFolder.System);
         string searchPatternA = "*.dll";
         string strPathB = strPathA;
@@ -316,7 +318,7 @@ public class FileSearchTest
     [TestMethod()]
     public void FileSearch_SearchFilesTest_02()
     {
-        Action<string> dumpFn = str => Debug.WriteLine(str);
+        static void dumpFn(string str) => Debug.WriteLine(str);
         string strPathA = Environment.GetFolderPath(Environment.SpecialFolder.System);
         string searchPatternA = "*.*";
         string strPathB = FilePathHelper.AppendPathSeparator(strPathA);
@@ -331,7 +333,7 @@ public class FileSearchTest
     [TestMethod()]
     public void FileSearch_SearchDirectoriesTest_01()
     {
-        Action<string> dumpFn = str => Debug.WriteLine(str);
+        static void dumpFn(string str) => Debug.WriteLine(str);
         string strPath = Environment.GetFolderPath(Environment.SpecialFolder.System);
 
         Assert.IsTrue(PerformFoldersSearchEx(dumpFn, strPath, SearchOption.AllDirectories));
@@ -342,10 +344,12 @@ public class FileSearchTest
     [TestMethod()]
     public void FileSearch_SearchDirectoriesTest_02()
     {
-        Action<string> dumpFn = str => Debug.WriteLine(str);
+        static void dumpFn(string str) => Debug.WriteLine(str);
         string strPath = Environment.GetFolderPath(Environment.SpecialFolder.System);
 
         Assert.IsTrue(PerformFoldersSearchEx(dumpFn, strPath, SearchOption.TopDirectoryOnly));
     }
     #endregion // Tests
 }
+
+#pragma warning restore IDE0305   // Collection initialization can be simplified

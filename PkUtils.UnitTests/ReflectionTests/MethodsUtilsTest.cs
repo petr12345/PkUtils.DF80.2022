@@ -10,7 +10,12 @@ using PK.PkUtils.Reflection;
 
 namespace PK.PkUtils.UnitTests.ReflectionTests;
 
-#pragma warning disable IDE0059   // Avoid unnecessary value assignments
+#pragma warning disable IDE0079     // Remove unnecessary suppressions
+#pragma warning disable IDE0059  // Avoid unnecessary value assignments
+#pragma warning disable IDE0060  // Remove unused parameter
+#pragma warning disable IDE0290  // Use primary constructor
+#pragma warning disable IDE0305 // Collection initialization can be simplified
+#pragma warning disable CA1822   // Member .. does not access instance data and can be marked as static
 
 /// <summary>
 /// This is a test class for MethodsUtils and is intended
@@ -113,23 +118,23 @@ public class MethodsUtilsTest
     #endregion // Auxiliary_classes_for_static_methods_tests
 
     #region Auxiliary_code_for_static_method_tests
-    private static readonly string[] _arr_A_StaticMethodNames = new string[] {
+    private static readonly string[] _arr_A_StaticMethodNames = [
         "A_Public",
         "A_Protected",
         "A_Private",
-    };
+    ];
 
-    private static readonly string[] _arr_B_StaticMethodNames = new string[] {
+    private static readonly string[] _arr_B_StaticMethodNames = [
         "B_Public",
         "B_Protected",
         "B_Private",
-    };
+    ];
 
-    private static readonly string[] _arr_C_StaticMethodNames = new string[] {
+    private static readonly string[] _arr_C_StaticMethodNames = [
         "StatOverload",
         "StatOverload",
         "StatOverload",
-    };
+    ];
 
     private static IEnumerable<string>? _allStaticMethodNames;
 
@@ -147,7 +152,7 @@ public class MethodsUtilsTest
     /// <summary>
     /// A generic helper for the RunStaticMethodTest, not supporting argument types
     /// </summary>
-    internal void RunStaticMethodTestHelper<V>(Type t, string methodName, object[] args, V expected)
+    internal static void RunStaticMethodTestHelper<V>(Type t, string methodName, object[] args, V expected)
     {
         V actual = (V)MethodsUtils.RunStaticMethod(t, methodName, args)!;
         Assert.AreEqual(expected, actual);
@@ -172,20 +177,17 @@ public class MethodsUtilsTest
     public void MethodsUtils_RunStaticMethodTest()
     {
         // -- i/ Demonstrates that via typeof(A) you can access all methods of type A
-        RunStaticMethodTestHelper<int>(typeof(A), "A_Public",
-          new object[] { 3, 4 }, 7);
-        RunStaticMethodTestHelper<decimal>(typeof(A), "A_Protected",
-          new object[] { (decimal)-6, (decimal)-3 }, 18);
-        RunStaticMethodTestHelper<string>(typeof(A), "A_Private",
-          new object[] { "xx", "yy" }, "xxyy");
+        RunStaticMethodTestHelper<int>(typeof(A), "A_Public", [3, 4], 7);
+        RunStaticMethodTestHelper<decimal>(typeof(A), "A_Protected", [(decimal)-6, (decimal)-3], 18);
+        RunStaticMethodTestHelper<string>(typeof(A), "A_Private", ["xx", "yy"], "xxyy");
 
         // -- ii/ Demonstrates that via typeof(B) you can access all methods of type B
         RunStaticMethodTestHelper<int>(typeof(B), "B_Public",
-          new object[] { 3, 4 }, -1);
+          [3, 4], -1);
         RunStaticMethodTestHelper<decimal>(typeof(B), "B_Protected",
-          new object[] { (decimal)-6, (decimal)-3 }, 2);
+          [(decimal)-6, (decimal)-3], 2);
         RunStaticMethodTestHelper<string>(typeof(B), "B_Private",
-          new object[] { "x{0}x", "yy" }, "xyyx");
+          ["x{0}x", "yy"], "xyyx");
     }
 
     /// <summary>
@@ -199,7 +201,7 @@ public class MethodsUtilsTest
         // calling overloaded method will cause AmbiguousMatchException
         Assert.ThrowsExactly<System.Reflection.AmbiguousMatchException>(() =>
         {
-            RunStaticMethodTestHelper<int>(typeof(C), "StatOverload", new object[] { 15 }, 15);
+            RunStaticMethodTestHelper<int>(typeof(C), "StatOverload", [15], 15);
         });
     }
 
@@ -212,12 +214,9 @@ public class MethodsUtilsTest
     public void MethodsUtils_RunStaticMethodTestOverloads_02()
     {
         // -- Demonstrates that using additional type arguments, you can access and distinguish static overloads
-        RunStaticMethodTestHelper<int>(typeof(C), "StatOverload", new Type[] { typeof(int) },
-          new object[] { 15 }, 15);
-        RunStaticMethodTestHelper<int>(typeof(C), "StatOverload", new Type[] { typeof(int), typeof(int) },
-          new object[] { 15, 15 }, 17);
-        RunStaticMethodTestHelper<int>(typeof(C), "StatOverload", new Type[] { typeof(string), typeof(string) },
-          new object[] { "x", "y" }, 19);
+        RunStaticMethodTestHelper<int>(typeof(C), "StatOverload", [typeof(int)], [15], 15);
+        RunStaticMethodTestHelper<int>(typeof(C), "StatOverload", [typeof(int), typeof(int)], [15, 15], 17);
+        RunStaticMethodTestHelper<int>(typeof(C), "StatOverload", [typeof(string), typeof(string)], ["x", "y"], 19);
     }
     #endregion // Running_static_methods_tests
 
@@ -321,26 +320,26 @@ public class MethodsUtilsTest
 
     #region Auxiliary_code_for_nonstatic_method_tests
 
-    private static readonly string[] _arr_X_NonStaticMethodNames = new string[] {
+    private static readonly string[] _arr_X_NonStaticMethodNames = [
         "DumpIntegers",
         "DumpDecimals",
         "DumpStrings",
         "DumpStrings_X_specific",
-    };
+    ];
 
-    private static readonly string[] _arr_Y_NonStaticMethodNames = new string[] {
+    private static readonly string[] _arr_Y_NonStaticMethodNames = [
         "DumpIntegers",
         "DumpDecimals",
         "DumpStrings",
         "DumpStrings_Y_specific",
-    };
+    ];
 
-    private static readonly string[] _arr_Z_NonStaticMethodNames = new string[] {
+    private static readonly string[] _arr_Z_NonStaticMethodNames = [
         "DumpIntegers",
         "DumpDecimals",
         "DumpStrings",
         "DumpStrings_Z_specific",
-    };
+    ];
 
     private static IEnumerable<string>? _allNonStaticMethodNames;
 
@@ -382,7 +381,7 @@ public class MethodsUtilsTest
     /// <summary>
     /// A generic helper for the RunStaticMethodTest, supporting argument types
     /// </summary>
-    internal void RunInstanceMethodExTestHelper<T, V>(
+    internal static void RunInstanceMethodExTestHelper<T, V>(
         T obj,
         string methodName,
         Type[]? argTypes,
@@ -408,24 +407,24 @@ public class MethodsUtilsTest
         Z z = new();
 
         // Demonstrate invoking non-virtual public method
-        RunInstanceMethodTestHelper<X, string>(x, "DumpIntegers", new object[] { 13, 14 }, "DumpIntegers by X: 13 14");
-        RunInstanceMethodTestHelper<Y, string>(y, "DumpIntegers", new object[] { 23, 24 }, "DumpIntegers by Y: 23 24");
-        RunInstanceMethodTestHelper<Z, string>(z, "DumpIntegers", new object[] { 33, 34 }, "DumpIntegers by Z: 33 34");
+        RunInstanceMethodTestHelper<X, string>(x, "DumpIntegers", [13, 14], "DumpIntegers by X: 13 14");
+        RunInstanceMethodTestHelper<Y, string>(y, "DumpIntegers", [23, 24], "DumpIntegers by Y: 23 24");
+        RunInstanceMethodTestHelper<Z, string>(z, "DumpIntegers", [33, 34], "DumpIntegers by Z: 33 34");
 
         // Demonstrate invoking virtual protected method
-        RunInstanceMethodTestHelper<X, string>(x, "DumpDecimals", new object[] { (decimal)15, (decimal)16 },
+        RunInstanceMethodTestHelper<X, string>(x, "DumpDecimals", [(decimal)15, (decimal)16],
           "DumpDecimals by X: 15 16");
-        RunInstanceMethodTestHelper<Y, string>(y, "DumpDecimals", new object[] { (decimal)25, (decimal)26 },
+        RunInstanceMethodTestHelper<Y, string>(y, "DumpDecimals", [(decimal)25, (decimal)26],
           "DumpDecimals by Y: 25 26");
-        RunInstanceMethodTestHelper<Z, string>(z, "DumpDecimals", new object[] { (decimal)35, (decimal)36 },
+        RunInstanceMethodTestHelper<Z, string>(z, "DumpDecimals", [(decimal)35, (decimal)36],
           "DumpDecimals by Z: 35 36");
 
         // Demonstrate invoking non-virtual private method
-        RunInstanceMethodTestHelper<X, string>(x, "DumpStrings", new object[] { "aa", "bb" },
+        RunInstanceMethodTestHelper<X, string>(x, "DumpStrings", ["aa", "bb"],
           "DumpStrings by X: aa bb");
-        RunInstanceMethodTestHelper<Y, string>(y, "DumpStrings", new object[] { "cc", "dd" },
+        RunInstanceMethodTestHelper<Y, string>(y, "DumpStrings", ["cc", "dd"],
           "DumpStrings by Y: cc dd");
-        RunInstanceMethodTestHelper<Z, string>(z, "DumpStrings", new object[] { "ee", "ff" },
+        RunInstanceMethodTestHelper<Z, string>(z, "DumpStrings", ["ee", "ff"],
           "DumpStrings by Z: ee ff");
     }
 
@@ -437,12 +436,12 @@ public class MethodsUtilsTest
     {
         ZZ zz = new(100);
         // -- Demonstrates that using additional type arguments, you can access and distinguish static overloads
-        RunInstanceMethodTestHelper<Z, int>(zz, "Suma", new Type[] { typeof(int) },
-          new object[] { 5 }, 105);
-        RunInstanceMethodTestHelper<Z, int>(zz, "Suma", new Type[] { typeof(int), typeof(int) },
-          new object[] { 25, 15 }, 40);
-        RunInstanceMethodTestHelper<Z, int>(zz, "Suma", new Type[] { typeof(string), typeof(string) },
-          new object[] { "x", "y" }, 100);
+        RunInstanceMethodTestHelper<Z, int>(zz, "Suma", [typeof(int)],
+          [5], 105);
+        RunInstanceMethodTestHelper<Z, int>(zz, "Suma", [typeof(int), typeof(int)],
+          [25, 15], 40);
+        RunInstanceMethodTestHelper<Z, int>(zz, "Suma", [typeof(string), typeof(string)],
+          ["x", "y"], 100);
     }
 
     /// <summary>
@@ -456,7 +455,7 @@ public class MethodsUtilsTest
 
         Assert.ThrowsExactly<System.Reflection.AmbiguousMatchException>(() =>
         {
-            RunInstanceMethodTestHelper<Z, int>(zz, "Suma", null, new object[] { 25, 15 }, 40);
+            RunInstanceMethodTestHelper<Z, int>(zz, "Suma", null, [25, 15], 40);
         });
     }
 
@@ -469,7 +468,7 @@ public class MethodsUtilsTest
         Z z = new();
         X x = z;
 
-        object[] args = new object[] { (decimal)45, (decimal)46 };
+        object[] args = [(decimal)45, (decimal)46];
         string expectedX = "DumpDecimals by X: 45 46";
         string expectedZ = "DumpDecimals by Z: 45 46";
         string? actual;
@@ -521,7 +520,7 @@ public class MethodsUtilsTest
     public void MethodsUtils_GetAllMethodsTest_01()
     {
         string strMethodName = "DumpIntegers";
-        Func<string, bool> nameMatchPredicate = name => (0 == string.CompareOrdinal(name, strMethodName));
+        bool nameMatchPredicate(string name) => (0 == string.CompareOrdinal(name, strMethodName));
         Type t = typeof(Z);
         IEnumerable<string> expectedNames = AllNonStaticMethodNames.Where(nameMatchPredicate);
 
@@ -556,7 +555,7 @@ public class MethodsUtilsTest
     public void MethodsUtils_GetAllStaticMethodsTest()
     {
         string strMethodName = "B_Protected";
-        Func<string, bool> nameMatchPredicate = name => (0 == string.CompareOrdinal(name, strMethodName));
+        bool nameMatchPredicate(string name) => (0 == string.CompareOrdinal(name, strMethodName));
         Type t = typeof(C);
         IEnumerable<string> expectedNames = AllStaticMethodNames.Where(nameMatchPredicate);
 
@@ -591,7 +590,7 @@ public class MethodsUtilsTest
     public void MethodsUtils_GetAllInstanceMethodsTest()
     {
         string strMethodName = "DumpDecimals";
-        Func<string, bool> nameMatchPredicate = name => (0 == string.CompareOrdinal(name, strMethodName));
+        bool nameMatchPredicate(string name) => (0 == string.CompareOrdinal(name, strMethodName));
         Type t = typeof(Z);
         IEnumerable<string> expectedNames = AllNonStaticMethodNames.Where(nameMatchPredicate);
 
@@ -633,24 +632,30 @@ public class MethodsUtilsTest
         RunInstanceMethodExTestHelper<Z, string>(
             z,
             "DumpStrings_X_specific",
-            new Type[] { typeof(string), typeof(string) },
-            new object[] { "gg", "hh" },
+            [typeof(string), typeof(string)],
+            ["gg", "hh"],
             "DumpStrings_X_specific by X: gg hh");
 
         RunInstanceMethodExTestHelper<Z, string>(
             z,
             "DumpStrings_Y_specific",
             null,
-            new object[] { "ii", "jj" },
+            ["ii", "jj"],
             "DumpStrings_Y_specific by Y: ii jj");
 
         RunInstanceMethodExTestHelper<Z, string>(
             z,
             "DumpStrings_Z_specific",
-            new Type[] { typeof(string), typeof(string) },
-            new object[] { "kk", "ll" },
+            [typeof(string), typeof(string)],
+            ["kk", "ll"],
             "DumpStrings_Z_specific by Z: kk ll");
     }
     #endregion // Accessing_MethodInfo_Full_Scope_tests
 }
-#pragma warning restore IDE0059
+
+#pragma warning restore CA1822   // Member .. does not access instance data and can be marked as static
+#pragma warning restore IDE0305 // Collection initialization can be simplified
+#pragma warning restore IDE0290 // Use primary constructor
+#pragma warning restore IDE0060   // Remove unused parameter
+#pragma warning restore IDE0059   // Unnecessary assignment of a value
+#pragma warning restore IDE0079     // Remove unnecessary suppressions

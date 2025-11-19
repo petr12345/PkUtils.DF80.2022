@@ -1,12 +1,16 @@
-﻿// Ignore Spelling: Utils, Cloneable
+﻿// Ignore Spelling: Utils
 //
 
 using System;
 
+#pragma warning disable IDE0079   // Remove unnecessary suppressions
+#pragma warning disable IDE0031 // Null check can be simplified
+
 namespace PK.PkUtils.Utils;
 
 /// <summary>
-/// A generic dispose utility, allowing to type just <code>
+/// A generic dispose utility, allowing to type just 
+/// <code>
 /// Disposer.SafeDispose(ref x);
 /// </code>
 /// instead of <code>
@@ -74,3 +78,5 @@ public static class Disposer
         }
     }
 }
+
+#pragma warning restore IDE0031 // Null check can be simplified

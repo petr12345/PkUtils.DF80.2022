@@ -6,10 +6,10 @@ using System.Linq;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using PK.PkUtils.Extensions;
 
-#pragma warning disable IDE0039	// Use local function
 #pragma warning disable IDE0079   // Remove unnecessary suppression
+#pragma warning disable IDE0039	// Use local function
 #pragma warning disable IDE0305 // Collection initialization can be simplified
-
+#pragma warning disable CA1859  // Change type of variable 'cache' from ..
 
 namespace PK.PkUtils.UnitTests.ExtensionsTests;
 
@@ -43,7 +43,7 @@ public class EnumerableExtensionTest
     /// <summary>
     /// A helper for test of IndexOf
     /// </summary>
-    internal void IndexOfTest1Helper<T>(IEnumerable<T> source, T val, int expected)
+    internal static void IndexOfTest1Helper<T>(IEnumerable<T> source, T val, int expected)
     {
         int actual = EnumerableExtensions.IndexOf<T>(source, val);
         Assert.AreEqual(expected, actual);
@@ -74,7 +74,7 @@ public class EnumerableExtensionTest
     [TestMethod()]
     public void EnumerableExtension_IsEmptyTest_01()
     {
-        int[] arrInt1 = new int[] { 1, 2, 3 };
+        int[] arrInt1 = [1, 2, 3];
         IsEmptyTestHelper<int>(arrInt1, false);
     }
 
@@ -82,7 +82,7 @@ public class EnumerableExtensionTest
     [TestMethod()]
     public void EnumerableExtension_IsEmptyTest_02()
     {
-        int[] arrInt2 = new int[] { };
+        int[] arrInt2 = [];
         IsEmptyTestHelper<int>(arrInt2, true);
     }
 
@@ -99,7 +99,7 @@ public class EnumerableExtensionTest
     [TestMethod()]
     public void EnumerableExtension_IsNullOrEmptyTest_01()
     {
-        int[] arrInt = new int[] { 11, 12 };
+        int[] arrInt = [11, 12];
         IsEmptyTestHelper<int>(arrInt, false);
     }
 
@@ -164,7 +164,7 @@ public class EnumerableExtensionTest
     [TestMethod()]
     public void EnumerableExtension_SliceTest_02()
     {
-        int[] source = { 1, 2, 3, 4, 5, 6 };
+        int[] source = [1, 2, 3, 4, 5, 6];
         int startIndex = -1;
         int size = 3;
         Assert.ThrowsExactly<ArgumentOutOfRangeException>(() => source.Slice(startIndex, size));
@@ -176,7 +176,7 @@ public class EnumerableExtensionTest
     [TestMethod()]
     public void EnumerableExtension_SliceTest_03()
     {
-        int[] source = { 1, 2, 3, 4, 5, 6 };
+        int[] source = [1, 2, 3, 4, 5, 6];
         int startIndex = 1;
         int size = -1;
         Assert.ThrowsExactly<ArgumentOutOfRangeException>(() => source.Slice(startIndex, size));
@@ -188,11 +188,11 @@ public class EnumerableExtensionTest
     [TestMethod()]
     public void EnumerableExtension_SliceTest_04()
     {
-        int[] source = { 1, 2, 3, 4, 5, 6 };
+        int[] source = [1, 2, 3, 4, 5, 6];
         int startIndex = 2;
         int size = 2;
         IEnumerable<int> actual = source.Slice(startIndex, size);
-        IEnumerable<int> expected = new int[] { 3, 4 };
+        IEnumerable<int> expected = [3, 4];
 
         Assert.IsTrue(expected.SequenceEqual(actual));
     }
@@ -211,18 +211,18 @@ public class EnumerableExtensionTest
     [TestMethod()]
     public void EnumerableExtension_FindDuplicitiesTest_02()
     {
-        int[] source = { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 };
+        int[] source = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
         int[] actual_duplicities = source.FindDuplicities().ToArray();
 
-        Assert.IsFalse(actual_duplicities.Any());
+        Assert.IsEmpty(actual_duplicities);
     }
 
     /// <summary> A test for FindDuplicities, which should succeed. </summary>
     [TestMethod()]
     public void EnumerableExtension_FindDuplicitiesTest_03()
     {
-        int[] source = { 1, 2, 3, 4, 2, 5, 6, 4, 7, 2 };
-        int[] expected_duplicities = { 2, 4 };
+        int[] source = [1, 2, 3, 4, 2, 5, 6, 4, 7, 2];
+        int[] expected_duplicities = [2, 4];
         int[] actual_duplicities = source.FindDuplicities().ToArray();
 
         Assert.IsTrue(expected_duplicities.SequenceEqual(actual_duplicities));
@@ -235,7 +235,7 @@ public class EnumerableExtensionTest
     [TestMethod()]
     public void EnumerableExtension_CheckNotDuplicated_01()
     {
-        int[] source = { 1, 2, 3, 4, 5, 6, 7, 100 };
+        int[] source = [1, 2, 3, 4, 5, 6, 7, 100];
 
         Assert.IsTrue(source.CheckNotDuplicated(nameof(source)).SequenceEqual(source));
     }
@@ -244,7 +244,7 @@ public class EnumerableExtensionTest
     [TestMethod()]
     public void EnumerableExtension_CheckNotDuplicated_02()
     {
-        int[] source = { 1, 2, 3, 4, 2, 5, 6, 4, 7, 2 };
+        int[] source = [1, 2, 3, 4, 2, 5, 6, 4, 7, 2];
         Assert.ThrowsExactly<ArgumentOutOfRangeException>(() => source.CheckNotDuplicated(nameof(source), null, -1));
     }
 
@@ -252,7 +252,7 @@ public class EnumerableExtensionTest
     [TestMethod()]
     public void EnumerableExtension_CheckNotDuplicated_03()
     {
-        int[] source = { 1, 1, 3, 3, 5, 5, 2, 2, 4, 4, };
+        int[] source = [1, 1, 3, 3, 5, 5, 2, 2, 4, 4,];
         Assert.ThrowsExactly<ArgumentException>(() => source.CheckNotDuplicated(nameof(source), null, 3));
     }
     #endregion // Tests_CheckNotDuplicated
@@ -264,3 +264,8 @@ public class EnumerableExtensionTest
 
     #endregion // Tests
 }
+
+#pragma warning restore IDE0039    // Use local function                      
+#pragma warning restore IDE0305 // Collection initialization can be simplified
+#pragma warning restore CA1859  // Change type of variable 'cache' from ..
+#pragma warning restore IDE0079   // Remove unnecessary suppression

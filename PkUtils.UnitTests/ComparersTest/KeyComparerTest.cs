@@ -33,7 +33,8 @@ namespace PK.PkUtils.UnitTests.ComparersTest
         [Description("A test for KeyComparer constructor, which should succeed")]
         public void KeyComparer_Constructor_03()
         {
-            new KeyComparer<string, int>(s => s.Length);
+            var comparer = new KeyComparer<string, int>(s => s.Length);
+            Assert.IsNotNull(comparer.ToString());
         }
 
         [TestMethod()]

@@ -8,6 +8,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using PK.PkUtils.Reflection;
 
 #pragma warning disable IDE0059   // Avoid unnecessary value assignments
+#pragma warning disable IDE0305   // Collection initialization can be simplified
 
 #nullable enable
 
@@ -119,40 +120,40 @@ public class PropertiesUtilsTest
         }
     }
 
-    private readonly string[] P_arr_A_StaticPropertisNames = new string[] {
+    private readonly string[] P_arr_A_StaticPropertisNames = [
         "P_a_public",
         "P_a_protected",
         "P_a_private",
-    };
+    ];
 
-    private readonly string[] P_arr_B_StaticPropertisNames = new string[] {
+    private readonly string[] P_arr_B_StaticPropertisNames = [
         "P_a_public",
         "P_a_protected",
         "P_a_private",
         "P_b_public",
         "P_b_protected",
         "P_b_private",
-    };
+    ];
 
-    private readonly string[] P_arr_C_NonStaticPropertisNames = new string[] {
+    private readonly string[] P_arr_C_NonStaticPropertisNames = [
         "P_c_public",
         "P_c_protected",
         "P_c_private",
-    };
+    ];
 
-    private readonly string[] P_arr_D_NonStaticPropertisNames = new string[] {
+    private readonly string[] P_arr_D_NonStaticPropertisNames = [
         "P_c_public",
         "P_c_protected",
         "P_c_private",
         "P_d_public",
         "P_d_protected",
         "P_d_private",
-    };
+    ];
 
-    private readonly string[] P_arrInvalidPropertisNames = new string[] {
+    private readonly string[] P_arrInvalidPropertisNames = [
         "P_xyz",
         "?@#$%",
-    };
+    ];
     #endregion // Auxiliary_classes_for_tests
 
     #region Auxiliary_code_for_tests
@@ -550,4 +551,5 @@ public class PropertiesUtilsTest
     #endregion // Accessing_PropertyInfo_Full_Scope
 }
 
+#pragma warning restore IDE0305
 #pragma warning restore IDE0059
