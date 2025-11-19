@@ -4,6 +4,7 @@
     <OutputType>WinExe</OutputType>
     <RootNamespace>PK.TestFileLock</RootNamespace>
     <AssemblyName>PK.TestFileLock</AssemblyName>
+    <NeutralResourcesLanguage>en-US</NeutralResourcesLanguage>        
     <PublishUrl>publish\</PublishUrl>
     <Install>true</Install>
     <InstallFrom>Disk</InstallFrom>

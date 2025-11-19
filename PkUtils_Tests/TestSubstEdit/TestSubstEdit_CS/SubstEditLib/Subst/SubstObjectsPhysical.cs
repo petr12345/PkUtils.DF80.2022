@@ -203,11 +203,11 @@ public class PhysInfo<TFIELDID> : IDeepCloneable<PhysInfo<TFIELDID>>
         return new PhysInfo<TFIELDID>(this);
     }
     #endregion // IDeepCloneable<PhysInfo> Members
-};
+}
 
 /// <summary>
 /// SubstPhysData keeps "substitution physical data", 
-/// i.e. an internal data of <see cref="SubstEditTextBoxCtrl"/> control used during its editing.
+/// i.e. an internal data of <see cref="SubstEditTextBoxCtrl{TFIELDID}"/> control used during its editing.
 /// Note: SubstPhysData do have to be serialized; 
 /// they all are reconstructed from serialized SubstLogData.
 /// </summary>
@@ -215,23 +215,37 @@ public class PhysInfo<TFIELDID> : IDeepCloneable<PhysInfo<TFIELDID>>
 public class SubstPhysData<TFIELDID> : SubstLogData<TFIELDID>
 {
     #region Fields
-    // the physical string
+    /// <summary>
+    /// The physical string.
+    /// </summary>
     protected string _physStr = string.Empty;
-    // list of phys. positions
+    /// <summary>
+    /// List of physical positions.
+    /// </summary>
     protected List<PhysInfo<TFIELDID>> _physlist = [];
     #endregion // Fields
 
     #region Constructor(s)
 
+    /// <summary>
+    /// Initializes a new instance of the <see cref="SubstPhysData{TFIELDID}"/> class.
+    /// </summary>
     public SubstPhysData()
       : base()
-    {
-    }
+    { }
+
+    /// <summary>
+    /// Initializes a new instance of the <see cref="SubstPhysData{TFIELDID}"/> class with a substitution map.
+    /// </summary>
+    /// <param name="substMap">The substitution map.</param>
     public SubstPhysData(IEnumerable<ISubstitutionDescriptor<TFIELDID>> substMap)
       : base(substMap)
-    {
-    }
+    { }
 
+    /// <summary>
+    /// Initializes a new instance of the <see cref="SubstPhysData{TFIELDID}"/> class from log data.
+    /// </summary>
+    /// <param name="logData">The log data.</param>
     public SubstPhysData(SubstLogData<TFIELDID> logData)
       : base(logData)
     {    /* not needed - ctor of the base class calls overwriten Assign 
@@ -239,6 +253,10 @@ public class SubstPhysData<TFIELDID> : SubstLogData<TFIELDID>
         */
     }
 
+    /// <summary>
+    /// Initializes a new instance of the <see cref="SubstPhysData{TFIELDID}"/> class by copying another instance.
+    /// </summary>
+    /// <param name="rhs">The instance to copy.</param>
     public SubstPhysData(SubstPhysData<TFIELDID> rhs)
     {
         this.Assign(rhs);
@@ -247,11 +265,17 @@ public class SubstPhysData<TFIELDID> : SubstLogData<TFIELDID>
 
     #region Properties
 
+    /// <summary>
+    /// Gets the physical string.
+    /// </summary>
     public string GetPhysStr
     {
         get { return _physStr; }
     }
 
+    /// <summary>
+    /// Gets the list of physical positions.
+    /// </summary>
     public List<PhysInfo<TFIELDID>> PhysList
     {
         get { return _physlist; }
@@ -262,18 +286,24 @@ public class SubstPhysData<TFIELDID> : SubstLogData<TFIELDID>
     #region Public Methods
 
     #region Assignments & Cleanup
+    /// <inheritdoc/>
     public override void Assign(SubstLogData<TFIELDID> rhs)
     {
         base.Assign(rhs);
         AssignPhysFromLog(this);
     }
 
+    /// <inheritdoc/>
     public override void AssignPlainText(string strText)
     {
         base.AssignPlainText(strText);
         AssignPhysFromLog(this);
     }
 
+    /// <summary>
+    /// Assigns the contents of another <see cref="SubstPhysData{TFIELDID}"/> instance.
+    /// </summary>
+    /// <param name="rhs">The instance to copy from.</param>
     public virtual void Assign(SubstPhysData<TFIELDID> rhs)
     {
         base.Assign(rhs);
@@ -281,11 +311,16 @@ public class SubstPhysData<TFIELDID> : SubstLogData<TFIELDID>
         AssignPhysList(rhs.PhysList);
     }
 
+    /// <summary>
+    /// Clears the physical contents.
+    /// </summary>
     public void ClearContentsPhys()
     {
         _physStr = string.Empty;
         PhysList.Clear();
     }
+
+    /// <inheritdoc/>
     public override void DeleteContents()
     {
         base.DeleteContents();
@@ -296,10 +331,10 @@ public class SubstPhysData<TFIELDID> : SubstLogData<TFIELDID>
     #region Searching
 
     /// <summary>
-    /// For given LogInfo finds corresponding PhysInfo
+    /// For given LogInfo finds corresponding PhysInfo.
     /// </summary>
-    /// <param name="logInf"></param>
-    /// <returns></returns>
+    /// <param name="logInf">The logical info.</param>
+    /// <returns>The matching physical info, or null if not found.</returns>
     public PhysInfo<TFIELDID> FindMatch(LogInfo<TFIELDID> logInf)
     {
         int nDex;
@@ -312,10 +347,10 @@ public class SubstPhysData<TFIELDID> : SubstLogData<TFIELDID>
     }
 
     /// <summary>
-    /// For given PhysInfo finds corresponding LogInfo
+    /// For given PhysInfo finds corresponding LogInfo.
     /// </summary>
-    /// <param name="physInf"></param>
-    /// <returns></returns>
+    /// <param name="physInf">The physical info.</param>
+    /// <returns>The matching logical info, or null if not found.</returns>
     public LogInfo<TFIELDID> FindMatch(PhysInfo<TFIELDID> physInf)
     {
         int nDex;
@@ -328,80 +363,66 @@ public class SubstPhysData<TFIELDID> : SubstLogData<TFIELDID>
     }
 
     /// <summary>
-    /// Finding last PhysInfo located before or on given tPhysPos 
+    /// Finds the last PhysInfo located before or on the given tPhysPos.
     /// </summary>
-    /// <param name="phpos"></param>
-    /// <returns></returns>
+    /// <param name="phpos">The physical position.</param>
+    /// <returns>The matching PhysInfo, or null if not found.</returns>
     public PhysInfo<TFIELDID> FindPhysInfoBefore(tPhysPos phpos)
     {
-        /* usage of anonymous delegate, but the lambda expression is more efficient
-        int nDex = this.PhysList.FindLastIndex(
-            delegate(PhysInfo phys) { return phys.GetEnd <= phpos; });
-        return (0 <= nDex) ? PhysList[nDex] : null;
-         */
         return PhysList.LastOrDefault(phys => phys.GetEnd <= phpos);
     }
 
     /// <summary>
-    /// Finding first PhysInfo located after or on given tPhysPos 
+    /// Finds the first PhysInfo located after or on the given tPhysPos.
     /// </summary>
-    /// <param name="phpos"></param>
-    /// <returns></returns>
+    /// <param name="phpos">The physical position.</param>
+    /// <returns>The matching PhysInfo, or null if not found.</returns>
     public PhysInfo<TFIELDID> FindPhysInfoAfter(tPhysPos phpos)
     {
-        /* usage of anonymous delegate, but the lambda expression is more efficient
-        int nDex = this.PhysList.FindIndex(
-            delegate(PhysInfo phys) { return phys.GetStart >= phpos; });
-        return (0 <= nDex) ? PhysList[nDex] : null;
-         */
         return PhysList.FirstOrDefault(phys => phys.GetStart >= phpos);
     }
 
     /// <summary>
-    /// Finding first PhysInfo located between start and end
+    /// Finds the first PhysInfo located between start and end.
     /// </summary>
-    /// <param name="start"></param>
-    /// <param name="end"></param>
-    /// <returns></returns>
+    /// <param name="start">The start position.</param>
+    /// <param name="end">The end position.</param>
+    /// <returns>The matching PhysInfo, or null if not found.</returns>
     public PhysInfo<TFIELDID> FindPhysInfoBetween(tPhysPos start, tPhysPos end)
     {
-        /* usage of anonymous delegate, but the lambda expression is more efficient
-        int nDex = this.PhysList.FindIndex(
-            delegate(PhysInfo phys) { return (phys.GetStart >= start) && (phys.GetEnd <= end); });
-        return (0 <= nDex) ? PhysList[nDex] : null;
-         */
         return PhysList.FirstOrDefault(phys => (phys.GetStart >= start) && (phys.GetEnd <= end));
     }
 
     /// <summary>
-    /// Finding all PhysInfo located between start and end
+    /// Finds all PhysInfo located between start and end.
     /// </summary>
-    /// <param name="start"></param>
-    /// <param name="end"></param>
-    /// <returns></returns>
+    /// <param name="start">The start position.</param>
+    /// <param name="end">The end position.</param>
+    /// <returns>List of matching PhysInfo.</returns>
     public List<PhysInfo<TFIELDID>> FindPhysInfoAllBetween(tPhysPos start, tPhysPos end)
     {
         return PhysList.FindAll(phys => (phys.GetStart >= start) && (phys.GetEnd <= end));
     }
 
     /// <summary>
-    /// Finding first PhysInfo located around (containing) given tPhysPos
+    /// Finds the first PhysInfo containing the given tPhysPos.
     /// </summary>
-    /// <param name="phpos"></param>
-    /// <returns></returns>
+    /// <param name="phpos">The physical position.</param>
+    /// <returns>The matching PhysInfo, or null if not found.</returns>
     public PhysInfo<TFIELDID> FindPhysInfoPosIsIn(tPhysPos phpos)
     {
-        /* usage of anonymous delegate, but the lambda expression is more efficient
-        int nDex = this.PhysList.FindIndex(
-            delegate(PhysInfo phys) { return (phys.GetStart < phpos) && (phpos < phys.GetEnd); });
-        return (0 <= nDex) ? PhysList[nDex] : null;
-         */
         return PhysList.FirstOrDefault(phys => (phys.GetStart < phpos) && (phpos < phys.GetEnd));
     }
     #endregion // Searching
 
     #region Operations on elements - these methods DO correct positions of other items
 
+    /// <summary>
+    /// Inserts a new PhysInfo at the specified position.
+    /// </summary>
+    /// <param name="phpos">The physical position.</param>
+    /// <param name="what">The field identifier.</param>
+    /// <returns>The inserted PhysInfo.</returns>
     public PhysInfo<TFIELDID> InsertNewInfo(tPhysPos phpos, TFIELDID what)
     {
         tLogPos logpos;
@@ -416,6 +437,12 @@ public class SubstPhysData<TFIELDID> : SubstLogData<TFIELDID>
         return InsertNewInfo(phpos, new LogInfo<TFIELDID>(what, logpos));
     }
 
+    /// <summary>
+    /// Inserts a new PhysInfo at the specified position using a LogInfo.
+    /// </summary>
+    /// <param name="phpos">The physical position.</param>
+    /// <param name="logInfo">The logical info.</param>
+    /// <returns>The inserted PhysInfo.</returns>
     public PhysInfo<TFIELDID> InsertNewInfo(tPhysPos phpos, LogInfo<TFIELDID> logInfo)
     {
         ArgumentNullException.ThrowIfNull(logInfo);
@@ -458,10 +485,10 @@ public class SubstPhysData<TFIELDID> : SubstLogData<TFIELDID>
     }
 
     /// <summary>
-    /// Removing PhysInfo and its corresponding LogInfo 
+    /// Removes a PhysInfo and its corresponding LogInfo.
     /// </summary>
-    /// <param name="lpInf"></param>
-    /// <returns></returns>
+    /// <param name="lpInf">The PhysInfo to remove.</param>
+    /// <returns>True if removed, otherwise false.</returns>
     public bool DeleteOneInfo(PhysInfo<TFIELDID> lpInf)
     {
         ArgumentNullException.ThrowIfNull(lpInf);
@@ -498,12 +525,11 @@ public class SubstPhysData<TFIELDID> : SubstLogData<TFIELDID>
     }
 
     /// <summary>
-    /// Removing all PhysInfo(s) between start and end,
-    /// including its corresponding LogInfo(s) 
+    /// Removes all PhysInfo(s) between start and end, including their corresponding LogInfo(s).
     /// </summary>
-    /// <param name="start"></param>
-    /// <param name="end"></param>
-    /// <returns></returns>
+    /// <param name="start">The start position.</param>
+    /// <param name="end">The end position.</param>
+    /// <returns>The number of physical positions deleted.</returns>
     public int DeleteAllBetween(tPhysPos start, tPhysPos end)
     {
         PhysInfo<TFIELDID> lpInf;
@@ -539,11 +565,11 @@ public class SubstPhysData<TFIELDID> : SubstLogData<TFIELDID>
     }
 
     /// <summary>
-    /// Inserting the text on given tPhysPos physIndex
+    /// Inserts text at the given physical index.
     /// </summary>
-    /// <param name="physIndex"></param>
-    /// <param name="sztext"></param>
-    /// <returns></returns>
+    /// <param name="physIndex">The physical index.</param>
+    /// <param name="sztext">The text to insert.</param>
+    /// <returns>True if inserted, otherwise false.</returns>
     public bool InsertText(tPhysPos physIndex, string sztext)
     {
         bool res = false;
@@ -578,6 +604,12 @@ public class SubstPhysData<TFIELDID> : SubstLogData<TFIELDID>
         return res;
     }
 
+    /// <summary>
+    /// Inserts data from logData at the given physical index.
+    /// </summary>
+    /// <param name="physIndex">The physical index.</param>
+    /// <param name="logData">The log data to insert.</param>
+    /// <returns>The number of characters inserted.</returns>
     public int InsertData(tPhysPos physIndex, SubstLogData<TFIELDID> logData)
     {
         ArgumentNullException.ThrowIfNull(logData);
@@ -616,10 +648,10 @@ public class SubstPhysData<TFIELDID> : SubstLogData<TFIELDID>
     #region conversions between log and phys positions
 
     /// <summary>
-    /// conversion of tPhysPos to tLogPos
+    /// Converts a physical position to a logical position.
     /// </summary>
-    /// <param name="ph"></param>
-    /// <returns></returns>
+    /// <param name="ph">The physical position.</param>
+    /// <returns>The logical position.</returns>
     public tLogPos PhysPos2LogPos(tPhysPos ph)
     {
         int nDex, nSize;
@@ -640,8 +672,7 @@ public class SubstPhysData<TFIELDID> : SubstLogData<TFIELDID>
     /// "Exporting" the data in this.LogList to the output logData.LogList 
     /// The method does not modify "this" instance ( could be const ).
     /// </summary>
-    /// <see cref="ExportLogAll"/>
-    /// <param name="logData"></param>
+    /// <param name="logData">The log data to export to.</param>
     protected void ExportLogListAll(SubstLogData<TFIELDID> logData)
     {
         ArgumentNullException.ThrowIfNull(logData);
@@ -656,8 +687,8 @@ public class SubstPhysData<TFIELDID> : SubstLogData<TFIELDID>
     /// ( selInf equal to null is interpreted as 'all selected').
     /// </summary> 
     /// <remarks>The method does not modify "this" instance ( could be const ).</remarks>
-    /// <param name="selInf"></param>
-    /// <param name="logData"></param>
+    /// <param name="selInf">The selection info.</param>
+    /// <param name="logData">The log data to export to.</param>
     protected void ExportLogListSel(TextBoxSelInfo selInf, SubstLogData<TFIELDID> logData)
     {
         ArgumentNullException.ThrowIfNull(logData);
@@ -703,8 +734,7 @@ public class SubstPhysData<TFIELDID> : SubstLogData<TFIELDID>
     /// "Exporting" all the SubstLogData to the output logData
     /// The method does not modify this object ( could be const )
     /// </summary>
-    /// <see cref="ExportLogSel"/>
-    /// <param name="logData"></param>
+    /// <param name="logData">The log data to export to.</param>
     public void ExportLogAll(SubstLogData<TFIELDID> logData)
     {
         ArgumentNullException.ThrowIfNull(logData);
@@ -719,9 +749,8 @@ public class SubstPhysData<TFIELDID> : SubstLogData<TFIELDID>
     /// If the argument selInf is null, complete field list is exported
     /// ( selInf equal to null is interpreted as 'all selected').
     /// </summary>
-    /// <see cref="ExportLogAll"/>
-    /// <param name="selInf"></param>
-    /// <param name="logData"></param>
+    /// <param name="selInf">The selection info.</param>
+    /// <param name="logData">The log data to export to.</param>
     public void ExportLogSel(TextBoxSelInfo selInf, SubstLogData<TFIELDID> logData)
     {
         string strLog;
@@ -748,6 +777,11 @@ public class SubstPhysData<TFIELDID> : SubstLogData<TFIELDID>
     #region Protected Methods
 
     #region Operations on phys. elements only
+    /// <summary>
+    /// Moves all PhysInfo items whose start is greater than or equal to the specified value by the given offset.
+    /// </summary>
+    /// <param name="greaterOrEq">The threshold value.</param>
+    /// <param name="nOffset">The offset to apply.</param>
     protected void MoveAllPhysInfoGreaterEq(tPhysPos greaterOrEq, int nOffset)
     {
         PhysList.ForEach(delegate (PhysInfo<TFIELDID> phinf)
@@ -759,6 +793,12 @@ public class SubstPhysData<TFIELDID> : SubstLogData<TFIELDID>
             }
         });
     }
+
+    /// <summary>
+    /// Moves all PhysInfo and LogInfo items whose start is greater than or equal to the specified value by the given offset.
+    /// </summary>
+    /// <param name="greaterOrEq">The threshold value.</param>
+    /// <param name="nOffset">The offset to apply.</param>
     protected void MoveAllInfoIfPhysGreaterEq(tPhysPos greaterOrEq, int nOffset)
     {
         int nDex, nSize;
@@ -782,11 +822,20 @@ public class SubstPhysData<TFIELDID> : SubstLogData<TFIELDID>
 
     #region Operations on elements - these methods DO NOT correct positions of other items
 
+    /// <summary>
+    /// Appends a PhysInfo to the list.
+    /// </summary>
+    /// <param name="lpPhysInfo">The PhysInfo to append.</param>
     protected void AppendPhysToList(PhysInfo<TFIELDID> lpPhysInfo)
     {
         PhysList.Add(lpPhysInfo);
     }
 
+    /// <summary>
+    /// Adds a new PhysInfo with the specified field identifier.
+    /// </summary>
+    /// <param name="what">The field identifier.</param>
+    /// <returns>The new PhysInfo.</returns>
     protected PhysInfo<TFIELDID> AddNewPhysInfo(TFIELDID what)
     {
         PhysInfo<TFIELDID> lpPhysInfo = new(what);
@@ -794,6 +843,11 @@ public class SubstPhysData<TFIELDID> : SubstLogData<TFIELDID>
         return lpPhysInfo;
     }
 
+    /// <summary>
+    /// Inserts a PhysInfo before the specified index.
+    /// </summary>
+    /// <param name="indexBefore">The index before which to insert.</param>
+    /// <param name="lpPhysInfo">The PhysInfo to insert.</param>
     protected void InsertPhysInfo(tPhysPos indexBefore, PhysInfo<TFIELDID> lpPhysInfo)
     {
         if (0 <= indexBefore)
@@ -806,6 +860,11 @@ public class SubstPhysData<TFIELDID> : SubstLogData<TFIELDID>
         }
     }
 
+    /// <summary>
+    /// Inserts a PhysInfo before another PhysInfo.
+    /// </summary>
+    /// <param name="lpPhysInfoBefore">The PhysInfo before which to insert.</param>
+    /// <param name="lpPhysInfo">The PhysInfo to insert.</param>
     protected void InsertPhysInfo(PhysInfo<TFIELDID> lpPhysInfoBefore, PhysInfo<TFIELDID> lpPhysInfo)
     {
         if (null != lpPhysInfoBefore)
@@ -818,11 +877,20 @@ public class SubstPhysData<TFIELDID> : SubstLogData<TFIELDID>
         }
     }
 
+    /// <summary>
+    /// Removes a PhysInfo at the specified index.
+    /// </summary>
+    /// <param name="nIndex">The index to remove.</param>
     protected void RemovPhysInfo(int nIndex)
     {
         PhysList.RemoveAt(nIndex);
     }
 
+    /// <summary>
+    /// Removes the specified PhysInfo.
+    /// </summary>
+    /// <param name="lpPhysInfo">The PhysInfo to remove.</param>
+    /// <returns>True if removed, otherwise false.</returns>
     protected bool RemovPhysInfo(PhysInfo<TFIELDID> lpPhysInfo)
     {
         int nDex;
@@ -838,29 +906,27 @@ public class SubstPhysData<TFIELDID> : SubstLogData<TFIELDID>
     #endregion // Operations on elements - these methods DO NOT correct positions of other items
 
     /// <summary>
-    /// Assign this._physStr to the input argument
+    /// Assigns the physical string.
     /// </summary>
-    /// <param name="str"></param>
+    /// <param name="str">The string to assign.</param>
     protected void SetPhysStr(string str)
     {
         this._physStr = str;
     }
 
     /// <summary>
-    /// Assign all this. physical data ( except the list PhysList ) to 
-    /// the contents of the input argument rhs
+    /// Assigns all this physical data (except the list PhysList) to the contents of the input argument rhs.
     /// </summary>
-    /// <param name="rhs"></param>
+    /// <param name="rhs">The source SubstPhysData.</param>
     protected void AssignPhysStr(SubstPhysData<TFIELDID> rhs)
     {
         SetPhysStr(rhs.GetPhysStr);
     }
 
     /// <summary>
-    /// Assign the list this._physlist to 
-    /// the contents of the input argument rhs
+    /// Assigns the list this._physlist to the contents of the input argument list.
     /// </summary>
-    /// <param name="list"></param>
+    /// <param name="list">The list to assign from.</param>
     protected void AssignPhysList(IList<PhysInfo<TFIELDID>> list)
     {
         this._physlist.Clear();
@@ -874,7 +940,7 @@ public class SubstPhysData<TFIELDID> : SubstLogData<TFIELDID>
     /// Assigns its physical data from input argument SubstLogData logData.
     /// (Note: The input arg. does not change)
     /// </summary>
-    /// <param name="logData"></param>
+    /// <param name="logData">The log data to assign from.</param>
     protected void AssignPhysFromLog(SubstLogData<TFIELDID> logData)
     {
         // DON'T call DeleteContents or ClearContentsLogical - logical contents must be preserved
@@ -884,11 +950,11 @@ public class SubstPhysData<TFIELDID> : SubstLogData<TFIELDID>
     }
 
     /// <summary>
-    /// Converting the constant input structure SubstLogData to physical data, 
-    /// and appending to this objects physical data.
-    /// It is assumed that current Phys.data are empty
+    /// Converts the constant input structure SubstLogData to physical data, 
+    /// and appends to this object's physical data.
+    /// It is assumed that current Phys.data are empty.
     /// </summary>
-    /// <param name="logData"></param>
+    /// <param name="logData">The log data to append as physical info.</param>
     protected void AppendAsPhysInfo(SubstLogData<TFIELDID> logData)
     {
         int ilen;
@@ -921,9 +987,15 @@ public class SubstPhysData<TFIELDID> : SubstLogData<TFIELDID>
 
     #region Private Methods
 
+    /// <summary>
+    /// Converts the physical string to a logical string.
+    /// </summary>
+    /// <param name="physData">The physical data.</param>
+    /// <param name="mapKeeper">The substitution map keeper.</param>
+    /// <returns>The logical string.</returns>
     private static string PhysStr2logStr(
         SubstPhysData<TFIELDID> physData,
-        SubstitutionMapKeeper<TFIELDID> mapKeeper)
+        SubstitutionMapping<TFIELDID> mapKeeper)
     {
         PhysInfo<TFIELDID> physInf;
         int itmplen, istart, idone;
@@ -964,6 +1036,6 @@ public class SubstPhysData<TFIELDID> : SubstLogData<TFIELDID>
     }
     #endregion // Private Methods
     #endregion // Methods
-};
+}
 
 #pragma warning restore IDE0057 // Use range operator

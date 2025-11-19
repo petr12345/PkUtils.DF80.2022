@@ -71,8 +71,19 @@ public class SubstEditHook<TFIELDID> : WindowMessageHook, IModified, IUndoable, 
     /// </summary>
     protected enum FindDirection
     {
+        /// <summary>
+        /// Finds the closest position outside of a field.
+        /// </summary>
         eFindCloser,
+
+        /// <summary>
+        /// Finds the nearest position in the backward direction outside of a field.
+        /// </summary>
         eFindBackward,
+
+        /// <summary>
+        /// Finds the nearest position in the forward direction outside of a field.
+        /// </summary>
         eFindForward,
     };
 

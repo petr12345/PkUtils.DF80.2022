@@ -4,10 +4,12 @@
     <OutputType>WinExe</OutputType>
     <RootNamespace>PK.TestPropertyGridCustomCollectionEditor</RootNamespace>
     <AssemblyName>TestPropertyGridCustomCollectionEditor</AssemblyName>
+    <NeutralResourcesLanguage>en-US</NeutralResourcesLanguage>
     <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
     <UseWindowsForms>true</UseWindowsForms>
     <ImportWindowsDesktopTargets>true</ImportWindowsDesktopTargets>
     <ApplicationIcon>App.ico</ApplicationIcon>
+    <NeutralResourcesLanguage>en-US</NeutralResourcesLanguage>
   </PropertyGroup>
   <ItemGroup>
     <Content Include="App.ico" />

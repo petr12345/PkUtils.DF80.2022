@@ -6,6 +6,7 @@
     <AssemblyKeyContainerName>
     </AssemblyKeyContainerName>
     <AssemblyName>WinTester</AssemblyName>
+    <NeutralResourcesLanguage>en-US</NeutralResourcesLanguage>
     <AssemblyOriginatorKeyFile>
     </AssemblyOriginatorKeyFile>
     <DefaultClientScript>JScript</DefaultClientScript>

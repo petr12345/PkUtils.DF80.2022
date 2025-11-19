@@ -4,6 +4,7 @@
     <OutputType>WinExe</OutputType>
     <RootNamespace>PK.TestDumperTextWriter</RootNamespace>
     <AssemblyName>PK.TestDumperTextWriter</AssemblyName>
+    <NeutralResourcesLanguage>en-US</NeutralResourcesLanguage>
     <IsWebBootstrapper>false</IsWebBootstrapper>
     <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
     <StartupObject>

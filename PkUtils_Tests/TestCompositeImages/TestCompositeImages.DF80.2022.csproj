@@ -6,6 +6,7 @@
     <AssemblyName>TestCompositeImages</AssemblyName>
     <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
     <UseWindowsForms>true</UseWindowsForms>
+    <NeutralResourcesLanguage>en-US</NeutralResourcesLanguage>
     <ImportWindowsDesktopTargets>true</ImportWindowsDesktopTargets>
     <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
   </PropertyGroup>

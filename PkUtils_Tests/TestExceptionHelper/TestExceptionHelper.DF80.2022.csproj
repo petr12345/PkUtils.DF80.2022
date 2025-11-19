@@ -5,6 +5,7 @@
     <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
     <RootNamespace>PK.TestExceptionHelper</RootNamespace>
     <AssemblyName>PK.TestExceptionHelper</AssemblyName>
+    <NeutralResourcesLanguage>en-US</NeutralResourcesLanguage>
     <PublishUrl>publish\</PublishUrl>
     <Install>true</Install>
     <InstallFrom>Disk</InstallFrom>

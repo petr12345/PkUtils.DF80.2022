@@ -4,13 +4,6 @@
 // - one could use structures with implicit casts;
 // see more info on http://www.codeguru.com/forum/showthread.php?p=1817937
 
-
-#pragma warning disable IDE0079  // Remove unnecessary suppression
-#pragma warning disable CA1859   // Change type of variable ...
-#pragma warning disable IDE0057  // Use range operator
-
-namespace PK.SubstEditLib.Subst;
-
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -24,6 +17,13 @@ using PK.PkUtils.Interfaces;
 using PK.PkUtils.Utils;
 using PK.PkUtils.XmlSerialization;
 using tLogPos = System.Int32;
+
+namespace PK.SubstEditLib.Subst;
+
+#pragma warning disable IDE0079  // Remove unnecessary suppression
+#pragma warning disable CA1859   // Change type of variable ...
+#pragma warning disable CS1574 // XML comment has cref attribute that could not be resolved
+#pragma warning disable IDE0057  // Use range operator
 
 /// <summary>
 /// LogInfo is a logical coordinate of a field.
@@ -343,10 +343,19 @@ public class LogInfo<TFIELDID> :
     #endregion // IEquatable<LogInfo<TFIELDID>> Members
 }
 
-///// <summary>
-///// SubstLogData keeps "logical substitution data", 
-///// i.e. logical data needed for serialization and displaying of <see cref="SubstEditTextBoxCtrl"/> contents.
-///// </summary>
+/// <summary>
+/// SubstLogData keeps "logical substitution data", i.e. logical data
+/// needed for serialization and displaying of the contents of a control
+/// such as <see cref="SubstEditTextBoxCtr{TFIELDID}"/>.
+///
+/// It stores a logical string (text without fields) and a list of logical
+/// field positions, as well as a substitution map (not serialized) for
+/// mapping field IDs to display text.
+///
+/// This class supports XML serialization and deep cloning, and provides
+/// methods for converting between logical and physical representations of
+/// the text, as well as for manipulating the logical field list and string.
+/// </summary>
 [Serializable]
 [CLSCompliant(true)]
 public class SubstLogData<TFIELDID> : IXmlSerializable, IEquatable<SubstLogData<TFIELDID>>
@@ -354,12 +363,12 @@ public class SubstLogData<TFIELDID> : IXmlSerializable, IEquatable<SubstLogData<
     #region Fields
 
     /// <summary>
-    /// The field substitution map. Rather than deriving SubstLogData from SubstitutionMapKeeper,
+    /// The field substitution map. Rather than deriving SubstLogData from SubstitutionMapping,
     /// it is stored as a member variable, since these data should not be serialized,
     /// while SubstLogData itself is serializable.
     /// </summary>
     [NonSerialized]
-    private readonly SubstitutionMapKeeper<TFIELDID> _map = new();
+    private readonly SubstitutionMapping<TFIELDID> _map = new();
 
     /// <summary>
     /// The logical string (text without fields).
@@ -468,7 +477,7 @@ public class SubstLogData<TFIELDID> : IXmlSerializable, IEquatable<SubstLogData<
     /// <summary>
     /// Protected access to the substitution map keeper.
     /// </summary>
-    protected SubstitutionMapKeeper<TFIELDID> MapKeeper { get => _map; }
+    protected SubstitutionMapping<TFIELDID> MapKeeper { get => _map; }
 
     /// <summary>
     /// Gets the substitution map descriptors (protected internal).
@@ -731,21 +740,21 @@ public class SubstLogData<TFIELDID> : IXmlSerializable, IEquatable<SubstLogData<
     /// <summary>
     /// Conversion of logical string to complete physical representation using a mapping function.
     /// </summary>
-    /// <param name="logData">Source logical data.</param>
-    /// <param name="lpFn">Delegate that converts a descriptor to display text.</param>
+    /// <param name="logicalData">Source logical data.</param>
+    /// <param name="fnDescriptorToText">Delegate that converts a descriptor to display text.</param>
     /// <returns>Physical string with fields inserted.</returns>
     public static string LogStrToPhysStr(
-        SubstLogData<TFIELDID> logData,
-        DescriptorToTextDelegate<TFIELDID> lpFn)
+        SubstLogData<TFIELDID> logicalData,
+        Func<ISubstitutionDescriptor<TFIELDID>, string> fnDescriptorToText)
     {
         int itmplen;
         LogInfo<TFIELDID> lplogInf;
         ISubstitutionDescriptor<TFIELDID> lpDesc;
         tLogPos iLogCopied = 0;
-        IList<LogInfo<TFIELDID>> logList = logData.GetLogList;
+        IList<LogInfo<TFIELDID>> logList = logicalData.GetLogList;
         string strTmp;
-        string strLog = logData.GetLogStr;
-        SubstitutionMapKeeper<TFIELDID> mapKeeper = logData.MapKeeper;
+        string strLog = logicalData.GetLogStr;
+        SubstitutionMapping<TFIELDID> mapKeeper = logicalData.MapKeeper;
         string strPhys = string.Empty;
 
         for (int ii = 0, nCount = logList.Count; ii < nCount; ii++)
@@ -760,7 +769,7 @@ public class SubstLogData<TFIELDID> : IXmlSerializable, IEquatable<SubstLogData<
                 strTmp = strLog.Substring(iLogCopied, (iLogPos = lplogInf.Pos) - iLogCopied);
                 strPhys += strTmp;
                 // add the text of field
-                strPhys += lpFn(lpDesc);
+                strPhys += fnDescriptorToText(lpDesc);
                 // update the position in logical text
                 iLogCopied = iLogPos;
             }
@@ -1038,5 +1047,6 @@ public class SubstLogData<TFIELDID> : IXmlSerializable, IEquatable<SubstLogData<
 };
 
 #pragma warning restore IDE0057   // Use range operator
+#pragma warning restore CS1574 // XML comment has cref attribute that could not be resolved
 #pragma warning restore CA1859    // Change type of variable ...
 #pragma warning restore IDE0079  // Remove unnecessary suppression

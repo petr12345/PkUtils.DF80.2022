@@ -7,20 +7,39 @@ using PK.PkUtils.WinApi;
 
 namespace PK.SubstEditLib.Subst;
 
+/// <summary>
+/// A TextBox control with substitution-aware editing, undo/redo, and clipboard operations.
+/// Supports custom keystroke handling and selection change notifications.
+/// </summary>
+/// <typeparam name="TFIELDID">The type of the field identifier used for substitutions.</typeparam>
 [CLSCompliant(true)]
 public class SubstEditTextBoxCtrl<TFIELDID> : TextBox, IModified, IClipboardable
 {
     #region Typedefs
+    /// <summary>
+    /// Delegate for handling keyboard events.
+    /// </summary>
+    /// <param name="sender">The event sender.</param>
+    /// <param name="e">The key event arguments.</param>
     public delegate void KeyboardEventHandler(object sender, KeyEventArgs e);
     #endregion // Delegates
 
     #region Fields
+    /// <summary>
+    /// Dictionary mapping keystrokes to their handlers.
+    /// </summary>
     protected Dictionary<Keys, KeyboardEventHandler> _keyTraps;
+    /// <summary>
+    /// The hook implementation for substitution-aware editing.
+    /// </summary>
     protected SubstEditHook<TFIELDID> _hook;
     #endregion // Fields
 
     #region Constructor(s)
 
+    /// <summary>
+    /// Initializes a new instance of the <see cref="SubstEditTextBoxCtrl{TFIELDID}"/> class.
+    /// </summary>
     public SubstEditTextBoxCtrl()
     {
         _hook = new SubstEditHook<TFIELDID>(this);
@@ -30,16 +49,25 @@ public class SubstEditTextBoxCtrl<TFIELDID> : TextBox, IModified, IClipboardable
 
     #region Properties
 
+    /// <summary>
+    /// Gets the substitution edit hook.
+    /// </summary>
     public SubstEditHook<TFIELDID> TheHook
     {
         get { return _hook; }
     }
 
+    /// <summary>
+    /// Gets the logical substitution data.
+    /// </summary>
     public SubstLogData<TFIELDID> LogData
     {
         get { return TheHook.LogData; }
     }
 
+    /// <summary>
+    /// Occurs when the contents of the substitution edit control have changed.
+    /// </summary>
     public event ModifiedEventHandler EventSubstEditContentsChanged
     {
         [MethodImpl(MethodImplOptions.Synchronized)]
@@ -63,61 +91,76 @@ public class SubstEditTextBoxCtrl<TFIELDID> : TextBox, IModified, IClipboardable
     #region Methods
 
     /// <summary>
-    /// Assigns the substitution amp
+    /// Assigns the substitution map.
     /// </summary>
-    /// <param name="substMap"></param>
+    /// <param name="substMap">The substitution descriptors to set.</param>
     public void SetSubstitutionMap(IEnumerable<ISubstitutionDescriptor<TFIELDID>> substMap)
     {
         _hook.SetSubstitutionMap(substMap);
     }
 
     /// <summary>
-    /// Insert new field on the caret pos.
+    /// Inserts a new field at the caret position.
     /// </summary>
-    /// <param name="what"></param>
-    /// <returns></returns>
+    /// <param name="what">The field identifier to insert.</param>
+    /// <returns>True if insertion occurred; otherwise false.</returns>
     public bool InsertNewInfo(TFIELDID what)
     {
         return _hook.InsertNewInfo(what);
     }
 
     /// <summary>
-    /// Setting the focus, while preserving the selection info.
-    /// Needed since just seting the focus itself sometims selects the whole text.
+    /// Sets the focus while preserving the selection info.
+    /// Needed since just setting the focus itself sometimes selects the whole text.
     /// </summary>
     public void RestoreFocus()
     {
         this.TheHook.RestoreFocus();
     }
 
+    /// <summary>
+    /// Assigns the contents from another <see cref="SubstLogData{TFIELDID}"/> instance and empties the undo buffer.
+    /// </summary>
+    /// <param name="rhs">The source log data.</param>
     public void Assign(SubstLogData<TFIELDID> rhs)
     {
         TheHook.Assign(rhs);
         TheHook.EmptyUndoBuffer();
     }
 
+    /// <summary>
+    /// Assigns the contents from plain text and empties the undo buffer.
+    /// </summary>
+    /// <param name="strPlain">The plain text to assign.</param>
     public void AssignPlainText(string strPlain)
     {
         TheHook.AssignPlainText(strPlain);
         TheHook.EmptyUndoBuffer();
     }
 
+    /// <summary>
+    /// Gets the plain text representation of the control's contents.
+    /// </summary>
+    /// <returns>The plain text with fields replaced by their display text.</returns>
     public string GetPlainText()
     {
         return TheHook.GetPlainText();
     }
 
+    /// <summary>
+    /// Empties the undo buffer.
+    /// </summary>
     public void EmptyUndoBuffer()
     {
         TheHook.EmptyUndoBuffer();
     }
 
     /// <summary>
-    /// Add keystroke you want to handle
+    /// Adds a keystroke to be handled by a custom handler.
     /// </summary>
-    /// <param name="key">Keystroke (example: (Keys.Alt | Keys.H))</param>
-    /// <param name="method">Method that will handle keystroke</param>
-    /// <exception cref="ArgumentNullException">Method is null</exception>
+    /// <param name="key">Keystroke (example: (Keys.Alt | Keys.H)).</param>
+    /// <param name="method">Method that will handle keystroke.</param>
+    /// <exception cref="ArgumentNullException">Thrown if method is null.</exception>
     public void AddKeyStroke(Keys key, KeyboardEventHandler method)
     {
         ArgumentNullException.ThrowIfNull(method);
@@ -129,9 +172,9 @@ public class SubstEditTextBoxCtrl<TFIELDID> : TextBox, IModified, IClipboardable
     }
 
     /// <summary>
-    /// Remove keystroke
+    /// Removes a keystroke handler.
     /// </summary>
-    /// <param name="key">Keystroke (example: (Keys.Alt | Keys.H))</param>
+    /// <param name="key">Keystroke (example: (Keys.Alt | Keys.H)).</param>
     public void RemoveKeyStroke(Keys key)
     {
         if ((_keyTraps != null) && _keyTraps.ContainsKey(key))
@@ -141,12 +184,12 @@ public class SubstEditTextBoxCtrl<TFIELDID> : TextBox, IModified, IClipboardable
     }
 
     /// <summary>
-    /// This method is called during message preprocessing to handle command keys. 
+    /// Called during message preprocessing to handle command keys.
     /// If intercepts any key added previously by 'AddKeyStroke', invokes corresponding handler.
     /// </summary>
-    /// <param name="msg"></param>
-    /// <param name="keyData"></param>
-    /// <returns></returns>
+    /// <param name="msg">The Windows message.</param>
+    /// <param name="keyData">The key data.</param>
+    /// <returns>True if the key was handled; otherwise false.</returns>
     protected override bool ProcessCmdKey(ref Message msg, Keys keyData)
     {
         bool result = false;
@@ -158,6 +201,10 @@ public class SubstEditTextBoxCtrl<TFIELDID> : TextBox, IModified, IClipboardable
         return result;
     }
 
+    /// <summary>
+    /// Releases the resources used by the control.
+    /// </summary>
+    /// <param name="disposing">True to release both managed and unmanaged resources; false to release only unmanaged resources.</param>
     protected override void Dispose(bool disposing)
     {
         if (disposing)
@@ -174,6 +221,11 @@ public class SubstEditTextBoxCtrl<TFIELDID> : TextBox, IModified, IClipboardable
 
     #region Keyboard handlers
 
+    /// <summary>
+    /// Handler for Ctrl+Y (redo) keystroke.
+    /// </summary>
+    /// <param name="sender">The event sender.</param>
+    /// <param name="e">The key event arguments.</param>
     protected void OnKeyCtrlY(object sender, KeyEventArgs e)
     {
         User32.PostMessage(this.Handle, (int)Win32.RichEm.EM_REDO, IntPtr.Zero, IntPtr.Zero);
@@ -182,6 +234,9 @@ public class SubstEditTextBoxCtrl<TFIELDID> : TextBox, IModified, IClipboardable
 
     #region IModified Members
 
+    /// <summary>
+    /// Occurs when the contents of the control have been modified.
+    /// </summary>
     public event ModifiedEventHandler EventModified
     {
         [MethodImpl(MethodImplOptions.Synchronized)]
@@ -190,11 +245,18 @@ public class SubstEditTextBoxCtrl<TFIELDID> : TextBox, IModified, IClipboardable
         remove { _hook.EventModified -= value; }
     }
 
+    /// <summary>
+    /// Gets a value indicating whether the contents have been modified.
+    /// </summary>
     public bool IsModified
     {
         get { return _hook.IsModified; }
     }
 
+    /// <summary>
+    /// Sets the modified flag and raises the Modified event if set to true.
+    /// </summary>
+    /// <param name="bValue">The new modified value.</param>
     public void SetModified(bool bValue)
     {
         _hook.SetModified(bValue);
@@ -203,16 +265,25 @@ public class SubstEditTextBoxCtrl<TFIELDID> : TextBox, IModified, IClipboardable
 
     #region IClipboardable Members
 
+    /// <summary>
+    /// Gets a value indicating whether the current selection can be cut to the clipboard.
+    /// </summary>
     public bool CanCut
     {
         get { return TheHook.CanCut; }
     }
 
+    /// <summary>
+    /// Gets a value indicating whether the current selection can be copied to the clipboard.
+    /// </summary>
     public bool CanCopy
     {
         get { return TheHook.CanCopy; }
     }
 
+    /// <summary>
+    /// Gets a value indicating whether the clipboard contents can be pasted.
+    /// </summary>
     public bool CanPaste
     {
         get { return TheHook.CanPaste; }
