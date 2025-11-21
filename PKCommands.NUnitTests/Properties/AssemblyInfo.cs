@@ -1,4 +1,5 @@
 ﻿using System.Reflection;
+using System.Resources;
 using System.Runtime.InteropServices;
 using System.Runtime.Versioning;
 
@@ -13,3 +14,11 @@ using System.Runtime.Versioning;
 
 // The following GUID is for the ID of the typelib if this project is exposed to COM
 [assembly: Guid("d48e278b-c3a9-46b7-a735-4dee7a0841ce")]
+
+// You can specify all the values or you can default the Build and Revision Numbers 
+// by using the '*' as shown below:
+// [assembly: AssemblyVersion("1.0.*")]
+[assembly: AssemblyVersion("1.12.16.0")]
+[assembly: AssemblyFileVersion("1.12.16.0")]
+[assembly: NeutralResourcesLanguage("en")]
+
