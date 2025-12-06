@@ -603,8 +603,7 @@ public static class EnumerableExtensions
     public static IEnumerable<T> TakeLast<T>(this IEnumerable<T> source, int count)
     {
         ArgumentNullException.ThrowIfNull(source);
-        if (count < 0) throw new ArgumentOutOfRangeException(
-            nameof(count), count, Invariant($"Value of {nameof(count)} can't be negative."));
+        ArgumentOutOfRangeException.ThrowIfNegative(count, nameof(count));
 
         if (count == 0)
         {
@@ -651,8 +650,7 @@ public static class EnumerableExtensions
     public static IEnumerable<T> SkipLast<T>(this IEnumerable<T> source, int count)
     {
         ArgumentNullException.ThrowIfNull(source);
-        if (count < 0) throw new ArgumentOutOfRangeException(
-            nameof(count), count, Invariant($"Value of {nameof(count)} can't be negative."));
+        ArgumentOutOfRangeException.ThrowIfNegative(count, nameof(count));
 
         List<T> buffer = [];
         int pos = 0;
