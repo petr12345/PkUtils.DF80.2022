@@ -12,7 +12,7 @@
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
-// Ignore Spelling: Utils, Serializer
+// Ignore Spelling: Codeproject, deserialization, deserialized, enums, Serializer, Utils
 //
 using System;
 using System.Globalization;
@@ -24,130 +24,53 @@ namespace PK.PkUtils.XmlSerialization;
 
 /// <summary>
 /// <para>
-/// The purpose of this class is to assist with XMLSerialization - to help to overcome "not expected" error on
-/// derived classes. <br/>
-/// The problem with XmlSerializer is that it works by generating an on-the-fly assembly behind the scenes,
-/// that has logic for serialization and deserialization of a given type.  <br/>
-/// For this reason, the exact (concrete) type of the object and it's public properties must be known to the
-/// compiler at the time of that assembly code generation and compilation. If we try to serialize an object
-/// that, for example has a public member of a given base type, and if the public member was set to a derived
-/// type, then at run-time we receive a <see cref="System.InvalidOperationException"/>.
+/// The purpose of this class is to assist with XML serialization, specifically to overcome the "not expected" error
+/// that occurs when serializing derived classes using <see cref="XmlSerializer"/>. <br/>
+/// The <see cref="XmlSerializer"/> generates an on-the-fly assembly for serialization and deserialization of a given type.
+/// Therefore, the exact (concrete) type of the object and its public properties must be known at compile time.
+/// If a public member of a base type is set to a derived type at runtime, a <see cref="System.InvalidOperationException"/> is thrown.
 /// </para>
 /// <para>
-/// The workaround to above problem has generally been resorting to custom XML serialization, which can get
-/// pretty complicated at times. 
-/// The other option ( usage of XmlIncludeAttribute ) is limited again to previously know types.
+/// Workarounds include custom XML serialization (which can be complex) or using <see cref="XmlIncludeAttribute"/> (which is limited to known types).
 /// </para>
 /// <para>
-/// An ingenious solutions was discovered by Simon Hewitt using
-/// <see cref="System.Xml.Serialization.IXmlSerializable"/> interface that allows us to mitigate the by-design
-/// issue of XmlSerializer object. <br/>
-/// For more info see
-/// <a href="http://www.codeproject.com/KB/XML/xmlserializerforunknown.aspx">
+/// Simon Hewitt's solution uses <see cref="IXmlSerializable"/> to mitigate this by-design issue. <br/>
+/// See: <a href="http://www.codeproject.com/KB/XML/xmlserializerforunknown.aspx">
 /// Codeproject: XmlSerializer and 'not expected' Inherited Types
 /// </a>
 /// </para>
-/// 
 /// <para>
-/// While that solution works very well, it requires that a new class is created for each base class that we
-/// need serialization support for. Using C# generics instead eliminates the need for such new classes, and is
-/// encapsulating the grunt work into just one class. <br/>
-/// 
-/// Once this class has been added to our project (or referenced from another assembly), all we really need to
-/// do is to decorate any of our public members of base type(s)
+/// This generic class encapsulates the logic, so you only need to decorate your public members of base type(s)
 /// (that may be substituted with derived types at runtime) with an attribute.
 /// </para>
-/// Code example:  <br/>
+/// <para>
+/// Example usage: <br/>
 /// <code>
 /// <![CDATA[
 /// class SerializedClass
 /// {
-///   ...
-///   [XmlElement("Developer", Type = typeof(PK.PkUtils.XmlSerialization.NodeSerializer<Company>))]
-///   public Company Developer
-///   {
-///     get { return element_developer; }
-///     set { element_developer = value; }
-///   }
-///   ...
-///   
-/// // or for an XML array serialization:
-/// 
-///   [XmlArrayItem("Code", typeof(NodeSerializer<Cheat>)]
-///		[XmlArray("CheatCodes")]
-///		public Cheat[] CheatCodes 
-///   {
-///      get { ... }
-///      set { ... }
-///   }
-///   ...
+///   [XmlElement("Developer", Type = typeof(NodeSerializer<Company>))]
+///   public Company Developer { get; set; }
+///
+///   [XmlArrayItem("Code", typeof(NodeSerializer<Cheat>))]
+///   [XmlArray("CheatCodes")]
+///   public Cheat[] CheatCodes { get; set; }
 /// }
 /// ]]>
 /// </code>
+/// </para>
+/// <para>
+/// You can also use <see cref="NodeSerializer{T}"/> directly in generic code where the type may not support <see cref="IXmlSerializable"/>.
+/// </para>
 /// </summary>
-/// 
 /// <remarks>
-/// The other way how to use the NodeSerializer is involving it directly in XML serialization code, for
-/// instance in case of code of generic class, which wants to serialize the member field which has the type
-/// given by generic argument; hence you are not sure whether that type will support IXmlSerializable or not,
-/// and you don't want to specify constraints on that. <br/>
-/// Code example: <br/>
-/// <code>
-/// <![CDATA[
-/// public void ReadXml(System.Xml.XmlReader reader)
-/// {
-///     if (reader.IsStartElement())
-///     {
-///       // 1. read position
-///       reader.ReadStartElement();
-///       Pos = reader.ReadElementContentAsInt(_strAttrPosition, string.Empty);
-///       // 2. read TFIELDID
-///       if (reader.IsStartElement(_strAttrFieldType))
-///       {
-///          // if TFIELDID is a class, must create an instance now
-///          if (typeof(TFIELDID).IsClass)
-///          {
-///             // Note:
-///             // If there is a 'new()' constraint applied on TFIELDID,
-///             // one could create its instance by new.
-///             // However, TFIELDID does not have to be a class
-///             // ( as I want to make it quite general, so I avoid applying 'class' constraint ),
-///             // hence I do not want to apply the 'new()' constraint as well.
-///             //
-///             // So, I have to go through more elaborate process with reflection,
-///             // to find the constructor and invoke it.
-/// 
-///             /* _what = new TFIELDID(); */
-///             ConstructorInfo constructorInfo = typeof(TFIELDID).GetConstructor(
-///                    BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance, null, new Type[] { }, null);
-///             _what = (TFIELDID)constructorInfo.Invoke(new object[] { });
-///          }
-///          IXmlSerializable iSer;
-///          if (null != (iSer = What as IXmlSerializable))
-///          {
-///              iSer.ReadXml(reader);
-///          }
-///          else
-///          {
-///              var serializer = new NodeSerializer<TFIELDID>(typeof(TFIELDID).IsEnum);
-///              serz.ReadXml(reader);
-///              _what = (TFIELDID)serializer;
-///          }
-///       }
-///       reader.Skip();
-///       reader.ReadEndElement();
-///     }
-/// }
-/// ]]>
-/// </code>
+/// See also:
+/// <list type="bullet">
+/// <item><see href="http://www.codeproject.com/KB/XML/xmlserializerforunknown.aspx">Codeproject: XmlSerializer and 'not expected' Inherited Types</see></item>
+/// <item><see href="http://www.softwarerockstar.com/2006/12/using-ixmlserializable-to-overcome-not-expected-error-on-derived-classes/">softwarerockstar.com: Using IXmlSerializable To Overcome “not expected” Error On Derived Classes.</see></item>
+/// </list>
 /// </remarks>
-/// <typeparam name="T"> The base of element whose instances - or instances of derived  types - will be
-///  serialized. </typeparam>
-/// <seealso href="http://www.codeproject.com/KB/XML/xmlserializerforunknown.aspx"> Codeproject: XmlSerializer
-///  and 'not expected' Inherited Types</seealso>
-/// <seealso href="http://www.softwarerockstar.com/2006/12/using-ixmlserializable-to-overcome-not-expected-error-on-derived-classes/">
-///  softwarerockstar.com: Using IXmlSerializable To Overcome “not expected” Error On Derived Classes. 
-///  </seealso>
+/// <typeparam name="T">The base type of the element whose instances (or instances of derived types) will be serialized.</typeparam>
 [Serializable]
 [CLSCompliant(true)]
 public class NodeSerializer<T> : IXmlSerializable
@@ -160,21 +83,19 @@ public class NodeSerializer<T> : IXmlSerializable
     private T _node;
 
     /// <summary>
-    /// You will set _bOmitTypeInfo to true, if the note type should be omitted in ReadXml and  WriteXml methods,
-    /// for the purpose of simplicity.  In that case, the code assumes that actual serialized data are always of type T,
-    /// and no actual instance has type derived form T.
-    /// This simplification be done for instance in situation if the concrete type actually cannot be derived from ( like enum type,
-    /// or sealed class).
+    /// Indicates whether type information should be omitted in <see cref="ReadXml"/> and <see cref="WriteXml"/> methods.
+    /// If true, the code assumes that all serialized data are always of type T, and no instance has a type derived from T.
+    /// This is useful for types that cannot be derived from (e.g., enums or sealed classes).
     /// </summary>
     [NonSerialized]
-    private readonly bool _bOmitTypeInfo;
+    private readonly bool _omitTypeInfo;
 
     /// <summary>
-    /// The last exception that occurred in public void ReadXml(XmlReader reader) (if any)
+    /// The last exception that occurred in <see cref="ReadXml(XmlReader)"/>, if any.
     /// </summary>
     private static Exception _readEx = null;
 
-    // various attribute names
+    // XML attribute names for type information
     private const string _strAttrType = "type";
     private const string _strAttrRuntimeType = "RuntimeType";
     #endregion // Fields
@@ -182,90 +103,70 @@ public class NodeSerializer<T> : IXmlSerializable
     #region Constructor(s)
 
     /// <summary>
-    /// Standard argument-less constructor.
+    /// Standard parameterless constructor.
     /// </summary>
     public NodeSerializer()
     { }
 
     /// <summary> 
-    /// The constructor providing serialized node. 
+    /// Constructor providing the serialized node. 
     /// </summary>
-    /// <param name="node"> The value of the serialized node.</param>
+    /// <param name="node">The value of the serialized node.</param>
     public NodeSerializer(T node)
       : this(node, false)
     { }
 
     /// <summary>
-    /// The constructor providing serialized node and initializing this._bOmitTypeInfo.
+    /// Constructor providing the serialized node and initializing <see cref="_omitTypeInfo"/>.
     /// </summary>
-    /// <param name="node"> The value of the serialized node.</param>
-    /// <param name="bOmitTypeInfo"> Initial value of <see cref="OmitTypeInfo"/> property. <br/>
-    ///  You will set bOmitTypeInfo to true, if the node type should be omitted in ReadXml and  WriteXml methods,
-    /// for the purpose of simplicity.  In that case, the code assumes that actual serialized data are always of type T,
-    /// and no actual instance has a type derived form T. <br/>
-    /// This simplification be done for instance in situation if the concrete type actually cannot be derived from ( like enum type,
-    /// or sealed class).
-    /// </param>
+    /// <param name="node">The value of the serialized node.</param>
+    /// <param name="bOmitTypeInfo">If true, type information is omitted in XML.</param>
     public NodeSerializer(T node, bool bOmitTypeInfo)
     {
         this._node = node;
-        this._bOmitTypeInfo = bOmitTypeInfo;
+        this._omitTypeInfo = bOmitTypeInfo;
     }
 
     /// <summary>
-    /// The constructor and initializing this._bOmitTypeInfo.
+    /// Constructor initializing <see cref="_omitTypeInfo"/>.
     /// </summary>
-    /// <param name="bOmitTypeInfo"> Initial value of <see cref="OmitTypeInfo"/> property. <br/>
-    ///  You will set bOmitTypeInfo to true, if the node type should be omitted in ReadXml and  WriteXml methods,
-    /// for the purpose of simplicity.  In that case, the code assumes that actual serialized data are always of type T,
-    /// and no actual instance has a type derived form T. <br/>
-    /// This simplification be done for instance in situation if the concrete type actually cannot be derived from ( like enum type,
-    /// or sealed class).
-    /// </param>
-    public NodeSerializer(bool bOmitTypeInfo)
+    /// <param name="omitTypeInfo">If true, type information is omitted in XML.</param>
+    public NodeSerializer(bool omitTypeInfo)
     {
-        this._bOmitTypeInfo = bOmitTypeInfo;
+        this._omitTypeInfo = omitTypeInfo;
     }
     #endregion // Constructor(s)
 
     #region Properties
 
+    /// <summary>
+    /// Gets the last exception that occurred in <see cref="ReadXml(XmlReader)"/>, if any.
+    /// </summary>
+    public static Exception LastTypeReadError { get => _readEx; }
+
     /// <summary> 
-    /// Property returning the serialized node.
+    /// Gets the serialized node.
     /// </summary>
-    public T Node
-    {
-        get => this._node;
-    }
+    public T Node { get => this._node; }
 
     /// <summary>
-    /// Get the last exception that occurred in public void ReadXml(XmlReader reader) (if any)
+    /// Gets the value of <see cref="_omitTypeInfo"/>, as set by the constructor.
     /// </summary>
-    public static Exception LastTypeReadError
-    {
-        get => _readEx;
-    }
-
-    /// <summary>
-    /// Return the value of read-only field _bOmitTypeInfo, that has been set by constructor.
-    /// </summary>
-    protected bool OmitTypeInfo
-    {
-        get { return _bOmitTypeInfo; }
-    }
+    protected bool OmitTypeInfo { get => _omitTypeInfo; }
     #endregion // Properties
 
     #region Methods
 
-    /// <summary> Virtual method for converting the actual type to the string information written into xml
-    /// attribute. Derived class can overwrite that ( for instance use t.AssemblyQualifiedName ) </summary>
-    ///
-    /// <param name="t"> The Type to process. </param>
-    ///
-    /// <returns> The string representation of  type  <paramref name="t"/> </returns>
-    /// <remarks> This method is called by <see cref="IXmlSerializable.WriteXml"/> method."/></remarks>
+    /// <summary>
+    /// Converts the actual type to a string for writing into the XML attribute.
+    /// Derived classes can override this (e.g., to use <see cref="Type.AssemblyQualifiedName"/>).
+    /// </summary>
+    /// <param name="t">The <see cref="Type"/> to process.</param>
+    /// <returns>The string representation of <paramref name="t"/>.</returns>
+    /// <remarks>This method is called by <see cref="IXmlSerializable.WriteXml"/>.</remarks>
     protected virtual string Type2String(Type t)
     {
+        ArgumentNullException.ThrowIfNull(t);
 #if DEBUG
         string strAsmName = t.Assembly.GetName().Name;
         string result = string.Format(CultureInfo.InvariantCulture, "{0}, {1}", t.FullName, strAsmName);
@@ -275,25 +176,27 @@ public class NodeSerializer<T> : IXmlSerializable
 #endif // DEBUG
     }
 
-    /// <summary> Implicit operator casting the serialized node T to the NodeSerializer. </summary>
-    ///
-    /// <remarks> Will be called by NET serialization framework when storing a property T, thanks to the Xml
-    /// attribute that you used for decoration of that property. </remarks>
-    ///
-    /// <param name="node"> The value of the serialized node; may be null.</param>
-    /// <returns> A new NodeSerializer instance, or null if the <paramref name="node"/> is null.</returns>
+    /// <summary>
+    /// Implicit operator casting the serialized node <typeparamref name="T"/> to <see cref="NodeSerializer{T}"/>.
+    /// </summary>
+    /// <remarks>
+    /// Called by the .NET serialization framework when storing a property of type T, if decorated with the appropriate Xml attribute.
+    /// </remarks>
+    /// <param name="node">The value of the serialized node; may be null.</param>
+    /// <returns>A new <see cref="NodeSerializer{T}"/> instance, or null if <paramref name="node"/> is null.</returns>
     public static implicit operator NodeSerializer<T>(T node)
     {
         return node == null ? null : new NodeSerializer<T>(node);
     }
 
     /// <summary>
-    /// Implicit operator casting the NodeSerializer to the T object.<br/>
-    /// Will be called by .NET serialization framework when reading a property T,
-    /// thanks to the Xml attribute that you used for decoration of that property.
+    /// Implicit operator casting the <see cref="NodeSerializer{T}"/> to the T object.
     /// </summary>
-    /// <param name="serializer"> The serializer </param>
-    /// <returns> A new instance of T.</returns>
+    /// <remarks>
+    /// Called by the .NET serialization framework when reading a property of type T, if decorated with the appropriate Xml attribute.
+    /// </remarks>
+    /// <param name="serializer">The serializer instance.</param>
+    /// <returns>The deserialized value of type T, or default if <paramref name="serializer"/> is null.</returns>
     public static implicit operator T(NodeSerializer<T> serializer)
     {
         return (serializer == null) ? default : serializer.Node;
@@ -303,31 +206,21 @@ public class NodeSerializer<T> : IXmlSerializable
     #region implementation of IXmlSerializable
 
     /// <summary>
-    /// Overwrites IXmlSerializable.GetSchema. 
-    /// Should return an XmlSchema that describes the XML representation of the object 
-    /// that is produced by the WriteXml method and consumed by the ReadXml method.
+    /// Returns the XML schema for the serialized object.
     /// </summary>
-    /// <returns> Actually does not return any specific schema, always returns null. </returns>
+    /// <returns>Always returns null (no schema provided).</returns>
     public XmlSchema GetSchema()
     {
         return null;
     }
 
     /// <summary>
-    /// Overwrites IXmlSerializable.ReadXml. Generates an object from its XML representation. 
-    /// The actual type of the serialized object is restored here from the XML attribute "type",
-    /// then a new XmlSerializer is generated for its serialization.
-    /// Note: The exception is the case if the serialized object is itself a type.
-    /// In that case, we read fully-qualified name from XML attribute "RuntimeType".
+    /// Generates an object from its XML representation.
+    /// The actual type of the serialized object is restored from the XML attribute "type",
+    /// then a new <see cref="XmlSerializer"/> is generated for its deserialization.
+    /// If the serialized object is itself a <see cref="Type"/>, the fully-qualified name is read from the "RuntimeType" attribute.
     /// </summary>
-    /// 
-    /// <remarks>
-    /// WriteXml should NOT write the wrapper element. For more info see
-    /// <a href="http://social.msdn.microsoft.com/Forums/en-US/xmlandnetfx/thread/27e77baa-67d0-4e15-a345-a6c314e924de">
-    /// IXmlSerializable ReadXml question</a>
-    /// </remarks>
-    /// 
-    /// <param name="reader">The XmlReader stream from which the object is deserialized.</param>
+    /// <param name="reader">The <see cref="XmlReader"/> stream from which the object is deserialized.</param>
     public void ReadXml(XmlReader reader)
     {
         string strRuntimeType = reader.GetAttribute(_strAttrRuntimeType);
@@ -335,17 +228,19 @@ public class NodeSerializer<T> : IXmlSerializable
         _readEx = null;
 
         if (!string.IsNullOrEmpty(strRuntimeType))
-        {  // handling the situation when the value of this.Node is itself Type
+        {  // Handle the situation when the value of this.Node is itself a Type
             this._node = (T)(object)Type.GetType(strRuntimeType);
         }
         else if (OmitTypeInfo)
         {
+            // Omit type info: always deserialize as T
             reader.ReadStartElement();
             this._node = (T)new XmlSerializer(typeof(T)).Deserialize(reader);
             reader.ReadEndElement();
         }
         else
         {
+            // Read the type from the XML attribute and deserialize accordingly
             Type type;
             string strType = reader.GetAttribute(_strAttrType);
 
@@ -372,26 +267,18 @@ public class NodeSerializer<T> : IXmlSerializable
     }
 
     /// <summary>
-    /// Overwrites <see cref="IXmlSerializable.WriteXml"/>. Writes an object into its XML representation.
-    /// The actual type of the object is stored here into the XML attribute "type",
-    /// then a new XmlSerializer is generated for its serialization.
-    /// The only exception is the case when the object itself is Type;
-    /// in that case we write fully-qualified name into the XML attribute "RuntimeType"
+    /// Writes an object into its XML representation.
+    /// The actual type of the object is stored in the XML attribute "type",
+    /// then a new <see cref="XmlSerializer"/> is generated for its serialization.
+    /// If the object itself is a <see cref="Type"/>, the fully-qualified name is written into the "RuntimeType" attribute.
     /// </summary>
-    /// 
-    /// <remarks>
-    /// WriteXml should NOT write the wrapper element. For more info see
-    /// <a href="http://social.msdn.microsoft.com/Forums/en-US/xmlandnetfx/thread/27e77baa-67d0-4e15-a345-a6c314e924de">
-    /// IXmlSerializable ReadXml question</a>
-    /// </remarks>
-    /// 
-    /// <param name="writer">The XmlWriter stream to which the object is serialized.</param>
+    /// <param name="writer">The <see cref="XmlWriter"/> stream to which the object is serialized.</param>
     public void WriteXml(XmlWriter writer)
     {
         Type t = this.Node.GetType();
         string strVal = Type2String(t);
 
-        // handling the situation when the value of this.Node is itself Type
+        // Handle the situation when the value of this.Node is itself a Type
         if (t.Name.Equals(_strAttrRuntimeType, StringComparison.Ordinal))
         {   // see http://stackoverflow.com/questions/12306/can-i-serialize-a-c-type-object
             string strRuntimeType = Type2String((Node as Type));
@@ -399,11 +286,12 @@ public class NodeSerializer<T> : IXmlSerializable
         }
         else if (OmitTypeInfo)
         {
+            // Omit type info: always serialize as T
             new XmlSerializer(typeof(T)).Serialize(writer, this.Node);
         }
         else
         {
-            // just an ordinary type, go the original way
+            // Write the type info and serialize using the actual type
             writer.WriteAttributeString(_strAttrType, strVal);
             new XmlSerializer(t).Serialize(writer, this.Node);
         }

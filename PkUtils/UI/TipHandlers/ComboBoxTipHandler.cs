@@ -10,8 +10,10 @@ using PK.PkUtils.WinApi;
 
 namespace PK.PkUtils.UI.TipHandlers;
 
-#pragma warning disable IDE0079  // Remove unnecessary suppression
+#pragma warning disable IDE0079 // Remove unnecessary suppressions
+#pragma warning disable CA1806 // IsVerticalScrollBarVisible calls GetScrollRange but does not use the HRESULT or error code that the method returns.This could lead to unexpected behavior in error conditions or low-resource situations. Use the result in a conditional statement, assign the result to a variable, or pass it as an argument to another method.
 #pragma warning disable SYSLIB1054  // Use 'LibraryImportAttribute' instead of 'DllImportAttribute' to generate P/Invoke marshalling code at compile time
+
 
 /// <summary>   Supports tooltips for ComboBoxes. </summary>
 [CLSCompliant(false)]
@@ -557,8 +559,8 @@ public class ComboBoxTipHandler : TipHandler
                     TipWindow.DrawHighlighted = TipHandler.DrawSelHighlighted && bHighlighted;
 
                     // move tip window over list text
-                    Size sz = new Size(rcTipText.Width + 8, rcTipText.Height);
-                    Point ptLocation = new Point(rcTipText.Left + 1, rcTipText.Top);
+                    Size sz = new(rcTipText.Width + 8, rcTipText.Height);
+                    Point ptLocation = new(rcTipText.Left + 1, rcTipText.Top);
                     TipWindow.Size = sz;
                     TipWindow.MoveAsTopmost(ptLocation);
                     TipWindow.ShowDelayed((int)TipTimeDelayMsec); // show popup text delayed
@@ -807,5 +809,7 @@ public class ComboBoxTipHandler : TipHandler
     #endregion // Protected_Methods
     #endregion // Methods
 }
+
 #pragma warning restore SYSLIB1054
+#pragma warning restore CA1806
 #pragma warning restore IDE0079

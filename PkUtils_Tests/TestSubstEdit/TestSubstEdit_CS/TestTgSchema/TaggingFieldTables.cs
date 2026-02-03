@@ -5,7 +5,7 @@ namespace PK.TestTgSchema;
 public static class TaggingFieldTables
 {
     // Fields descriptions for control _taggingSchemaComponentslUserCtrl
-    public static readonly SubstDescr<FieldTypeId>[] _myCompFieldsDescr =
+    public static readonly SubstitutionDescriptor<FieldTypeId>[] _myCompFieldsDescr =
     [
         new(new FieldTypeId(typeof(Field_PRJ_Title)),     "<Prj.Title>"   ),
         new(new FieldTypeId(typeof(Field_DOC_Author)),    "<Doc.Author>"  ),
@@ -19,7 +19,7 @@ public static class TaggingFieldTables
 
     // Fields descriptions for control _taggingSchemaLinesUserCtrl
     // For demonstration purpose, in this prototype we identify instances of FieldLine by enum.
-    public static readonly SubstDescr<EFieldLineType>[] _myLinesFieldsDescr =
+    public static readonly SubstitutionDescriptor<EFieldLineType>[] _myLinesFieldsDescr =
     [
         new(EFieldLineType.IdField_ProjName,   "<Prj.Name>"   ),
         new(EFieldLineType.IdField_Resistance, "<Resistance>" ),

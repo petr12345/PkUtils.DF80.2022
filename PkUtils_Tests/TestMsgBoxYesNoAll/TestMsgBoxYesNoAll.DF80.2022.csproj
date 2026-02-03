@@ -4,6 +4,7 @@
     <OutputType>WinExe</OutputType>
     <RootNamespace>PK.TestMsgBoxYesNoAll</RootNamespace>
     <AssemblyName>PK.TestMsgBoxYesNoAll</AssemblyName>
+    <NeutralResourcesLanguage>en-US</NeutralResourcesLanguage>
     <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
     <UseWindowsForms>true</UseWindowsForms>
     <ImportWindowsDesktopTargets>true</ImportWindowsDesktopTargets>

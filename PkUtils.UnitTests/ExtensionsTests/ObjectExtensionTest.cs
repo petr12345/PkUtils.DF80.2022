@@ -10,6 +10,10 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using PK.PkUtils.Extensions;
 using PK.PkUtils.Interfaces;
 
+#pragma warning disable IDE0031 // Null check can be simplified
+#pragma warning disable IDE0251 // Member can be made 'readonly'
+
+
 namespace PK.PkUtils.UnitTests.ExtensionsTests
 {
 
@@ -269,3 +273,5 @@ namespace PK.PkUtils.UnitTests.ExtensionsTests
         #endregion // Tests
     }
 }
+#pragma warning restore IDE0251 // Member can be made 'readonly'
+#pragma warning restore IDE0031 // Null check can be simplified

@@ -1,4 +1,7 @@
-﻿using System;
+﻿// Ignore Spelling: substring
+//
+
+using System;
 using System.Runtime.Serialization;
 using PK.PkUtils.XmlSerialization;
 
@@ -19,6 +22,41 @@ public enum EFieldLineType
     IdField_ProjName,
     IdField_Resistance,
     IdField_Diameter,
+}
+
+internal static class FieldLineTypeExtensions
+{
+    public static bool IsValid(this EFieldLineType fieldType)
+    {
+        return fieldType != EFieldLineType.kIdFieldInvalid;
+    }
+
+    public static EFieldLineType FromString(string str)
+    {
+        ArgumentNullException.ThrowIfNull(str);
+
+        // 1. Normalize and try direct enum parse (case-insensitive).
+        string s = str.Trim();
+        if (Enum.TryParse<EFieldLineType>(s, ignoreCase: true, out EFieldLineType result))
+        {
+            return result;
+        }
+
+        // 2. Use simple substring matching for common synonyms.
+        string lowered = s.ToLowerInvariant();
+
+        if (lowered.Contains("project") || lowered.Contains("proj") || lowered.Contains("name") || lowered.Contains("title"))
+            return EFieldLineType.IdField_ProjName;
+
+        if (lowered.Contains("resist") || lowered.Contains("ohm") || lowered.Contains("res"))
+            return EFieldLineType.IdField_Resistance;
+
+        if (lowered.Contains("diam") || lowered.Contains("size"))
+            return EFieldLineType.IdField_Diameter;
+
+        // 3. No match found.
+        return EFieldLineType.kIdFieldInvalid;
+    }
 }
 
 

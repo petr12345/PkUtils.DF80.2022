@@ -11,7 +11,10 @@ using PK.PkUtils.Interfaces;
 
 namespace PK.PkUtils.UnitTests.DataStructuresTest;
 
+#pragma warning disable IDE0079   // Remove unnecessary suppressions
+#pragma warning disable IDE0305   // Collection initialization can be simplified
 #pragma warning disable CA1806  // result of some calls is not used
+#pragma warning disable CA1859  // Change type of variable 'cache' from ..
 
 /// <summary> Unit Test of generic class SizeLimitedCache. </summary>
 [TestClass()]
@@ -379,4 +382,7 @@ public class SizeLimitedCacheTests
     #endregion // Tests_Clear
 }
 
+#pragma warning restore CA1859
 #pragma warning restore CA1806
+#pragma warning restore IDE0305
+#pragma warning restore IDE0079

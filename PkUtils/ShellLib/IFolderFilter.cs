@@ -30,6 +30,10 @@
 using System;
 using System.Runtime.InteropServices;
 
+#pragma warning disable IDE0079   // Remove unnecessary suppressions
+#pragma warning disable SYSLIB1096 // Mark the type 'IFolderFilter' with 'GeneratedComInterfaceAttribute' instead of 'ComImportAttribute' to generate COM marshalling code at compile time
+
+
 namespace PK.PkUtils.ShellLib;
 
 /// <summary>
@@ -98,4 +102,7 @@ public interface IFolderFilter
       IntPtr pidlFolder,
       IntPtr phwnd,
       out uint pgrfFlags);
-};
+}
+
+#pragma warning restore SYSLIB1096 // Mark the type 'IFolderFilter' with 'GeneratedComInterfaceAttribute' instead of 'ComImportAttribute' to generate COM marshalling code at compile time
+#pragma warning restore IDE0079   // Remove unnecessary suppressions

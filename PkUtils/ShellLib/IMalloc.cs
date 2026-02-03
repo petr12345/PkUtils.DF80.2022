@@ -19,6 +19,10 @@
 using System;
 using System.Runtime.InteropServices;
 
+
+#pragma warning disable IDE0079   // Remove unnecessary suppressions
+#pragma warning disable SYSLIB1096 // Mark the type 'IMalloc' with 'GeneratedComInterfaceAttribute' instead of 'ComImportAttribute' to generate COM marshalling code at compile time
+
 namespace PK.PkUtils.ShellLib;
 
 /// <summary>
@@ -105,3 +109,6 @@ public interface IMalloc
     [PreserveSig]
     void HeapMinimize();
 }
+
+#pragma warning restore SYSLIB1096 // Mark the type 'IMalloc' with 'GeneratedComInterfaceAttribute'
+#pragma warning restore IDE0079   // Remove unnecessary suppressions

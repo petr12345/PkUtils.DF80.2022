@@ -22,6 +22,9 @@ using System.IO;
 using System.Reflection;
 using System.Windows.Forms;
 
+#pragma warning disable IDE0079  // Remove unnecessary suppressions
+#pragma warning disable IDE0031  // Null check can be simplified
+
 namespace PK.PkUtils.UI.Dialogs.PSTaskDialog;
 
 public partial class CommandButton : Button
@@ -399,3 +402,6 @@ public partial class CommandButton : Button
 
     //--------------------------------------------------------------------------------
 }
+
+#pragma warning restore IDE0031 // Null check can be simplified
+#pragma warning restore IDE0079  // Remove unnecessary suppressions

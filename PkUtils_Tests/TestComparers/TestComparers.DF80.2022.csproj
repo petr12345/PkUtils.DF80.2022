@@ -4,6 +4,7 @@
     <OutputType>WinExe</OutputType>
     <RootNamespace>PK.TestComparers</RootNamespace>
     <AssemblyName>PK.TestComparers</AssemblyName>
+    <NeutralResourcesLanguage>en-US</NeutralResourcesLanguage>
     <IsWebBootstrapper>false</IsWebBootstrapper>
     <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
     <StartupObject>

@@ -11,7 +11,10 @@ using PK.PkUtils.Threading;
 
 namespace PK.PkUtils.UnitTests.NativeMemoryTests;
 
+#pragma warning disable IDE0079   // Remove unnecessary suppressions
+#pragma warning disable IDE0290 // Use primary constructor
 #pragma warning disable CA1806   // suppress "result of '... call is not used"
+#pragma warning disable MSTEST0051 // Assert.Throws should contain only a single statement
 #pragma warning disable VSTHRD200 // Use "Async" suffix for async methods
 
 /// <summary>
@@ -38,10 +41,8 @@ public class SharedMemoryTest
 
         protected override void WorkerFunction()
         {
-            using (Segment segmentAttached = new(_mappingName, true))
-            {
-                _resultData = (PersonData)segmentAttached.GetData();
-            }
+            using Segment segmentAttached = new(_mappingName, true);
+            _resultData = (PersonData)segmentAttached.GetData();
         }
     }
     #endregion // Typedefs
@@ -96,10 +97,8 @@ public class SharedMemoryTest
         for (int ii = 1; ii <= maxMappingNameLength; ii++)
         {
             string mappingName = new('x', ii);
-            using (Segment tempSegment = new(mappingName, SharedMemoryCreationFlag.Create, 20, true))
-            {
-                Assert.IsTrue(tempSegment.IsSynchronized);
-            }
+            using Segment tempSegment = new(mappingName, SharedMemoryCreationFlag.Create, 20, true);
+            Assert.IsTrue(tempSegment.IsSynchronized);
         }
     }
 
@@ -146,10 +145,8 @@ public class SharedMemoryTest
 
         using (Segment s1 = new(mappingName, p1, true))
         {
-            using (Segment s2 = new(mappingName, true))
-            {
-                p2 = (PersonData)s2.GetData();
-            }
+            using Segment s2 = new(mappingName, true);
+            p2 = (PersonData)s2.GetData();
         }
 
         Assert.IsTrue(p2.Equals(p1));
@@ -178,22 +175,12 @@ public class SharedMemoryTest
 
         using (Segment sA = new(mappingName, pA, true))
         {
-            using (IDisposable lockA1 = sA.AcquireLock())
-            {
-                using (IDisposable lockA2 = sA.AcquireLock())
-                {
-                    using (Segment sB = new(mappingName, true))
-                    {
-                        using (IDisposable lockB1 = sB.AcquireLock())
-                        {
-                            using (IDisposable lockB2 = sB.AcquireLock())
-                            {
-                                pB = (PersonData)sB.GetData();
-                            }
-                        }
-                    }
-                }
-            }
+            using IDisposable lockA1 = sA.AcquireLock();
+            using IDisposable lockA2 = sA.AcquireLock();
+            using Segment sB = new(mappingName, true);
+            using IDisposable lockB1 = sB.AcquireLock();
+            using IDisposable lockB2 = sB.AcquireLock();
+            pB = (PersonData)sB.GetData();
         }
 
         Assert.IsTrue(pB.Equals(pA));
@@ -212,15 +199,11 @@ public class SharedMemoryTest
 
         using (Segment s1 = new(mappingName, p1, true))
         {
-            using (Segment s2 = new(mappingName, true))
-            {
-                s1.Dispose();
+            using Segment s2 = new(mappingName, true);
+            s1.Dispose();
 
-                using (IDisposable lockB2 = s2.AcquireLock())
-                {
-                    p2 = (PersonData)s2.GetData();
-                }
-            }
+            using IDisposable lockB2 = s2.AcquireLock();
+            p2 = (PersonData)s2.GetData();
         }
 
         Assert.IsTrue(p2.Equals(p1));
@@ -243,16 +226,12 @@ public class SharedMemoryTest
         PersonData p1 = new(73, "XX YY");
         PersonData p2;
 
-        using (Segment s1 = new(mappingName1, p1, true))
+        using Segment s1 = new(mappingName1, p1, true);
+        Assert.ThrowsExactly<SharedMemoryException>(() =>
         {
-            Assert.ThrowsExactly<SharedMemoryException>(() =>
-            {
-                using (Segment s2 = new(mappingName2, true))
-                {
-                    p2 = (PersonData)s2.GetData();
-                }
-            });
-        }
+            using Segment s2 = new(mappingName2, true);
+            p2 = (PersonData)s2.GetData();
+        });
     }
     #endregion // Tests_write_read_singlethread
 
@@ -272,12 +251,10 @@ public class SharedMemoryTest
 
         using (Segment segmentWritten = new(mappingName, personWritten, true))
         {
-            using (SegmentReadThread thread = new(mappingName))
-            {
-                thread.Start();
-                thread.Join();
-                personRead = thread.ResultData;
-            }
+            using SegmentReadThread thread = new(mappingName);
+            thread.Start();
+            thread.Join();
+            personRead = thread.ResultData;
         }
 
         Assert.IsTrue(personWritten.Equals(personRead));
@@ -299,11 +276,9 @@ public class SharedMemoryTest
         // Local method locking and unlocking the written segment
         void ThreadLockAndUnlockUnlockSegment()
         {
-            using (IDisposable temporaryLock = segmentWritten.AcquireLock())
-            {
-                acquiredLockOnce.Set();
-                Thread.Sleep(256);
-            }
+            using IDisposable temporaryLock = segmentWritten.AcquireLock();
+            acquiredLockOnce.Set();
+            Thread.Sleep(256);
         }
 
         // Local method reading the person data from shared memory, creating attached segment
@@ -313,10 +288,8 @@ public class SharedMemoryTest
             acquiredLockOnce.WaitOne();
 
             // only after that try reading
-            using (Segment segmentAttached = new(mappingName, true))
-            {
-                personRead = (PersonData)segmentAttached.GetData();
-            }
+            using Segment segmentAttached = new(mappingName, true);
+            personRead = (PersonData)segmentAttached.GetData();
         }
 
         // the main body
@@ -326,7 +299,7 @@ public class SharedMemoryTest
             {
                 Thread threadLockUnlock = new(new ThreadStart(ThreadLockAndUnlockUnlockSegment));
                 Thread threadRead = new(new ThreadStart(ThreadReadPersonData));
-                Thread[] threads = { threadRead, threadLockUnlock };
+                Thread[] threads = [threadRead, threadLockUnlock];
 
                 threadLockUnlock.Start();
                 threadRead.Start();
@@ -386,10 +359,8 @@ public class SharedMemoryTest
                 // perform reading the person data from shared memory, creating attached segment
                 Assert.ThrowsExactly<AbandonedMutexException>(() =>
                 {
-                    using (Segment segmentAttached = new(mappingName, true))
-                    {
-                        personRead = (PersonData)segmentAttached.GetData();
-                    }
+                    using Segment segmentAttached = new(mappingName, true);
+                    personRead = (PersonData)segmentAttached.GetData();
                 });
             }
         }
@@ -399,5 +370,7 @@ public class SharedMemoryTest
 }
 
 #pragma warning restore VSTHRD200 // Use "Async" suffix for async methods
+#pragma warning restore MSTEST0051 // Assert.Throws should contain only a single statement
 #pragma warning restore CA1806   // restore "result of '... call is not used"
-
+#pragma warning restore IDE0290 // Use primary constructor
+#pragma warning restore IDE0079   // Remove unnecessary suppressions

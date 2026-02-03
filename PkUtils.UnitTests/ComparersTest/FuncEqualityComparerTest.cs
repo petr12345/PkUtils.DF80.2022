@@ -5,6 +5,7 @@ using System.Linq;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using PK.PkUtils.Comparers;
 
+#pragma warning disable IDE0079   // Remove unnecessary suppressions
 #pragma warning disable CA1806   // suppress "result of '... call is not used"
 #pragma warning disable IDE0039  // suppress "use local functions" warning
 

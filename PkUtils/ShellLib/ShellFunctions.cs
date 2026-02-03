@@ -31,6 +31,10 @@ using System;
 using System.Runtime.InteropServices;
 
 
+#pragma warning disable IDE0079   // Remove unnecessary suppressions
+#pragma warning disable CA1806 // GetMalloc calls SHGetMalloc but does not use the HRESULT 
+
+
 namespace PK.PkUtils.ShellLib;
 
 /// <summary>
@@ -134,5 +138,6 @@ public static class ShellFunctions
         Type folderFilterSiteType = typeof(IFolderFilterSite);
         return folderFilterSiteType;
     }
-
 }
+
+#pragma warning restore CA1806

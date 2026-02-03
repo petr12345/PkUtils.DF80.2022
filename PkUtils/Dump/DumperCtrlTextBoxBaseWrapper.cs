@@ -31,17 +31,7 @@ public class DumperCtrlTextBoxBaseWrapper<T> : DumperCtrlWrapper<T> where T : Te
     /// <param name="textBox">  The wrapped WinForms control. </param>
     /// <param name="maxMsgHistoryItems"> The maximum length of internal queue of recently added text items. </param>
     public DumperCtrlTextBoxBaseWrapper(T textBox, int maxMsgHistoryItems)
-      : this(textBox, maxMsgHistoryItems, _defaultShouldPreprocessItems)
-    { }
-
-    /// <summary> Constructor accepting three input arguments. </summary>
-    ///
-    /// <param name="textBox"> The wrapped WinForms control. </param>
-    /// <param name="maxMsgHistoryItems">    The maximum length of internal queue of recently added text items. </param>
-    /// <param name="shouldPreprocessItems"> Initializes the value of property ShouldPreprocessItems.  
-    /// If true,  the method <see cref="DumperCtrlWrapper{T}.PreprocessAddedText "/>will be called upon adding the new text item. </param>
-    public DumperCtrlTextBoxBaseWrapper(T textBox, int maxMsgHistoryItems, bool shouldPreprocessItems)
-      : base(textBox, maxMsgHistoryItems, shouldPreprocessItems)
+      : base(textBox, maxMsgHistoryItems)
     { }
     #endregion // Constructor(s)
 
@@ -122,7 +112,7 @@ public class DumperCtrlTextBoxBaseWrapper<T> : DumperCtrlWrapper<T> where T : Te
         TextBoxBase txtBx = this.WrappedControl;
 
         CheckInvokeNotRequired(txtBx);
-        txtBx.AppendText(entry.Text);
+        txtBx.AppendText(FinalEntryText(entry));
         _hasAddedTextBefore = true;
     }
 
@@ -141,11 +131,6 @@ public class DumperCtrlTextBoxBaseWrapper<T> : DumperCtrlWrapper<T> where T : Te
         TextBoxBase txtBx = WrappedControl;
         CheckInvokeNotRequired(txtBx);
 
-        if (ShouldPreprocessItems)
-        {
-            entry = new LogEntry(PreprocessAddedText(entry.Text), entry.Level);
-        }
-
         bool historyFull = false;
         bool isControlOk = txtBx.IsHandleCreated;
         int sumaRemovedLength = 0;
@@ -156,7 +141,7 @@ public class DumperCtrlTextBoxBaseWrapper<T> : DumperCtrlWrapper<T> where T : Te
         {
             while (_msgHistory.Count >= HistoryLimit)
             {
-                sumaRemovedLength += _msgHistory.Dequeue().Text.Length;
+                sumaRemovedLength += FinalEntryText(_msgHistory.Dequeue()).Length;
                 historyFull = true;
             }
             _msgHistory.Enqueue(entry);

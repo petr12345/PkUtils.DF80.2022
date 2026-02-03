@@ -553,7 +553,7 @@ public static class User32
         /// <summary> Default constructor. </summary>
         public MENUITEMINFO()
         {
-            cbSize = (uint)Marshal.SizeOf(typeof(MENUITEMINFO));
+            cbSize = (uint)Marshal.SizeOf<MENUITEMINFO>();
             fMask = 0;
             fType = 0;
             fState = 0;
@@ -3086,8 +3086,7 @@ public static class User32
             // call via a function pointer
             if (fnAddr != IntPtr.Zero)
             {   // create delegate
-                deleg = (SetWindowLongPtrDelegate)Marshal.GetDelegateForFunctionPointer(
-                  fnAddr, typeof(SetWindowLongPtrDelegate));
+                deleg = Marshal.GetDelegateForFunctionPointer<SetWindowLongPtrDelegate>(fnAddr);
                 // call via a function delegate
                 result = deleg(hWnd, nIndex, dwNewLong);
             }
@@ -3137,8 +3136,7 @@ public static class User32
             // call via a function pointer
             if (fnAddr != IntPtr.Zero)
             {   // create delegate
-                deleg = (SetWindowLongPtrWndProcDelegate)Marshal.GetDelegateForFunctionPointer(
-                  fnAddr, typeof(SetWindowLongPtrWndProcDelegate));
+                deleg = Marshal.GetDelegateForFunctionPointer<SetWindowLongPtrWndProcDelegate>(fnAddr);
                 // call via a function delegate
                 deleg(hWnd, nIndex, newProc);
             }
@@ -3186,8 +3184,7 @@ public static class User32
             // call via a function pointer
             if (fnAddr != IntPtr.Zero)
             {   // create delegate
-                deleg = (GetWindowLongPtrDelegate)Marshal.GetDelegateForFunctionPointer(
-                  fnAddr, typeof(GetWindowLongPtrDelegate));
+                deleg = Marshal.GetDelegateForFunctionPointer<GetWindowLongPtrDelegate>(fnAddr);
                 // call via a function delegate
                 result = deleg(hWnd, nIndex);
             }

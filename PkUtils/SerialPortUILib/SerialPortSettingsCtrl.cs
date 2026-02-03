@@ -63,8 +63,8 @@ public partial class SerialPortSettingsCtrl : SerialPortSettingsCtrl_Design
             _portNameComboBox.DataSource = mySerialSettings.PortNameCollection.ToList();
             _baudRateComboBox.DataSource = mySerialSettings.BaudRateCollection;
             _dataBitsComboBox.DataSource = mySerialSettings.DataBitsCollection;
-            _parityComboBox.DataSource = Enum.GetValues(typeof(System.IO.Ports.Parity));
-            _stopBitsComboBox.DataSource = Enum.GetValues(typeof(System.IO.Ports.StopBits));
+            _parityComboBox.DataSource = Enum.GetValues<System.IO.Ports.Parity>();
+            _stopBitsComboBox.DataSource = Enum.GetValues<System.IO.Ports.StopBits>();
             // should assign following .DataSource as last-one, 
             // otherwise there were problems with _portNameComboBox ( as if changing value on itself )
             _serialSettingsBindingSource.DataSource = mySerialSettings;

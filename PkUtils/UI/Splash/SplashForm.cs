@@ -27,6 +27,9 @@ using PK.PkUtils.SystemEx;
 
 namespace PK.PkUtils.UI.Splash;
 
+#pragma warning disable IDE0079   // Remove unnecessary suppressions
+#pragma warning disable IDE0031 // Null check can be simplified
+
 //
 // Changes from the previous (original) CodeProject code:
 //
@@ -638,3 +641,6 @@ private bool _bShouldClose;
     }
     #endregion // ISplashWindow Members
 }
+
+#pragma warning restore IDE0031 // Null check can be simplified
+#pragma warning restore IDE0079   // Remove unnecessary suppressions

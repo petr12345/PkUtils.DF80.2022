@@ -8,6 +8,11 @@ using System.Reflection;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using PK.PkUtils.Reflection;
 
+#pragma warning disable IDE0079     // Remove unnecessary suppressions
+#pragma warning disable IDE0305   // Collection initialization can be simplified
+#pragma warning disable CA2211 // Non - constant fields should not be visible
+#pragma warning disable MSTEST0051 // Assert.Throws should contain only a single statement
+
 #nullable enable
 
 namespace PK.PkUtils.UnitTests.ReflectionTests;
@@ -156,33 +161,33 @@ public class FieldsUtilsTest
     };
     */
 
-    private readonly string[] _arr_B_StaticFieldNames = new string[] {
+    private readonly string[] _arr_B_StaticFieldNames = [
         "_a_public",
         "_a_protected",
         "_a_private",
         "_b_public",
         "_b_protected",
         "_b_private",
-    };
+    ];
 
-    private readonly string[] _arr_C_NonStaticFieldNames = new string[] {
+    private readonly string[] _arr_C_NonStaticFieldNames = [
         "_c_public",
         "_c_protected",
         "_c_private",
-    };
+    ];
 
-    private readonly string[] _arr_D_NonStaticFieldNames = new string[] {
+    private readonly string[] _arr_D_NonStaticFieldNames = [
         "_c_public",
         "_c_protected",
         "_c_private",
         "_d_public",
         "_d_protected",
         "_d_private",
-    };
-    private readonly string[] _arrInvalidFieldNames = new string[] {
+    ];
+    private readonly string[] _arrInvalidFieldNames = [
         "_xyz",
         "?@#$%",
-    };
+    ];
     #endregion // Auxiliary_classes_for_test_purpose
 
     #region Accessing_static_field_value_Shallow_Scope_tests
@@ -787,3 +792,8 @@ public class FieldsUtilsTest
     }
     #endregion // Accessing_FieldInfo_Full_Scope_tests
 }
+
+#pragma warning restore MSTEST0051 // Assert.Throws should contain only a single statement
+#pragma warning restore CA2211 // Non - constant fields should not be visible
+#pragma warning restore IDE0305   // Collection initialization can be simplified
+#pragma warning restore IDE0079     // Remove unnecessary suppressions

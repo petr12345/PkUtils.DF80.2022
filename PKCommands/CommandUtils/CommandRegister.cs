@@ -315,6 +315,61 @@ public class CommandRegister<TCommand, TErrorCode> : NotifyPropertyChanged, ICom
             }
         }
     }
+
+    /// <summary>
+    /// Displays all available commands to the specified <paramref name="display"/>.
+    /// </summary>
+    /// <param name="display">The console display interface to output the commands. Cannot be null.</param>
+    /// <param name="includingHelp">If true, includes help command variants in the output. Default is true.</param>
+    /// <param name="includingQuit">If true, includes quit command variants in the output. Default is true.</param>
+    /// <param name="prependBlankLine">If true, writes a blank line before listing the commands. Default is true.</param>
+    /// <exception cref="ArgumentNullException">Thrown if <paramref name="display"/> is null.</exception>
+    protected virtual void DisplayAllCommands(
+        IConsoleDisplay display,
+        bool includingHelp = true,
+        bool includingQuit = true,
+        bool prependBlankLine = true)
+    {
+        ArgumentNullException.ThrowIfNull(display);
+
+        List<string> helpVariants = HelpCommandVariants.ToList();
+        List<string> quitVariants = QuitCommandVariants.ToList();
+        List<string> names = CommandRegistry.GetCommandNames().ToList();
+
+        if (includingHelp && !names.Any(s => helpVariants.Contains(s, CommandNamesComparer)))
+        {
+            names.Add(helpVariants.OrderBy(s => s.Length).Join());
+        }
+        if (includingQuit && !names.Any(s => quitVariants.Contains(s, CommandNamesComparer)))
+        {
+            names.Add(quitVariants.OrderBy(s => s.Length).Join());
+        }
+
+        if (prependBlankLine)
+        {
+            display.WriteLine();
+        }
+        display.WriteText("Available Commands:");
+
+        foreach (string commandName in names)
+        {
+            display.WriteText(commandName);
+        }
+
+        display.WriteLine();
+    }
+
+    /// <summary>
+    /// Displays help information by listing all available commands to the specified <paramref name="display"/>.
+    /// </summary>
+    /// <param name="display">The console display interface to output the help information. Cannot be null.</param>
+    /// <exception cref="ArgumentNullException">Thrown if <paramref name="display"/> is null.</exception>
+    protected virtual void DisplayHelp(IConsoleDisplay display)
+    {
+        ArgumentNullException.ThrowIfNull(display);
+
+        DisplayAllCommands(display);
+    }
     #endregion // Protected Methods
 
     #region Private Methods
@@ -371,41 +426,6 @@ public class CommandRegister<TCommand, TErrorCode> : NotifyPropertyChanged, ICom
         }
 
         return command as TCommand;
-    }
-
-    private void DisplayAllCommands(IConsoleDisplay display, bool includingHelp = true, bool includingQuit = true)
-    {
-        Debug.Assert(display != null);
-
-        List<string> helpVariants = HelpCommandVariants.ToList();
-        List<string> quitVariants = QuitCommandVariants.ToList();
-        List<string> names = CommandRegistry.GetCommandNames().ToList();
-
-        if (includingHelp && !names.Any(s => helpVariants.Contains(s, CommandNamesComparer)))
-        {
-            names.Add(helpVariants.OrderBy(s => s.Length).Join());
-        }
-        if (includingQuit && !names.Any(s => quitVariants.Contains(s, CommandNamesComparer)))
-        {
-            names.Add(quitVariants.OrderBy(s => s.Length).Join());
-        }
-
-        display.WriteLine();
-        display.WriteText("Available Commands:");
-
-        foreach (var commandName in names)
-        {
-            display.WriteText(commandName);
-        }
-
-        display.WriteLine();
-    }
-
-    private void DisplayHelp(IConsoleDisplay display)
-    {
-        Debug.Assert(display != null);
-
-        DisplayAllCommands(display);
     }
     #endregion // Private Methods
     #endregion // Methods

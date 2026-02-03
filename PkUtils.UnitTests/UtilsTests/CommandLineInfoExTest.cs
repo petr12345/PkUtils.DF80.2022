@@ -8,6 +8,9 @@ using PK.PkUtils.Utils;
 
 namespace PK.PkUtils.UnitTests.UtilsTests;
 
+#pragma warning disable IDE0059   // Avoid unnecessary value assignments
+#pragma warning disable IDE0301   // Collection initialization simplified
+
 /// <summary>
 /// This is a test class for CommandLineInfoEx and is intended
 /// to contain all CommandLineInfoEx Unit Tests
@@ -119,3 +122,6 @@ public class CommandLineInfoExTest
     }
     #endregion // Tests
 }
+
+#pragma warning restore IDE0301   // Collection initialization simplified
+#pragma warning restore IDE0059   // Avoid unnecessary value assignments

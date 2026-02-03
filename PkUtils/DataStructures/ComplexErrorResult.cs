@@ -17,7 +17,7 @@ public class ComplexErrorResult<TError> : IComplexErrorResult<TError>
     private readonly bool _success;
     private readonly string _errorMessage;
     private readonly TError _errorDetails;
-    private static readonly IComplexErrorResult<TError> _ok = new ComplexErrorResult<TError>();
+    private static readonly Lazy<IComplexErrorResult<TError>> _ok = new(() => new ComplexErrorResult<TError>());
     #endregion // Fields
 
     #region Constructor
@@ -33,7 +33,7 @@ public class ComplexErrorResult<TError> : IComplexErrorResult<TError>
     public ComplexErrorResult(string errorMessage, TError errorDetails = default)
         : this(
               success: false,
-              errorMessage: errorMessage.CheckNotNull(),
+              errorMessage: errorMessage ?? throw new ArgumentNullException(nameof(errorMessage)),
               errorDetails: errorDetails)
     { }
 
@@ -67,13 +67,16 @@ public class ComplexErrorResult<TError> : IComplexErrorResult<TError>
             errorDetails: rhs.Success ? default : rhs.ErrorDetails)
     { }
 
-
     /// <summary> Core constructor used by other overloads. </summary>
     /// <param name="success">Indicates success or failure.</param>
     /// <param name="errorMessage">Message describing the error.</param>
     /// <param name="errorDetails">The typed error details.</param>
     private ComplexErrorResult(bool success, string errorMessage, TError errorDetails)
     {
+        if (success && !string.IsNullOrEmpty(errorMessage))
+        {
+            throw new ArgumentException($"Inconsistent state: a successful result cannot have a non-empty error message '{errorMessage}'.", nameof(errorMessage));
+        }
         _success = success;
         _errorMessage = errorMessage;
         _errorDetails = errorDetails;
@@ -82,16 +85,13 @@ public class ComplexErrorResult<TError> : IComplexErrorResult<TError>
 
     #region Properties
     /// <summary> Prepared standard representation of successful result. </summary>
-    public static IComplexErrorResult<TError> OK { get => _ok; }
+    public static IComplexErrorResult<TError> OK { get => _ok.Value; }
 
     /// <summary>
     /// Gets the "raw" message, as initialized by constructor. Note the difference from <see cref="ErrorMessage"/>.
     /// </summary>
     /// <seealso cref="ErrorMessage"/>
-    protected string RawErrorMessage
-    {
-        get { return _errorMessage; }
-    }
+    protected string RawErrorMessage { get => _errorMessage; }
     #endregion // Properties
 
     #region IComplexErrorResult<TError> members
@@ -195,7 +195,7 @@ public class ComplexErrorResult<TError> : IComplexErrorResult<TError>
     public override string ToString()
     {
         if (Success) return "Success";
-        var details = _errorDetails?.ToString();
+        string details = _errorDetails?.ToString();
         return string.IsNullOrEmpty(details) ? $"Error: {ErrorMessage}" : $"Error: {ErrorMessage}, Details: {details}";
     }
 
@@ -225,21 +225,6 @@ public class ComplexErrorResult<TError> : IComplexErrorResult<TError>
             result = exception.Message;
 
         return result;
-    }
-
-    /// <summary>
-    /// Converts the provided object to <typeparamref name="TError"/> if possible.
-    /// </summary>
-    /// <param name="details">The error details object to convert.</param>
-    /// <returns>The converted error details.</returns>
-    /// <exception cref="ArgumentException">Thrown if the object is not assignable to <typeparamref name="TError"/>.</exception>
-    private static TError ConvertFromObject(object details)
-    {
-        if (details is null) return default;
-        if (details is TError ok) return ok;
-        throw new ArgumentException(
-            $"ErrorDetails of type '{details.GetType()}' is not assignable to '{typeof(TError)}'.",
-            nameof(details));
     }
     #endregion // Non_static_methods
     #endregion // Methods

@@ -6,288 +6,293 @@ using System.Linq;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using PK.PkUtils.Extensions;
 
-namespace PK.PkUtils.UnitTests.ExtensionsTests
+namespace PK.PkUtils.UnitTests.ExtensionsTests;
+
+#pragma warning disable IDE0079     // Remove unnecessary suppressions
+#pragma warning disable CA1859    // Change type of variable ...
+
+[TestClass()]
+public class DictionaryExtensionsTests
 {
-    [TestClass()]
-    public class DictionaryExtensionsTests
+    #region Auxiliary_methods
+
+    /// <summary> A helper method for test of GetValueOrDefault </summary>
+    internal static void ValueOrDefaultTestHelper<TKey, TValue>(
+        IDictionary<TKey, TValue> dictionary,
+        TKey key,
+        TValue expected)
     {
-        #region Auxiliary_methods
+        bool before = dictionary.ContainsKey(key);
+        TValue actual = dictionary.ValueOrDefault<TKey, TValue>(key);
+        bool after = dictionary.ContainsKey(key);
 
-        /// <summary> A helper method for test of GetValueOrDefault </summary>
-        internal static void ValueOrDefaultTestHelper<TKey, TValue>(
-            IDictionary<TKey, TValue> dictionary,
-            TKey key,
-            TValue expected)
-        {
-            bool before = dictionary.ContainsKey(key);
-            TValue actual = dictionary.ValueOrDefault<TKey, TValue>(key);
-            bool after = dictionary.ContainsKey(key);
-
-            Assert.AreEqual(expected, actual);
-            Assert.AreEqual(before, after);
-        }
-
-        /// <summary> A helper method for test of GetValueOrNew </summary>
-        internal static void GetValueOrNewTestHelper<TKey, TValue>(
-            IDictionary<TKey, TValue> dictionary,
-            TKey key,
-            TValue expected) where TValue : new()
-        {
-            TValue actual = dictionary.GetValueOrNew<TKey, TValue>(key);
-            bool after = dictionary.ContainsKey(key);
-
-            Assert.AreEqual(expected, actual);
-            Assert.IsTrue(after);
-        }
-
-
-        /// <summary> A helper method for test of AddNew.</summary>
-        internal static void AddNewTestHelper<TKey, TValue>(
-          IDictionary<TKey, TValue> dictionary, TKey key, TValue value)
-        {
-            dictionary.AddNew<TKey, TValue>(key, value);
-            Assert.IsTrue(dictionary.ContainsKey(key));
-        }
-
-        /// <summary>
-        /// A helper method for test of RemoveExisting
-        /// </summary>
-        internal static void RemoveExistingTestHelper<TKey, TValue>(
-          IDictionary<TKey, TValue> dictionary, TKey key)
-        {
-            DictionaryExtensions.RemoveExisting<TKey, TValue>(dictionary, key);
-            Assert.IsFalse(dictionary.ContainsKey(key));
-        }
-
-        /// <summary>
-        /// A helper for test for TryRemove
-        /// </summary>
-        internal static void TryRemoveTestHelper<TKey, TValue>(
-          IDictionary<TKey, TValue> dictionary, TKey key)
-        {
-            bool expected = dictionary.ContainsKey(key);
-            bool actual = DictionaryExtensions.TryRemove<TKey, TValue>(dictionary, key, out _);
-
-            Assert.AreEqual(expected, actual);
-            Assert.IsFalse(dictionary.ContainsKey(key));
-        }
-        [TestMethod]
-        public void DictionaryExtension_GetValueOrDefaultTest_01()
-        {
-            IDictionary<int, int> dict = null!;
-
-            Assert.ThrowsExactly<ArgumentNullException>(() => dict.ValueOrDefault(5));
-        }
-
-        [TestMethod]
-        public void DictionaryExtension_GetValueOrDefault_Test_02()
-        {
-            const int count = 6;
-            IDictionary<int, int> dict = Enumerable.Repeat(0, count).Select((n, i) => i).ToDictionary(k => k);
-
-            ValueOrDefaultTestHelper<int, int>(dict, 1, 1);
-            ValueOrDefaultTestHelper<int, int>(dict, 3, 3);
-            ValueOrDefaultTestHelper<int, int>(dict, 33, 0);
-        }
-
-        [TestMethod]
-        public void DictionaryExtension_GetValueOrNew_Test_01()
-        {
-            IDictionary<int, int> dict = null!;
-
-            Assert.ThrowsExactly<ArgumentNullException>(() => dict.GetValueOrNew(5));
-        }
-
-        [TestMethod]
-        public void DictionaryExtension_GetValueOrNew_Test_02()
-        {
-            const int count = 6;
-            IDictionary<int, int> dict = Enumerable.Repeat(0, count).Select((n, i) => i).ToDictionary(k => k);
-
-            GetValueOrNewTestHelper<int, int>(dict, 1, 1);
-            GetValueOrNewTestHelper<int, int>(dict, 3, 3);
-            GetValueOrNewTestHelper<int, int>(dict, 44, 0);
-        }
-
-        [TestMethod]
-        public void DictionaryExtension_AddNewTest_01()
-        {
-            IDictionary<int, int> dict = null!;
-
-            Assert.ThrowsExactly<ArgumentNullException>(() => dict.AddNew(1, 1));
-        }
-
-        [TestMethod]
-        public void DictionaryExtension_AddNewTest_02()
-        {
-            var couples = Enumerable.Repeat(0, 5).Select((n, index) => new { index, n }).ToList();
-            IDictionary<int, int> dict = new Dictionary<int, int>();
-
-            couples.SafeForEach(couple => AddNewTestHelper(dict, couple.index, couple.n));
-        }
-
-        [TestMethod]
-        public void DictionaryExtension_AddNewTest_03()
-        {
-            var couples = Enumerable.Repeat(0, 6).Select((n, index) => new { index, n }).ToList();
-            IDictionary<int, int> dict = new Dictionary<int, int>();
-
-            Assert.ThrowsExactly<ArgumentException>(() =>
-                couples.SafeForEach(couple => AddNewTestHelper(dict, couple.n, couple.index))
-            );
-        }
-
-        [TestMethod]
-        public void DictionaryExtension_AddRange_Test_01()
-        {
-            IDictionary<int, string> dict_a = new Dictionary<int, string>();
-            IDictionary<int, string> dict_b = null!;
-
-            Assert.ThrowsExactly<ArgumentNullException>(() => dict_a.AddRange(dict_b));
-        }
-
-        [TestMethod]
-        public void DictionaryExtension_AddRange_Test_02()
-        {
-            IDictionary<int, string> dict_a = new Dictionary<int, string>();
-            IDictionary<int, string> dict_b = new Dictionary<int, string> { { 4, "a" }, { 5, "b" }, { 6, "c" } };
-
-            dict_a.AddRange(dict_b);
-            Assert.IsTrue(dict_a.MemberwiseEqual(dict_b));
-        }
-
-        /// <summary>
-        /// A test for RemoveExisting
-        /// </summary>
-        [TestMethod()]
-        public void DictionaryExtension_RemoveExistingTest_01()
-        {
-            // fill dictionary
-            const int count = 6;
-            IDictionary<int, int> dict = new Dictionary<int, int>();
-            var listInts = Enumerable.Repeat(0, count).Select((n, i) => i).ToList();
-            listInts.ForEach(n => dict.Add(n, n));
-            // test removing
-            listInts.ForEach(n => RemoveExistingTestHelper<int, int>(dict, n));
-        }
-
-        /// <summary>
-        /// A test for RemoveExisting
-        /// </summary>
-        [TestMethod()]
-        public void DictionaryExtension_RemoveExistingTest_02()
-        {
-            const int count = 6;
-            IDictionary<int, int> dict = new Dictionary<int, int>();
-            // fill dictionary
-            Enumerable.Repeat(0, count).Select((n, i) => i).ToList().ForEach(k => dict.Add(k, k));
-            // test removing
-            Assert.ThrowsExactly<ArgumentException>(() => RemoveExistingTestHelper<int, int>(dict, 100));
-        }
-
-        /// <summary>
-        /// A test for TryRemove
-        /// </summary>
-        [TestMethod()]
-        public void DictionaryExtension_TryRemoveTest_01()
-        {
-            // fill dictionary
-            const int count = 6;
-            IDictionary<int, int> dict = new Dictionary<int, int>();
-            var listInts = Enumerable.Repeat(0, count).Select((n, i) => i).ToList();
-            listInts.ForEach(n => dict.Add(n, n));
-            // test TryRemove
-            listInts.ForEach(n => TryRemoveTestHelper<int, int>(dict, n));
-        }
-
-        /// <summary>
-        /// A test for TryRemove
-        /// </summary>
-        [TestMethod()]
-        public void DictionaryExtension_TryRemoveTest_02()
-        {
-            // fill dictionary
-            const int count = 6;
-            IDictionary<int, int> dict = new Dictionary<int, int>();
-            var listIntsA = Enumerable.Repeat(0, count).Select((n, i) => i).ToList();
-            var listIntsB = Enumerable.Repeat(0, count).Select((n, i) => count + i).ToList();
-
-            listIntsA.ForEach(n => dict.Add(n, n));
-            // test TryRemove
-            listIntsB.ForEach(n => TryRemoveTestHelper<int, int>(dict, n));
-            listIntsA.ForEach(n => TryRemoveTestHelper<int, int>(dict, n));
-        }
-
-        [TestMethod]
-        public void DictionaryExtension_ToStringEx_Test_01()
-        {
-            IDictionary<int, int> dict = null!;
-
-            Assert.ThrowsExactly<ArgumentNullException>(() => dict.ToStringEx());
-        }
-
-        [TestMethod]
-        public void DictionaryExtension_ToStringEx_Test_02()
-        {
-            IDictionary<int, string> dict = new Dictionary<int, string> { { 4, "a" }, { 5, "b" } };
-            string expected = "{4=a,5=b}";
-            string actual = dict.ToStringEx();
-
-            Assert.AreEqual(expected, actual);
-        }
-
-        [TestMethod]
-        public void DictionaryExtension_CompareDictionary_Test_01()
-        {
-            IDictionary<int, int> dict = null!;
-
-            Assert.ThrowsExactly<ArgumentNullException>(() => dict.MemberwiseEqual(new Dictionary<int, int>()));
-        }
-
-        [TestMethod]
-        public void DictionaryExtension_CompareDictionary_Test_02()
-        {
-            IDictionary<int, string> dict_0th = null!;
-            IDictionary<int, string> dict_1st = new Dictionary<int, string> { { 4, "a" }, { 5, "b" } };
-            IDictionary<int, string> dict_2nd = new Dictionary<int, string> { { 4, "A" }, { 5, "B" } };
-            IDictionary<int, string> dict_3rd = new Dictionary<int, string> { { 4, "a" }, { 5, "b" }, { 6, "c" } };
-
-            Assert.IsFalse(dict_1st.MemberwiseEqual(dict_0th));
-            Assert.IsFalse(dict_1st.MemberwiseEqual(dict_2nd));
-            Assert.IsTrue(dict_1st.MemberwiseEqual(dict_2nd, StringComparer.InvariantCultureIgnoreCase));
-            Assert.IsFalse(dict_1st.MemberwiseEqual(dict_3rd, StringComparer.InvariantCultureIgnoreCase));
-        }
-
-        [TestMethod]
-        public void DictionaryExtension_DictionaryHashCode_Test_01()
-        {
-            IDictionary<int, int> dict = null!;
-
-            Assert.ThrowsExactly<ArgumentNullException>(() => dict.DictionaryHashCode());
-        }
-
-        [TestMethod]
-        public void DictionaryExtension_DictionaryHashCode_Test_02()
-        {
-            IDictionary<int, string> dict_1st = new Dictionary<int, string> { { 4, "a" }, { 5, "b" } };
-            IDictionary<int, string> dict_2nd = new Dictionary<int, string> { { 5, "b" }, { 4, "a" } };
-            IDictionary<int, string> dict_3rd = new Dictionary<int, string> { { 4, null! }, { 5, null! }, { 6, null! } };
-            IDictionary<int, string> dict_4th = new Dictionary<int, string> { { 6, null! }, { 5, null! }, { 4, null! } };
-
-            int hash1st = dict_1st.DictionaryHashCode();
-            int hash2nd = dict_2nd.DictionaryHashCode();
-            int hash3rd = dict_3rd.DictionaryHashCode();
-            int hash4th = dict_4th.DictionaryHashCode();
-
-            Assert.AreEqual(hash2nd, hash1st);
-            Assert.AreEqual(hash4th, hash3rd);
-        }
-        #endregion // Tests_IDictionary_extensions
-
-        #region Tests_IReadOnlyDictionary_extensions
-
-        // #FIX# - To Do
-
-        #endregion // Tests_IReadOnlyDictionary_extensions
+        Assert.AreEqual(expected, actual);
+        Assert.AreEqual(before, after);
     }
+
+    /// <summary> A helper method for test of GetValueOrNew </summary>
+    internal static void GetValueOrNewTestHelper<TKey, TValue>(
+        IDictionary<TKey, TValue> dictionary,
+        TKey key,
+        TValue expected) where TValue : new()
+    {
+        TValue actual = dictionary.GetValueOrNew<TKey, TValue>(key);
+        bool after = dictionary.ContainsKey(key);
+
+        Assert.AreEqual(expected, actual);
+        Assert.IsTrue(after);
+    }
+
+
+    /// <summary> A helper method for test of AddNew.</summary>
+    internal static void AddNewTestHelper<TKey, TValue>(
+      IDictionary<TKey, TValue> dictionary, TKey key, TValue value)
+    {
+        dictionary.AddNew<TKey, TValue>(key, value);
+        Assert.IsTrue(dictionary.ContainsKey(key));
+    }
+
+    /// <summary>
+    /// A helper method for test of RemoveExisting
+    /// </summary>
+    internal static void RemoveExistingTestHelper<TKey, TValue>(
+      IDictionary<TKey, TValue> dictionary, TKey key)
+    {
+        DictionaryExtensions.RemoveExisting<TKey, TValue>(dictionary, key);
+        Assert.IsFalse(dictionary.ContainsKey(key));
+    }
+
+    /// <summary>
+    /// A helper for test for TryRemove
+    /// </summary>
+    internal static void TryRemoveTestHelper<TKey, TValue>(
+      IDictionary<TKey, TValue> dictionary, TKey key)
+    {
+        bool expected = dictionary.ContainsKey(key);
+        bool actual = DictionaryExtensions.TryRemove<TKey, TValue>(dictionary, key, out _);
+
+        Assert.AreEqual(expected, actual);
+        Assert.IsFalse(dictionary.ContainsKey(key));
+    }
+    [TestMethod]
+    public void DictionaryExtension_GetValueOrDefaultTest_01()
+    {
+        IDictionary<int, int> dict = null!;
+
+        Assert.ThrowsExactly<ArgumentNullException>(() => dict.ValueOrDefault(5));
+    }
+
+    [TestMethod]
+    public void DictionaryExtension_GetValueOrDefault_Test_02()
+    {
+        const int count = 6;
+        IDictionary<int, int> dict = Enumerable.Repeat(0, count).Select((n, i) => i).ToDictionary(k => k);
+
+        ValueOrDefaultTestHelper<int, int>(dict, 1, 1);
+        ValueOrDefaultTestHelper<int, int>(dict, 3, 3);
+        ValueOrDefaultTestHelper<int, int>(dict, 33, 0);
+    }
+
+    [TestMethod]
+    public void DictionaryExtension_GetValueOrNew_Test_01()
+    {
+        IDictionary<int, int> dict = null!;
+
+        Assert.ThrowsExactly<ArgumentNullException>(() => dict.GetValueOrNew(5));
+    }
+
+    [TestMethod]
+    public void DictionaryExtension_GetValueOrNew_Test_02()
+    {
+        const int count = 6;
+        IDictionary<int, int> dict = Enumerable.Repeat(0, count).Select((n, i) => i).ToDictionary(k => k);
+
+        GetValueOrNewTestHelper<int, int>(dict, 1, 1);
+        GetValueOrNewTestHelper<int, int>(dict, 3, 3);
+        GetValueOrNewTestHelper<int, int>(dict, 44, 0);
+    }
+
+    [TestMethod]
+    public void DictionaryExtension_AddNewTest_01()
+    {
+        IDictionary<int, int> dict = null!;
+
+        Assert.ThrowsExactly<ArgumentNullException>(() => dict.AddNew(1, 1));
+    }
+
+    [TestMethod]
+    public void DictionaryExtension_AddNewTest_02()
+    {
+        var couples = Enumerable.Repeat(0, 5).Select((n, index) => new { index, n }).ToList();
+        IDictionary<int, int> dict = new Dictionary<int, int>();
+
+        couples.SafeForEach(couple => AddNewTestHelper(dict, couple.index, couple.n));
+    }
+
+    [TestMethod]
+    public void DictionaryExtension_AddNewTest_03()
+    {
+        var couples = Enumerable.Repeat(0, 6).Select((n, index) => new { index, n }).ToList();
+        IDictionary<int, int> dict = new Dictionary<int, int>();
+
+        Assert.ThrowsExactly<ArgumentException>(() =>
+            couples.SafeForEach(couple => AddNewTestHelper(dict, couple.n, couple.index))
+        );
+    }
+
+    [TestMethod]
+    public void DictionaryExtension_AddRange_Test_01()
+    {
+        IDictionary<int, string> dict_a = new Dictionary<int, string>();
+        IDictionary<int, string> dict_b = null!;
+
+        Assert.ThrowsExactly<ArgumentNullException>(() => dict_a.AddRange(dict_b));
+    }
+
+    [TestMethod]
+    public void DictionaryExtension_AddRange_Test_02()
+    {
+        IDictionary<int, string> dict_a = new Dictionary<int, string>();
+        IDictionary<int, string> dict_b = new Dictionary<int, string> { { 4, "a" }, { 5, "b" }, { 6, "c" } };
+
+        dict_a.AddRange(dict_b);
+        Assert.IsTrue(dict_a.MemberwiseEqual(dict_b));
+    }
+
+    /// <summary>
+    /// A test for RemoveExisting
+    /// </summary>
+    [TestMethod()]
+    public void DictionaryExtension_RemoveExistingTest_01()
+    {
+        // fill dictionary
+        const int count = 6;
+        IDictionary<int, int> dict = new Dictionary<int, int>();
+        var listInts = Enumerable.Repeat(0, count).Select((n, i) => i).ToList();
+        listInts.ForEach(n => dict.Add(n, n));
+        // test removing
+        listInts.ForEach(n => RemoveExistingTestHelper<int, int>(dict, n));
+    }
+
+    /// <summary>
+    /// A test for RemoveExisting
+    /// </summary>
+    [TestMethod()]
+    public void DictionaryExtension_RemoveExistingTest_02()
+    {
+        const int count = 6;
+        IDictionary<int, int> dict = new Dictionary<int, int>();
+        // fill dictionary
+        Enumerable.Repeat(0, count).Select((n, i) => i).ToList().ForEach(k => dict.Add(k, k));
+        // test removing
+        Assert.ThrowsExactly<ArgumentException>(() => RemoveExistingTestHelper<int, int>(dict, 100));
+    }
+
+    /// <summary>
+    /// A test for TryRemove
+    /// </summary>
+    [TestMethod()]
+    public void DictionaryExtension_TryRemoveTest_01()
+    {
+        // fill dictionary
+        const int count = 6;
+        Dictionary<int, int> dictionary = [];
+        IDictionary<int, int> dict = dictionary;
+        var listInts = Enumerable.Repeat(0, count).Select((n, i) => i).ToList();
+        listInts.ForEach(n => dict.Add(n, n));
+        // test TryRemove
+        listInts.ForEach(n => TryRemoveTestHelper<int, int>(dict, n));
+    }
+
+    /// <summary>
+    /// A test for TryRemove
+    /// </summary>
+    [TestMethod()]
+    public void DictionaryExtension_TryRemoveTest_02()
+    {
+        // fill dictionary
+        const int count = 6;
+        Dictionary<int, int> dict = [];
+        var listIntsA = Enumerable.Repeat(0, count).Select((n, i) => i).ToList();
+        var listIntsB = Enumerable.Repeat(0, count).Select((n, i) => count + i).ToList();
+
+        listIntsA.ForEach(n => dict.Add(n, n));
+        // test TryRemove
+        listIntsB.ForEach(n => TryRemoveTestHelper<int, int>(dict, n));
+        listIntsA.ForEach(n => TryRemoveTestHelper<int, int>(dict, n));
+    }
+
+    [TestMethod]
+    public void DictionaryExtension_ToStringEx_Test_01()
+    {
+        IDictionary<int, int> dict = null!;
+
+        Assert.ThrowsExactly<ArgumentNullException>(() => dict.ToStringEx());
+    }
+
+    [TestMethod]
+    public void DictionaryExtension_ToStringEx_Test_02()
+    {
+        IDictionary<int, string> dict = new Dictionary<int, string> { { 4, "a" }, { 5, "b" } };
+        string expected = "{4=a,5=b}";
+        string actual = dict.ToStringEx();
+
+        Assert.AreEqual(expected, actual);
+    }
+
+    [TestMethod]
+    public void DictionaryExtension_CompareDictionary_Test_01()
+    {
+        IDictionary<int, int> dict = null!;
+
+        Assert.ThrowsExactly<ArgumentNullException>(() => dict.MemberwiseEqual(new Dictionary<int, int>()));
+    }
+
+    [TestMethod]
+    public void DictionaryExtension_CompareDictionary_Test_02()
+    {
+        IDictionary<int, string> dict_0th = null!;
+        IDictionary<int, string> dict_1st = new Dictionary<int, string> { { 4, "a" }, { 5, "b" } };
+        IDictionary<int, string> dict_2nd = new Dictionary<int, string> { { 4, "A" }, { 5, "B" } };
+        IDictionary<int, string> dict_3rd = new Dictionary<int, string> { { 4, "a" }, { 5, "b" }, { 6, "c" } };
+
+        Assert.IsFalse(dict_1st.MemberwiseEqual(dict_0th));
+        Assert.IsFalse(dict_1st.MemberwiseEqual(dict_2nd));
+        Assert.IsTrue(dict_1st.MemberwiseEqual(dict_2nd, StringComparer.InvariantCultureIgnoreCase));
+        Assert.IsFalse(dict_1st.MemberwiseEqual(dict_3rd, StringComparer.InvariantCultureIgnoreCase));
+    }
+
+    [TestMethod]
+    public void DictionaryExtension_DictionaryHashCode_Test_01()
+    {
+        IDictionary<int, int> dict = null!;
+
+        Assert.ThrowsExactly<ArgumentNullException>(() => dict.DictionaryHashCode());
+    }
+
+    [TestMethod]
+    public void DictionaryExtension_DictionaryHashCode_Test_02()
+    {
+        IDictionary<int, string> dict_1st = new Dictionary<int, string> { { 4, "a" }, { 5, "b" } };
+        IDictionary<int, string> dict_2nd = new Dictionary<int, string> { { 5, "b" }, { 4, "a" } };
+        IDictionary<int, string> dict_3rd = new Dictionary<int, string> { { 4, null! }, { 5, null! }, { 6, null! } };
+        IDictionary<int, string> dict_4th = new Dictionary<int, string> { { 6, null! }, { 5, null! }, { 4, null! } };
+
+        int hash1st = dict_1st.DictionaryHashCode();
+        int hash2nd = dict_2nd.DictionaryHashCode();
+        int hash3rd = dict_3rd.DictionaryHashCode();
+        int hash4th = dict_4th.DictionaryHashCode();
+
+        Assert.AreEqual(hash2nd, hash1st);
+        Assert.AreEqual(hash4th, hash3rd);
+    }
+    #endregion // Tests_IDictionary_extensions
+
+    #region Tests_IReadOnlyDictionary_extensions
+
+    // #FIX# - To Do
+
+    #endregion // Tests_IReadOnlyDictionary_extensions
 }
+#pragma warning restore CA1859    // Change type of variable ...
+#pragma warning restore IDE0079     // Remove unnecessary suppressions

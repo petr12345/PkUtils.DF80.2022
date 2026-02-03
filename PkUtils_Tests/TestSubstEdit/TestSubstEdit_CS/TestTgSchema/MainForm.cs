@@ -1,5 +1,7 @@
 ﻿using System;
+using System.Drawing;
 using System.Globalization;
+using System.IO;
 using System.Text;
 using System.Windows.Forms;
 using PK.PkUtils.Interfaces;
@@ -10,6 +12,7 @@ using PK.TestTgSchema.Properties;
 using PK.TestTgSchema.TextBoxCtrls;
 using PK.TestTgSchema.UserCtrls;
 
+#pragma warning disable IDE0079   // Remove unnecessary suppressions
 #pragma warning disable CA1859    // Change type of variable ...
 
 namespace PK.TestTgSchema;
@@ -36,6 +39,7 @@ public partial class MainForm : Form
     */
     private readonly Encoding _fileSaveEncoding = Encoding.UTF8;
 
+    private const string TabIndexFileName = "last_active_tab.index";
     // open file dialog filters
     private const string _strOpenFileFilterComponents = "XML files|*.xml|Components Schema Binary files (*.csb)|*.csb|Plain text (*.txt)|*.txt";
     private const string _strOpenFileFilterLines = "XML files|*.xml|Lines Schema Binary files (*.lsb)|*.lsb|Plain text (*.txt)|*.txt";
@@ -47,20 +51,21 @@ public partial class MainForm : Form
         InitializeComponent();
         this.Icon = Resources.C_sharp;
 
-        this._tgSchemaComponentslUserCtrl.AssignSubstMap(TaggingFieldTables._myCompFieldsDescr);
-        this._tgSchemaComponentslUserCtrl.SchemaTextBxCtrl.LostFocus += new EventHandler(_SchemaTextBxComponentsCtrl_LostFocus);
-        this._tgSchemaComponentslUserCtrl.SchemaTextBxCtrl.TextChanged += new EventHandler(SchemaTextBxCtrl_TextChanged);
-        this._tgSchemaComponentslUserCtrl.SchemaTextBxCtrl.EventSubstEditContentsChanged += new ModifiedEventHandler(SchemaTextBxCtrl_SubstContentsChanged);
-        this._tgSchemaComponentslUserCtrl.SchemaTextBxCtrl.EventSelChaged += new EventHandler<SelChagedEventArgs>(OnSelChaged);
+        this._tgSchemaComponentslUserCtrl.SetSubstitutionMap(TaggingFieldTables._myCompFieldsDescr);
+        this._tgSchemaComponentslUserCtrl.SchemaTextBxCtrl.LostFocus += new EventHandler(OnSchemaTextBxComponentsCtrl_LostFocus);
+        this._tgSchemaComponentslUserCtrl.SchemaTextBxCtrl.TextChanged += new EventHandler(OnSchemaTextBxCtrl_TextChanged);
+        this._tgSchemaComponentslUserCtrl.SchemaTextBxCtrl.EventSubstEditContentsChanged += new ModifiedEventHandler(OnSchemaTextBxCtrl_SubstContentsChanged);
+        this._tgSchemaComponentslUserCtrl.SchemaTextBxCtrl.EventSelChanged += new EventHandler<SelChangedEventArgs>(OnSelChanged);
 
-        this._tgSchemaLinesUserCtrl.AssignSubstMap(TaggingFieldTables._myLinesFieldsDescr);
-        this._tgSchemaLinesUserCtrl.SchemaTextBxCtrl.LostFocus += new EventHandler(_SchemaTextBxLinesCtrl_LostFocus);
+        this._tgSchemaLinesUserCtrl.SetSubstitutionMap(TaggingFieldTables._myLinesFieldsDescr);
+        this._tgSchemaLinesUserCtrl.SchemaTextBxCtrl.LostFocus += new EventHandler(OnSchemaTextBxLinesCtrl_LostFocus);
 
         this.Activated += new EventHandler(MainFor_Activated);
 
         _clipMonitor = new ClipMonitorHook(this);
         _clipMonitor.EventClipboardChanged += new EventHandler(OnEventClipboardChanged);
 
+        PopulateInsertLineContextMenu();
         UpdateToolstripButtons();
     }
     #endregion // Constructor(s)
@@ -131,6 +136,7 @@ public partial class MainForm : Form
     #endregion // Properties
 
     #region Methods
+    #region Protected methods
 
     protected TaggingSchemaGeneralClassBasedUserCtrl ActiveClassBasedUseCtrl()
     {
@@ -223,11 +229,44 @@ public partial class MainForm : Form
         this._btnRedo.Enabled = bRedo;
     }
 
-    protected static string FieldPreviewValFn(ISubstDescr<FieldTypeId> lpDesc)
+    protected void DoOpen<FieldTypeId>(
+        string strOpenFile,
+        FileFormatType fmt,
+        TaggingSchemaTextBoxGenericCtrl<FieldTypeId> textBx)
+    {
+        if (textBx.DoOpen(strOpenFile, fmt))
+        {
+            textBx.SetModified(false);
+            UpdatePreview();
+        }
+    }
+
+    /// <summary>
+    /// Clean up any resources being used.
+    /// </summary>
+    /// <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
+    protected override void Dispose(bool disposing)
+    {
+        if (disposing && (_clipMonitor != null))
+        {
+            _clipMonitor.Dispose();
+            _clipMonitor = null;
+        }
+        if (disposing && (components != null))
+        {
+            components.Dispose();
+        }
+        base.Dispose(disposing);
+    }
+    #endregion // Protected methods
+
+    #region Private methods
+
+    private static string FieldPreviewValFn(ISubstitutionDescriptor<FieldTypeId> lpDesc)
     {
         DateTime now = DateTime.Now;
         Type tField = lpDesc.FieldId;
-        string strNewPart = lpDesc.DrawnText;
+        string strNewPart = lpDesc.DisplayText;
 
         if (tField == typeof(Field_PRJ_Title))
         {
@@ -264,7 +303,7 @@ public partial class MainForm : Form
         return strNewPart;
     }
 
-    protected static string GetPreviewText(SubstLogData<FieldTypeId> logData)
+    private static string GetPreviewText(SubstLogData<FieldTypeId> logData)
     {
         int nDex;
         string strTmp = SubstLogData<FieldTypeId>.LogStrToPhysStr(logData, FieldPreviewValFn);
@@ -285,45 +324,113 @@ public partial class MainForm : Form
         return GetPreviewText(this._tgSchemaComponentslUserCtrl.SchemaTextBxCtrl.LogData);
     }
 
-    protected void UpdatePreview()
+    private void UpdatePreview()
     {
         this._textBxPreview.Text = GetPreviewText();
     }
 
-    protected void DoOpen<FieldTypeId>(
-        string strOpenFile,
-        FileFormatType fmt,
-        TaggingSchemaTextBoxGenericCtrl<FieldTypeId> textBx)
+    private void PopulateInsertLineContextMenu()
     {
-        if (textBx.DoOpen(strOpenFile, fmt))
+        ToolStripItemCollection items = this._ctxMenuInsertLine.Items;
+        items.Clear();
+
+        ToolStripMenuItem itemProjName = new("Project Name");
+        itemProjName.Click += new EventHandler(OnBtnProjName_Click);
+        items.Add(itemProjName);
+
+        ToolStripMenuItem itemResistance = new("Resistance");
+        itemResistance.Click += new EventHandler(OnBtnResistance_Click);
+        items.Add(itemResistance);
+
+        ToolStripMenuItem itemDiameter = new("Diameter");
+        itemDiameter.Click += new EventHandler(OnBtnDiameter_Click);
+        items.Add(itemDiameter);
+    }
+    #endregion // Private methods
+
+    #region [0] Tab Restore
+
+    /// <summary>
+    /// Returns the full path to the file used to persist the last active tab index.
+    /// The path is built from the per-user application data folder and a fixed file name.
+    /// </summary>
+    /// <returns>The full file path where the last active tab index is stored.</returns>
+    protected static string TabIndexFilePath()
+    {
+        // Application.UserAppDataPath returns a per-user, per-application path.
+        string dir = Application.UserAppDataPath;
+        return Path.Combine(dir, TabIndexFileName);
+    }
+
+    /// <summary>
+    /// Called when the form is loaded. Restores the last active tab index after base load logic.
+    /// </summary>
+    /// <param name="e">Event arguments for the load event.</param>
+    protected override void OnLoad(EventArgs e)
+    {
+        base.OnLoad(e);
+        RestoreLastActiveTab();
+    }
+
+    /// <summary>
+    /// Attempts to read the persisted last active tab index from disk and select that tab.
+    /// Any errors are ignored to avoid preventing the form from loading.
+    /// </summary>
+    protected void RestoreLastActiveTab()
+    {
+        try
         {
-            textBx.SetModified(false);
-            UpdatePreview();
+            string path = TabIndexFilePath();
+            if (File.Exists(path))
+            {
+                var text = File.ReadAllText(path).Trim();
+                if (int.TryParse(text, out var idx))
+                {
+                    if (_tabControl != null && idx >= 0 && idx < _tabControl.TabCount)
+                    {
+                        _tabControl.SelectedIndex = idx;
+                    }
+                }
+            }
+        }
+        catch
+        {
+            // Ignore errors - do not prevent the form from loading.
         }
     }
 
     /// <summary>
-    /// Clean up any resources being used.
+    /// Persists the currently selected tab index to disk. IO errors are ignored.
+    /// The method ensures the target directory exists before writing the file.
     /// </summary>
-    /// <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
-    protected override void Dispose(bool disposing)
+    protected void SaveLastActiveTab()
     {
-        if (disposing && (_clipMonitor != null))
+        try
         {
-            _clipMonitor.Dispose();
-            _clipMonitor = null;
+            string path = TabIndexFilePath();
+            string dir = Path.GetDirectoryName(path);
+            if (!string.IsNullOrEmpty(dir))
+            {
+                Directory.CreateDirectory(dir);
+            }
+
+            if (_tabControl != null)
+            {
+                File.WriteAllText(path, _tabControl.SelectedIndex.ToString());
+            }
         }
-        if (disposing && (components != null))
+        catch
         {
-            components.Dispose();
+            // Ignore IO errors on exit.
         }
-        base.Dispose(disposing);
     }
+    #endregion [0] Tab Restore
     #endregion // Methods
 
     #region Event handlers
 
     #region Focus-related functionality
+
     /// <summary>
     /// The handler for proper initialization of focus.
     /// There seems no better way to do this... ;-(
@@ -336,12 +443,12 @@ public partial class MainForm : Form
         InitializeFocus();
     }
 
-    private void _tabControl_SelectedIndexChanged(object sender, EventArgs e)
+    private void OnTabControl_SelectedIndexChanged(object sender, EventArgs e)
     {
         InitializeFocus();
     }
 
-    private void _SchemaTextBxComponentsCtrl_LostFocus(object sender, EventArgs e)
+    private void OnSchemaTextBxComponentsCtrl_LostFocus(object sender, EventArgs e)
     {   // save od focus
         Control ctrlOldFoc = sender as Control;
         // assigns SubstEditTextBoxCtrl or null if it was something else than SubstEditTextBoxCtrl
@@ -349,7 +456,7 @@ public partial class MainForm : Form
         _oldFocEn = null;
     }
 
-    private void _SchemaTextBxLinesCtrl_LostFocus(object sender, EventArgs e)
+    private void OnSchemaTextBxLinesCtrl_LostFocus(object sender, EventArgs e)
     {   // save od focus
         Control ctrlOldFoc = sender as Control;
         // assigns SubstEditTextBoxCtrl or null if it was something else than SubstEditTextBoxCtrl
@@ -360,7 +467,7 @@ public partial class MainForm : Form
 
     #region Preview-related
 
-    private void SchemaTextBxCtrl_SubstContentsChanged(IModified sender, EventArgs e)
+    private void OnSchemaTextBxCtrl_SubstContentsChanged(IModified sender, EventArgs e)
     {
         if (sender.IsModified)
         {
@@ -369,7 +476,7 @@ public partial class MainForm : Form
         this.UpdateToolstripButtons();
     }
 
-    private void SchemaTextBxCtrl_TextChanged(object sender, EventArgs e)
+    private void OnSchemaTextBxCtrl_TextChanged(object sender, EventArgs e)
     {
         this.UpdateToolstripButtons();
     }
@@ -377,42 +484,42 @@ public partial class MainForm : Form
 
     #region Insertions for components
 
-    private void _btnProjTitle_Click(object sender, EventArgs e)
+    private void OnBtnProjTitle_Click(object sender, EventArgs e)
     {
         InsertFieldInActiveBx(new FieldTypeId(typeof(Field_PRJ_Title)));
     }
 
-    private void _btnDocAuthor_Click(object sender, EventArgs e)
+    private void OnBtnDocAuthor_Click(object sender, EventArgs e)
     {
         InsertFieldInActiveBx(new FieldTypeId(typeof(Field_DOC_Author)));
     }
 
-    private void _btnDocTitle_Click(object sender, EventArgs e)
+    private void OnBtnDocTitle_Click(object sender, EventArgs e)
     {
         InsertFieldInActiveBx(new FieldTypeId(typeof(Field_DOC_Title)));
     }
 
-    private void _btnDocCopyright_Click(object sender, EventArgs e)
+    private void OnBtnDocCopyright_Click(object sender, EventArgs e)
     {
         InsertFieldInActiveBx(new FieldTypeId(typeof(Field_DOC_Copyright)));
     }
 
-    private void _btnYear_Click(object sender, EventArgs e)
+    private void OnBtnYear_Click(object sender, EventArgs e)
     {
         InsertFieldInActiveBx(new FieldTypeId(typeof(Field_Year)));
     }
 
-    private void _btnMonth_Click(object sender, EventArgs e)
+    private void OnBtnMonth_Click(object sender, EventArgs e)
     {
         InsertFieldInActiveBx(new FieldTypeId(typeof(Field_Month)));
     }
 
-    private void _btnDayOfWeek_Click(object sender, EventArgs e)
+    private void OnBtnDayOfWeek_Click(object sender, EventArgs e)
     {
         InsertFieldInActiveBx(new FieldTypeId(typeof(Field_DayOfWeek)));
     }
 
-    private void _btnDog_Click(object sender, EventArgs e)
+    private void OnBtnDog_Click(object sender, EventArgs e)
     {
         InsertFieldInActiveBx(new FieldTypeId(typeof(Field_Dog)));
     }
@@ -420,16 +527,22 @@ public partial class MainForm : Form
 
     #region Insertions for lines
 
-    private void _btnProjName_Click(object sender, EventArgs e)
+    private void OnBtnInsertLine_Click(object sender, EventArgs e)
+    {
+        Point pt = new(0, _btnInsertLine.Height);
+        this._ctxMenuInsertLine.Show(_btnInsertLine, pt);
+    }
+
+    private void OnBtnProjName_Click(object sender, EventArgs e)
     {
         InsertFieldInActiveBx(EFieldLineType.IdField_ProjName);
     }
-    private void _btnResistance_Click(object sender, EventArgs e)
+    private void OnBtnResistance_Click(object sender, EventArgs e)
     {
         InsertFieldInActiveBx(EFieldLineType.IdField_Resistance);
     }
 
-    private void _btnDiameter_Click(object sender, EventArgs e)
+    private void OnBtnDiameter_Click(object sender, EventArgs e)
     {
         InsertFieldInActiveBx(EFieldLineType.IdField_Diameter);
     }
@@ -556,23 +669,29 @@ public partial class MainForm : Form
         {
             e.Cancel = true;
         }
+
+        if (!e.Cancel)
+        {
+            // Persist last active tab index (errors ignored inside SaveLastActiveTab)
+            SaveLastActiveTab();
+        }
     }
     #endregion // Open & Save
 
     #region Clipboard
 
-    private void btnCut_Click(object sender, EventArgs e)
+    private void OnBtnCut_Click(object sender, EventArgs e)
     {
         ActiveClassBasedUseCtrl().SchemaTextBxCtrl.Cut();
         this.UpdateToolstripButtons();
     }
-    private void btnCopy_Click(object sender, EventArgs e)
+    private void OnBtnCopy_Click(object sender, EventArgs e)
     {
         ActiveClassBasedUseCtrl().SchemaTextBxCtrl.Copy();
         this.UpdateToolstripButtons();
     }
 
-    private void btnPaste_Click(object sender, EventArgs e)
+    private void OnBtnPaste_Click(object sender, EventArgs e)
     {
         ActiveClassBasedUseCtrl().SchemaTextBxCtrl.Paste();
         this.UpdateToolstripButtons();
@@ -581,7 +700,7 @@ public partial class MainForm : Form
 
     #region Undo_redo
 
-    private void _btnUndo_Click(object sender, EventArgs e)
+    private void OnBtnUndo_Click(object sender, EventArgs e)
     {
         if (this._tgSchemaComponentslUserCtrl._SchemaTextBxCtrl.TheHook.CanUndo)
         {
@@ -594,7 +713,7 @@ public partial class MainForm : Form
         }
     }
 
-    private void _btnRedo_Click(object sender, EventArgs e)
+    private void OnBtnRedo_Click(object sender, EventArgs e)
     {
         if (this._tgSchemaComponentslUserCtrl._SchemaTextBxCtrl.TheHook.CanRedo)
         {
@@ -616,13 +735,13 @@ public partial class MainForm : Form
         this.UpdateToolstripButtons();
     }
 
-    private void OnSelChaged(object sender, SelChagedEventArgs e)
+    private void OnSelChanged(object sender, SelChangedEventArgs e)
     {
         this.UpdateToolstripButtons();
     }
     #endregion // Various_other_handlers
     #endregion // Event handlers
-
 }
 
 #pragma warning restore CA1859
+#pragma warning restore IDE0079

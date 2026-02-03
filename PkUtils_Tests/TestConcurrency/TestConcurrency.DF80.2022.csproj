@@ -4,6 +4,7 @@
     <OutputType>WinExe</OutputType>
     <RootNamespace>PK.TestConcurrency</RootNamespace>
     <AssemblyName>PK.TestConcurrency</AssemblyName>
+    <NeutralResourcesLanguage>en-US</NeutralResourcesLanguage>
     <IsWebBootstrapper>false</IsWebBootstrapper>
     <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
     <StartupObject>

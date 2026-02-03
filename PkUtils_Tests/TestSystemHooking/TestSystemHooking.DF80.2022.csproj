@@ -5,6 +5,7 @@
     <RootNamespace>PK.TestSystemHooking</RootNamespace>
     <AssemblyName>PK.TestSystemHooking</AssemblyName>
     <ApplicationIcon>App.ico</ApplicationIcon>
+    <NeutralResourcesLanguage>en-US</NeutralResourcesLanguage>
     <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
     <PublishUrl>publish\</PublishUrl>
     <Install>true</Install>

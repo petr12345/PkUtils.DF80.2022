@@ -23,6 +23,9 @@ using PK.PkUtils.Utils;
 
 namespace PK.PkUtils.UI.StackedForms;
 
+#pragma warning disable IDE0079   // Remove unnecessary suppressions
+#pragma warning disable IDE0031 // Null check can be simplified
+
 /// <summary>
 /// The wrapper around any Form class, providing IStackedForm functionality
 /// to that form. <br/>
@@ -438,3 +441,6 @@ public class MainStackedFormWrapper<TForm> : StackedFormWrapper<TForm> where TFo
     }
     #endregion // Methods
 }
+
+#pragma warning restore IDE0031 // Null check can be simplified
+#pragma warning restore IDE0079   // Remove unnecessary suppressions

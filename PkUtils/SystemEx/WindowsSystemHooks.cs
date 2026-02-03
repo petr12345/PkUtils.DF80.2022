@@ -85,13 +85,13 @@ public class WindowsSystemHookMouse : WindowsSystemHookBase
     {
         IntPtr result;
 
-        if ((code < 0) || (code == WinApi.Win32.HC_NOREMOVE))
+        if ((code < 0) || (code == Win32.HC_NOREMOVE))
         {  // for these values, must limit itself to just calling next hook in chain
             result = CallNextHook(code, wParam, lParam);
         }
         else
         {
-            WinApi.Win32.MOUSEHOOKSTRUCT m = (WinApi.Win32.MOUSEHOOKSTRUCT)Marshal.PtrToStructure(lParam, typeof(WinApi.Win32.MOUSEHOOKSTRUCT));
+            Win32.MOUSEHOOKSTRUCT m = Marshal.PtrToStructure<Win32.MOUSEHOOKSTRUCT>(lParam);
 
             if (MouseHookMeth(m))
                 result = IntPtr.Zero;
@@ -269,13 +269,13 @@ public class WindowsSystemHookMouseLL : WindowsSystemHookBase
     {
         IntPtr result;
 
-        if ((code < 0) || (code == WinApi.Win32.HC_NOREMOVE))
+        if ((code < 0) || (code == Win32.HC_NOREMOVE))
         {  // for these values, must limit itself to just calling next hook in chain
             result = CallNextHook(code, wParam, lParam);
         }
         else
         {
-            WinApi.Win32.MSLLHOOKSTRUCT mss = (WinApi.Win32.MSLLHOOKSTRUCT)Marshal.PtrToStructure(lParam, typeof(WinApi.Win32.MSLLHOOKSTRUCT));
+            Win32.MSLLHOOKSTRUCT mss = Marshal.PtrToStructure<Win32.MSLLHOOKSTRUCT>(lParam);
 
             if (MouseLLHookMeth(wParam, mss))
                 result = IntPtr.Zero;
@@ -368,13 +368,13 @@ public class WindowsSystemHookKbLL : WindowsSystemHookBase
     {
         IntPtr result;
 
-        if ((code < 0) || (code == WinApi.Win32.HC_NOREMOVE))
+        if ((code < 0) || (code == Win32.HC_NOREMOVE))
         {  // for these values, must limit itself to just calling next hook in chain
             result = CallNextHook(code, wParam, lParam);
         }
         else
         {
-            WinApi.Win32.KBDLLHOOKSTRUCT kbs = (WinApi.Win32.KBDLLHOOKSTRUCT)Marshal.PtrToStructure(lParam, typeof(WinApi.Win32.KBDLLHOOKSTRUCT));
+            Win32.KBDLLHOOKSTRUCT kbs = Marshal.PtrToStructure<Win32.KBDLLHOOKSTRUCT>(lParam);
 
             if (KeyboardLLHookMeth(kbs))
                 result = IntPtr.Zero;
@@ -456,13 +456,13 @@ public class WindowsSystemHookCallWndProcRet : WindowsSystemHookBase
     {
         IntPtr result;
 
-        if ((code < 0) || (code == WinApi.Win32.HC_NOREMOVE))
+        if ((code < 0) || (code == Win32.HC_NOREMOVE))
         {  // for these values, must limit itself to just calling next hook in chain
             result = CallNextHook(code, wParam, lParam);
         }
         else
         {
-            WinApi.Win32.CWPRETSTRUCT msg = (WinApi.Win32.CWPRETSTRUCT)Marshal.PtrToStructure(lParam, typeof(WinApi.Win32.CWPRETSTRUCT));
+            Win32.CWPRETSTRUCT msg = Marshal.PtrToStructure<Win32.CWPRETSTRUCT>(lParam);
 
             if (WndProcRetHookMeth(msg))
                 result = IntPtr.Zero;

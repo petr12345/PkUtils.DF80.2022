@@ -1,4 +1,4 @@
-﻿// Ignore Spelling: PK, CTRL, Preprocess, Utils
+﻿// Ignore Spelling: PK, CTRL, Preprocess, preprocessing, Utils
 //
 
 using System;
@@ -9,6 +9,9 @@ using System.Text;
 using System.Windows.Forms;
 using PK.PkUtils.Extensions;
 using PK.PkUtils.Interfaces;
+
+#pragma warning disable IDE0079 // Remove unnecessary suppressions
+#pragma warning disable IDE0031 // Null check can be simplified
 
 namespace PK.PkUtils.Dump;
 
@@ -61,11 +64,14 @@ public class DumperCtrlWrapper<CTRL> : IDumperEx, IDisposableEx where CTRL : Con
     /// <summary>   (Immutable) record representing log message. </summary>
     protected record LogEntry
     {
-        /// <summary>   Gets the textual content of the log entry. </summary>
+        /// <summary> Gets the textual content of the log entry. </summary>
         public string Text { get; }
 
-        /// <summary>   Gets the severity level of the log message. </summary>
+        /// <summary> Gets the severity level of the log message. </summary>
         public MessageLevel Level { get; }
+
+        /// <summary> Gets initializes the Date/Time of the event creation. </summary>
+        public DateTime Created { get; init; } = DateTime.Now;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="LogEntry"/> record with the specified text and message level.
@@ -86,9 +92,6 @@ public class DumperCtrlWrapper<CTRL> : IDumperEx, IDisposableEx where CTRL : Con
     /// <summary> A default value of field  _maxMsgHistoryItems </summary>
     protected const int _defaultMsgHistoryItems = 1024;
 
-    /// <summary> A default value of field  _shouldPreprocessItems </summary>
-    protected const bool _defaultShouldPreprocessItems = true;
-
     /// <summary>
     /// An indicator that is true if has added text before, false if not.
     /// With the help of that, When the control becomes valid the first time, it not only adds the new text,
@@ -105,9 +108,6 @@ public class DumperCtrlWrapper<CTRL> : IDumperEx, IDisposableEx where CTRL : Con
     /// <summary> Maximum length of the internal queue buffer </summary>
     private int _maxMsgHistoryItems = _defaultMsgHistoryItems;
 
-    /// <summary> If true,  the method PreprocessAddedText will be called upon adding the new item </summary>
-    private readonly bool _shouldPreprocessItems = _defaultShouldPreprocessItems;
-
     /// <summary> A weak reference to target wrapped control. Used by the public property WrappedControl </summary>
     private WeakReference<CTRL> _targetReference;
     #endregion // Fields
@@ -123,26 +123,15 @@ public class DumperCtrlWrapper<CTRL> : IDumperEx, IDisposableEx where CTRL : Con
 
     /// <summary> Constructor accepting two input arguments. </summary>
     ///
-    /// <param name="ctrl">  The wrapped WinForms control. </param>
-    /// <param name="maxMsgHistoryItems"> The maximum length of internal queue of recently added text items. </param>
-    public DumperCtrlWrapper(CTRL ctrl, int maxMsgHistoryItems)
-      : this(ctrl, maxMsgHistoryItems, _defaultShouldPreprocessItems)
-    { }
-
-    /// <summary> Constructor accepting three input arguments. </summary>
-    ///
     /// <param name="ctrl">                  The wrapped WinForms control. </param>
     /// <param name="maxMsgHistoryItems">    The maximum length of internal queue of recently added text items. </param>
-    /// <param name="shouldPreprocessItems"> Initializes the value of property ShouldPreprocessItems.  
-    /// If true,  the method <see cref="PreprocessAddedText "/>will be called upon adding the new text item. </param>
-    public DumperCtrlWrapper(CTRL ctrl, int maxMsgHistoryItems, bool shouldPreprocessItems)
+    public DumperCtrlWrapper(CTRL ctrl, int maxMsgHistoryItems)
     {
         ctrl.CheckNotDisposed(nameof(ctrl));
         ArgumentOutOfRangeException.ThrowIfLessThanOrEqual(maxMsgHistoryItems, 0);
 
         _targetReference = new WeakReference<CTRL>(ctrl);
         _maxMsgHistoryItems = maxMsgHistoryItems;
-        _shouldPreprocessItems = shouldPreprocessItems;
 
         ctrl.HandleCreated += Ctrl_HandleCreated;
     }
@@ -182,12 +171,6 @@ public class DumperCtrlWrapper<CTRL> : IDumperEx, IDisposableEx where CTRL : Con
     /// <remarks> Will be null if this DumperCtrlWrapper has been disposed. </remarks>
     protected WeakReference<CTRL> TargetReference { get => _targetReference; }
 
-    /// <summary>
-    /// Getter for the value of the boolean flag _shouldPreprocessItems.
-    /// If true,  the method PreprocessAddedText will be called upon adding the new item.
-    /// </summary>
-    protected bool ShouldPreprocessItems { get => _shouldPreprocessItems; }
-
     /// <summary>   Gets a value indicating whether this object has added text before. </summary>
     protected bool HasAddedTextBefore { get => _hasAddedTextBefore; }
 
@@ -220,19 +203,14 @@ public class DumperCtrlWrapper<CTRL> : IDumperEx, IDisposableEx where CTRL : Con
         return strResult;
     }
 
-    /// <summary> Provides preprocessing of the added text.; 
-    /// is called individually by <see cref="AddText"/> for each new added text item.
-    /// Is implemented as a virtual method that may be overwritten in derived class;
-    /// the implementation in this base class adds a time of the day as a prefix. </summary>
-    ///
-    /// <param name="strAdd"> The new added text item. </param>
-    ///
-    /// <returns> The resulting string. </returns>
-    protected virtual string PreprocessAddedText(string strAdd)
+    /// <summary> Final entry text. </summary>
+    /// <param name="entry"> The log entry containing the text and severity level. </param>
+    /// <returns>  A string. </returns>
+    protected virtual string FinalEntryText(LogEntry entry)
     {
-        string strAddText = string.Format(CultureInfo.InvariantCulture,
-          "{0} {1}", DayTimeString(DateTime.Now), strAdd);
-        return strAddText;
+        ArgumentNullException.ThrowIfNull(entry);
+        return string.Format(CultureInfo.InvariantCulture,
+          "{0} {1}", DayTimeString(entry.Created), entry.Text);
     }
 
     /// <summary>
@@ -253,16 +231,11 @@ public class DumperCtrlWrapper<CTRL> : IDumperEx, IDisposableEx where CTRL : Con
         ArgumentNullException.ThrowIfNull(entry);
 
         CTRL ctrl = WrappedControl;
-
         CheckInvokeNotRequired(ctrl);
-        if (ShouldPreprocessItems)
-        {
-            entry = new LogEntry(PreprocessAddedText(entry.Text), entry.Level);
-        }
 
         bool historyFull = false;
         bool isControlOk = ctrl.IsHandleCreated;
-        string strAdd = entry.Text;
+        string strAdd = FinalEntryText(entry);
         StringBuilder sbCompletelyNewContents = null;
         AddTextResult result = AddTextResult.AddNone;
 
@@ -382,7 +355,7 @@ public class DumperCtrlWrapper<CTRL> : IDumperEx, IDisposableEx where CTRL : Con
             sb = new StringBuilder();
             foreach (LogEntry item in _msgHistory)
             {
-                sb.Append(item.Text);
+                sb.Append(FinalEntryText(item));
             }
         }
 
@@ -518,3 +491,5 @@ public class DumperCtrlWrapper<CTRL> : IDumperEx, IDisposableEx where CTRL : Con
     }
     #endregion // IDumperEx Members
 }
+#pragma warning restore IDE0031 // Null check can be simplified
+#pragma warning restore IDE0079 // Remove unnecessary suppressions

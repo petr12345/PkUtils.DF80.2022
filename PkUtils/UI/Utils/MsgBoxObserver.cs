@@ -8,6 +8,8 @@ using System.Runtime.InteropServices;
 using PK.PkUtils.SystemEx;
 using PK.PkUtils.WinApi;
 
+#pragma warning disable IDE0079 // Remove unnecessary suppressions
+#pragma warning disable IDE0031 // Null check can be simplified
 #pragma warning disable IDE0290   // Use primary constructor
 
 namespace PK.PkUtils.UI.Utils;
@@ -344,7 +346,7 @@ public class MsgBoxObserver : SystemEventObserver<MsgBoxObserver.EventMsgBoxActi
             Win32.CWPRETSTRUCT prestruct;
 
             nResult = callWndProc_hook.CallNextHook(code, wParam, lParam);
-            prestruct = (Win32.CWPRETSTRUCT)Marshal.PtrToStructure(lParam, typeof(Win32.CWPRETSTRUCT));
+            prestruct = Marshal.PtrToStructure<Win32.CWPRETSTRUCT>(lParam);
             hWnd = prestruct.hwnd;
 
             switch (prestruct.message)
@@ -417,3 +419,5 @@ public class MsgBoxObserver : SystemEventObserver<MsgBoxObserver.EventMsgBoxActi
 }
 
 #pragma warning restore IDE0290 // Use primary constructor
+#pragma warning restore IDE0031 // Null check can be simplified
+#pragma warning restore IDE0079 // Remove unnecessary suppressions
