@@ -391,7 +391,7 @@ public static class ShellApi
         public APPBARDATA(IntPtr hWnd)
           : this()
         {
-            this.cbSize = (UInt32)Marshal.SizeOf(typeof(APPBARDATA));
+            this.cbSize = (UInt32)Marshal.SizeOf<APPBARDATA>();
             this.hWnd = hWnd;
         }
         #endregion // Constructor(s)

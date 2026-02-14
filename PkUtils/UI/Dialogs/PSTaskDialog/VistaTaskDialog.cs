@@ -971,7 +971,7 @@ public class VistaTaskDialog
 
         try
         {
-            config.cbSize = (uint)Marshal.SizeOf(typeof(VistaUnsafeNativeMethods.TASKDIALOGCONFIG));
+            config.cbSize = (uint)Marshal.SizeOf<VistaUnsafeNativeMethods.TASKDIALOGCONFIG>();
             config.hwndParent = hwndOwner;
             config.dwFlags = flags;
             config.dwCommonButtons = commonButtons;
@@ -1002,7 +1002,7 @@ public class VistaTaskDialog
             if (customButtons.Length > 0)
             {
                 // Hand marshal the buttons array.
-                int elementSize = Marshal.SizeOf(typeof(VistaTaskDialogButton));
+                int elementSize = Marshal.SizeOf<VistaTaskDialogButton>();
                 config.pButtons = Marshal.AllocHGlobal(elementSize * customButtons.Length);
                 for (int i = 0; i < customButtons.Length; i++)
                 {
@@ -1020,7 +1020,7 @@ public class VistaTaskDialog
             if (customRadioButtons.Length > 0)
             {
                 // Hand marshal the buttons array.
-                int elementSize = Marshal.SizeOf(typeof(VistaTaskDialogButton));
+                int elementSize = Marshal.SizeOf<VistaTaskDialogButton>();
                 config.pRadioButtons = Marshal.AllocHGlobal(elementSize * customRadioButtons.Length);
                 for (int i = 0; i < customRadioButtons.Length; i++)
                 {
@@ -1090,7 +1090,7 @@ public class VistaTaskDialog
             // that are not required for the users of this class.
             if (config.pButtons != nint.Zero)
             {
-                int elementSize = Marshal.SizeOf(typeof(VistaTaskDialogButton));
+                int elementSize = Marshal.SizeOf<VistaTaskDialogButton>();
                 for (int i = 0; i < config.cButtons; i++)
                 {
                     unsafe
@@ -1105,7 +1105,7 @@ public class VistaTaskDialog
 
             if (config.pRadioButtons != nint.Zero)
             {
-                int elementSize = Marshal.SizeOf(typeof(VistaTaskDialogButton));
+                int elementSize = Marshal.SizeOf<VistaTaskDialogButton>();
                 for (int i = 0; i < config.cRadioButtons; i++)
                 {
                     unsafe

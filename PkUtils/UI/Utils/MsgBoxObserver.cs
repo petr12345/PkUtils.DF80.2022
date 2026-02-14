@@ -346,7 +346,7 @@ public class MsgBoxObserver : SystemEventObserver<MsgBoxObserver.EventMsgBoxActi
             Win32.CWPRETSTRUCT prestruct;
 
             nResult = callWndProc_hook.CallNextHook(code, wParam, lParam);
-            prestruct = (Win32.CWPRETSTRUCT)Marshal.PtrToStructure(lParam, typeof(Win32.CWPRETSTRUCT));
+            prestruct = Marshal.PtrToStructure<Win32.CWPRETSTRUCT>(lParam);
             hWnd = prestruct.hwnd;
 
             switch (prestruct.message)

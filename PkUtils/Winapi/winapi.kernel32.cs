@@ -901,7 +901,7 @@ public static class Kernel32
         /// </summary>
         public void Init()
         {
-            dwOSVersionInfoSize = Marshal.SizeOf(typeof(OSVERSIONINFOEX));
+            dwOSVersionInfoSize = Marshal.SizeOf<OSVERSIONINFOEX>();
         }
 
         /// <summary>
