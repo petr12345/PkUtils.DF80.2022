@@ -30,6 +30,6 @@
   <Target Name="AfterBuild">
   </Target>
   <ItemGroup>
-    <PackageReference Include="System.Threading.Tasks.Dataflow" Version="10.0.2" />
+    <PackageReference Include="System.Threading.Tasks.Dataflow" Version="10.0.3" />
   </ItemGroup>
 </Project>
