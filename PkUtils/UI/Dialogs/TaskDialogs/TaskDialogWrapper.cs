@@ -76,7 +76,7 @@ public static class TaskDialogWrapper
         TaskDialogButtonCollection buttons = (defaultButton == DialogResult.Yes)
             ? CreateButtons(("Yes", DialogResult.Yes), ("No", DialogResult.No))
             : CreateButtons(("No", DialogResult.No), ("Yes", DialogResult.Yes));
-        TaskDialogIcon tdIcon = new(icon);
+        TaskDialogIcon tdIcon = (icon is null) ? QuestionIcon : new TaskDialogIcon(icon);
         TaskDialogButton buttonResult = ShowDialogWithButtons(owner, caption, heading, text, tdIcon, buttons, defaultButton);
         bool result = buttonResult.Tag is DialogResult dr && dr == DialogResult.Yes;
 
@@ -273,25 +273,23 @@ public static class TaskDialogWrapper
         if (commands == null || commands.Length == 0)
             throw new ArgumentException("At least one command button must be specified.", nameof(commands));
 
-        TaskDialogButtonCollection buttons = new();
+        TaskDialogButtonCollection buttons = [];
         TaskDialogButton defaultButton = null;
         TaskDialogVerificationCheckBox checkbox = null;
 
         for (int ii = 0, numCommands = commands.Length; ii < numCommands; ii++)
         {
-            (string Text, string DescriptionText, object Tag) = commands[ii];
+            var (Text, DescriptionText, Tag) = commands[ii];
             TaskDialogCommandLinkButton btn = new(Text, DescriptionText) { Tag = Tag };
             buttons.Add(btn);
             if (ii == defaultButtonIndex)
                 defaultButton = btn;
         }
-
         if (doNotShowAgainCheckboxText is not null)
         {
             checkbox = new TaskDialogVerificationCheckBox(doNotShowAgainCheckboxText);
         }
 
-        DialogResult defaultResult = defaultButton?.Tag as DialogResult? ?? DialogResult.None;
         TaskDialogIcon finalIcon = icon ?? QuestionIcon;
         TaskDialogPage page = new()
         {
@@ -506,5 +504,6 @@ public static class TaskDialogWrapper
     }
     #endregion // Private Methods
 }
+
 #pragma warning restore IDE0059
 #pragma warning restore IDE0028
