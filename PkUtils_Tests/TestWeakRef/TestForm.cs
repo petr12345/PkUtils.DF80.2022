@@ -436,10 +436,7 @@ namespace PK.TestWeakRef
 
         protected void FireDoubleClick()
         {
-            if (null != _evDoubleClick)
-            {
-                _evDoubleClick(this, new EventArgs());
-            }
+            _evDoubleClick?.Invoke(this, new EventArgs());
         }
 
         protected void StartGenerating(

@@ -89,7 +89,7 @@
             this._btnShowTaskDialog.Size = new System.Drawing.Size(112, 27);
             this._btnShowTaskDialog.TabIndex = 1;
             this._btnShowTaskDialog.Text = "Invoke TaskDialog";
-            this._btnShowTaskDialog.Click += new System.EventHandler(this.btnShowTaskDialog_Click);
+            this._btnShowTaskDialog.Click += new System.EventHandler(this.OnBtnShowTaskDialog_Click);
             // 
             // MainForm
             // 

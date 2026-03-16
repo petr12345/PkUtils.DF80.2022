@@ -251,10 +251,10 @@ public partial class TestForm : FormWithLayoutPersistence, IDumper
     private void InitializeNodesColors()
     {
         List<TreeNode> redNodes = _treeView.GetAllNodes()
-            .Where(node => node.Name.Contains("1"))
+            .Where(node => node.Name.Contains('1'))
             .ToList();
         List<TreeNode> blueNodes = _treeView.GetAllNodes()
-            .Where(node => node.Name.Contains("2"))
+            .Where(node => node.Name.Contains('2'))
             .ToList();
 
         redNodes.ForEach(node => _treeView.SetNodeForeColor(node, Color.Red));

@@ -135,7 +135,7 @@ namespace PK.TestMsgBoxObserver
             RtlAwareMessageBox.Show(this, strMsg, strTitle, MessageBoxIcon.Information);
         }
 
-        private void btnShowTaskDialog_Click(object sender, EventArgs e)
+        private void OnBtnShowTaskDialog_Click(object sender, EventArgs e)
         {
             string strMsg;
             string strContent;

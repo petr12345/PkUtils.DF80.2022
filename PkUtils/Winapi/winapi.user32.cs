@@ -1580,7 +1580,7 @@ public static class User32
     /// for the specified scroll bar.
     /// </summary>
     /// <param name="hWnd"> Handle to a scroll bar control or a window with a standard scroll bar,
-    ///  depending on the value of the <paramref name="nBar"/> parameter. </param>
+    ///  depending on the value of the nBar parameter. </param>
     /// <param name="nBar"> Specifies the scroll bar to be set. </param>
     /// <param name="lpMinPos"> [out] Reference to the integer variable that receives the minimum position. </param>
     /// <param name="lpMaxPos"> [out] Reference to the integer variable that receives the maximum
@@ -3366,7 +3366,6 @@ public static class User32
     public static int GetWndScrollInfo(IntPtr hWnd,
         int nBar, ref SCROLLINFO lpScrollInfo, uint nMask)
     {
-        lpScrollInfo.cbSize = (uint)Marshal.SizeOf(lpScrollInfo);
         lpScrollInfo.fMask = nMask;
         return GetScrollInfo(hWnd, nBar, ref lpScrollInfo);
     }
