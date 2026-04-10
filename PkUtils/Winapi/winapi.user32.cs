@@ -6,6 +6,7 @@ using System.Globalization;
 using System.Runtime.InteropServices;
 using System.Text;
 using System.Windows.Forms;
+using Microsoft.VisualBasic.ApplicationServices;
 
 #pragma warning disable IDE0079   // Remove unnecessary suppressions
 #pragma warning disable IDE0130 // Namespace "..." does not match folder structure
@@ -952,6 +953,32 @@ public static class User32
 
     /// Delegate for invoking GetWindowLongPtr dynamically
     internal delegate IntPtr GetWindowLongPtrDelegate(IntPtr hWnd, int nIndex);
+
+    /// <summary> An input structure. </summary>
+    [StructLayout(LayoutKind.Sequential)]
+    public struct INPUT
+    {
+        public uint type; 
+        public InputUnion U;
+    }
+
+    /// <summary>  An input union structure. </summary>
+    [StructLayout(LayoutKind.Explicit)]
+    public struct InputUnion
+    {
+        [FieldOffset(0)] public KEYBDINPUT ki;
+    }
+
+    /// <summary> A keyboard input. </summary>
+    [StructLayout(LayoutKind.Sequential)]
+    public struct KEYBDINPUT
+    {
+        public ushort wVk; 
+        public ushort wScan; 
+        public uint dwFlags;
+        public uint time;
+        public IntPtr dwExtraInfo;
+    }
     #endregion // Nested types
 
     #region Constants
@@ -1580,7 +1607,7 @@ public static class User32
     /// for the specified scroll bar.
     /// </summary>
     /// <param name="hWnd"> Handle to a scroll bar control or a window with a standard scroll bar,
-    ///  depending on the value of the <paramref name="nBar"/> parameter. </param>
+    ///  depending on the value of the nBar parameter. </param>
     /// <param name="nBar"> Specifies the scroll bar to be set. </param>
     /// <param name="lpMinPos"> [out] Reference to the integer variable that receives the minimum position. </param>
     /// <param name="lpMaxPos"> [out] Reference to the integer variable that receives the maximum
@@ -1755,6 +1782,21 @@ public static class User32
     [DllImport("user32", CharSet = CharSet.Auto, ExactSpelling = true,
       CallingConvention = CallingConvention.Winapi)]
     public static extern short GetKeyState(int keyCode);
+
+    /// <summary>   Gets asynchronous key state. Returns the real-time, global state of a key,
+    ///    Works independently of message queues</summary>
+    /// <param name="keyCode"> The key code, i.e. a virtual key. If the desired virtual key is a letter or digit
+    /// (A through Z, a through z, or 0 through 9), nVirtKey must be set to the ASCII value of that character.
+    /// For other keys, it must be a virtual-key code.
+    /// 
+    /// If a non-English keyboard layout is used, virtual keys with values in the range ASCII A through Z and 0
+    /// through 9 are used to specify most of the character keys. For example, for the German keyboard layout,
+    /// the virtual key of value ASCII O (0x4F) refers to the "o" key, whereas VK_OEM_1 refers to the "o with
+    /// umlaut" key. </param>
+    /// <returns>   The asynchronous key state. </returns>
+    [DllImport("user32", CharSet = CharSet.Auto, ExactSpelling = true,
+      CallingConvention = CallingConvention.Winapi)]
+    public static extern short GetAsyncKeyState(int keyCode);
 
     /// <summary>
     /// Installs an application-defined hook procedure into a hook chain. You would install a hook procedure 
@@ -2644,6 +2686,93 @@ public static class User32
     [DllImport("user32")]
     public static extern void keybd_event(byte bVk, byte bScan, int dwFlags, IntPtr dwExtraInfo);
 
+    /// <summary>
+    /// Synthesizes keystrokes, mouse motions, and button clicks by injecting input events into the system input stream.
+    /// </summary>
+    /// <param name="nInputs">
+    /// The number of structures in the <paramref name="pInputs"/> array.
+    /// </param>
+    /// <param name="pInputs">
+    /// An array of <see cref="INPUT"/> structures that represent the input events to be inserted
+    /// into the keyboard or mouse input stream.
+    /// </param>
+    /// <param name="cbSize">
+    /// The size, in bytes, of an <see cref="INPUT"/> structure. This must be set to
+    /// <c>Marshal.SizeOf(typeof(INPUT))</c>.
+    /// </param>
+    /// <returns>
+    /// The number of events that were successfully inserted into the input stream.
+    /// If the function returns zero, the input was already blocked or an error occurred.
+    /// </returns>
+    /// <remarks>
+    /// This function provides a more reliable alternative to older input simulation methods such as
+    /// <c>keybd_event</c> or posting window messages. It works at a lower level and is suitable for
+    /// sending input to applications such as modern browsers or other processes.
+    /// </remarks>
+    /// <exception cref="System.ComponentModel.Win32Exception">
+    /// Thrown when the function fails. Call <c>Marshal.GetLastWin32Error()</c> for extended error information.
+    /// </exception>
+    [DllImport("user32")]
+    public static extern uint SendInput(uint nInputs, INPUT[] pInputs, int cbSize);
+
+    /// <summary>
+    /// Translates (maps) a virtual-key code into a scan code or character value, or vice versa,
+    /// depending on the <paramref name="uMapType"/> parameter.
+    /// </summary>
+    /// <param name="uCode">
+    /// The virtual-key code or scan code to be translated. The interpretation depends on <paramref name="uMapType"/>.
+    /// </param>
+    /// <param name="uMapType">
+    /// The translation to perform. Possible values include:
+    /// <list type="bullet">
+    /// <item>0 – Virtual-key code to scan code.</item>
+    /// <item>1 – Scan code to virtual-key code.</item>
+    /// <item>2 – Virtual-key code to character value (unshifted).</item>
+    /// <item>3 – Scan code to virtual-key code (extended).</item>
+    /// </list>
+    /// </param>
+    /// <returns>
+    /// The translated value (scan code, virtual-key code, or character) according to <paramref name="uMapType"/>.
+    /// Returns 0 if there is no translation available.
+    /// </returns>
+    /// <remarks>
+    /// This function is commonly used when simulating keyboard input to get the correct scan code
+    /// for a virtual key, especially when using <see cref="keybd_event"/> or <see cref="SendInput"/>.
+    /// </remarks>
+    [DllImport("user32")]
+    public static extern uint MapVirtualKey(uint uCode, uint uMapType);
+
+    /// <summary>
+    /// Translates a character to the corresponding virtual-key code and shift state for the current keyboard layout.
+    /// </summary>
+    /// <param name="ch">
+    /// The character to be translated into a virtual-key code.
+    /// </param>
+    /// <returns>
+    /// A <see cref="short"/> value where:
+    /// <list type="bullet">
+    /// <item>
+    /// The low-order byte contains the virtual-key code that corresponds to the character.
+    /// </item>
+    /// <item>
+    /// The high-order byte contains the shift state, which indicates which combination of 
+    /// SHIFT, CTRL, and ALT keys is required to produce the character:
+    /// <list type="bullet">
+    /// <item>1 – SHIFT key</item>
+    /// <item>2 – CTRL key</item>
+    /// <item>4 – ALT key</item>
+    /// </list>
+    /// </item>
+    /// </list>
+    /// Returns –1 if no key translates to the character on the current keyboard layout.
+    /// </returns>
+    /// <remarks>
+    /// This function is layout-dependent. The result may vary depending on the user's active keyboard layout.
+    /// It is commonly used to convert characters to virtual key codes when simulating keyboard input via <see cref="SendInput"/>.
+    /// </remarks>
+    [DllImport("user32")]
+    public static extern short VkKeyScan(char ch);
+
     /// <summary> Copies the status of the 256 virtual keys to the specified buffer.
     /// </summary>
     /// <param name="lpKeyState"> The 256-byte array that receives the status data for each virtual key.
@@ -3366,7 +3495,6 @@ public static class User32
     public static int GetWndScrollInfo(IntPtr hWnd,
         int nBar, ref SCROLLINFO lpScrollInfo, uint nMask)
     {
-        lpScrollInfo.cbSize = (uint)Marshal.SizeOf(lpScrollInfo);
         lpScrollInfo.fMask = nMask;
         return GetScrollInfo(hWnd, nBar, ref lpScrollInfo);
     }
