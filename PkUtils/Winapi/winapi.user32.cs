@@ -6,7 +6,6 @@ using System.Globalization;
 using System.Runtime.InteropServices;
 using System.Text;
 using System.Windows.Forms;
-using Microsoft.VisualBasic.ApplicationServices;
 
 #pragma warning disable IDE0079   // Remove unnecessary suppressions
 #pragma warning disable IDE0130 // Namespace "..." does not match folder structure
@@ -958,7 +957,7 @@ public static class User32
     [StructLayout(LayoutKind.Sequential)]
     public struct INPUT
     {
-        public uint type; 
+        public uint type;
         public InputUnion U;
     }
 
@@ -973,8 +972,8 @@ public static class User32
     [StructLayout(LayoutKind.Sequential)]
     public struct KEYBDINPUT
     {
-        public ushort wVk; 
-        public ushort wScan; 
+        public ushort wVk;
+        public ushort wScan;
         public uint dwFlags;
         public uint time;
         public IntPtr dwExtraInfo;
