@@ -31,20 +31,20 @@ public class BSIDTests
     public void BSID_Constructor_01()
     {
         string nullString = null!;
-        Assert.Throws<ArgumentNullException>(() => new BSID(nullString));
+        Assert.Throws<ArgumentNullException>((Action)(() => new BSID(nullString)));
     }
 
     [Test]
     public void BSID_Constructor_02()
     {
-        Assert.Throws<ArgumentException>(() => new BSID(string.Empty));
+        Assert.Throws<ArgumentException>((Action)(() => new BSID(string.Empty)));
     }
 
     [Test]
     public void BSID_Constructor_03()
     {
         BSID nullID = null!;
-        Assert.Throws<ArgumentNullException>(() => new BSID(nullID));
+        Assert.Throws<ArgumentNullException>((Action)(() => new BSID(nullID)));
     }
 
     [Test]
@@ -139,7 +139,7 @@ public class BSIDTests
     {
         string? nullStr = null;
         BSID id;
-        Assert.Throws<ArgumentNullException>(() => id = (BSID)(nullStr));
+        Assert.Throws<ArgumentNullException>((Action)(() => id = (BSID)(nullStr)));
     }
 
     [Test]
@@ -264,7 +264,7 @@ public class BSIDTests
         BSID id_dummy = new BSID(_sDummy);
         object objGuid = Guid.NewGuid();
 
-        Assert.Throws<ArgumentException>(() => (id_dummy as IComparable).CompareTo(objGuid));
+        Assert.Throws<ArgumentException>((Action)(() => (id_dummy as IComparable).CompareTo(objGuid)));
     }
 
     [Test]

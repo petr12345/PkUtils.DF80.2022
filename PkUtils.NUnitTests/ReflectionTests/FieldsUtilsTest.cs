@@ -179,13 +179,13 @@ public class FieldsUtilsTest
 
         // -- ii/ Demonstrates that via typeof(B) you cannot simply access its fields of type B declared in base A
         t = typeof(B);
-        receivedEx = Assert.Throws<InvalidOperationException>(() => t.GetStaticFieldValue("_a_public"));
+        receivedEx = Assert.Throws<InvalidOperationException>((Action)(() => t.GetStaticFieldValue("_a_public")));
         Assert.That(receivedEx, Is.Not.Null);
 
-        receivedEx = Assert.Throws<InvalidOperationException>(() => t.GetStaticFieldValue("_a_protected"));
+        receivedEx = Assert.Throws<InvalidOperationException>((Action)(() => t.GetStaticFieldValue("_a_protected")));
         Assert.That(receivedEx, Is.Not.Null);
 
-        receivedEx = Assert.Throws<InvalidOperationException>(() => t.GetStaticFieldValue("_a_private"));
+        receivedEx = Assert.Throws<InvalidOperationException>((Action)(() => t.GetStaticFieldValue("_a_private")));
         Assert.That(receivedEx, Is.Not.Null);
 
         // -- iii/ Demonstrates that via typeof(B), with the usage of BindingFlags.FlattenHierarchy,
@@ -197,7 +197,7 @@ public class FieldsUtilsTest
         actual = t.GetStaticFieldValue("_a_protected", true);
         Assert.That(actual, Is.EqualTo(3.14));
 
-        receivedEx = Assert.Throws<InvalidOperationException>(() => t.GetStaticFieldValue("_a_private", true));
+        receivedEx = Assert.Throws<InvalidOperationException>((Action)(() => t.GetStaticFieldValue("_a_private", true)));
         Assert.That(receivedEx, Is.Not.Null);
 
         // -- iv/ Demonstrates that via typeof(B) you can access all fields of type B declared in B
@@ -281,8 +281,8 @@ public class FieldsUtilsTest
         object value = new object();
         bool flattenHierarchy = false;
 
-        Assert.That(() => nullType.SetStaticFieldValue(fieldName, value, flattenHierarchy),
-            Throws.ArgumentNullException);
+        Assert.Throws<ArgumentNullException>(
+            (Action)(() => nullType.SetStaticFieldValue(fieldName, value, flattenHierarchy)));
     }
 
     [TestCase(null)]
@@ -296,13 +296,11 @@ public class FieldsUtilsTest
 
         if (invalidFieldName is null)
         {
-            Assert.That(() => type.SetStaticFieldValue(invalidFieldName!, value, flattenHierarchy),
-                Throws.ArgumentNullException);
-        }
+            Assert.Throws<ArgumentNullException>(
+                (Action)(() => type.SetStaticFieldValue(invalidFieldName!, value, flattenHierarchy)));        }
         else
         {
-            Assert.That(() => type.SetStaticFieldValue(invalidFieldName, value, flattenHierarchy),
-                Throws.ArgumentException);
+            Assert.Throws<ArgumentException>((Action)(() => type.SetStaticFieldValue(invalidFieldName, value, flattenHierarchy)));
         }
     }
     #endregion // Accessing_static_field_value_Shallow_Scope_tests
@@ -580,8 +578,8 @@ public class FieldsUtilsTest
         Assert.That(f.FieldType.IsAssignableFrom(typeof(int)), Is.False);
         Assert.That(typeof(double).IsAssignableFrom(typeof(int)), Is.False);
 
-        Assert.Throws<InvalidOperationException>(() =>
-            d.SetInstanceFieldValueEx(strFieldName, 101));
+        Assert.Throws<InvalidOperationException>((Action)(() =>
+            d.SetInstanceFieldValueEx(strFieldName, 101)));
     }
 
     /// <summary> A test for SetInstanceFieldValueEx, which should succeed. 
@@ -628,7 +626,8 @@ public class FieldsUtilsTest
         Owner owner = new Owner();
 
         // should fail, since A_VeryBase is neither of type B_Derived, nor derived from it
-        Assert.Throws<InvalidOperationException>(() => owner.SetInstanceFieldValueEx("_b", new A_VeryBase()));
+        Assert.Throws<InvalidOperationException>((
+            Action)(() => owner.SetInstanceFieldValueEx("_b", new A_VeryBase())));
     }
 
     /// <summary> A test for SetInstanceFieldValueEx, which should succeed. </summary>
@@ -653,7 +652,7 @@ public class FieldsUtilsTest
 
         // should fail, since Owner does not contain any field of type C_MoreDerived
         owner.SetInstanceFieldValueEx("_b", c);
-        Assert.Throws<InvalidOperationException>(() => actual = owner.GetInstanceFieldValueEx<C_MoreDerived>("_b"));
+        Assert.Throws<InvalidOperationException>((Action)(() => actual = owner.GetInstanceFieldValueEx<C_MoreDerived>("_b")));
     }
 
     /// <summary> A test for SetInstanceFieldValueEx, which should succeed. </summary>

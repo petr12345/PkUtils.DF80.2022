@@ -48,7 +48,7 @@ public class ControlExtensionTest
     {
         Control ctrl = null!;
 
-        Assert.Throws<ArgumentNullException>(() => ctrl.CheckNotDisposed(nameof(ctrl)));
+        Assert.Throws<ArgumentNullException>((Action)(() => ctrl.CheckNotDisposed(nameof(ctrl))));
     }
 
     /// <summary>
@@ -60,7 +60,7 @@ public class ControlExtensionTest
         Control ctrl = new Form();
 
         ctrl.Dispose();
-        Assert.Throws<ObjectDisposedException>(() => ctrl.CheckNotDisposed(nameof(ctrl)));
+        Assert.Throws<ObjectDisposedException>((Action)(() => ctrl.CheckNotDisposed(nameof(ctrl))));
     }
 
     /// <summary>

@@ -48,7 +48,7 @@ public class ConcurrentLockerTests
             Func<string, string> fnErrorMessage = null!;
 
             // ACT + ASSERT
-            Assert.Throws<ArgumentNullException>(() => new ConcurrentLocker<string>(fnErrorMessage));
+            Assert.Throws<ArgumentNullException>((Action)(() => new ConcurrentLocker<string>(fnErrorMessage)));
         }
     }
 
@@ -185,12 +185,12 @@ public class ConcurrentLockerTests
             IUsageCounter counter = new UsageCounter();
             using IConcurrentLocker<int> locker = new ConcurrentLocker<int>();
             // ACT
-            Assert.DoesNotThrowAsync(async () =>
+            Assert.DoesNotThrowAsync((Func<Task>)(async () =>
             {
                 await RunLockWithInfiniteTimeoutAndFiniteSleep(locker, _constLockId, counter);
                 await RunLockWithInfiniteTimeoutAndFiniteSleep(locker, _constLockId, counter);
                 await RunLockWithInfiniteTimeoutAndFiniteSleep(locker, _constLockId, counter);
-            });
+            }));
 
             // ASSERT
             Assert.That(locker.CurrentSize, Is.Zero);
@@ -215,10 +215,14 @@ public class ConcurrentLockerTests
 
             using IConcurrentLocker<int> locker = new ConcurrentLocker<int>();
             // ACT + ASSERT
-            Assert.ThrowsAsync<ArgumentOutOfRangeException>(async () =>
-            {
-                await RunLockWithFiniteTimeoutAndFiniteSleep(locker, _constLockId, counter, msTimeout, sleepMs);
-            });
+            Assert.ThrowsAsync<ArgumentOutOfRangeException>(
+                (Func<Task>)(() =>
+                    RunLockWithFiniteTimeoutAndFiniteSleep(
+                        locker,
+                        _constLockId,
+                        counter,
+                        msTimeout,
+                        sleepMs)));
             Assert.That(counter.AddReference(), Is.EqualTo(1));
         }
     }
@@ -239,12 +243,16 @@ public class ConcurrentLockerTests
             using IConcurrentLocker<int> locker = new ConcurrentLocker<int>();
 
             // ACT + ASSERT
-            Assert.ThrowsAsync<ConcurrencyConflictException>(async () =>
-            {
-                await Task.WhenAll(
-                    RunLockWithFiniteTimeoutAndFiniteSleep(locker, _constLockId, counter, msTimeout, sleepMs),
-                    RunLockWithFiniteTimeoutAndFiniteSleep(locker, _constLockId, counter, msTimeout, sleepMs));
-            });
+            Assert.ThrowsAsync<ConcurrencyConflictException>(
+                (Func<Task>)(() =>
+                    Task.WhenAll(
+                        RunLockWithFiniteTimeoutAndFiniteSleep(
+                            locker, _constLockId, counter, msTimeout, sleepMs),
+                        RunLockWithFiniteTimeoutAndFiniteSleep(
+                            locker, _constLockId, counter, msTimeout, sleepMs)
+                    )
+                )
+            );
             Assert.That(counter.AddReference(), Is.EqualTo(2));
         }
     }
@@ -264,13 +272,13 @@ public class ConcurrentLockerTests
             using IConcurrentLocker<int> locker = new ConcurrentLocker<int>();
 
             // ACT
-            Assert.DoesNotThrowAsync(async () =>
+            Assert.DoesNotThrowAsync((Func<Task>)(async () =>
             {
                 for (int ii = 0; ii < locks; ii++)
                 {
                     await RunLockWithFiniteTimeoutAndFiniteSleep(locker, _constLockId, counter, msTimeout, sleepMs);
                 }
-            });
+            }));
 
             // ASSERT
             Assert.That(locker.CurrentSize, Is.Zero);
@@ -304,7 +312,7 @@ public class ConcurrentLockerTests
             Task[] tasks = [.. range.Select(x => RunLockWithFiniteTimeoutAndTokenAndSleep(
                 locker, _constLockId, waitTimeout, sleepMs, token))];
 
-            Assert.DoesNotThrowAsync(async () => await Task.WhenAll(tasks));
+            Assert.DoesNotThrowAsync((Func<Task>)(() => Task.WhenAll(tasks)));
             Assert.That(locker.CurrentSize, Is.Zero);
         }
     }
@@ -325,12 +333,16 @@ public class ConcurrentLockerTests
             using IConcurrentLocker<int> locker = new ConcurrentLocker<int>();
 
             // ACT + ASSERT
-            Assert.ThrowsAsync<ConcurrencyConflictException>(async () =>
-            {
-                await Task.WhenAll(
-                    RunLockWithFiniteTimeoutAndTokenAndSleep(locker, _constLockId, msTimeout, sleepMs, token),
-                    RunLockWithFiniteTimeoutAndTokenAndSleep(locker, _constLockId, msTimeout, sleepMs, token));
-            });
+            Assert.ThrowsAsync<ConcurrencyConflictException>(
+                (Func<Task>)(() =>
+                    Task.WhenAll(
+                        RunLockWithFiniteTimeoutAndTokenAndSleep(
+                            locker, _constLockId, msTimeout, sleepMs, token),
+                        RunLockWithFiniteTimeoutAndTokenAndSleep(
+                            locker, _constLockId, msTimeout, sleepMs, token)
+                    )
+                )
+            );
         }
     }
 
@@ -349,12 +361,16 @@ public class ConcurrentLockerTests
             using IConcurrentLocker<int> locker = new ConcurrentLocker<int>();
 
             // ACT + ASSERT
-            Assert.ThrowsAsync<ConcurrencyConflictException>(async () =>
-            {
-                await Task.WhenAll(
-                    RunLockWithFiniteTimeoutAndTokenAndSleep(locker, _constLockId, _dayTimeout, sleepMs, token),
-                    RunLockWithFiniteTimeoutAndTokenAndSleep(locker, _constLockId, _dayTimeout, sleepMs, token));
-            });
+            Assert.ThrowsAsync<ConcurrencyConflictException>(
+                (Func<Task>)(() =>
+                    Task.WhenAll(
+                        RunLockWithFiniteTimeoutAndTokenAndSleep(
+                            locker, _constLockId, _dayTimeout, sleepMs, token),
+                        RunLockWithFiniteTimeoutAndTokenAndSleep(
+                            locker, _constLockId, _dayTimeout, sleepMs, token)
+                    )
+                )
+            );
         }
     }
     #endregion // Tests_LockAsync_Token_and_Timeout

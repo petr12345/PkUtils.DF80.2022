@@ -245,7 +245,7 @@ namespace PK.PkUtils.UnitTests.ExtensionsTests
             IEnumerable<Component> subList = list.Where(
               comp => !string.IsNullOrEmpty((comp as Control).NullSafe(c => c.Text)));
 
-            Assert.IsFalse(subList.Any());
+            Assert.IsEmpty(subList);
         }
 #nullable restore
 

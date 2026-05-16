@@ -53,8 +53,8 @@ namespace WinTester2
 
         protected static string FindExeInPredefined()
         {
-            static string selector(string str) => FilePathHelper.CombineAbsolute(Environment.SystemDirectory, str);
-            IEnumerable<string> finalExes = _arrExesToTry.Select(selector);
+            Func<string, string> selector = str => FilePathHelper.CombineAbsolute(Environment.SystemDirectory, str);
+            IEnumerable<string> finalExes = _arrExesToTry.Select(str => selector(str));
             string strExePath = finalExes.FirstOrDefault(str => (null != FilePathHelper.SafeGetFileInfo(str)));
 
             return strExePath;

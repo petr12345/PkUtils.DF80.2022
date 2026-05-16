@@ -39,7 +39,7 @@ public class CachedEnumerableTest
     {
         CachedEnumerable<int> enumerab = new CachedEnumerable<int>(null);
 
-        Assert.Throws<InvalidOperationException>(() => enumerab.Any());
+        Assert.Throws<InvalidOperationException>((Action)(() => enumerab.Any()));
     }
 
     /// <summary> A test for CachedEnumerable parsing, which should throw ObjectDisposedException. </summary>
@@ -56,7 +56,7 @@ public class CachedEnumerableTest
         }
 
         enumerab.Dispose();
-        Assert.Throws<ObjectDisposedException>(() => enumerab.Any());
+        Assert.Throws<ObjectDisposedException>((Action)(() => enumerab.Any()));
     }
 
     /// <summary> A test for CachedEnumerable parsing, which should succeed. </summary>
@@ -131,7 +131,7 @@ public class CachedEnumerableTest
         IPeekAbleEnumerator<int> en = enumerab.GetPeekAbleEnumerator();
         enumerab.Dispose();
 
-        Assert.Throws<ObjectDisposedException>(() => nVal = en.Current);
+        Assert.Throws<ObjectDisposedException>((Action)(() => nVal = en.Current));
     }
 
     /// <summary>
@@ -146,7 +146,7 @@ public class CachedEnumerableTest
         CachedEnumerable<int> enumerab = new CachedEnumerable<int>(arrInput);
         IPeekAbleEnumerator<int> en = enumerab.GetPeekAbleEnumerator();
 
-        Assert.Throws<InvalidOperationException>(() => nVal = en.Current);
+        Assert.Throws<InvalidOperationException>((Action)(() => nVal = en.Current));
     }
 
     /// <summary>
@@ -163,7 +163,7 @@ public class CachedEnumerableTest
         IPeekAbleEnumerator<int> enB = enumerab.GetPeekAbleEnumerator();
 
         dummyA = enA.Peek;
-        Assert.Throws<InvalidOperationException>(() => dummyB = enB.Current);
+        Assert.Throws<InvalidOperationException>((Action)(() => dummyB = enB.Current));
     }
     #endregion // Tests_Parsing
 
@@ -221,8 +221,8 @@ public class CachedEnumerableTest
             {
                 using (Assert.EnterMultipleScope())
                 {
-                    Assert.Throws<ArgumentException>(() => { int dDummyVal = en_PrevGeneration.Current; });
-                    Assert.Throws<ArgumentException>(() => { int dDummyVal = en_PrevGeneration.Peek; });
+                    Assert.Throws<ArgumentException>((Action)(() => { int dDummyVal = en_PrevGeneration.Current; }));
+                    Assert.Throws<ArgumentException>((Action)(() => { int dDummyVal = en_PrevGeneration.Peek; }));
                 }
             }
 
@@ -251,7 +251,7 @@ public class CachedEnumerableTest
         string[] arrInput = Enumerable.Range(0, 10).Select(i => i.ToString()).ToArray();
         CachedEnumerable<string> enumerab = new CachedEnumerable<string>(arrInput);
 
-        Assert.Throws<ArgumentOutOfRangeException>(() => enumerab.FillBuffer(-2));
+        Assert.Throws<ArgumentOutOfRangeException>((Action)(() => enumerab.FillBuffer(-2)));
     }
 
     /// <summary>
@@ -438,7 +438,7 @@ public class CachedEnumerableTest
         IPeekAbleEnumerator<int> en;
         CachedEnumerable<int> enumerab = new CachedEnumerable<int>(Enumerable.Range(0, 10));
         enumerab.Dispose();
-        Assert.Throws<ObjectDisposedException>(() => en = enumerab.GetPeekAbleEnumerator());
+        Assert.Throws<ObjectDisposedException>((Action)(() => en = enumerab.GetPeekAbleEnumerator()));
     }
 
     /// <summary>
@@ -452,7 +452,7 @@ public class CachedEnumerableTest
         CachedEnumerable<int> enumerab = new CachedEnumerable<int>(Enumerable.Range(0, 10));
         IPeekAbleEnumerator<int> en = enumerab.GetPeekAbleEnumerator();
         enumerab.Dispose();
-        Assert.Throws<ObjectDisposedException>(() => nVal = en.Current);
+        Assert.Throws<ObjectDisposedException>((Action)(() => nVal = en.Current));
     }
 
     /// <summary>

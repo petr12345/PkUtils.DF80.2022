@@ -42,7 +42,8 @@ public class DisposableStopWatchLoggerExTests
         ITimingScope scope = new TimingScope();
 
         // Act + Assert
-        Assert.Throws<ArgumentNullException>(() => new DisposableStopWatchLoggerEx(dumper, _actionName, _actionDetails, scope));
+        Assert.Throws<ArgumentNullException>(
+            (Action)(() => new DisposableStopWatchLoggerEx(dumper, _actionName, _actionDetails, scope)));
     }
 
     [Test()]
@@ -53,7 +54,8 @@ public class DisposableStopWatchLoggerExTests
         ITimingScope scope = new TimingScope();
 
         // Act + Assert
-        Assert.Throws<ArgumentNullException>(() => new DisposableStopWatchLoggerEx(dumper, null, _actionDetails, scope));
+        Assert.Throws<ArgumentNullException>(
+            (Action)(() => new DisposableStopWatchLoggerEx(dumper, null, _actionDetails, scope)));
     }
 
     [Test()]
@@ -64,7 +66,8 @@ public class DisposableStopWatchLoggerExTests
         ITimingScope scope = new TimingScope();
 
         // Act + Assert
-        Assert.Throws<ArgumentNullException>(() => new DisposableStopWatchLoggerEx(dumper, _actionName, null, scope));
+        Assert.Throws<ArgumentNullException>(
+            (Action)(() => new DisposableStopWatchLoggerEx(dumper, _actionName, null, scope)));
     }
 
     [Test()]
@@ -74,7 +77,8 @@ public class DisposableStopWatchLoggerExTests
         IDumper dumper = new DumperStringWrapper();
 
         // Act + Assert
-        Assert.Throws<ArgumentNullException>(() => new DisposableStopWatchLoggerEx(dumper, _actionName, _actionDetails, null));
+        Assert.Throws<ArgumentNullException>(
+            (Action)(() => new DisposableStopWatchLoggerEx(dumper, _actionName, _actionDetails, null)));
     }
 
     [Test()]

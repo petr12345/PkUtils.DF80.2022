@@ -41,7 +41,8 @@ public class CommandsInputProcessorTest
     [Test, Description("Constructor throws ArgumentNullException if logger is null.")]
     public void Constructor_ThrowsArgumentNullException_IfLoggerIsNull()
     {
-        Assert.Throws<ArgumentNullException>(() => new CommandsInputProcessor<ICommand<int>, int>(null, _mockDisplay.Object));
+        Assert.Throws<ArgumentNullException>(
+            (Action)(() => new CommandsInputProcessor<ICommand<int>, int>(null, _mockDisplay.Object)));
     }
 
     /// <summary>
@@ -51,11 +52,11 @@ public class CommandsInputProcessorTest
     public void Constructor_InitializesCorrectly()
     {
         // Assert
-        Assert.Multiple(() =>
+        Assert.Multiple((Action)(() =>
         {
             Assert.That(_processor, Is.Not.Null);
             Assert.That(_processor.HasBeenInitialized, Is.False);
-        });
+        }));
     }
     #endregion // Constructor Tests
 
@@ -71,11 +72,11 @@ public class CommandsInputProcessorTest
         bool result = _processor.InitializeCommandContainer(_mockLogger.Object, Assembly.GetExecutingAssembly());
 
         // Assert
-        Assert.Multiple(() =>
+        Assert.Multiple((Action)(() =>
         {
             Assert.That(result, Is.True);
             Assert.That(_processor.HasBeenInitialized, Is.True);
-        });
+        }));
     }
     #endregion // Initialization Tests
 
@@ -91,7 +92,7 @@ public class CommandsInputProcessorTest
         _processor.InitializeCommandContainer(_mockLogger.Object, Assembly.GetExecutingAssembly());
 
         // Assert
-        Assert.Throws<ArgumentNullException>(() => _processor.ProcessNextInput((string)null, out _));
+        Assert.Throws<ArgumentNullException>((Action)(() => _processor.ProcessNextInput((string)null, out _)));
     }
 
     /// <summary>
@@ -107,11 +108,11 @@ public class CommandsInputProcessorTest
         var result = _processor.ProcessNextInput(string.Empty, out bool shouldContinue);
 
         // Assert
-        Assert.Multiple(() =>
+        Assert.Multiple((Action)(() =>
         {
             Assert.That(result.Success, Is.True);
             Assert.That(shouldContinue, Is.False);
-        });
+        }));
     }
     #endregion // ProcessNextInput Tests
 
@@ -335,7 +336,8 @@ public class CommandsInputProcessorTest
     public void SplitCommandLine_NullInput_ThrowsException()
     {
         // Act + Assert
-        Assert.Throws<ArgumentNullException>(() => CommandsInputProcessor<ICommand<int>, int>.SplitCommandLine(null));
+        Assert.Throws<ArgumentNullException>(
+            (Action)(() => CommandsInputProcessor<ICommand<int>, int>.SplitCommandLine(null)));
     }
     #endregion // SplitCommandLine_Error_Cases
     #endregion // SplitCommandLine Tests

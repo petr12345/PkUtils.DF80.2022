@@ -28,7 +28,10 @@ namespace PK.TestWeakRef
         /// </summary>
         public static void FireStaticEvent()
         {
-            _evStaticEvent?.Invoke(null, new CancelEventArgs());
+            if (null != _evStaticEvent)
+            {
+                _evStaticEvent(null, new CancelEventArgs());
+            }
         }
     }
 }

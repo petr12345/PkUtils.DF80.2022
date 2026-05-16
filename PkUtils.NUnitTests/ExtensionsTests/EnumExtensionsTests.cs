@@ -58,7 +58,7 @@ public class EnumExtensionsTests
     public void EnumEx_CheckIsDefinedValue_throws()
     {
         MessageBoxButtons invalid = (MessageBoxButtons)666;
-        Assert.Throws<ArgumentException>(() => invalid.CheckIsDefinedValue());
+        Assert.Throws<ArgumentException>((Action)(() => invalid.CheckIsDefinedValue()));
     }
 
     [Test()]
@@ -76,7 +76,7 @@ public class EnumExtensionsTests
     public void EnumEx_CheckIsValidFlagsCombination_throws()
     {
         MultiHue invalid = (MultiHue)666;
-        Assert.Throws<ArgumentException>(() => invalid.CheckIsValidFlagsCombination());
+        Assert.Throws<ArgumentException>((Action)(() => invalid.CheckIsValidFlagsCombination()));
     }
 
     [Test()]
@@ -84,7 +84,7 @@ public class EnumExtensionsTests
     public void EnumEx_CheckIsValidEnum_throws()
     {
         MessageBoxButtons invalid = (MessageBoxButtons)123;
-        Assert.Throws<ArgumentException>(() => invalid.CheckIsValidEnum());
+        Assert.Throws<ArgumentException>((Action)(() => invalid.CheckIsValidEnum()));
     }
     #endregion // Checking_values
 

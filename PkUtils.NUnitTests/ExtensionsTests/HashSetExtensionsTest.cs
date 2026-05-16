@@ -33,7 +33,7 @@ public class HashSetExtensionsTest
         var listInts = Enumerable.Repeat(0, 5).Select((n, i) => i).ToList();
 
         listInts.ForEach(n => hashSet.Add(n));
-        Assert.Throws<ArgumentException>(() => hashSet.RemoveExisting(122));
+        Assert.Throws<ArgumentException>((Action)(() => hashSet.RemoveExisting(122)));
     }
 
     [Test()]
@@ -51,8 +51,8 @@ public class HashSetExtensionsTest
         HashSet<int> hashSet = [];
         var listInts = Enumerable.Repeat(0, 5).ToList();
 
-        Assert.Throws<ArgumentException>(() =>
-            listInts.ForEach(n => hashSet.AddNew(n)));
+        Assert.Throws<ArgumentException>((Action)(() =>
+            listInts.ForEach(n => hashSet.AddNew(n))));
     }
     #endregion // Tests
 }

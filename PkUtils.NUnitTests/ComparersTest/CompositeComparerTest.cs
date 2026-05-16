@@ -26,14 +26,14 @@ public class CompositeComparerTest
     [Test, Description("Throws ArgumentNullException if first comparer is null.")]
     public void Constructor_FirstComparerNull_ThrowsArgumentNullException()
     {
-        var ex = Assert.Throws<ArgumentNullException>(() => new CompositeComparer<string>(null, _secondComparer));
+        var ex = Assert.Throws<ArgumentNullException>((Action)(() => new CompositeComparer<string>(null, _secondComparer)));
         Assert.That(ex!.ParamName, Is.EqualTo("firstComparer"));
     }
 
     [Test, Description("Throws ArgumentNullException if second comparer is null.")]
     public void Constructor_SecondComparerNull_ThrowsArgumentNullException()
     {
-        var ex = Assert.Throws<ArgumentNullException>(() => new CompositeComparer<string>(_firstComparer, null));
+        var ex = Assert.Throws<ArgumentNullException>((Action)(() => new CompositeComparer<string>(_firstComparer, null)));
         Assert.That(ex!.ParamName, Is.EqualTo("secondComparer"));
     }
 

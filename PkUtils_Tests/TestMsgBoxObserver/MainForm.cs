@@ -61,7 +61,7 @@ namespace PK.TestMsgBoxObserver
             if (null == _observer)
             {
                 _observer = new MsgBoxObserver();
-                _observer.ObservedAction += new EventHandler<MsgBoxObserver.EventMsgBoxActionEventArgs>(_observer_evMsgBoxAction);
+                _observer.ObservedAction += new EventHandler<MsgBoxObserver.EventMsgBoxActionEventArgs>(OnObserver_evMsgBoxAction);
             }
         }
 
@@ -163,12 +163,12 @@ namespace PK.TestMsgBoxObserver
             }
         }
 
-        private void buttonClear_Click(object sender, System.EventArgs e)
+        private void OnButtonClear_Click(object sender, System.EventArgs e)
         {
             Reset();
         }
 
-        private void _observer_evMsgBoxAction(object sender, MsgBoxObserver.EventMsgBoxActionEventArgs e)
+        private void OnObserver_evMsgBoxAction(object sender, MsgBoxObserver.EventMsgBoxActionEventArgs e)
         {
             string strTxt;
             IntPtr hwnd = e.Hwnd;

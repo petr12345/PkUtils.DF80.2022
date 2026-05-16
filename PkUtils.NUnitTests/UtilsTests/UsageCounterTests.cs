@@ -16,7 +16,7 @@ public class UsageCounterTests
 
         // ASSERT
         Assert.That(counter.IsUsed, Is.False);
-        Assert.DoesNotThrow(() => counter.AssertValid());
+        Assert.DoesNotThrow((Action)(() => counter.AssertValid()));
     }
 
     [Test()]

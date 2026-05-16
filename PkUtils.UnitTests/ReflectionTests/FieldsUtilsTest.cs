@@ -713,14 +713,14 @@ public class FieldsUtilsTest
         {
             actual = FieldsUtils.GetAllFields(typeof(B), strFieldName, flags);
             listActual = actual.ToList();
-            Assert.AreEqual(1, listActual.Count());
+            Assert.HasCount(1, listActual);
             Assert.AreEqual(listActual.First().Name, strFieldName);
         }
 
         foreach (string strFieldName in _arrInvalidFieldNames)
         {
             actual = FieldsUtils.GetAllFields(typeof(B), strFieldName, flags);
-            Assert.IsFalse(actual.Any());
+            Assert.IsEmpty(actual);
         }
     }
 
@@ -771,7 +771,7 @@ public class FieldsUtilsTest
         foreach (string strFieldName in _arrInvalidFieldNames)
         {
             actual = FieldsUtils.GetAllInstanceFields(typeof(D), strFieldName);
-            Assert.IsFalse(actual.Any());
+            Assert.IsEmpty(actual);
         }
     }
 

@@ -62,8 +62,8 @@ public class SegmentTests
     [Test(Description = "A test for Segment constructor, which should fail with ArgumentNullException")]
     public void Segment_Constructor_01()
     {
-        Assert.Throws<ArgumentNullException>(() =>
-            new Segment(null, SharedMemoryCreationFlag.Create, 20, true));
+        Assert.Throws<ArgumentNullException>((Action)(() =>
+            new Segment(null, SharedMemoryCreationFlag.Create, 20, true)));
     }
 
     /// <summary>
@@ -72,8 +72,8 @@ public class SegmentTests
     [Test(Description = "A test for Segment constructor, which should fail with ArgumentException")]
     public void Segment_Constructor_02()
     {
-        Assert.Throws<ArgumentException>(() =>
-            new Segment(string.Empty, SharedMemoryCreationFlag.Create, 20, true));
+        Assert.Throws<ArgumentException>((Action)(() =>
+            new Segment(string.Empty, SharedMemoryCreationFlag.Create, 20, true)));
     }
 
     /// <summary>
@@ -103,8 +103,8 @@ public class SegmentTests
         int maxMappingNameLength = Segment.MaxMappingNameLength;
         string mappingName = new('x', maxMappingNameLength + 1);
 
-        Assert.Throws<ArgumentException>(() =>
-            new Segment(mappingName, SharedMemoryCreationFlag.Create, 20, true));
+        Assert.Throws<ArgumentException>((Action)(() =>
+            new Segment(mappingName, SharedMemoryCreationFlag.Create, 20, true)));
     }
 
     /// <summary>
@@ -113,8 +113,8 @@ public class SegmentTests
     [Test(Description = "A test for Segment constructor, which should fail with ArgumentOutOfRangeException")]
     public void Segment_Constructor_05()
     {
-        Assert.Throws<ArgumentOutOfRangeException>(() =>
-            new Segment("abc", SharedMemoryCreationFlag.Create, -3, true));
+        Assert.Throws<ArgumentOutOfRangeException>((Action)(() =>
+            new Segment("abc", SharedMemoryCreationFlag.Create, -3, true)));
     }
     #endregion // Tests_constructors
 
@@ -214,12 +214,12 @@ public class SegmentTests
         PersonData p1 = new(73, "XX YY");
         PersonData p2;
 
-        Assert.Throws<SharedMemoryException>(() =>
+        Assert.Throws<SharedMemoryException>((Action)(() =>
         {
             using Segment s1 = new(mappingName1, p1, true);
             using Segment s2 = new(mappingName2, true);
             p2 = (PersonData)s2.GetData();
-        });
+        }));
     }
     #endregion // Tests_write_read_singlethread
 
@@ -334,7 +334,7 @@ public class SegmentTests
         }
 
         // the main body
-        Assert.Throws<AbandonedMutexException>(() =>
+        Assert.Throws<AbandonedMutexException>((Action)(() =>
         {
             using (acquiredLockOnce = new ManualResetEvent(false))
             {
@@ -353,7 +353,7 @@ public class SegmentTests
                     personRead = (PersonData)segmentAttached.GetData();
                 }
             }
-        });
+        }));
     }
     #endregion // Tests_write_read_multithread
     #endregion // Tests

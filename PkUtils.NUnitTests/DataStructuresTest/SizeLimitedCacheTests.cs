@@ -25,7 +25,7 @@ public class SizeLimitedCacheTests
     public void SizeLimitedCache_Constructor_01()
     {
         // ACT + ASSERT
-        Assert.Throws<ArgumentOutOfRangeException>(() => new SizeLimitedCache<int, string>(-12));
+        Assert.Throws<ArgumentOutOfRangeException>((Action)(() => new SizeLimitedCache<int, string>(-12)));
     }
 
     [Test]
@@ -153,7 +153,7 @@ public class SizeLimitedCacheTests
         ISizeLimitedCache<int, string> cache = new SizeLimitedCache<int, string>(12);
 
         // ACT + ASSERT
-        Assert.Throws<ArgumentOutOfRangeException>(() => cache.MaxSize = invalidSize);
+        Assert.Throws<ArgumentOutOfRangeException>((Action)(() => cache.MaxSize = invalidSize));
     }
 
     [Test]
@@ -263,7 +263,7 @@ public class SizeLimitedCacheTests
         }
 
         string v;
-        Assert.Throws<KeyNotFoundException>(() => v = cache[notPresentKey]);
+        Assert.Throws<KeyNotFoundException>((Action)(() => v = cache[notPresentKey]));
     }
     #endregion // Tests_Indexer
 

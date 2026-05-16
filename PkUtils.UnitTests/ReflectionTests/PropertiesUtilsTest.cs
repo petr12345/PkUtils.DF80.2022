@@ -471,14 +471,14 @@ public class PropertiesUtilsTest
         {
             actual = PropertiesUtils.GetAllProperties(typeof(B), strPropertyName, flags);
             listActual = actual.ToList();
-            Assert.AreEqual(1, listActual.Count());
+            Assert.HasCount(1, listActual);
             Assert.AreEqual(listActual.First().Name, strPropertyName);
         }
 
         foreach (string strPropertyName in P_arrInvalidPropertisNames)
         {
             actual = PropertiesUtils.GetAllProperties(typeof(B), strPropertyName, flags);
-            Assert.IsFalse(actual.Any());
+            Assert.IsEmpty(actual);
         }
     }
 
@@ -514,7 +514,7 @@ public class PropertiesUtilsTest
         {
             actual = PropertiesUtils.GetAllInstanceProperties(typeof(C), strPropertyName);
             listActual = actual.ToList();
-            Assert.AreEqual(1, listActual.Count());
+            Assert.HasCount(1, listActual);
             Assert.AreEqual(listActual.First().Name, strPropertyName);
         }
 
@@ -522,14 +522,14 @@ public class PropertiesUtilsTest
         {
             actual = PropertiesUtils.GetAllInstanceProperties(typeof(D), strPropertyName);
             listActual = actual.ToList();
-            Assert.AreEqual(1, listActual.Count());
+            Assert.HasCount(1, listActual);
             Assert.AreEqual(listActual.First().Name, strPropertyName);
         }
 
         foreach (string strPropertyName in P_arrInvalidPropertisNames)
         {
             actual = PropertiesUtils.GetAllInstanceProperties(typeof(D), strPropertyName);
-            Assert.IsFalse(actual.Any());
+            Assert.IsEmpty(actual);
         }
     }
 

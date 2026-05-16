@@ -17,7 +17,7 @@ public class KeyEqualityComparerTest
     [Test()]
     public void KeyEqualityComparer_Constructor_01()
     {
-        Assert.Throws<ArgumentNullException>(() => new KeyEqualityComparer<int, int>(null));
+        Assert.Throws<ArgumentNullException>((Action)(() => new KeyEqualityComparer<int, int>(null)));
     }
 
     /// <summary>
@@ -26,7 +26,7 @@ public class KeyEqualityComparerTest
     [Test()]
     public void KeyEqualityComparer_Constructor_02()
     {
-        Assert.Throws<ArgumentNullException>(() => new KeyEqualityComparer<string, int>(null, null));
+        Assert.Throws<ArgumentNullException>((Action)(() => new KeyEqualityComparer<string, int>(null, null)));
     }
 
     /// <summary>

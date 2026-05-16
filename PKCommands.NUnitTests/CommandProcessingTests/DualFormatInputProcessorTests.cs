@@ -51,14 +51,14 @@ public class DualFormatInputProcessorTests
         IReadOnlyDictionary<string, string> parsedArgs = _processor.ParseInputArgs(inputArgs, out string cmdName);
 
         // Assert
-        Assert.Multiple(() =>
+        Assert.Multiple((Action)(() =>
         {
             Assert.That(cmdName, Is.EqualTo(expectedCommand), "Command name mismatch.");
             Assert.That(parsedArgs.ContainsKey(param1Key), Is.True, "Missing first parameter key.");
             Assert.That(parsedArgs[param1Key], Is.EqualTo(param1Value), "First parameter value mismatch.");
             Assert.That(parsedArgs.ContainsKey(param2Key), Is.True, "Missing second parameter key.");
             Assert.That(parsedArgs[param2Key], Is.EqualTo(param2Value), "Second parameter value mismatch.");
-        });
+        }));
     }
 
     /// <summary>   ParseInputArgs should throw ArgumentNullException on null argument. </summary>
@@ -67,7 +67,7 @@ public class DualFormatInputProcessorTests
     public void ParseInputArgs_ThrowsArgumentNullException()
     {
         // Act & Assert
-        Assert.Throws<ArgumentNullException>(() => _processor.ParseInputArgs(null, out _));
+        Assert.Throws<ArgumentNullException>((Action)(() => _processor.ParseInputArgs(null, out _)));
     }
 
     /// <summary>   ParseInputArgs should throw ArgumentException on empty argument. </summary>
@@ -79,7 +79,8 @@ public class DualFormatInputProcessorTests
         IEnumerable<string> input = [];
 
         // Act & Assert
-        Assert.Throws<ArgumentException>(() => _processor.ParseInputArgs(input, out _));
+        Assert.Throws<ArgumentException>(
+            (Action)(() => _processor.ParseInputArgs(input, out _)));
     }
 
 #pragma warning disable IDE0060  // Remove unused parameter 'comment' if it is not part of a shipped public API
@@ -95,7 +96,8 @@ public class DualFormatInputProcessorTests
     public void ParseInputArgs_ThrowsInputLineValidationException(string[] inputArgs, string comment)
     {
         // Act & Assert
-        Assert.Throws<InputLineValidationException>(() => _processor.ParseInputArgs(inputArgs, out _));
+        Assert.Throws<InputLineValidationException>(
+            (Action)(() => _processor.ParseInputArgs(inputArgs, out _)));
     }
 #pragma warning restore IDE0060
 

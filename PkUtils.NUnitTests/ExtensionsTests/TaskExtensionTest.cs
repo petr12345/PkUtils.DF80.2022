@@ -19,7 +19,7 @@ public class TaskExtensionTest
     {
         Task<int> t = null!;
 
-        Assert.Throws<ArgumentNullException>(() => TaskExtension.ExecuteSynchronously(t));
+        Assert.Throws<ArgumentNullException>((Action)(() => TaskExtension.ExecuteSynchronously(t)));
     }
 
     /// <summary>
@@ -33,7 +33,7 @@ public class TaskExtensionTest
             throw new InvalidOperationException("April Fools' Day");
         }
 
-        Assert.Throws<InvalidOperationException>(() =>
+        Assert.Throws<InvalidOperationException>((Action)(() =>
         {
             try
             {
@@ -44,7 +44,7 @@ public class TaskExtensionTest
             {
                 throw;
             }
-        });
+        }));
     }
 
 #if NOTDEF

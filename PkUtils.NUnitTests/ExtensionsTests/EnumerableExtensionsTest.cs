@@ -62,7 +62,7 @@ public class EnumerableExtensionsTest
     [Test()]
     public void EnumerableExtension_IsEmpty_Test_03()
     {
-        Assert.Throws<ArgumentNullException>(() => IsEmptyTestHelper<int>(null!, true));
+        Assert.Throws<ArgumentNullException>((Action)(() => IsEmptyTestHelper<int>(null!, true)));
     }
     #endregion // Tests_IsEmpty
 
@@ -192,7 +192,7 @@ public class EnumerableExtensionsTest
         List<int> nullList = null!;
 
         // Act & Assert
-        Assert.That(() => nullList.IsSorted(), Throws.TypeOf<ArgumentNullException>());
+        Assert.Throws<ArgumentNullException>((Action)(() => nullList.IsSorted()));
     }
 
     /// <summary>
@@ -625,7 +625,7 @@ public class EnumerableExtensionsTest
         List<string> list = null!;
 
         // Act & Assert
-        Assert.Throws<ArgumentNullException>(() => list.IndexOf("apple", StringComparer.OrdinalIgnoreCase));
+        Assert.Throws<ArgumentNullException>((Action)(() => list.IndexOf("apple", StringComparer.OrdinalIgnoreCase)));
     }
     #endregion // Tests_IndexOf_with_Comparer
 
@@ -689,7 +689,7 @@ public class EnumerableExtensionsTest
         List<int> list = null!;
 
         // Act & Assert
-        Assert.Throws<ArgumentNullException>(() => list.IndexOf(x => x == 1));
+        Assert.Throws<ArgumentNullException>((Action)(() => list.IndexOf(x => x == 1)));
     }
 
     /// <summary>
@@ -702,7 +702,7 @@ public class EnumerableExtensionsTest
         List<int> list = [];
 
         // Act & Assert
-        Assert.Throws<ArgumentNullException>(() => list.IndexOf(null));
+        Assert.Throws<ArgumentNullException>((Action)(() => list.IndexOf(null)));
     }
 
     #endregion // Tests_IndexOf_with_Predicate
@@ -761,7 +761,7 @@ public class EnumerableExtensionsTest
         List<int> nullList = null!;
 
         // Act & Assert
-        Assert.Throws<ArgumentNullException>(() => EnumerableExtensions.ForEachWithIndex(nullList, (item, index) => { }));
+        Assert.Throws<ArgumentNullException>((Action)(() => EnumerableExtensions.ForEachWithIndex(nullList, (item, index) => { })));
     }
 
     // Tests that ArgumentNullException is thrown when action is null
@@ -772,7 +772,7 @@ public class EnumerableExtensionsTest
         List<int> list = [];
 
         // Act & Assert
-        Assert.Throws<ArgumentNullException>(() => EnumerableExtensions.ForEachWithIndex(list, null));
+        Assert.Throws<ArgumentNullException>((Action)(() => EnumerableExtensions.ForEachWithIndex(list, null)));
     }
     #endregion // Tests_ForEachWithIndex
 
@@ -924,7 +924,7 @@ public class EnumerableExtensionsTest
         var second = new[] { 1 };
 
         // Act & Assert
-        Assert.Throws<ArgumentNullException>(() => first.Concat(second).ToList());
+        Assert.Throws<ArgumentNullException>((Action)(() => first.Concat(second).ToList()));
     }
 
     /// <summary>
@@ -938,7 +938,7 @@ public class EnumerableExtensionsTest
         int[] second = null!;
 
         // Act & Assert
-        Assert.Throws<ArgumentNullException>(() => first.Concat(second).ToList());
+        Assert.Throws<ArgumentNullException>((Action)(() => first.Concat(second).ToList()));
     }
 
     /// <summary>
@@ -953,7 +953,7 @@ public class EnumerableExtensionsTest
         IEnumerable<int>[] additionalItems = null!;
 
         // Act & Assert
-        Assert.Throws<ArgumentNullException>(() => first.Concat(second, additionalItems).ToList());
+        Assert.Throws<ArgumentNullException>((Action)(() => first.Concat(second, additionalItems).ToList()));
     }
     #endregion // Tests_Concat
 
@@ -965,7 +965,7 @@ public class EnumerableExtensionsTest
     {
         int[] source = null!;
 
-        Assert.Throws<ArgumentNullException>(() => source.Slice(2, 3));
+        Assert.Throws<ArgumentNullException>((Action)(() => source.Slice(2, 3)));
     }
 
     /// <summary>   A test for Slice. </summary>
@@ -976,7 +976,7 @@ public class EnumerableExtensionsTest
         int startIndex = -1;
         int size = 3;
 
-        Assert.Throws<ArgumentOutOfRangeException>(() => source.Slice(startIndex, size));
+        Assert.Throws<ArgumentOutOfRangeException>((Action)(() => source.Slice(startIndex, size)));
     }
 
     /// <summary> A test for Slice which should throw ArgumentOutOfRangeException. </summary>
@@ -987,7 +987,7 @@ public class EnumerableExtensionsTest
         int startIndex = 1;
         int size = -1;
 
-        Assert.Throws<ArgumentOutOfRangeException>(() => source.Slice(startIndex, size));
+        Assert.Throws<ArgumentOutOfRangeException>((Action)(() => source.Slice(startIndex, size)));
     }
 
     /// <summary> A test for Slice which should return expected result. </summary>
@@ -1054,7 +1054,7 @@ public class EnumerableExtensionsTest
         var separator = ", ";
 
         // Act & Assert
-        Assert.That(() => items.Join(separator), Throws.ArgumentNullException);
+        Assert.Throws<ArgumentNullException>((Action)(() => items.Join(separator)));
     }
     #endregion // Tests_JoinSeparatorAndNullSubstitute
 
@@ -1091,7 +1091,7 @@ public class EnumerableExtensionsTest
         static string conversion(int x) => x.ToString();
 
         // Act & Assert
-        Assert.That(() => items.Join(separator, conversion), Throws.ArgumentNullException);
+        Assert.Throws<ArgumentNullException>((Action)(() => items.Join(separator, conversion)));
     }
 
     /// <summary>
@@ -1106,7 +1106,7 @@ public class EnumerableExtensionsTest
         Func<int, string> conversion = null!;
 
         // Act & Assert
-        Assert.That(() => items.Join(separator, conversion), Throws.ArgumentNullException);
+        Assert.Throws<ArgumentNullException>((Action)(() => items.Join(separator, conversion)));
     }
     #endregion // Tests_JoinSeparatorAndConversion
 
@@ -1168,7 +1168,7 @@ public class EnumerableExtensionsTest
         var termination = "...";
 
         // Act & Assert
-        Assert.That(() => items.Join(separator, conversion, listLimit, termination), Throws.TypeOf<ArgumentOutOfRangeException>());
+        Assert.Throws<ArgumentOutOfRangeException>((Action)(() => items.Join(separator, conversion, listLimit, termination)));
     }
     #endregion // Tests_JoinSeparatorConversionLimitAndTermination
 
@@ -1241,7 +1241,7 @@ public class EnumerableExtensionsTest
         List<string> items = null!;
 
         // Act & Assert
-        Assert.That(() => items.JoinWithLastSeparator(), Throws.ArgumentNullException);
+        Assert.Throws<ArgumentNullException>((Action)(() => items.JoinWithLastSeparator()));
     }
 
     /// <summary>
@@ -1255,7 +1255,7 @@ public class EnumerableExtensionsTest
         string separator = null!;
 
         // Act & Assert
-        Assert.That(() => items.JoinWithLastSeparator(separator), Throws.ArgumentNullException);
+        Assert.Throws<ArgumentNullException>((Action)(() => items.JoinWithLastSeparator(separator)));
     }
 
     /// <summary>
@@ -1270,7 +1270,7 @@ public class EnumerableExtensionsTest
         string lastSeparator = null!;
 
         // Act & Assert
-        Assert.That(() => items.JoinWithLastSeparator(separator, lastSeparator), Throws.ArgumentNullException);
+        Assert.Throws<ArgumentNullException>((Action)(() => items.JoinWithLastSeparator(separator, lastSeparator)));
     }
 
     /// <summary>
@@ -1300,7 +1300,7 @@ public class EnumerableExtensionsTest
     {
         int[] source = null!;
 
-        Assert.Throws<ArgumentNullException>(() => source.FindDuplicities());
+        Assert.Throws<ArgumentNullException>((Action)(() => source.FindDuplicities()));
     }
 
     /// <summary> A test for FindDuplicities, which should succeed. </summary>
@@ -1342,8 +1342,8 @@ public class EnumerableExtensionsTest
     {
         int[] source = [1, 2, 3, 4, 2, 5, 6, 4, 7, 2];
 
-        Assert.Throws<ArgumentOutOfRangeException>(() =>
-            source.CheckNotDuplicated(nameof(source), null, -1));
+        Assert.Throws<ArgumentOutOfRangeException>((Action)(() =>
+            source.CheckNotDuplicated(nameof(source), null, -1)));
     }
 
     /// <summary> A test for FindDuplicities, which should throw ArgumentException. </summary>
@@ -1352,8 +1352,8 @@ public class EnumerableExtensionsTest
     {
         int[] source = [1, 1, 3, 3, 5, 5, 2, 2, 4, 4,];
 
-        Assert.Throws<ArgumentException>(() =>
-            source.CheckNotDuplicated(nameof(source), null, 3));
+        Assert.Throws<ArgumentException>((Action)(() =>
+            source.CheckNotDuplicated(nameof(source), null, 3)));
     }
     #endregion // Tests_CheckNotDuplicated
 

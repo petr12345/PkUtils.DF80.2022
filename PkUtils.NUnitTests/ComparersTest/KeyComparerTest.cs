@@ -17,14 +17,14 @@ public class KeyComparerTest
     [Description("A test for KeyComparer constructor, which should throw ArgumentNullException")]
     public void KeyComparer_Constructor_01()
     {
-        Assert.Throws<ArgumentNullException>(() => new KeyComparer<int, int>(null));
+        Assert.Throws<ArgumentNullException>((Action)(() => new KeyComparer<int, int>(null)));
     }
 
     [Test()]
     [Description("A test for KeyComparer constructor, which should throw ArgumentNullException")]
     public void KeyComparer_Constructor_02()
     {
-        Assert.Throws<ArgumentNullException>(() => new KeyComparer<string, int>(null, null));
+        Assert.Throws<ArgumentNullException>((Action)(() => new KeyComparer<string, int>(null, null)));
     }
 
     [Test()]

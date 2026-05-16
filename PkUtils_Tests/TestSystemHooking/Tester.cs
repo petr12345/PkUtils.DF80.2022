@@ -275,16 +275,39 @@ namespace PK.TestSystemHooking
             }
             else
             {
-                string strWPar = (int)wParam switch
+                string strWPar;
+
+                switch ((int)wParam)
                 {
-                    (int)Win32.WM.WM_MOUSEMOVE => "WM_MOUSEMOVE",
-                    (int)Win32.WM.WM_LBUTTONDOWN => "WM_LBUTTONDOWN",
-                    (int)Win32.WM.WM_LBUTTONUP => "WM_LBUTTONUP",
-                    (int)Win32.WM.WM_LBUTTONDBLCLK => "WM_LBUTTONDBLCLK",
-                    (int)Win32.WM.WM_RBUTTONDOWN => "WM_RBUTTONDOWN",
-                    (int)Win32.WM.WM_RBUTTONUP => "WM_RBUTTONUP",
-                    _ => wParam.ToString("X"),
-                };
+                    case (int)Win32.WM.WM_MOUSEMOVE:
+                        strWPar = "WM_MOUSEMOVE";
+                        break;
+
+                    case (int)Win32.WM.WM_LBUTTONDOWN:
+                        strWPar = "WM_LBUTTONDOWN";
+                        break;
+
+                    case (int)Win32.WM.WM_LBUTTONUP:
+                        strWPar = "WM_LBUTTONUP";
+                        break;
+
+                    case (int)Win32.WM.WM_LBUTTONDBLCLK:
+                        strWPar = "WM_LBUTTONDBLCLK";
+                        break;
+
+                    case (int)Win32.WM.WM_RBUTTONDOWN:
+                        strWPar = "WM_RBUTTONDOWN";
+                        break;
+
+                    case (int)Win32.WM.WM_RBUTTONUP:
+                        strWPar = "WM_RBUTTONUP";
+                        break;
+
+                    default:
+                        strWPar = wParam.ToString("X");
+                        break;
+                }
+
                 if (!string.IsNullOrEmpty(strWPar))
                 {
                     Win32.MSLLHOOKSTRUCT mss = (Win32.MSLLHOOKSTRUCT)Marshal.PtrToStructure(lParam, typeof(Win32.MSLLHOOKSTRUCT));
@@ -366,7 +389,7 @@ namespace PK.TestSystemHooking
 
                 if (!string.IsNullOrEmpty(strWPar))
                 {
-                    Win32.KBDLLHOOKSTRUCT kbs = Marshal.PtrToStructure<Win32.KBDLLHOOKSTRUCT>(lParam);
+                    Win32.KBDLLHOOKSTRUCT kbs = (Win32.KBDLLHOOKSTRUCT)Marshal.PtrToStructure(lParam, typeof(Win32.KBDLLHOOKSTRUCT));
                     string strMsg = string.Format(CultureInfo.InvariantCulture,
                       "WH_KEYBOARD_LL - KeyboardLLProc called with {0}, kbs.vkCode = {1}",
                       strWPar, kbs.vkCode);
@@ -430,15 +453,17 @@ namespace PK.TestSystemHooking
             }
             else
             { // to prevent hanging maintains a reentrancy lock 
-                using var lockUser = new UsageMonitor(_reentrancyLock);
-                Win32.CWPRETSTRUCT msg = (Win32.CWPRETSTRUCT)Marshal.PtrToStructure(lParam, typeof(Win32.CWPRETSTRUCT));
-                string strMsg = string.Format(CultureInfo.InvariantCulture,
-                  "WH_CALLWNDPROCRET - called with hwnd={0}, message={1}, wParam={2}, lParam={3}, lResult={4}",
-                  msg.hwnd, msg.message, msg.wParam, msg.lParam, msg.lResult);
+                using (var lockUser = new UsageMonitor(_reentrancyLock))
+                {
+                    Win32.CWPRETSTRUCT msg = (Win32.CWPRETSTRUCT)Marshal.PtrToStructure(lParam, typeof(Win32.CWPRETSTRUCT));
+                    string strMsg = string.Format(CultureInfo.InvariantCulture,
+                      "WH_CALLWNDPROCRET - called with hwnd={0}, message={1}, wParam={2}, lParam={3}, lResult={4}",
+                      msg.hwnd, msg.message, msg.wParam, msg.lParam, msg.lResult);
 
-                Dumper.DumpLine(strMsg);
+                    Dumper.DumpLine(strMsg);
 
-                nResult = _callWndProc_hook.CallNextHook(code, wParam, lParam);
+                    nResult = _callWndProc_hook.CallNextHook(code, wParam, lParam);
+                }
             }
 
             return nResult;

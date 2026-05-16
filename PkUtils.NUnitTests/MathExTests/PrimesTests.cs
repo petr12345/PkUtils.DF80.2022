@@ -19,7 +19,7 @@ public class PrimesTests
     public void GeneratePrimesInRange_InvalidInput_ThrowsArgumentOutOfRangeException(int maxValue)
     {
         // Act & Assert
-        Assert.Throws<ArgumentOutOfRangeException>(() => Primes.GeneratePrimesInRange(maxValue));
+        Assert.Throws<ArgumentOutOfRangeException>((Action)(() => Primes.GeneratePrimesInRange(maxValue)));
     }
 
     [Test, Description("Tests generating primes within a valid positive range")]
@@ -61,7 +61,8 @@ public class PrimesTests
     public void GeneratePrimesInRange_InvalidInput_ThrowsArgumentOutOfRangeException(int minValue, int maxValue)
     {
         // Act & Assert
-        Assert.Throws<ArgumentOutOfRangeException>(() => Primes.GeneratePrimesInRange(minValue, maxValue));
+        Assert.Throws<ArgumentOutOfRangeException>(
+            (Action)(() => Primes.GeneratePrimesInRange(minValue, maxValue)));
     }
 
     [Test, Description("Tests exception handling for minValue greater than maxValue")]
@@ -71,7 +72,7 @@ public class PrimesTests
     public void GeneratePrimesInRange_MinValueGreaterThanMaxValue_ThrowsArgumentException(int minValue, int maxValue)
     {
         // Act & Assert
-        Assert.Throws<ArgumentException>(() => Primes.GeneratePrimesInRange(minValue, maxValue));
+        Assert.Throws<ArgumentException>((Action)(() => Primes.GeneratePrimesInRange(minValue, maxValue)));
     }
 
     [Test, Description("Tests generating primes within a valid range of two arguments")]

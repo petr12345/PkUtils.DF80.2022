@@ -103,7 +103,7 @@ public partial class MainForm : FormWithLayoutPersistence
 
         try
         {
-            _testMode = Enum.Parse<ComparersTest.TestMode>(strVal, false);
+            _testMode = (ComparersTest.TestMode)Enum.Parse(typeof(ComparersTest.TestMode), strVal, false);
         }
         catch (System.ArgumentException)
         {

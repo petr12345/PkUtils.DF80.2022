@@ -55,8 +55,8 @@ namespace PK.PkUtils.NUnitTests.ExtensionsTests
         public void KeyedCollection_AddNewTest_02()
         {
             MyIntKeyedCollection coll = [];
-            Assert.Throws<ArgumentException>(() =>
-                Enumerable.Repeat(0, 5).ToList().ForEach(k => AddNewTestHelper(coll, k)));
+            Assert.Throws<ArgumentException>((Action)(() =>
+                Enumerable.Repeat(0, 5).ToList().ForEach(k => AddNewTestHelper(coll, k))));
         }
         #endregion // Tests
     }

@@ -22,7 +22,7 @@ public class CommandLineInfoExTest
     [Test()]
     public void CommandLineInfoEx_Constructor_01()
     {
-        Assert.Throws<ArgumentNullException>(() => new CommandLineInfoEx(null));
+        Assert.Throws<ArgumentNullException>((Action)(() => new CommandLineInfoEx(null)));
     }
 
     /// <summary>
@@ -34,7 +34,7 @@ public class CommandLineInfoExTest
         CommandLineInfoEx info;
         var args = new string[] { "doc1.rtf", null!, "doc2.rtf" };
 
-        Assert.Throws<ArgumentException>(() => info = new CommandLineInfoEx(args));
+        Assert.Throws<ArgumentException>((Action)(() => info = new CommandLineInfoEx(args)));
     }
 
     /// <summary>

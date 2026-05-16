@@ -26,7 +26,7 @@ public class FolderNodeDeferredTests
         const string rootPath = "e:/root";
 
         // Act & Assert
-        Assert.Throws<ArgumentNullException>(() => FolderNodeDeferred.BuildFileTree(null!, rootPath));
+        Assert.Throws<ArgumentNullException>((Action)(() => FolderNodeDeferred.BuildFileTree(null!, rootPath)));
     }
 
     /// <summary>
@@ -39,7 +39,7 @@ public class FolderNodeDeferredTests
         const string rootPath = null!;
 
         // Act & Assert
-        Assert.Throws<ArgumentNullException>(() => FolderNodeDeferred.BuildFileTree([], rootPath!));
+        Assert.Throws<ArgumentNullException>((Action)(() => FolderNodeDeferred.BuildFileTree([], rootPath!)));
     }
 
     /// <summary>
@@ -53,7 +53,7 @@ public class FolderNodeDeferredTests
         const string rootPath = "e:/root";
 
         // Act
-        ArgumentException? ex = Assert.Throws<ArgumentException>(() => FolderNodeDeferred.BuildFileTree(files, rootPath));
+        ArgumentException? ex = Assert.Throws<ArgumentException>((Action)(() => FolderNodeDeferred.BuildFileTree(files, rootPath)));
 
         // Assert
         Assert.That(ex!.Message, Does.Contain("is not under the root path"));

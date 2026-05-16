@@ -39,7 +39,7 @@ public class DisposableExtensionsTest
     {
         IDisposableEx obj = null!;
 
-        Assert.Throws<ArgumentNullException>(() => obj.CheckNotDisposed(nameof(obj)));
+        Assert.Throws<ArgumentNullException>((Action)(() => obj.CheckNotDisposed(nameof(obj))));
     }
 
     /// <summary> A test for DisposableExtensions.CheckNotDisposed. </summary>
@@ -50,7 +50,7 @@ public class DisposableExtensionsTest
 
         form.Dispose();
 
-        Assert.Throws<ObjectDisposedException>(() => form.CheckNotDisposed(nameof(form)));
+        Assert.Throws<ObjectDisposedException>((Action)(() => form.CheckNotDisposed(nameof(form))));
     }
 
     /// <summary> A test for DisposableExtensions.CheckNotDisposed. </summary>

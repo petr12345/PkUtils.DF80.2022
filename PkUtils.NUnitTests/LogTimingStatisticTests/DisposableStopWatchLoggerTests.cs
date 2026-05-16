@@ -42,7 +42,8 @@ public class DisposableStopWatchLoggerTests
         IDumper dumper = null!;
 
         // Act + Assert
-        Assert.Throws<ArgumentNullException>(() => new DisposableStopWatchLogger(dumper, _actionName, _actionDetails));
+        Assert.Throws<ArgumentNullException>(
+            (Action)(() => new DisposableStopWatchLogger(dumper, _actionName, _actionDetails)));
     }
 
     [Test()]
@@ -52,7 +53,8 @@ public class DisposableStopWatchLoggerTests
         IDumper dumper = new DumperStringWrapper();
 
         // Act + Assert
-        Assert.Throws<ArgumentNullException>(() => new DisposableStopWatchLogger(dumper, null, _actionDetails));
+        Assert.Throws<ArgumentNullException>(
+            (Action)(() => new DisposableStopWatchLogger(dumper, null, _actionDetails)));
     }
 
     [Test()]
@@ -62,7 +64,7 @@ public class DisposableStopWatchLoggerTests
         IDumper dumper = new DumperStringWrapper();
 
         // Act + Assert
-        Assert.Throws<ArgumentNullException>(() => new DisposableStopWatchLogger(dumper, _actionName, null));
+        Assert.Throws<ArgumentNullException>((Action)(() => new DisposableStopWatchLogger(dumper, _actionName, null)));
     }
 
     [Test()]

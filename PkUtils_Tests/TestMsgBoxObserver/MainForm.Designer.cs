@@ -57,7 +57,7 @@
             this._buttonClear.Size = new System.Drawing.Size(75, 27);
             this._buttonClear.TabIndex = 2;
             this._buttonClear.Text = "Clear";
-            this._buttonClear.Click += new System.EventHandler(this.buttonClear_Click);
+            this._buttonClear.Click += new System.EventHandler(this.OnButtonClear_Click);
             // 
             // _buttonExit
             // 

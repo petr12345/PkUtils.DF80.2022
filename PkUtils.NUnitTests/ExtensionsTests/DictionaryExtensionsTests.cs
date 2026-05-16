@@ -105,7 +105,7 @@ public class DictionaryExtensionsTests
         IDictionary<int, int> dict = null!;
 
         // Act & Assert
-        Assert.Throws<ArgumentNullException>(() => dict.ValueOrDefault(5));
+        Assert.Throws<ArgumentNullException>((Action)(() => dict.ValueOrDefault(5)));
     }
 
     [Test]
@@ -128,7 +128,7 @@ public class DictionaryExtensionsTests
         IDictionary<int, int> dict = null!;
 
         // Act & Assert
-        Assert.Throws<ArgumentNullException>(() => dict.GetValueOrNew(5));
+        Assert.Throws<ArgumentNullException>((Action)(() => dict.GetValueOrNew(5)));
     }
 
     [Test]
@@ -151,7 +151,7 @@ public class DictionaryExtensionsTests
         IDictionary<int, int> dict = null!;
 
         // Act & Assert
-        Assert.Throws<ArgumentNullException>(() => dict.AddNew(1, 1));
+        Assert.Throws<ArgumentNullException>((Action)(() => dict.AddNew(1, 1)));
     }
 
     [Test]
@@ -176,8 +176,8 @@ public class DictionaryExtensionsTests
 
         // Act & Assert
         // throws because the same key is repeated several times
-        Assert.Throws<ArgumentException>(() =>
-            couples.SafeForEach(couple => AddNewTestHelper(dict, key: couple.n, value: couple.index)));
+        Assert.Throws<ArgumentException>((Action)(() =>
+            couples.SafeForEach(couple => AddNewTestHelper(dict, key: couple.n, value: couple.index))));
     }
 
     [Test]
@@ -187,7 +187,7 @@ public class DictionaryExtensionsTests
         IDictionary<int, string> dict_a = new Dictionary<int, string>();
         IDictionary<int, string> dict_b = null!;
 
-        Assert.Throws<ArgumentNullException>(() => dict_a.AddRange(dict_b));
+        Assert.Throws<ArgumentNullException>((Action)(() => dict_a.AddRange(dict_b)));
     }
 
     [Test]
@@ -234,8 +234,8 @@ public class DictionaryExtensionsTests
 
         // Assert
         // test removing
-        Assert.Throws<ArgumentException>(() =>
-            RemoveExistingTestHelper<int, int>(dict, 100));
+        Assert.Throws<ArgumentException>((Action)(() =>
+            RemoveExistingTestHelper<int, int>(dict, 100)));
     }
 
     /// <summary>
@@ -284,7 +284,7 @@ public class DictionaryExtensionsTests
         IDictionary<int, int> dict = null!;
 
         // Assert
-        Assert.Throws<ArgumentNullException>(() => dict.ToStringEx());
+        Assert.Throws<ArgumentNullException>(((Action)(() => dict.ToStringEx())));
     }
 
     [Test]
@@ -306,8 +306,8 @@ public class DictionaryExtensionsTests
         IDictionary<int, int> dict = null!;
 
         // Assert
-        Assert.Throws<ArgumentNullException>(() =>
-            dict.MemberwiseEqual(new Dictionary<int, int>()));
+        Assert.Throws<ArgumentNullException>((Action)(() =>
+            dict.MemberwiseEqual(new Dictionary<int, int>())));
     }
 
     [Test]
@@ -336,7 +336,7 @@ public class DictionaryExtensionsTests
         IDictionary<int, int> dict = null!;
 
         // Assert
-        Assert.Throws<ArgumentNullException>(() => dict.DictionaryHashCode());
+        Assert.Throws<ArgumentNullException>((Action)(() => dict.DictionaryHashCode()));
     }
 
     [Test]

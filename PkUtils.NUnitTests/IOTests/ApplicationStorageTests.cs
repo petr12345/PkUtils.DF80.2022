@@ -35,8 +35,8 @@ public sealed class ApplicationStorageTests
         string fileNameSuffix = null!;
 
         // Act
-        ArgumentNullException? ex = Assert.Throws<ArgumentNullException>(() =>
-            new ApplicationStorage<string>(ApplicationStorage<string>.DefaultStorageScope, true, fileNameSuffix));
+        ArgumentNullException? ex = Assert.Throws<ArgumentNullException>((Action)(() =>
+            new ApplicationStorage<string>(ApplicationStorage<string>.DefaultStorageScope, true, fileNameSuffix)));
 
         // Assert
         Assert.That(ex?.ParamName, Is.EqualTo("fileNameSuffix"));
@@ -51,8 +51,8 @@ public sealed class ApplicationStorageTests
         const string fileNameSuffix = "abc";
         Dictionary<string, string> data = null!;
 
-        Assert.Throws<ArgumentNullException>(() => new ApplicationStorage<string>(
-            ApplicationStorage<string>.DefaultStorageScope, data, fileNameSuffix));
+        Assert.Throws<ArgumentNullException>((Action)(() => new ApplicationStorage<string>(
+            ApplicationStorage<string>.DefaultStorageScope, data, fileNameSuffix)));
     }
 
     /// <summary>

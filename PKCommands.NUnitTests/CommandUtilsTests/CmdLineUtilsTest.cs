@@ -27,10 +27,8 @@ public class CmdLineUtilsTest
     public void FilterOutNewlines_Test_01()
     {
         // Act & Assert
-        Assert.Throws<ArgumentNullException>(delegate ()
-        {
-            CmdLineUtils.FilterOutNewlines(null);
-        });
+        Assert.Throws<ArgumentNullException>(
+            (Action)(() => CmdLineUtils.FilterOutNewlines(null)));
     }
 
     /// <summary> (Unit Test Method) filter out newlines test 02. </summary>
@@ -41,10 +39,10 @@ public class CmdLineUtilsTest
         IEnumerable<string> args = [string.Empty, "xx", null];
 
         // Act & Assert
-        Assert.Throws<ArgumentException>(delegate ()
+        Assert.Throws<ArgumentException>((Action)(() =>
         {
             CmdLineUtils.FilterOutNewlines(args);
-        });
+        }));
     }
 
     /// <summary> (Unit Test Method) filter out newlines test 03. </summary>
@@ -70,10 +68,7 @@ public class CmdLineUtilsTest
     public void JoinToCommandLine_Test_01()
     {
         // Act & Assert
-        Assert.Throws<ArgumentNullException>(delegate ()
-       {
-           CmdLineUtils.JoinToCommandLine(null);
-       });
+        Assert.Throws<ArgumentNullException>((Action)(() => CmdLineUtils.JoinToCommandLine(null)));
     }
 
     /// <summary> (Unit Test Method) join to command line test 02. </summary>
@@ -83,10 +78,10 @@ public class CmdLineUtilsTest
         // Arrange
         IEnumerable<string> args = [string.Empty, "yy", null, "22"];
 
-        Assert.Throws<ArgumentException>(delegate ()
+        Assert.Throws<ArgumentException>((Action)(() =>
         {
             CmdLineUtils.JoinToCommandLine(args);
-        });
+        }));
     }
 
     /// <summary> (Unit Test Method) join to command line test 03. </summary>
@@ -178,10 +173,8 @@ public class CmdLineUtilsTest
     [Test(Description = "Tests the CmdLineUtils.SplitFromCommandLine, with null input string.")]
     public void SplitFromCommandLine_Test_01()
     {
-        Assert.Throws<ArgumentNullException>(delegate ()
-        {
-            CmdLineUtils.SplitFromCommandLine(null);
-        });
+        Assert.Throws<ArgumentNullException>(
+            (Action)(() => CmdLineUtils.SplitFromCommandLine(null)));
     }
 
     /// <summary> (Unit Test Method) splits from command line test 02. </summary>
@@ -240,10 +233,8 @@ public class CmdLineUtilsTest
     [Test(Description = "Tests the CmdLineUtils.EncodeJoinedArgumentsToSingleArgValue, with input string null.")]
     public void EncodeJoinedArgumentsToSingleArgValue_Test_O1()
     {
-        Assert.Throws<ArgumentNullException>(delegate ()
-      {
-          CmdLineUtils.EncodeJoinedArgumentsToSingleArgValue(null);
-      });
+        Assert.Throws<ArgumentNullException>(
+            (Action)(() => CmdLineUtils.EncodeJoinedArgumentsToSingleArgValue(null)));
     }
 
     /// <summary> (Unit Test Method) encode joined arguments to single argument value test 02. </summary>
@@ -295,10 +286,8 @@ public class CmdLineUtilsTest
     [Test(Description = "Tests the CmdLineUtils.DecodeJoinedArgumentsFromSingleArgValue, with input string null.")]
     public void DecodeJoinedArgumentsFromSingleArgValue_Test_O1()
     {
-        Assert.Throws<ArgumentNullException>(delegate ()
-       {
-           CmdLineUtils.DecodeJoinedArgumentsFromSingleArgValue(null);
-       });
+        Assert.Throws<ArgumentNullException>(
+            (Action)(() => CmdLineUtils.DecodeJoinedArgumentsFromSingleArgValue(null)));
     }
 
     /// <summary>

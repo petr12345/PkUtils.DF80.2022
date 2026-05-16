@@ -437,8 +437,8 @@ public class FilePathHelperTest
     [Test()]
     public void FilePathHelper_CheckIsValidFolderStringTest_03()
     {
-        Assert.Throws<ArgumentNullException>(() =>
-            FilePathHelper.CheckIsValidFolderString(null));
+        Assert.Throws<ArgumentNullException>((Action)(() =>
+            FilePathHelper.CheckIsValidFolderString(null)));
     }
 
     /// <summary>
@@ -447,8 +447,8 @@ public class FilePathHelperTest
     [Test()]
     public void FilePathHelper_CheckIsValidFolderStringTest_04()
     {
-        Assert.Throws<ArgumentException>(() =>
-            FilePathHelper.CheckIsValidFolderString(string.Empty));
+        Assert.Throws<ArgumentException>((Action)(() =>
+            FilePathHelper.CheckIsValidFolderString(string.Empty)));
     }
 
 
@@ -459,8 +459,8 @@ public class FilePathHelperTest
     public void FilePathHelper_CheckIsValidFolderStringTest_05()
     {
         string strArg = string.Join(" ", Path.GetInvalidPathChars());
-        Assert.Throws<ArgumentException>(() =>
-            FilePathHelper.CheckIsValidFolderString(strArg));
+        Assert.Throws<ArgumentException>((Action)(() =>
+            FilePathHelper.CheckIsValidFolderString(strArg)));
     }
 
     /// <summary>
@@ -754,8 +754,8 @@ public class FilePathHelperTest
     [Test()]
     public void FilePathHelper_GetRelativePath_03()
     {
-        Assert.Throws<ArgumentException>(() =>
-            FilePathHelper.GetRelativePath(string.Empty, @"C:\Tmp3\"));
+        Assert.Throws<ArgumentException>((Action)(() =>
+            FilePathHelper.GetRelativePath(string.Empty, @"C:\Tmp3\")));
     }
 
     /// <summary>
@@ -764,8 +764,8 @@ public class FilePathHelperTest
     [Test()]
     public void FilePathHelper_GetRelativePath_04()
     {
-        Assert.Throws<ArgumentNullException>(() =>
-            FilePathHelper.GetRelativePath(null, @"C:\Tmp3\"));
+        Assert.Throws<ArgumentNullException>((Action)(() =>
+            FilePathHelper.GetRelativePath(null, @"C:\Tmp3\")));
     }
     #endregion // GetRelativePathTest
 
@@ -797,7 +797,7 @@ public class FilePathHelperTest
     [Test()]
     public void FilePathHelper_CombineNoChecks_02()
     {
-        Assert.Throws<ArgumentNullException>(() => FilePathHelper.CombineNoChecks(null, @"C:\Tmp3\"));
+        Assert.Throws<ArgumentNullException>((Action)(() => FilePathHelper.CombineNoChecks(null, @"C:\Tmp3\")));
     }
 
     /// <summary>
@@ -806,10 +806,10 @@ public class FilePathHelperTest
     [Test()]
     public void FilePathHelper_CombineNoChecks_03()
     {
-        Assert.Throws<ArgumentNullException>(() =>
+        Assert.Throws<ArgumentNullException>((Action)(() =>
         {
             string result = FilePathHelper.CombineNoChecks(@"C:\Tmp3\", null);
-        });
+        }));
     }
 
     /// <summary>
@@ -853,8 +853,8 @@ public class FilePathHelperTest
     {
         // the case of path with invalid character or characters
         string s = "\x1A_XYZ";
-        Assert.Throws<ArgumentException>(() =>
-            FilePathHelper.LongPathTolerantGetDirectoryName(s));
+        Assert.Throws<ArgumentException>((Action)(() =>
+            FilePathHelper.LongPathTolerantGetDirectoryName(s)));
     }
 
     /// <summary>
@@ -864,8 +864,8 @@ public class FilePathHelperTest
     public void FilePathHelper_LongPathTolerantGetDirectoryNameTest_02()
     {
         // the case of path which is empty
-        Assert.Throws<ArgumentException>(() =>
-            FilePathHelper.LongPathTolerantGetDirectoryName(string.Empty));
+        Assert.Throws<ArgumentException>((Action)(() =>
+            FilePathHelper.LongPathTolerantGetDirectoryName(string.Empty)));
     }
 
     /// <summary>
@@ -877,7 +877,7 @@ public class FilePathHelperTest
         // the case of path which contains only white spaces
         string s = "   ";
         Assert.Throws<ArgumentException>(
-            () => FilePathHelper.LongPathTolerantGetDirectoryName(s));
+            (Action)(() => FilePathHelper.LongPathTolerantGetDirectoryName(s)));
     }
 
     /// <summary>

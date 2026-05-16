@@ -17,7 +17,7 @@ public class RepositoryTests
     [Test]
     public void Repository_Constructor_01()
     {
-        Assert.Throws<ArgumentNullException>(() => new Repository<string>(null!));
+        Assert.Throws<ArgumentNullException>((Action)(() => new Repository<string>(null!)));
     }
 
     [Test]

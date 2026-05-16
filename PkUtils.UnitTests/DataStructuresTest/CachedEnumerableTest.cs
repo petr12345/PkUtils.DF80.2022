@@ -52,7 +52,7 @@ public class CachedEnumerableTest
         string[] arrInput = Enumerable.Range(0, 3).Select(i => i.ToString()).ToArray();
         CachedEnumerable<string> enumerab = new(arrInput);
 
-        Assert.IsTrue(enumerab.Any());
+        Assert.IsNotEmpty(enumerab);
         Assert.AreEqual(ParseStatus.Parsing, enumerab.Status);
 
         enumerab.Dispose();
@@ -70,7 +70,7 @@ public class CachedEnumerableTest
         CachedEnumerable<string> enumerab = new(arrInput);
 
         Assert.AreEqual(ParseStatus.ParseNotInitialized, enumerab.Status);
-        Assert.IsTrue(enumerab.Any());
+        Assert.IsNotEmpty(enumerab);
         Assert.AreEqual(ParseStatus.Parsing, enumerab.Status);
     }
 
@@ -81,7 +81,7 @@ public class CachedEnumerableTest
         CachedEnumerable<string> enumerab = new(Enumerable.Empty<string>());
 
         Assert.AreEqual(ParseStatus.ParseNotInitialized, enumerab.Status);
-        Assert.IsFalse(enumerab.Any());
+        Assert.IsEmpty(enumerab);
         Assert.AreEqual(ParseStatus.ParsedOk, enumerab.Status);
     }
 
@@ -96,15 +96,15 @@ public class CachedEnumerableTest
         IEnumerable<int> output2 = enumerab.Take(arrInput.Length);
         IEnumerable<int> output3 = enumerab.Take(arrInput.Length + 2);
 
-        Assert.AreEqual(arrInput.Length - 2, output1.Count());
+        Assert.HasCount(arrInput.Length - 2, output1);
         Assert.AreEqual(arrInput.Length - 2, enumerab.CachedItemsCount);
         Assert.AreEqual(ParseStatus.Parsing, enumerab.Status);
 
-        Assert.AreEqual(arrInput.Length, output2.Count());
+        Assert.HasCount(arrInput.Length, output2);
         Assert.AreEqual(arrInput.Length, enumerab.CachedItemsCount);
         Assert.AreEqual(ParseStatus.Parsing, enumerab.Status);
 
-        Assert.AreEqual(arrInput.Length, output3.Count());
+        Assert.HasCount(arrInput.Length, output3);
         Assert.AreEqual(arrInput.Length, enumerab.CachedItemsCount);
         Assert.AreEqual(ParseStatus.ParsedOk, enumerab.Status);
 
@@ -477,6 +477,17 @@ public class CachedEnumerableTest
 
     /// <summary>
     /// A multiple-thread test for CachedEnumerable Disposing, which should succeed.
+    /// Updated to avoid using asserts inside a catch block by using Assert.ThrowsException
+    /// and then validating the captured exception's inner exceptions.
+    /// 
+    /// Pseudocode / Plan:
+    /// 1. Prepare parallel options and the CachedEnumerable instance.
+    /// 2. Execute the Parallel.For inside an Assert.ThrowsException&lt;AggregateException&gt; call:
+    ///    - This ensures the test fails if no AggregateException was thrown.
+    /// 3. Capture the returned AggregateException from Assert.ThrowsException.
+    /// 4. Iterate through ex.InnerExceptions and assert each is ObjectDisposedException.
+    ///    - These asserts run unconditionally after Assert.ThrowsException,
+    ///      so they are not hidden inside a catch block.
     /// </summary>
     [TestMethod()]
     public void CachedEnumerable_Parallel_Disposing_02()
@@ -485,7 +496,7 @@ public class CachedEnumerableTest
         var options = new ParallelOptions { MaxDegreeOfParallelism = nMaxThreads };
         CachedEnumerable<int> enumerab = new(Enumerable.Range(0, 10));
 
-        try
+        var caught = Assert.Throws<AggregateException>(() =>
         {
             Parallel.For(0, nMaxThreads, options, i =>
             {
@@ -503,13 +514,11 @@ public class CachedEnumerableTest
                     }
                 }
             });
-        }
-        catch (AggregateException caught)
+        });
+
+        foreach (var ex in caught.InnerExceptions)
         {
-            foreach (var ex in caught.InnerExceptions)
-            {
-                Assert.AreEqual(typeof(ObjectDisposedException), ex.GetType());
-            }
+            Assert.AreEqual(typeof(ObjectDisposedException), ex.GetType());
         }
     }
 

@@ -16,15 +16,15 @@ public class FuncEqualityComparerTest
     [Test()]
     public void FuncEqualityComparer_Constructor_01()
     {
-        Assert.Throws<ArgumentNullException>(() => new FunctionalEqualityComparer<int>(null));
+        Assert.Throws<ArgumentNullException>((Action)(() => new FunctionalEqualityComparer<int>(null)));
     }
 
     /// <summary>   A test for FunctionalEqualityComparer constructor. </summary>
     [Test()]
     public void FuncEqualityComparer_Constructor_02()
     {
-        Assert.Throws<ArgumentNullException>(() =>
-            new FunctionalEqualityComparer<int>((x, y) => x == y, null));
+        Assert.Throws<ArgumentNullException>((Action)(() =>
+            new FunctionalEqualityComparer<int>((x, y) => x == y, null)));
     }
 
     /// <summary>   A test for FunctionalEqualityComparer constructor. </summary>
@@ -79,7 +79,7 @@ public class FuncEqualityComparerTest
         Func<string, string, bool> f = null!;
         Func<string, int> h = null!;
         Assert.Throws<ArgumentNullException>(
-            () => FunctionalEqualityComparer.CreateNullSafeComparer<string>(f, h));
+            (Action)(() => FunctionalEqualityComparer.CreateNullSafeComparer<string>(f, h)));
     }
 
     /// <summary>

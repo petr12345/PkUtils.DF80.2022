@@ -166,7 +166,7 @@ public class ObjectExtensionsTest
     public void CheckNotNullTest_NullObject_ThrowsException()
     {
         Form f = null!;
-        Assert.Throws<InvalidOperationException>(() => f.CheckNotNull(nameof(f)));
+        Assert.Throws<InvalidOperationException>((Action)(() => f.CheckNotNull(nameof(f))));
     }
 
     [Test(Description = "Validates CheckNotNull does not throw for a valid object.")]

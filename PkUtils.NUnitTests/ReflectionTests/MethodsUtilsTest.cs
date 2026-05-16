@@ -170,8 +170,8 @@ public class MethodsUtilsTest
         // -- Demonstrates that without using additional type arguments, 
         // calling overloaded method will cause AmbiguousMatchException
 
-        Assert.Throws<AmbiguousMatchException>(() =>
-            RunStaticMethodTestHelper<int>(typeof(C), "StatOverload", new object[] { 15 }, 15));
+        Assert.Throws<AmbiguousMatchException>((Action)(() =>
+            RunStaticMethodTestHelper<int>(typeof(C), "StatOverload", new object[] { 15 }, 15)));
     }
 
     /// <summary>
@@ -428,8 +428,8 @@ public class MethodsUtilsTest
     {
         ZZ zz = new ZZ(100);
 
-        Assert.Throws<AmbiguousMatchException>(() =>
-            RunInstanceMethodTestHelper<Z, int>(zz, "Suma", null, new object[] { 25, 15 }, 40));
+        Assert.Throws<AmbiguousMatchException>((Action)(() =>
+            RunInstanceMethodTestHelper<Z, int>(zz, "Suma", null, new object[] { 25, 15 }, 40)));
     }
 
     protected delegate string DumpDelegate(decimal x, decimal y);
@@ -518,8 +518,8 @@ public class MethodsUtilsTest
         BindingFlags flags = BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance;
         IEnumerable<MethodInfo> actualMethods;
 
-        Assert.Throws<ArgumentNullException>(() =>
-            actualMethods = MethodsUtils.GetAllMethods(null!, "DumpIntegers", flags));
+        Assert.Throws<ArgumentNullException>((Action)(() =>
+            actualMethods = MethodsUtils.GetAllMethods(null!, "DumpIntegers", flags)));
     }
 
     /// <summary>

@@ -16,7 +16,7 @@ public class FunctionalComparerTest
     [Test()]
     public void FunctionalComparer_Constructor_01()
     {
-        Assert.Throws<ArgumentNullException>(() => new FunctionalComparer<int>(null));
+        Assert.Throws<ArgumentNullException>((Action)(() => new FunctionalComparer<int>(null)));
     }
 
     /// <summary>
@@ -42,7 +42,7 @@ public class FunctionalComparerTest
     public void FunctionalComparer_CreateNullSafeComparerTest_01()
     {
         Comparison<string> f = null!;
-        Assert.Throws<ArgumentNullException>(() => FunctionalComparer.CreateNullSafeComparer(f));
+        Assert.Throws<ArgumentNullException>((Action)(() => FunctionalComparer.CreateNullSafeComparer(f)));
     }
 
     /// <summary>

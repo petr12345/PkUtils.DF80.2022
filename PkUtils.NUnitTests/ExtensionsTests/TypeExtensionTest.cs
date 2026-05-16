@@ -28,7 +28,7 @@ public class TypeExtensionTest
     public void GetGenericTypeName_Test_01()
     {
         Type t = null!;
-        Assert.Throws<ArgumentNullException>(() => t.GetGenericTypeName());
+        Assert.Throws<ArgumentNullException>((Action)(() => t.GetGenericTypeName()));
     }
 
     [Test()]

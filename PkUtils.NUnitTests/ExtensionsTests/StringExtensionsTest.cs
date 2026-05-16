@@ -21,7 +21,7 @@ public class StringExtensionsTest
     {
         string src = null!;
 
-        Assert.Throws<ArgumentNullException>(() => src.Left(2));
+        Assert.Throws<ArgumentNullException>((Action)(() => src.Left(2)));
     }
 
     /// <summary> A test for Left that should throw ArgumentOutOfRangeException. </summary>
@@ -29,7 +29,7 @@ public class StringExtensionsTest
     public void StringExtension_Left_02()
     {
         string src = "abc";
-        Assert.Throws<ArgumentOutOfRangeException>(() => src.Left(-2));
+        Assert.Throws<ArgumentOutOfRangeException>((Action)(() => src.Left(-2)));
     }
 
     /// <summary> A test for Left that should throw ArgumentOutOfRangeException. </summary>
@@ -37,7 +37,7 @@ public class StringExtensionsTest
     public void StringExtension_Left_03()
     {
         const string src = "abcd";
-        Assert.Throws<ArgumentOutOfRangeException>(() => src.Left(100));
+        Assert.Throws<ArgumentOutOfRangeException>((Action)(() => src.Left(100)));
     }
 
     /// <summary> A test for Left that should succeed. </summary>
@@ -64,7 +64,7 @@ public class StringExtensionsTest
     public void StringExtension_LeftMax_01()
     {
         string src = null!;
-        Assert.Throws<ArgumentNullException>(() => src.LeftMax(2));
+        Assert.Throws<ArgumentNullException>((Action)(() => src.LeftMax(2)));
     }
 
     /// <summary> A test for LeftMax that should throw ArgumentOutOfRangeException. </summary>
@@ -73,7 +73,7 @@ public class StringExtensionsTest
     {
         string src = "abc";
 
-        Assert.Throws<ArgumentOutOfRangeException>(() => src.LeftMax(-2));
+        Assert.Throws<ArgumentOutOfRangeException>((Action)(() => src.LeftMax(-2)));
     }
 
     /// <summary> A test for LeftMax that should succeed. </summary>
@@ -105,7 +105,7 @@ public class StringExtensionsTest
     {
         string src = null!;
 
-        Assert.Throws<ArgumentNullException>(() => src.Right(2));
+        Assert.Throws<ArgumentNullException>((Action)(() => src.Right(2)));
     }
 
     /// <summary> A test for Right that should throw ArgumentOutOfRangeException. </summary>
@@ -113,7 +113,7 @@ public class StringExtensionsTest
     public void StringExtension_Right_02()
     {
         string src = "abc";
-        Assert.Throws<ArgumentOutOfRangeException>(() => src.Right(-2));
+        Assert.Throws<ArgumentOutOfRangeException>((Action)(() => src.Right(-2)));
     }
 
     /// <summary> A test for Right that should throw ArgumentOutOfRangeException. </summary>
@@ -121,7 +121,7 @@ public class StringExtensionsTest
     public void StringExtension_Right_03()
     {
         const string src = "abcd";
-        Assert.Throws<ArgumentOutOfRangeException>(() => src.Right(100));
+        Assert.Throws<ArgumentOutOfRangeException>((Action)(() => src.Right(100)));
     }
 
     /// <summary> A test for Right that should succeed. </summary>
@@ -148,7 +148,7 @@ public class StringExtensionsTest
     public void StringExtension_RightMax_01()
     {
         string src = null!;
-        Assert.Throws<ArgumentNullException>(() => src.RightMax(2));
+        Assert.Throws<ArgumentNullException>((Action)(() => src.RightMax(2)));
     }
 
     /// <summary> A test for RightMax that should throw ArgumentOutOfRangeException. </summary>
@@ -156,7 +156,7 @@ public class StringExtensionsTest
     public void StringExtension_RightMax_02()
     {
         string src = "abc";
-        Assert.Throws<ArgumentOutOfRangeException>(() => src.RightMax(-2));
+        Assert.Throws<ArgumentOutOfRangeException>((Action)(() => src.RightMax(-2)));
     }
 
     /// <summary> A test for RightMax that should succeed. </summary>

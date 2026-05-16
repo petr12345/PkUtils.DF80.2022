@@ -18,7 +18,7 @@ public class XObjectExtensionsTests
         XObject obj = null;
 
         // Act & Assert
-        Assert.That(() => XObjectExtensions.GetPath(obj), Throws.ArgumentNullException);
+        Assert.Throws<ArgumentNullException>((Action)(() => XObjectExtensions.GetPath(obj)));
     }
     #endregion // GetPath_ArgumentNullException Tests
 
@@ -137,7 +137,7 @@ public class XObjectExtensionsTests
         XObject obj = null;
 
         // Act & Assert
-        Assert.That(() => XObjectExtensions.GetPathAndLineNumber(obj, out _), Throws.ArgumentNullException);
+        Assert.Throws<ArgumentNullException>((Action)(() => XObjectExtensions.GetPathAndLineNumber(obj, out _)));
     }
     #endregion // GetPathAndLineNumber_ArgumentNullException Tests
 

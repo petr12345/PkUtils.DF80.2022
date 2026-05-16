@@ -143,7 +143,10 @@ public class SingletonTests
         Type typeWithPublicConstructor = typeof(TestClassWithPublicConstructor);
 
         // Act & Assert
-        Assert.That(() => Singleton<TestClassWithPublicConstructor>.Instance, Throws.InvalidOperationException);
+        Assert.Throws<InvalidOperationException>((Action)(() =>
+        {
+            _ = Singleton<TestClassWithPublicConstructor>.Instance;
+        }));
     }
     #endregion // Tests
 }

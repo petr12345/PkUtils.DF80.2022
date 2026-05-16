@@ -84,7 +84,7 @@ internal class ComplexErrorResultTests
         IComplexErrorResult<string> success = ComplexErrorResult<string>.CreateSuccessful();
 
         // Act & Assert
-        Assert.That(() => ComplexErrorResult<string>.CreateFailed(success), Throws.ArgumentException);
+        Assert.Throws<ArgumentException>((Action)(() => ComplexErrorResult<string>.CreateFailed(success)));
     }
 
     [Test]
@@ -209,7 +209,7 @@ internal class ComplexErrorResultGenericTests
         IComplexErrorResult<string> success = ComplexErrorResult<string>.CreateSuccessful();
 
         // Act & Assert
-        Assert.That(() => new ComplexErrorResult<int, string>(success), Throws.ArgumentException);
+        Assert.Throws<ArgumentException>((Action)(() => new ComplexErrorResult<int, string>(success)));
     }
 
     [Test]
