@@ -32,7 +32,7 @@ public static class TimeSpanExtensions
         ];
         string[] partsFinal = partsRaw.Where(s => !string.IsNullOrEmpty(s)).ToArray();
 
-        string result = (partsFinal.Length > 0) ? partsFinal.Join(",") : "0 seconds";
+        string result = (partsFinal.Length > 0) ? partsFinal.Join(", ") : "0 seconds";
         return result;
     }
 }
