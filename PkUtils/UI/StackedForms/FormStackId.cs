@@ -26,7 +26,6 @@ namespace PK.PkUtils.UI.StackedForms;
 ///
 /// <typeparam name="TDATA"> The class or structure keeping the additional data, that are used in
 ///   FormStackId comparisons. </typeparam>
-[CLSCompliant(true)]
 public class FormStackId<TDATA> : FormStack.StackId, IEquatable<FormStackId<TDATA>>
 {
     #region Fields

@@ -40,7 +40,6 @@ namespace PK.PkUtils.Cloning.Binary;
 /// MSDN forum on Inheriting from generic base class, with self as type parameter</seealso>
 /// <seealso href="http://blogs.msdn.com/b/oldnewthing/archive/2009/08/14/9869049.aspx">
 /// MSDN blog on Why can't I declare a type that derives from a generic type parameter?</seealso>
-[CLSCompliant(true)]
 [Serializable]
 public class MakeCloneableBinary<T> : IDeepCloneable<T>
 {

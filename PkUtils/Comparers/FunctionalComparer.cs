@@ -61,7 +61,6 @@ namespace PK.PkUtils.Comparers;
 /// <seealso href="http://msdn.microsoft.com/en-us/magazine/ff796223.aspx">
 /// New C# Features in the .NET Framework 4
 /// </seealso>
-[CLSCompliant(true)]
 public class FunctionalComparer<T> : IComparer<T>
 {
     #region Fields

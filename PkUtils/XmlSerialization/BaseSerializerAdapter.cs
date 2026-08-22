@@ -52,7 +52,6 @@ namespace PK.PkUtils.XmlSerialization;
 ///
 /// <seealso href="http://en.wikipedia.org/wiki/Adapter_pattern"> Wikipedia about Adapter pattern</seealso>
 /// <seealso href="http://www.comptechdoc.org/independent/web/xml/guide/xmlstructure.html"> The XML Document Structure. </seealso>
-[CLSCompliant(true)]
 public abstract class BaseSerializerAdapter<T>
 {
     #region Fields

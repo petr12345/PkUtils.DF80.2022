@@ -23,12 +23,6 @@ using System.Runtime.Versioning;
 // The following GUID is for the ID of the typelib if this project is exposed to COM
 [assembly: Guid("61a64f37-eb20-4da4-b5c8-d396baa2e081")]
 
-// The Common Language Specification (CLS) defines naming restrictions, data types, 
-// and rules to which assemblies must conform if they are to be used across programming languages. 
-// Good design dictates that all assemblies explicitly indicate CLS compliance with CLSCompliantAttribute.
-[assembly: System.CLSCompliant(true)]
-
-
 [assembly: AssemblyVersion("1.0.0.0")]
 [assembly: AssemblyFileVersion("1.0.0.0")]
 

@@ -12,7 +12,6 @@ namespace PK.PkUtils.UI.Utils;
 /// <summary>
 /// A helper class containing several extension methods of TextBoxBase.
 /// </summary>
-[CLSCompliant(true)]
 public static class TextBoxExtensions
 {
     /// <summary>

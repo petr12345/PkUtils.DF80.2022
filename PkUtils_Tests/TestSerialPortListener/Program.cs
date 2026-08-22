@@ -11,7 +11,6 @@ using PK.TestSerialPortListener.Properties;
 namespace PK.TestSerialPortListener
 {
     /// <summary> A program. </summary>
-    [CLSCompliant(false)]
     public class Program : Singleton<Program>, IDisposable
     {
         #region Fields

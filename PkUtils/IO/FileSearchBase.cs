@@ -14,7 +14,6 @@ using ParseStage = PK.PkUtils.IO.FileSearchBase.ParseStageEventArgs.ParseStage;
 namespace PK.PkUtils.IO;
 
 /// <summary> Defines basic interface of class with file-search capabilities. </summary>
-[CLSCompliant(true)]
 public interface IFileSearch
 {
     /// <summary>
@@ -43,7 +42,6 @@ public interface IFileSearch
 }
 
 /// <summary> A file-search class supporting events. </summary>
-[CLSCompliant(true)]
 public abstract class FileSearchBase : NotifyPropertyChanged, IFileSearch
 {
     #region Public Interface

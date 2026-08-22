@@ -7,7 +7,6 @@ using System.Threading;
 namespace PK.PkUtils.Consoles;
 
 /// <summary> A part of program code related to text input and output. </summary>
-[CLSCompliant(true)]
 public class ConsoleDisplay : IConsoleDisplay
 {
     #region Fields

@@ -49,7 +49,6 @@ namespace PK.PkUtils.DataStructures;
 /// .NET Mutterings about Singleton</seealso>
 /// <seealso href="http://social.msdn.microsoft.com/Forums/en-US/netfxcompact/thread/20289c10-4f95-42af-b993-f6a01da60297/">
 /// MSDN forum on How To Invoke A Non-Public Constructor On Compact Framework?</seealso>
-[CLSCompliant(true)]
 public class Singleton<T> where T : class
 {
     #region Fields

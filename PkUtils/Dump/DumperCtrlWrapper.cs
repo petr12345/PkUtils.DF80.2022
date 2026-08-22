@@ -20,7 +20,6 @@ namespace PK.PkUtils.Dump;
 /// a recent history. The queue maximum length is provided as an input argument of constructor. </summary>
 ///
 /// <typeparam name="CTRL"> Type of the WinForms control. </typeparam>
-[CLSCompliant(true)]
 public class DumperCtrlWrapper<CTRL> : IDumperEx, IDisposableEx where CTRL : Control
 {
     #region Typedefs

@@ -25,7 +25,6 @@ namespace PK.PkUtils.Reflection;
 /// <seealso cref="FieldsUtils"/>
 /// <seealso cref="MethodsUtils"/>
 /// <seealso cref="PropertiesUtils"/>
-[CLSCompliant(true)]
 public static class ReflectionUtils
 {
     #region Public Methods

@@ -22,7 +22,6 @@ namespace PK.PkUtils.UI.TipHandlers;
 /// TipHandler is base class of "tooltip-supporter engine." 
 /// See derived classes like ListBoxTipHandler.
 /// </summary>
-[CLSCompliant(false)]
 public abstract class TipHandler : WindowMessageHook
 {
     #region Typedefs

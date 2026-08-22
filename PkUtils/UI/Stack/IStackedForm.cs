@@ -42,7 +42,6 @@ namespace PK.PkUtils.UI.Stack;
 /// </code>
 /// </remarks>
 /// </summary>
-[CLSCompliant(true)]
 public interface IStackId : IEquatable<IStackId>
 {
     /// <summary> Gets the type of the Form. </summary>
@@ -55,7 +54,6 @@ public interface IStackId : IEquatable<IStackId>
 /// The event arguments for event that is raised when something interesting
 /// is happening with the Form ( item ) in the FormStack.
 /// </summary>
-[CLSCompliant(true)]
 public class EventFormStackItemActionArgs : EventArgs
 {
     /// <summary> Gets or sets the Form this event relates to. </summary>
@@ -76,7 +74,6 @@ public class EventFormStackItemActionArgs : EventArgs
 /// <summary>
 /// The event arguments for event that is raised when the FormStack item is closed.
 /// </summary>
-[CLSCompliant(true)]
 public class EventFormStackItemClosedArgs : EventFormStackItemActionArgs
 {
     /// <summary> The constructor. </summary>
@@ -113,7 +110,6 @@ public class EventFormStackItemClosedArgs : EventFormStackItemActionArgs
 /// The functionality assumed as mandatory in any stacked Form class.
 /// For more details, see the class <see cref="FormStack"/>.
 /// </summary>
-[CLSCompliant(true)]
 public interface IStackedForm
 {
     /// <summary>

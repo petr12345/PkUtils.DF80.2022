@@ -20,7 +20,6 @@ using ILogger = log4net.ILog;
 namespace PK.Commands.CommandUtils;
 
 /// <summary>   A helper class, performing various operations on command. </summary>
-[CLSCompliant(true)]
 public static class CommandHelper
 {
     #region Fields

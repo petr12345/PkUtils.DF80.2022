@@ -31,7 +31,6 @@ namespace PK.SubstEditLib.Subst;
 /// <summary>
 /// Selection change event arguments containing selection information.
 /// </summary>
-[CLSCompliant(true)]
 public class SelChangedEventArgs : EventArgs
 {
     /// <summary>
@@ -61,7 +60,6 @@ public class SelChangedEventArgs : EventArgs
 /// The hook implementation for a text control (TextBoxBase / RichTextBox etc.) that manages
 /// substitution-aware editing, undo/redo and clipboard operations.
 /// </summary>
-[CLSCompliant(true)]
 public class SubstEditHook<TFIELDID> : WindowMessageHook, IModified, IUndoable, IClipboardable
 {
     #region Typedefs

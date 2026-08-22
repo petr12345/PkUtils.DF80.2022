@@ -15,7 +15,6 @@ using PK.PkUtils.WinApi;
 namespace PK.PkUtils.UI.TipHandlers;
 
 /// <summary> Supports tooltips for listbox. </summary>
-[CLSCompliant(false)]
 public class ListBoxTipHandler : TipHandler
 {
     #region Constructor(s)

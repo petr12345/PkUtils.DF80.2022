@@ -74,7 +74,6 @@ namespace PK.PkUtils.Utils;
 /// <seealso href="http://www.microsoft.com/msj/1099/c/c1099.aspx"> MSJ October 1999  C++ Q&amp;A</seealso>
 /// <seealso href="http://pauldilascia.com/PixieLib.asp.html"> PixieLib -  
 /// C++ Class Library for MFC — Copyright 2005 Paul DiLascia</seealso>
-[CLSCompliant(true)]
 public class CommandLineInfoEx : IDeepCloneable<CommandLineInfoEx>
 {
     #region Fields

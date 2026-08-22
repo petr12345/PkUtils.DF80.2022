@@ -64,7 +64,6 @@ namespace PK.PkUtils.UI.Stack;
 /// => 7. calls FormStack.Pop                   <br/>
 /// <br/></para>
 /// </remarks>
-[CLSCompliant(true)]
 public class StackedFormWrapper<TForm> : IStackedForm, IDisposable where TForm : Form
 {
     #region Fields
@@ -365,7 +364,6 @@ public class StackedFormWrapper<TForm> : IStackedForm, IDisposable where TForm :
 /// which must just return immediately.
 /// </summary>
 /// <typeparam name="TForm">The type of the Form which you want to 'wrap' in FormStack</typeparam>
-[CLSCompliant(true)]
 public class MainStackedFormWrapper<TForm> : StackedFormWrapper<TForm> where TForm : Form
 {
     #region Constructor(s)

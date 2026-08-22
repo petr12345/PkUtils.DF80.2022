@@ -31,7 +31,6 @@ namespace PK.PkUtils.SystemEx;
 /// </summary>
 /// <seealso href="http://msdn.microsoft.com/en-us/library/windows/desktop/ms644959(v=vs.85).aspx">
 /// Windows Hooks Overview </seealso>
-[CLSCompliant(false)]
 public class WindowsSystemHookMouse : WindowsSystemHookBase
 {
     #region Constructor(s)
@@ -114,7 +113,6 @@ public class WindowsSystemHookMouse : WindowsSystemHookBase
 /// </summary>
 /// <seealso href="http://msdn.microsoft.com/en-us/library/windows/desktop/ms644959(v=vs.85).aspx">
 /// Windows Hooks Overview </seealso>
-[CLSCompliant(false)]
 public class WindowsSystemHookKeyboard : WindowsSystemHookBase
 {
     #region Constructor(s)
@@ -202,7 +200,6 @@ public class WindowsSystemHookKeyboard : WindowsSystemHookBase
 /// </summary>
 /// <seealso href="http://msdn.microsoft.com/en-us/library/windows/desktop/ms644959(v=vs.85).aspx">
 /// Windows Hooks Overview </seealso>
-[CLSCompliant(false)]
 public class WindowsSystemHookMouseLL : WindowsSystemHookBase
 {
     #region Constructor(s)
@@ -298,7 +295,6 @@ public class WindowsSystemHookMouseLL : WindowsSystemHookBase
 /// </summary>
 /// <seealso href="http://msdn.microsoft.com/en-us/library/windows/desktop/ms644959(v=vs.85).aspx">
 /// Windows Hooks Overview </seealso>
-[CLSCompliant(false)]
 public class WindowsSystemHookKbLL : WindowsSystemHookBase
 {
     #region Constructor(s)
@@ -397,7 +393,6 @@ public class WindowsSystemHookKbLL : WindowsSystemHookBase
 /// </summary>
 /// <seealso href="http://msdn.microsoft.com/en-us/library/windows/desktop/ms644959(v=vs.85).aspx">
 /// Windows Hooks Overview </seealso>
-[CLSCompliant(false)]
 public class WindowsSystemHookCallWndProcRet : WindowsSystemHookBase
 {
     #region Constructor(s)

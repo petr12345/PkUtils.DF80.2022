@@ -20,7 +20,6 @@ namespace PK.PkUtils.Comparers;
 /// <typeparam name="TKey"> The type of keys to which the compared objects are eventually converted 
 ///                         for comparison purpose. </typeparam>
 /// <seealso cref="FunctionalEqualityComparer{T}"/>
-[CLSCompliant(true)]
 public class KeyComparer<T, TKey> : IComparer<T>
 {
     #region Fields

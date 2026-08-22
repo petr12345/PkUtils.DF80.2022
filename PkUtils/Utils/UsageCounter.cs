@@ -1,6 +1,5 @@
 // Ignore Spelling: Utils
 //
-using System;
 using System.Diagnostics;
 using System.Threading;
 using PK.PkUtils.Interfaces;
@@ -17,7 +16,6 @@ namespace PK.PkUtils.Utils;
 /// any subsequent usages on this thread or any other thread still may succeed as well.
 /// The using code should check <see cref="IsUsed"/> property in any case. 
 /// </remarks>
-[CLSCompliant(true)]
 public class UsageCounter : IUsageCounter
 {
     #region Fields

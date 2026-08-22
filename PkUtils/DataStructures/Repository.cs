@@ -11,7 +11,6 @@ namespace PK.PkUtils.DataStructures;
 /// <summary> Possible generic implementation of IRepository interface. </summary>
 ///
 /// <typeparam name="T"> The type of the class that is held by or attached to this Repository instance. </typeparam>
-[CLSCompliant(true)]
 public class Repository<T> : IRepository<T>, IEquatable<Repository<T>>
 {
     #region Fields

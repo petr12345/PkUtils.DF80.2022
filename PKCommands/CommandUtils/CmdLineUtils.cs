@@ -13,7 +13,6 @@ using static System.FormattableString;
 namespace PK.Commands.CommandUtils;
 
 /// <summary> Few command-line-related utilities. </summary>
-[CLSCompliant(true)]
 public static class CmdLineUtils
 {
     #region Fields

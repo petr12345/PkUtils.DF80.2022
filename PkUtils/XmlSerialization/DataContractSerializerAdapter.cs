@@ -31,7 +31,6 @@ namespace PK.PkUtils.XmlSerialization
     ///
     /// <seealso href="http://www.comptechdoc.org/independent/web/xml/guide/xmlstructure.html">
     /// The XML Document Structure</seealso>
-    [CLSCompliant(true)]
     public class DataContractSerializerAdapter<T> : BaseSerializerAdapter<T>
     {
         #region Fields

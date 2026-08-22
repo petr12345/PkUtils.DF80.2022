@@ -18,7 +18,6 @@ namespace PK.SubstEditLib.Subst;
 /// <summary>
 /// Represents a physical coordinate of a field, including the interior text of fields.
 /// </summary>
-[CLSCompliant(true)]
 public class PhysInfo<TFIELDID> : IDeepCloneable<PhysInfo<TFIELDID>>
 {
     #region Fields
@@ -211,7 +210,6 @@ public class PhysInfo<TFIELDID> : IDeepCloneable<PhysInfo<TFIELDID>>
 /// Note: SubstPhysData do have to be serialized; 
 /// they all are reconstructed from serialized SubstLogData.
 /// </summary>
-[CLSCompliant(true)]
 public class SubstPhysData<TFIELDID> : SubstLogData<TFIELDID>
 {
     #region Fields

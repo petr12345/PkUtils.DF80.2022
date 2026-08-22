@@ -13,7 +13,6 @@ namespace PK.PkUtils.SerialPortLib;
 /// </summary>
 [Serializable]
 [SettingsSerializeAs(SettingsSerializeAs.Xml)]
-[CLSCompliant(true)]
 public class SerialPortSettings : SerialPortSettingsBase, IEquatable<SerialPortSettings>, INotifyPropertyChanged
 {
     #region Constructor(s)

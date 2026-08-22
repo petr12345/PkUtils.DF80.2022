@@ -6,7 +6,6 @@ namespace PK.SubstEditLib.Subst;
 /// One possible implementation of ISubstitutionDescriptor -
 /// the class mapping the field ID to displayed text
 /// </summary>
-[CLSCompliant(true)]
 public class SubstitutionDescriptor<TFieldId> : ISubstitutionDescriptor<TFieldId>
 {
     #region Fields

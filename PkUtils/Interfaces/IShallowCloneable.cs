@@ -12,7 +12,6 @@ namespace PK.PkUtils.Interfaces;
 /// Brad Abrams Blog: Should we Obsolete ICloneable </seealso>
 /// <seealso href="http://stackoverflow.com/questions/3345389/copy-constructor-versus-clone">
 /// Stackoverflow: Copy constructor versus Clone() </seealso>
-[CLSCompliant(true)]
 public interface IShallowCloneable
 {
     /// <summary>
@@ -48,7 +47,6 @@ public interface IShallowCloneable
 /// 
 /// </remarks>
 /// <typeparam name="T">The type of object that is being cloned.</typeparam>
-[CLSCompliant(true)]
 public interface IShallowCloneable<out T> : IShallowCloneable
 {
     /// <summary>

@@ -27,7 +27,6 @@ namespace PK.Commands.Interfaces;
 /// <seealso href="https://www.packtpub.com/web-development/reactive-programming-net-developers">
 /// Reactive Programming for .NET Developers
 /// </seealso>
-[CLSCompliant(true)]
 public interface ICommandsInputProcessor<out TErrorCode> : IObserver<string>
 {
     /// <summary>

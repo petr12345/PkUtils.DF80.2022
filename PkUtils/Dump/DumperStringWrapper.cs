@@ -1,7 +1,6 @@
 ﻿// Ignore Spelling: Utils
 //
 
-using System;
 using System.Text;
 using PK.PkUtils.Interfaces;
 
@@ -11,7 +10,6 @@ namespace PK.PkUtils.Dump;
 /// A simple string-writing wrapper, providing IDumper interface implementation.
 /// All operations are performed on underlying StringBuilder-based buffer.
 /// </summary>
-[CLSCompliant(true)]
 public class DumperStringWrapper : IDumper
 {
     #region Fields

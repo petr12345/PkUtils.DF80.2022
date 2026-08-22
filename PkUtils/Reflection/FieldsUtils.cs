@@ -16,7 +16,6 @@ namespace PK.PkUtils.Reflection;
 /// <seealso cref="MethodsUtils"/>
 /// <seealso cref="PropertiesUtils"/>
 /// <seealso cref="ReflectionUtils"/>
-[CLSCompliant(true)]
 public static class FieldsUtils
 {
     #region Fields

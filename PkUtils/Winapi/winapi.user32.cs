@@ -24,7 +24,6 @@ namespace PK.PkUtils.WinApi;
 #pragma warning disable SYSLIB1054  // Use 'LibraryImportAttribute' instead of 'DllImportAttribute' to generate P/Invoke marshalling code at compile time
 
 /// <summary> Helper class containing User32 API functions. </summary>
-[CLSCompliant(false)]
 public static class User32
 {
     #region Nested types

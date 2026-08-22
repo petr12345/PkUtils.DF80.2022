@@ -10,7 +10,6 @@ namespace PK.PkUtils.Interfaces;
 /// </summary>
 /// <remarks> 
 /// </remarks>
-[CLSCompliant(true)]
 public interface IErrorPresenter
 {
     /// <summary> Show error specified by the text (first argument), the rest of the arguments is interpreted
@@ -46,7 +45,6 @@ public interface IErrorPresenter
 /// Extends the IErrorPresenter interface by adding methods that should be used
 /// for displaying a severe (fatal) errors.
 /// </summary>
-[CLSCompliant(true)]
 public interface IErrorPresenterEx : IErrorPresenter
 {
     /// <summary>

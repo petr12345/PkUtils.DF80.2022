@@ -5,7 +5,6 @@
 
 // Ignore Spelling: Utils, Undoable
 //
-using System;
 using PK.PkUtils.Interfaces;
 
 namespace PK.PkUtils.Undo;
@@ -13,7 +12,6 @@ namespace PK.PkUtils.Undo;
 /// <summary>
 /// Represents a single edit operation in the undo-redo buffer.
 /// </summary>
-[CLSCompliant(true)]
 public interface IUndoableEdit : IUndoable, IDisposableEx
 {
     /// <summary>
@@ -85,7 +83,6 @@ public interface IUndoableEdit : IUndoable, IDisposableEx
 /// and remain open until <see cref="EndMultiMode"/> is called.
 /// Calling <see cref="EndMultiMode"/> closes the compound edit, preventing further child edits from being added via <see cref="AddEdit"/>.
 /// </remarks>
-[CLSCompliant(true)]
 public interface ICompoundEdit : IUndoableEdit
 {
     /// <summary>

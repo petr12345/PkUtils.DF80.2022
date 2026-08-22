@@ -9,7 +9,6 @@ using ILogger = log4net.ILog;
 namespace GZipTest.CommandThreads;
 
 /// <summary> A base class for reading thread and writing thread. </summary>
-[CLSCompliant(false)]
 public abstract class ProcessingThread : WorkerThread
 {
     private readonly IFileProcessingQueue _queue;

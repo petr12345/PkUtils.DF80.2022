@@ -1,6 +1,5 @@
 ﻿// Ignore Spelling: Utils
 //
-using System;
 using System.Drawing;
 using System.Reflection;
 using System.Threading;
@@ -13,7 +12,6 @@ namespace PK.PkUtils.UI.Splash;
 /// <summary>
 /// Interface containing the basic splash functionality, common for both ISplashWindow and ISplashFactory.
 /// </summary>
-[CLSCompliant(true)]
 public interface ISplash : IDisposableEx
 {
     /// <summary>
@@ -69,7 +67,6 @@ public interface ISplash : IDisposableEx
 /// <summary>
 /// The actual splash window interface, deriving from ISplash and IWin32Window
 /// </summary>
-[CLSCompliant(true)]
 public interface ISplashWindow : ISplash, IWin32Window
 {
 }
@@ -77,7 +74,6 @@ public interface ISplashWindow : ISplash, IWin32Window
 /// <summary>
 /// Contains functionality needed for ISplashWindow creation and managing.
 /// </summary>
-[CLSCompliant(true)]
 public interface ISplashFactory : ISplash
 {
     #region Properties

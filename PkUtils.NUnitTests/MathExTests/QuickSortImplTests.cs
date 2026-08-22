@@ -12,7 +12,6 @@ namespace PK.PkUtils.NUnitTests.MathExTests;
 
 /// <summary> This is a test class for <see cref="QuickSortImpl"/> </summary>
 [TestFixture()]
-[CLSCompliant(false)]
 public class QuickSortImplTests
 {
     private IQuickSorter? _sorter;

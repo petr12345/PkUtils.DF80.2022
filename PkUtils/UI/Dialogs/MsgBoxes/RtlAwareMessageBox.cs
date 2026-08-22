@@ -1,6 +1,5 @@
 ﻿// Ignore Spelling: Utils, Rtl
 //
-using System;
 using System.Globalization;
 using System.Windows.Forms;
 
@@ -15,7 +14,6 @@ namespace PK.PkUtils.UI.Dialogs.MsgBoxes;
 /// <a href="http://msdn.microsoft.com/library/ms182191(VS.100).aspx">
 /// CA1300: Specify MessageBoxOptions
 /// </a>. </summary>
-[CLSCompliant(true)]
 public static class RtlAwareMessageBox
 {
 

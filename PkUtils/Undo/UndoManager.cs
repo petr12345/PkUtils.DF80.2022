@@ -13,7 +13,6 @@ namespace PK.PkUtils.Undo;
 /// Manages the undo and redo buffer as the root <see cref="UndoableCompoundEdit"/>.
 /// Provides thread-safe operations for adding, undoing, redoing, and trimming edits.
 /// </summary>
-[CLSCompliant(true)]
 public class UndoManager : UndoableCompoundEdit
 {
     #region Typedefs

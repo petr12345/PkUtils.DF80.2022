@@ -7,7 +7,6 @@ namespace PK.PkUtils.Interfaces;
 /// <summary>
 /// IDisposableEx extends IDisposable interface.
 /// </summary>
-[CLSCompliant(true)]
 public interface IDisposableEx : IDisposable
 {
     /// <summary>
@@ -83,13 +82,11 @@ public interface IDisposableEx : IDisposable
 /// </remarks>
 /// <param name="sender">The source of the event.</param>
 /// <param name="args">An object that contains the event data.</param>
-[CLSCompliant(true)]
 public delegate void DisposedEventHandler(IDisposableEx sender, EventArgs args);
 
 /// <summary>
 /// Extends the IDisposableEx interface
 /// </summary>
-[CLSCompliant(true)]
 public interface IDisposableEx2 : IDisposableEx
 {
     /// <summary>

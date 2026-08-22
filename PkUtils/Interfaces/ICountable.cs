@@ -1,7 +1,5 @@
 ﻿// Ignore Spelling: Utils
 //
-using System;
-
 namespace PK.PkUtils.Interfaces;
 
 /// <summary>
@@ -10,7 +8,6 @@ namespace PK.PkUtils.Interfaces;
 /// same type. The object is considered living, if it has not been disposed explicitly by Dispose
 /// or by the Finalizer. 
 /// </summary>
-[CLSCompliant(true)]
 public interface ICountable
 {
     /// <summary>

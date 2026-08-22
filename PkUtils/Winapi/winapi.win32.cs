@@ -15,7 +15,6 @@ namespace PK.PkUtils.WinApi;
 #pragma warning disable SYSLIB1054  // Use 'LibraryImportAttribute' instead of 'DllImportAttribute' to generate P/Invoke marshalling code at compile time
 
 /// <summary> Basic Win32 definitions. </summary>
-[CLSCompliant(false)]
 public static class Win32
 {
     #region Constants

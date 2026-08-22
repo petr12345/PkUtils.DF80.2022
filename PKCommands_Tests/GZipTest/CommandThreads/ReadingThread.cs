@@ -12,7 +12,6 @@ using static System.FormattableString;
 namespace GZipTest.CommandThreads;
 
 /// <summary>   A reading thread. </summary>
-[CLSCompliant(false)]
 public class ReadingThread : ProcessingThread
 {
     #region Typedefs

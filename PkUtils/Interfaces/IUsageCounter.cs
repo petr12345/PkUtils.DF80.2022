@@ -1,7 +1,5 @@
 ﻿// Ignore Spelling: Utils, reentrancy
 
-using System;
-
 namespace PK.PkUtils.Interfaces;
 
 /// <summary>
@@ -14,7 +12,6 @@ namespace PK.PkUtils.Interfaces;
 /// After the first usage is acquired, it is assumed any subsequent usages on any thread 
 /// still succeed as well. Hence, it is the duty of the calling code to avoid such reentrancy.
 /// </remaks>
-[CLSCompliant(true)]
 public interface IUsageCounter
 {
     /// <summary> Is used at all (once or more times)? </summary>

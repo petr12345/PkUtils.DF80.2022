@@ -8,7 +8,6 @@ namespace PK.PkUtils.Undo;
 /// Interface IUndoable defines functionality that should be supported by any object
 /// with undo/redo.
 /// </summary>
-[CLSCompliant(true)]
 public interface IUndoable
 {
     /// <summary>

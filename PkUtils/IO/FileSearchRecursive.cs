@@ -31,7 +31,6 @@ namespace PK.PkUtils.IO;
 /// For more info, see for instance
 /// <see href="http://www.blackwasp.co.uk/FolderRecursion.aspx"> Folder Recursion with C# </see>
 /// </remarks>
-[CLSCompliant(true)]
 public class FileSearchRecursive : FileSearchBase
 {
     #region Fields

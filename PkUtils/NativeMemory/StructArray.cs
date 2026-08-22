@@ -13,7 +13,6 @@ namespace PK.PkUtils.NativeMemory;
 /// <see cref="System.Runtime.InteropServices.Marshal.AllocHGlobal(int)"/>.  <br/>
 /// </summary>
 /// <typeparam name="S">The type of the structure this is all about.</typeparam>
-[CLSCompliant(true)]
 public unsafe class StructArray<S> : UnmanagedPtr where S : struct
 {
     #region Fields

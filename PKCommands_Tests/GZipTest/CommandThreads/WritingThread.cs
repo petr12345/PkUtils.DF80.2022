@@ -14,7 +14,6 @@ using static System.FormattableString;
 namespace GZipTest.CommandThreads;
 
 /// <summary> A writing thread. </summary>
-[CLSCompliant(false)]
 public class WritingThread : ProcessingThread
 {
     #region Typedefs

@@ -11,7 +11,6 @@ namespace PK.PkUtils.Cloning;
 /// to and from byte array, and a ShallowClone.
 /// </summary>
 /// <typeparam name="S">The type of structure that is being converted.</typeparam>
-[CLSCompliant(true)]
 public static class StructConverter<S> where S : struct
 {
     /// <summary>

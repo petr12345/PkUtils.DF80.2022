@@ -10,7 +10,6 @@ namespace PK.PkUtils.NUnitTests.ThreadingTests;
 
 /// <summary>  Unit Tests of class <see cref="WorkerThread"/>. </summary>
 [TestFixture()]
-[CLSCompliant(false)]
 public class WorkerThreadTests
 {
     [Test, Description("Test of argument-less constructor.")]

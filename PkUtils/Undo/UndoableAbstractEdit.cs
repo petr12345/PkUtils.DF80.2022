@@ -14,7 +14,6 @@ namespace PK.PkUtils.Undo;
 /// The abstract class implementing most of the functionality of <see cref="IUndoableEdit"/>.
 /// Provides base logic for undo/redo operations, disposal, and presentation naming.
 /// </summary>
-[CLSCompliant(true)]
 public abstract class UndoableAbstractEdit : IUndoableEdit
 {
     #region Fields

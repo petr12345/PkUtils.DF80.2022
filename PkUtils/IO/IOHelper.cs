@@ -9,7 +9,6 @@ namespace PK.PkUtils.IO;
 /// <summary>
 /// A helper class performing few IO operations.
 /// </summary>
-[CLSCompliant(true)]
 public static class IOHelper
 {
     #region Methods

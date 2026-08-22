@@ -28,7 +28,6 @@ namespace PK.PkUtils.MessageHooking;
 /// fundamental functionality of <see cref="WindowMessageHook"/>.
 /// </summary>
 /// <seealso cref="Win32WindowHook"/>
-[CLSCompliant(true)]
 public class ControlMessageHook : WindowMessageHook
 {
     #region Fields

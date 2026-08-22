@@ -10,7 +10,6 @@ namespace PK.PkUtils.MessageHooking;
 
 /// <summary> ClipMonitorHook is a message-hook-derived class, which monitors clipboard changes 
 /// and notifies its subscribers. </summary>
-[CLSCompliant(true)]
 public class ClipMonitorHook : ControlMessageHook
 {
     #region Fields

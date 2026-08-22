@@ -39,7 +39,6 @@ namespace PK.PkUtils.IO;
 /// <remarks> The source of this used terminology is Stackoverflow
 /// <see href="http://stackoverflow.com/questions/2119156/name-of-a-path-containing-the-complete-file-name">
 /// Name of a path containing the complete file name?</see> </remarks>
-[CLSCompliant(true)]
 public static class FilePathHelper
 {
     #region Fields

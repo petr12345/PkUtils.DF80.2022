@@ -6,7 +6,6 @@ namespace PK.PkUtils.NUnitTests.MathExTests;
 
 /// <summary> This is a unit test class for class <see cref="Primes"/> </summary>
 [TestFixture()]
-[CLSCompliant(false)]
 public class PrimesTests
 {
     #region Tests

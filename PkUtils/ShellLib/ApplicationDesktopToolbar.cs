@@ -49,7 +49,6 @@ namespace PK.PkUtils.ShellLib;
 /// </see> from the March 1996 issue of Microsoft Systems Journal.<br/>
 /// 
 /// </summary>
-[CLSCompliant(true)]
 public class ApplicationDesktopToolbar : Form
 {
     #region Typedefs

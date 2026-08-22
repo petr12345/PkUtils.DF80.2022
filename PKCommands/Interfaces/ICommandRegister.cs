@@ -11,7 +11,6 @@ namespace PK.Commands.Interfaces;
 /// 
 /// <typeparam name="TCommand"> Generic argument representing type of supported commands. </typeparam>
 /// <typeparam name="TErrorCode">Type of error details.</typeparam>
-[CLSCompliant(true)]
 public interface ICommandRegister<TCommand, TErrorCode> where TCommand : class, ICommand<TErrorCode>
 {
     #region Properties

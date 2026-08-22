@@ -22,7 +22,6 @@ namespace PK.PkUtils.NativeMemory;
 /// 
 /// When AllocHGlobal calls LocalAlloc, it passes a LMEM_FIXED flag, which causes the allocated
 /// memory to be locked in place. Also, the allocated memory is not zero-filled. </remarks>
-[CLSCompliant(true)]
 public class UnmanagedPtr : IDisposableEx
 {
     #region Fields

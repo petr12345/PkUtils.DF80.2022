@@ -17,7 +17,6 @@ namespace PK.PkUtils.SerialPortLib;
 /// <summary>
 /// EventArgs used to send bytes received on serial port
 /// </summary>
-[CLSCompliant(false)]
 public class SerialDataEventArgs : EventArgs
 {
     /// <summary> The constructor. </summary>
@@ -36,12 +35,10 @@ public class SerialDataEventArgs : EventArgs
 /// <summary>
 /// Manager for serial port data
 /// </summary>
-[CLSCompliant(true)]
 public class SerialPortManager : Repository<SerialPort>, IDisposable
 {
     #region Fields
     /// <summary> Event queue for all listeners interested in NewSerialDataReceived events. </summary>
-    [CLSCompliant(false)]
     public event EventHandler<SerialDataEventArgs> NewSerialDataReceived;
 
     private readonly SerialPortSettingsEx _currentSerialSettingsEx = new();

@@ -22,7 +22,6 @@ namespace PK.PkUtils.Reflection;
 /// <seealso cref="MethodsUtils"/>
 /// <seealso cref="PropertiesUtils"/>
 /// <seealso cref="ReflectionUtils"/>
-[CLSCompliant(true)]
 public static class EventsUtils
 {
     #region Public Methods

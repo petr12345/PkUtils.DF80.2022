@@ -14,7 +14,6 @@ using PK.PkUtils.WinApi;
 namespace PK.PkUtils.UI.TipHandlers
 {
     /// <summary> Supports tooltips for window title. </summary>
-    [CLSCompliant(false)]
     public class WindowTitleTipHandler : TipHandler
     {
         #region Typedefs

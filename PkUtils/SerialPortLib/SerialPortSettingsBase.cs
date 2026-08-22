@@ -24,7 +24,6 @@ namespace PK.PkUtils.SerialPortLib;
 /// </summary>
 [Serializable]
 [SettingsSerializeAs(SettingsSerializeAs.Xml)]
-[CLSCompliant(true)]
 public class SerialPortSettingsBase : MakeCloneableBinary<SerialPortSettingsBase>,
   IDeepCloneable<SerialPortSettingsBase>, IEquatable<SerialPortSettingsBase>
 {

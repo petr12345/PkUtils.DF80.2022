@@ -1,11 +1,8 @@
-﻿using System;
-
-namespace PK.SubstEditLib.Subst;
+﻿namespace PK.SubstEditLib.Subst;
 
 /// <summary>
 /// The interface mapping the individual field ID to displayed text
 /// </summary>
-[CLSCompliant(true)]
 public interface ISubstitutionDescriptor<TFieldId>
 {
     /// <summary>

@@ -20,11 +20,6 @@ using System.Runtime.Versioning;
 // COM, set the ComVisible attribute to true on that type.
 [assembly: ComVisible(false)]
 
-// The Common Language Specification (CLS) defines naming restrictions, data types, 
-// and rules to which assemblies must conform if they are to be used across programming languages. 
-// Good design dictates that all assemblies explicitly indicate CLS compliance with CLSCompliantAttribute.
-[assembly: System.CLSCompliant(true)]
-
 // The following GUID is for the ID of the typelib if this project is exposed to COM
 [assembly: Guid("e3473882-9258-4fa2-8801-6cd1104bd886")]
 

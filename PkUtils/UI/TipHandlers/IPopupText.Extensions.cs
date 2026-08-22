@@ -9,7 +9,6 @@ namespace PK.PkUtils.UI.TipHandlers;
 /// <summary> 
 /// Static class containing extensions methods of <see cref="IPopupText"/>.
 /// </summary>
-[CLSCompliant(true)]
 public static class PopupTextExtensions
 {
     #region Public Methods

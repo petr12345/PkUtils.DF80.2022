@@ -20,7 +20,6 @@ namespace PK.PkUtils.Utils;
 /// A base class implementing IErrorPresenter interface.
 /// You may change the behaviour by overwriting any of its virtual method.
 /// </summary>
-[CLSCompliant(true)]
 public class ErrorPresenterBase : IErrorPresenter
 {
     #region Typedefs

@@ -49,7 +49,6 @@ namespace PK.PkUtils.UI.Utils;
 /// Stackoverflow:  How do you prevent a RichTextBox from refreshing its display?</seealso>
 ///
 /// <seealso cref="UsageMonitor"/>
-[CLSCompliant(true)]
 public class LockRedraw : UsageCounter
 {
     #region Fields

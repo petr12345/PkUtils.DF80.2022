@@ -3,8 +3,6 @@
 
 // Ignore Spelling: Utils
 //
-using System;
-
 namespace PK.PkUtils.DataStructures;
 
 #if USE_COUNTABLE_GENERICS_APPROACH
@@ -16,7 +14,6 @@ namespace PK.PkUtils.DataStructures;
 /// or by the Finalizer.
 /// CountableSimple is a base class that your countable class could derive from.
 /// </summary>
-[CLSCompliant(true)]
 public class CountableSimple : CountableGeneric<CountableSimple>
 {
     /// <summary>
@@ -37,7 +34,6 @@ public class CountableSimple : CountableGeneric<CountableSimple>
 /// or by the Finalizer.
 /// CountableSimple is a base class that your countable class could derive from.
 /// </summary>
-[CLSCompliant(true)]
 public class CountableSimple : ICountable, IDisposableEx
 {
 #region Fields

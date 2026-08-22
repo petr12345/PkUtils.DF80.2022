@@ -29,7 +29,6 @@ namespace PK.PkUtils.Extensions;
 /// <summary>
 /// Static class containing various IEnumerable extension methods.
 /// </summary>
-[CLSCompliant(true)]
 public static class EnumerableExtensions
 {
     #region Public Methods

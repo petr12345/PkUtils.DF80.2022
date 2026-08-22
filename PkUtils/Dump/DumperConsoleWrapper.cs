@@ -18,7 +18,6 @@ namespace PK.PkUtils.Dump;
 /// ”AttachConsole(-1), but Console.WriteLine won't output to parent command prompt?</a>. 
 /// 
 /// </summary>
-[CLSCompliant(true)]
 public class DumperConsoleWrapper : IDumper
 {
     #region Fields

@@ -1,5 +1,4 @@
-﻿using System;
-using PK.Commands.CommandUtils;
+﻿using PK.Commands.CommandUtils;
 
 namespace PK.Commands.Interfaces;
 
@@ -11,7 +10,6 @@ namespace PK.Commands.Interfaces;
 ///            The field name represents the argument (option) name; and all such fields are detected by reflection.
 ///            See for instance <see cref="CommandHelper.ValidateCommand"/> for details.
 /// </remarks>
-[CLSCompliant(true)]
 public interface ICommandOptions
 {
 }

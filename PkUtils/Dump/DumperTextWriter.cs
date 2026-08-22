@@ -48,7 +48,6 @@ namespace PK.PkUtils.Dump;
 /// // dumpWriter.SetOutput(new MyOtherDumper());
 /// </code>
 /// </remarks>
-[CLSCompliant(true)]
 public class DumperTextWriter : TextWriter, IDisposableEx
 {
     #region Typedefs
@@ -57,7 +56,6 @@ public class DumperTextWriter : TextWriter, IDisposableEx
     /// The thread actually writing to the IDumper
     /// ( after picking-up the contents from the queue buffer ).
     /// </summary>
-    [CLSCompliant(true)]
     protected class WriterThread : WorkerThread
     {
         #region Fields

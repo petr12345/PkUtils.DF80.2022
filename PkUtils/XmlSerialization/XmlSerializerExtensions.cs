@@ -10,7 +10,6 @@ namespace PK.PkUtils.XmlSerialization;
 /// <summary>
 /// Extensions methods for XMLSerializerAdapter>.
 /// </summary>
-[CLSCompliant(true)]
 public static class XmlSerializerExtensions
 {
     /// <summary> Gets the default encoding, used in methods Serialize and SerializeFragment. </summary>

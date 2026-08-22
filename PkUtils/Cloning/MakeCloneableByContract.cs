@@ -1,6 +1,5 @@
 ﻿// Ignore Spelling: Cloneable, Utils
 //
-using System;
 using System.Runtime.Serialization;
 using PK.PkUtils.Interfaces;
 #pragma warning disable IDE0130 // Namespace "..." does not match folder structure
@@ -32,7 +31,6 @@ namespace PK.PkUtils.Cloning.ByContract;
 /// MSDN forum on Inheriting from generic base class, with self as type parameter</seealso>
 /// <seealso href="http://blogs.msdn.com/b/oldnewthing/archive/2009/08/14/9869049.aspx">
 /// MSDN blog on Why can't I declare a type that derives from a generic type parameter?</seealso>
-[CLSCompliant(true)]
 [DataContract(IsReference = true)]
 public class MakeCloneableByContact<T> : IDeepCloneable, IDeepCloneable<T>
 {

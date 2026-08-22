@@ -33,7 +33,6 @@ namespace PK.PkUtils.Utils;
 ///   }
 /// }
 /// </code></example>
-[CLSCompliant(true)]
 public class UsageMonitor : IDisposableEx
 {
     #region Fields

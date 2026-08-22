@@ -33,7 +33,6 @@ namespace PK.PkUtils.Dump;
 ///
 /// <seealso href="http://msdn.microsoft.com/en-us/library/bb397968(VS.90).aspx">
 /// Object Dumper Sample</seealso>
-[CLSCompliant(false)]
 public class ObjectDumper
 {
     #region Fields

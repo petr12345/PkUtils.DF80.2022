@@ -18,11 +18,6 @@ using System.Runtime.Versioning;
 [assembly: SupportedOSPlatform("windows")]
 [assembly: NeutralResourcesLanguage("en")]
 
-// The Common Language Specification (CLS) defines naming restrictions, data types, 
-// and rules to which assemblies must conform if they are to be used across programming languages. 
-// Good design dictates that all assemblies explicitly indicate CLS compliance with CLSCompliantAttribute.
-[assembly: System.CLSCompliant(true)]
-
 //
 // Version information for an assembly consists of the following four values:
 //

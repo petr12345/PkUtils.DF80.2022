@@ -12,7 +12,6 @@ namespace PK.PkUtils.SystemEx;
 /// The details of event are specified by <typeparamref name="T"/> argument. </summary>
 ///
 /// <typeparam name="T"> The type of event arguments of  <see cref="ObservedAction"/> event. </typeparam>
-[CLSCompliant(false)]
 public abstract class SystemEventObserver<T> : WindowsSystemHookBase where T : EventArgs
 {
     #region Fields

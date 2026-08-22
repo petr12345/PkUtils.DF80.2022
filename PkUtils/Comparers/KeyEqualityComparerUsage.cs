@@ -9,7 +9,6 @@ namespace PK.PkUtils.Comparers;
 /// <summary>
 /// Static class containing various extension methods for the support of usage of
 /// <see cref="KeyEqualityComparer{T, TKey}"/> </summary>
-[CLSCompliant(true)]
 public static class KeyEqualityComparerUsage
 {
     /// <summary>

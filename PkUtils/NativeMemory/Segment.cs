@@ -18,7 +18,6 @@ namespace PK.PkUtils.NativeMemory;
 /// retrieved from another process on the same machine. Data is stored via the SetData method and
 /// retrieved via the GetData method. Access to the shared memory segment can be synchronized using
 /// the Lock and Unlock methods, which lock a named mutex. </summary>
-[CLSCompliant(true)]
 public class Segment : BaseSegment
 {
     #region Constructor(s)

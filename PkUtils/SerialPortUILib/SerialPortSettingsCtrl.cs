@@ -18,7 +18,6 @@ using PK.PkUtils.SerialPortLib;
 namespace PK.PkUtils.SerialPortUILib;
 
 /// <summary> A serial port settings user control. </summary>
-[CLSCompliant(true)]
 public partial class SerialPortSettingsCtrl : SerialPortSettingsCtrl_Design
 {
     #region Fields

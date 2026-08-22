@@ -9,13 +9,11 @@ namespace PK.SubstEditLib.Subst;
 /// </summary>
 /// <param name="sender">The source of the event.</param>
 /// <param name="e">The vent-specific data.</param>
-[CLSCompliant(true)]
 public delegate void ModifiedEventHandler(IModified sender, EventArgs e);
 
 /// <summary>
 /// Interface IModified defines functionality that should be supported any modifiable object.
 /// </summary>
-[CLSCompliant(true)]
 public interface IModified
 {
     /// <summary>
@@ -39,7 +37,6 @@ public interface IModified
 /// <summary>
 /// Extension methods for IModified
 /// </summary>
-[CLSCompliant(true)]
 public static class ModifiedExtensions
 {
     #region Methods

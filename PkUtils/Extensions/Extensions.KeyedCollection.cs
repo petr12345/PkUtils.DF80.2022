@@ -10,7 +10,6 @@ namespace PK.PkUtils.Extensions;
 /// <summary>
 /// Static class containing methods extending the KeyedCollection generic
 /// </summary>
-[CLSCompliant(true)]
 public static class KeyedCollectionExtensions
 {
     /// <summary>

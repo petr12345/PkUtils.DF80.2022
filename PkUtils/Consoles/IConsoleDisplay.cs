@@ -7,7 +7,6 @@ namespace PK.PkUtils.Consoles;
 
 
 /// <summary> Interface for writing to console. </summary>
-[CLSCompliant(true)]
 public interface IConsoleDisplay : IDumper
 {
     /// <summary> Gets the initial foreground color. </summary>

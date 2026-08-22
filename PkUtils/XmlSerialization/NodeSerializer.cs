@@ -72,7 +72,6 @@ namespace PK.PkUtils.XmlSerialization;
 /// </remarks>
 /// <typeparam name="T">The base type of the element whose instances (or instances of derived types) will be serialized.</typeparam>
 [Serializable]
-[CLSCompliant(true)]
 public class NodeSerializer<T> : IXmlSerializable
 {
     #region Fields

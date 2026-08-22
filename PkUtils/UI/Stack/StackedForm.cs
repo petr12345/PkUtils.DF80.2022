@@ -69,7 +69,6 @@ namespace PK.PkUtils.UI.Stack;
 /// The designer must create an instance of type '&lt;type name&gt;', but it can't because the type
 /// is declared as abstract</a>
 /// </para> </remarks>
-[CLSCompliant(true)]
 public partial class StackedForm : Form, IStackedForm
 {
     #region Fields

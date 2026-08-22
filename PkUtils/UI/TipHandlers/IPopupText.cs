@@ -12,7 +12,6 @@ namespace PK.PkUtils.UI.TipHandlers;
 /// Classes derived from TipHandler have freedom to create (implement) their tooltip 
 /// the way they wish; the control just have to support that interface.
 /// </summary>
-[CLSCompliant(true)]
 public interface IPopupText : IDisposable
 {
     /// <summary> Is the tooltip window visible ? </summary>

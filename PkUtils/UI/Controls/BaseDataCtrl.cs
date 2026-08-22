@@ -25,7 +25,6 @@ namespace PK.PkUtils.UI.Controls;
 /// <seealso href="http://stackoverflow.com/questions/443777/does-visual-inheritance-work-with-user-controls-in-vs2008">
 /// Does Visual Inheritance work with User controls in VS2008
 /// </seealso>
-[CLSCompliant(true)]
 public partial class BaseDataCtrl<D> : UserControl where D : class
 {
     #region Public Interface

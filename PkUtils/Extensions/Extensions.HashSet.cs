@@ -10,7 +10,6 @@ namespace PK.PkUtils.Extensions;
 /// <summary>
 /// Static class containing methods extending the HashSet generic
 /// </summary>
-[CLSCompliant(true)]
 public static class HashSetExtensions
 {
     /// <summary> A HashSet extension method that modifies the <paramref name="target"/> to contain only elements 

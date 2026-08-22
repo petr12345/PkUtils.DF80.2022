@@ -6,7 +6,6 @@ using System.ComponentModel;
 namespace PK.PkUtils.Interfaces;
 
 /// <summary> Values that represent current status of <see cref="ICachedEnumerable{T}"/>. </summary>
-[CLSCompliant(true)]
 public enum ParseStatus
 {
     /// <summary> An enum constant representing the 'parse not initialized' case. </summary>
@@ -50,7 +49,6 @@ public enum ParseStatus
 /// <see href="https://msdn.microsoft.com/en-us/library/dd799517(v=vs.110).aspx">
 /// Covariance and Contravariance in Generics</see>
 /// </typeparam>
-[CLSCompliant(true)]
 public interface ICachedEnumerable<out T> : IPeekAbleEnumerable<T>, INotifyPropertyChanged
 {
     /// <summary> Gets the current parse status. </summary>

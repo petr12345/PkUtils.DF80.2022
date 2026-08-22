@@ -16,7 +16,6 @@ namespace PK.PkUtils.UI.Layout;
 /// This form automatically saves and restores its layout (size, position, and other relevant settings)
 /// between application sessions.
 /// </summary>
-[CLSCompliant(true)]
 public partial class FormWithLayoutPersistence : Form
 {
     /// <summary>

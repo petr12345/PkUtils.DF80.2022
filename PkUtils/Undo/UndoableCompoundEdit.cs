@@ -14,7 +14,6 @@ namespace PK.PkUtils.Undo;
 /// <summary>
 /// UndoableCompoundEdit is UndoableAbstractEdit consisting of more child IUndoableEdit items.
 /// </summary>
-[CLSCompliant(true)]
 public class UndoableCompoundEdit : UndoableAbstractEdit, ICompoundEdit
 {
     #region Fields

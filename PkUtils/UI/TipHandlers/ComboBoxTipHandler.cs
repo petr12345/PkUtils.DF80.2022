@@ -16,7 +16,6 @@ namespace PK.PkUtils.UI.TipHandlers;
 
 
 /// <summary>   Supports tooltips for ComboBoxes. </summary>
-[CLSCompliant(false)]
 public class ComboBoxTipHandler : TipHandler
 {
     #region Typedefs

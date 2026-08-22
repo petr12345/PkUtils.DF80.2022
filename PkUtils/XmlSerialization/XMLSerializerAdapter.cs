@@ -25,7 +25,6 @@ namespace PK.PkUtils.XmlSerialization;
 /// Serializes and deserializes objects into and from XML documents, utilizing <see cref="XmlSerializer"/>.
 /// </summary>
 /// <typeparam name="T"> Generic type parameter. </typeparam>
-[CLSCompliant(true)]
 public class XMLSerializerAdapter<T> : BaseSerializerAdapter<T>
 {
     #region Fields

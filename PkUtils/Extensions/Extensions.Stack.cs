@@ -9,7 +9,6 @@ namespace PK.PkUtils.Extensions;
 /// <summary> 
 /// Static class containing methods extending Stack generic. 
 /// </summary>
-[CLSCompliant(true)]
 public static class StackExtensions
 {
     #region Public Methods

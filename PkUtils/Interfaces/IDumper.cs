@@ -9,7 +9,6 @@ namespace PK.PkUtils.Interfaces;
 /// <summary>
 /// Definition of object dumping functionality
 /// </summary>
-[CLSCompliant(true)]
 public interface IDumper
 {
     /// <summary>	Dumps the text to abstract output ( implementation-defined). </summary>
@@ -33,7 +32,6 @@ public interface IDumper
 }
 
 /// <summary> IDumperEx is the base IDumper, with added functionality for managing a history limit. </summary>
-[CLSCompliant(true)]
 public interface IDumperEx : IDumper
 {
     /// <summary>

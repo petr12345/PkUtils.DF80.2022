@@ -19,7 +19,6 @@ namespace PK.PkUtils.Utils;
 /// <seealso href="http://msdn.microsoft.com/en-us/library/system.bitconverter(v=vs.110).aspx">
 /// BitConverter Class
 /// </seealso>
-[CLSCompliant(true)]
 public static class BigEndianConverter
 {
     /// <summary>
@@ -77,21 +76,18 @@ public static class BigEndianConverter
     /// <summary>
     /// Returns the specified 16-bit unsigned integer value as a big-endian byte array.
     /// </summary>
-    [CLSCompliant(false)]
     public static byte[] GetBigEndianBytes(ushort value)
         => GetBigEndianBytes((short)value);
 
     /// <summary>
     /// Returns the specified 32-bit unsigned integer value as a big-endian byte array.
     /// </summary>
-    [CLSCompliant(false)]
     public static byte[] GetBigEndianBytes(uint value)
         => GetBigEndianBytes((int)value);
 
     /// <summary>
     /// Returns the specified 64-bit unsigned integer value as a big-endian byte array.
     /// </summary>
-    [CLSCompliant(false)]
     public static byte[] GetBigEndianBytes(ulong value)
         => GetBigEndianBytes((long)value);
 
@@ -141,21 +137,18 @@ public static class BigEndianConverter
     /// <summary>
     /// Converts a big-endian byte array to a 16-bit unsigned integer.
     /// </summary>
-    [CLSCompliant(false)]
     public static ushort ToUInt16(byte[] arrBytes, bool isInputBigEndian)
         => BitConverter.ToUInt16(ToLowEndian(arrBytes, isInputBigEndian), 0);
 
     /// <summary>
     /// Converts a big-endian byte array to a 32-bit unsigned integer.
     /// </summary>
-    [CLSCompliant(false)]
     public static uint ToUInt32(byte[] arrBytes, bool isInputBigEndian)
         => BitConverter.ToUInt32(ToLowEndian(arrBytes, isInputBigEndian), 0);
 
     /// <summary>
     /// Converts a big-endian byte array to a 64-bit unsigned integer.
     /// </summary>
-    [CLSCompliant(false)]
     public static ulong ToUInt64(byte[] arrBytes, bool isInputBigEndian)
         => BitConverter.ToUInt64(ToLowEndian(arrBytes, isInputBigEndian), 0);
 

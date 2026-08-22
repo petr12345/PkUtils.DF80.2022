@@ -1,7 +1,5 @@
 ﻿// Ignore Spelling: Utils, Mem, memcmp
 //
-using System;
-
 namespace PK.PkUtils.Utils;
 
 #pragma warning disable IDE1006 // Naming rule violation
@@ -9,7 +7,6 @@ namespace PK.PkUtils.Utils;
 /// <summary>
 /// Static class with several memory-related utilities.
 /// </summary>
-[CLSCompliant(true)]
 public static class MemUtils
 {
     #region Methods

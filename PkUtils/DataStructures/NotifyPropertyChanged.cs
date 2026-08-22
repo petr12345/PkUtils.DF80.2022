@@ -23,7 +23,6 @@ namespace PK.PkUtils.DataStructures;
 /// ]]>
 /// </code>
 /// </summary>
-[CLSCompliant(true)]
 [Serializable]
 public abstract class NotifyPropertyChanged : INotifyPropertyChanged
 {

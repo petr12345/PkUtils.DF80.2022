@@ -54,7 +54,6 @@ namespace WinTester3
         /// </summary>
         /// <param name="edg"></param>
         /// <returns>Found radio button or null.</returns>
-        [CLSCompliant(false)]
         protected RadioButton RadioForEdge(ShellApi.AppBarEdges edg)
         {
             RadioButton rb = null;
@@ -90,7 +89,6 @@ namespace WinTester3
         /// </summary>
         ///
         /// <returns> AppBarEdges value. </returns>
-        [CLSCompliant(false)]
         protected Nullable<ShellApi.AppBarEdges> RequiredEdge()
         {
             RadioButton rbChecked = this.AllControls().OfType<RadioButton>().Where(rb => rb.Checked).FirstOrDefault();
@@ -103,7 +101,6 @@ namespace WinTester3
             return result;
         }
 
-        [CLSCompliant(false)]
         protected void SetEdge(ShellApi.AppBarEdges edg, bool bEnforce)
         {
             RadioButton rbCheck;

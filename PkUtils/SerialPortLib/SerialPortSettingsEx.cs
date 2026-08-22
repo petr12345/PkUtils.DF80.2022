@@ -16,7 +16,6 @@ namespace PK.PkUtils.SerialPortLib;
 /// </summary>
 [Serializable]
 [SettingsSerializeAs(SettingsSerializeAs.Xml)]
-[CLSCompliant(true)]
 public class SerialPortSettingsEx : SerialPortSettings, IEquatable<SerialPortSettingsEx>
 {
     #region Fields

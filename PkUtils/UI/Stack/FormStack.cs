@@ -35,7 +35,6 @@ namespace PK.PkUtils.UI.Stack;
 /// "Creating a Multiple Form Application Framework for the Microsoft .NET Compact Framework"</a>,
 /// but the implementation here fixed several bugs (primarily wrong thread synchronization), and
 /// involved other improvements. </summary>
-[CLSCompliant(true)]
 public class FormStack : List<IStackedForm>, IDisposable, ISuspendable, ICompactable
 {
     #region Typedefs

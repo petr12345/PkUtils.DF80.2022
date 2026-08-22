@@ -15,11 +15,6 @@ using System.Runtime.Versioning;
 [assembly: AssemblyCulture("")]
 [assembly: SupportedOSPlatform("windows")]
 
-// The Common Language Specification (CLS) defines naming restrictions, data types, 
-// and rules to which assemblies must conform if they are to be used across programming languages. 
-// Good design dictates that all assemblies explicitly indicate CLS compliance with CLSCompliantAttribute.
-[assembly: System.CLSCompliant(true)]
-
 // Setting ComVisible to false makes the types in this assembly not visible 
 // to COM components.  If you need to access a type in this assembly from 
 // COM, set the ComVisible attribute to true on that type.

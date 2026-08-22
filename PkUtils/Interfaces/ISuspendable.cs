@@ -1,7 +1,5 @@
 ﻿// Ignore Spelling: Utils, Suspendable, Haltable
 //
-using System;
-
 namespace PK.PkUtils.Interfaces;
 
 /// <summary>
@@ -9,7 +7,6 @@ namespace PK.PkUtils.Interfaces;
 /// It is assumed the object DOES count the amount of suspend calls,
 /// and one has to call Revive the same times in order to revive successfully.
 /// </summary>
-[CLSCompliant(true)]
 public interface ISuspendable
 {
     /// <summary>
@@ -35,7 +32,6 @@ public interface ISuspendable
 /// Unlike with <see cref="ISuspendable "/> interface, it is assumed the object does NOT count the halt calls,
 /// and just one Resume call is sufficient to continue the activity.
 /// </summary>
-[CLSCompliant(true)]
 public interface IHaltable
 {
     /// <summary> Is the entity suspended (halted) ? </summary>

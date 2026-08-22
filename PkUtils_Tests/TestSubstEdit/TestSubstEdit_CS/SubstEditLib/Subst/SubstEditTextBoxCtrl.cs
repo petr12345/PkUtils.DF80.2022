@@ -12,7 +12,6 @@ namespace PK.SubstEditLib.Subst;
 /// Supports custom keystroke handling and selection change notifications.
 /// </summary>
 /// <typeparam name="TFIELDID">The type of the field identifier used for substitutions.</typeparam>
-[CLSCompliant(true)]
 public class SubstEditTextBoxCtrl<TFIELDID> : TextBox, IModified, IClipboardable
 {
     #region Typedefs

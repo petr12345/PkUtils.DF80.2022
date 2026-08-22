@@ -1,12 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 
 namespace PK.Commands.Interfaces;
 
 /// <summary> Interface for the extended command. </summary>
 ///
 /// <typeparam name="TErrorCode"> The command execution error code, that extends error information. </typeparam>
-[CLSCompliant(true)]
 public interface ICommandEx<out TErrorCode> : ICommand<TErrorCode>
 {
     /// <summary>   Gets the validated arguments, that were passed to <see cref="ICommand{TErrorCode}.Validate"/>. </summary>

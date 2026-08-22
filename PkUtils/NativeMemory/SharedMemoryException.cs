@@ -13,7 +13,6 @@ namespace PK.PkUtils.NativeMemory;
 /// The CORRECT Way to Code a Custom Exception Class.
 /// </seealso>
 [Serializable]
-[CLSCompliant(true)]
 public class SharedMemoryException : Exception
 {
     /// <summary> Default argument-less constructor. </summary>

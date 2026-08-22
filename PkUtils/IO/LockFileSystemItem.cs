@@ -15,7 +15,6 @@ namespace PK.PkUtils.IO;
 
 /// <summary> An abstract file system item locker. 
 ///           Works as common base class for FolderLock and FileLock. </summary>
-[CLSCompliant(false)]
 public abstract class LockFileSystemItem : IDisposable
 {
     #region Fields
@@ -309,7 +308,6 @@ public abstract class LockFileSystemItem : IDisposable
 /// Note that a lock performed by this class does not quite prevent other process to modify deployed folder 
 /// contents,  if such process know or guesses the exact file path, without need to browse the root folder.
 /// </remarks>
-[CLSCompliant(false)]
 public class LockFolder : LockFileSystemItem
 {
     #region Constructor(s)
@@ -363,7 +361,6 @@ public class LockFolder : LockFileSystemItem
 /// <summary> A class performing a file lock via Kernel32.LockFile. </summary>
 /// <seealso href="http://stackoverflow.com/questions/1784195/using-lockfileex-in-c-sharp">
 /// StackOverflow - Using LockFileEx in C#</seealso>
-[CLSCompliant(false)]
 public class LockFile : LockFileSystemItem
 {
     #region Constructor(s)

@@ -19,7 +19,6 @@ namespace PK.PkUtils.NativeMemory;
 /// Enum type for specifying whether a new shared memory segment should be created
 /// or just attached to an existing one.
 /// </summary>
-[CLSCompliant(true)]
 public enum SharedMemoryCreationFlag
 {
     /// <summary>
@@ -51,7 +50,6 @@ public enum SharedMemoryCreationFlag
 /// </summary>
 /// <seealso href="http://msdn2.microsoft.com/en-us/library/ms810428.aspx">
 /// A Quick and Versatile Synchronization Object </seealso>
-[CLSCompliant(true)]
 public class BaseSegment : IDisposable
 {
     #region Typedefs

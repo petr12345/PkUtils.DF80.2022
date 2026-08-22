@@ -15,7 +15,6 @@ namespace PK.Commands.BaseCommands;
 ///
 /// <typeparam name="TOptions"> Type of the options used. </typeparam>
 /// <typeparam name="TErrorCode">Type of error details.</typeparam>
-[CLSCompliant(true)]
 public abstract class BaseCommand<TOptions, TErrorCode> : ICommand<TErrorCode>
     where TOptions : ICommandOptions, new()
 {

@@ -1,7 +1,5 @@
 ﻿// Ignore Spelling: Compactable, Utils
 //
-using System;
-
 namespace PK.PkUtils.Interfaces;
 
 /// <summary> ICompactable defines a functionality for 'compacting' objects instances.  <br/>
@@ -12,7 +10,6 @@ namespace PK.PkUtils.Interfaces;
 /// <remarks> The (remote) analogy of ICompactable is <see cref="System.IDisposable"/>.  <br/>
 /// Note that unlike IDisposable, the call of ICompactable.Compact  must preserve the object
 /// state.. </remarks>
-[CLSCompliant(true)]
 public interface ICompactable
 {
     /// <summary> Compacts this object, freeing up non-necessary resources. </summary>

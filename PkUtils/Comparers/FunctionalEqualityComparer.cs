@@ -89,7 +89,6 @@ namespace PK.PkUtils.Comparers;
 /// StackOverflow: Wrap a delegate in an IEqualityComparer
 /// </seealso>
 /// <seealso cref="KeyEqualityComparer{T, TKey}"/>
-[CLSCompliant(true)]
 public class FunctionalEqualityComparer<T> : IEqualityComparer<T>
 {
     #region Fields

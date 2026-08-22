@@ -62,7 +62,6 @@ namespace PK.PkUtils.Cloning.Binary;
 ///   'CloneHelperByContract.DeepClone{PK.TestCloning.Foo}(PK.TestCloning.Foo)'
 /// </i>
 /// </remarks>
-[CLSCompliant(true)]
 public static class CloneHelperBinary
 {
     /// <summary>

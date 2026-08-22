@@ -11,7 +11,6 @@
 
 // Ignore Spelling: Utils, Ctrl
 //
-using System;
 using PK.PkUtils.SerialPortLib;
 using PK.PkUtils.UI.Controls;
 
@@ -23,7 +22,6 @@ namespace PK.PkUtils.SerialPortUILib;
 /// For more info see
 /// http://adamhouldsworth.blogspot.co.uk/2010/02/winforms-visual-inheritance-limitations.html
 /// </summary>
-[CLSCompliant(true)]
 public partial class SerialPortSettingsCtrl_Design : BaseDataCtrl<SerialPortSettingsEx>
 {
     /// <summary> Default constructor. </summary>

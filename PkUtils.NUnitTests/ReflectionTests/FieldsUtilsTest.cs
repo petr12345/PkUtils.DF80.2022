@@ -16,7 +16,6 @@ namespace PK.PkUtils.NUnitTests.ReflectionTests;
 
 /// <summary> This is a test class for class FieldsUtils </summary>
 [TestFixture()]
-[CLSCompliant(false)]
 public class FieldsUtilsTest
 {
     #region Auxiliary_classes_for_test_purpose

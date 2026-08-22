@@ -16,7 +16,6 @@ namespace PK.PkUtils.DataStructures;
 /// <see cref="CountMap.TypeCountInfo"/> structure. </summary>
 ///
 /// <remarks> For consistency, all public methods are thread-safe. </remarks>
-[CLSCompliant(true)]
 public class CountMap : Singleton<CountMap>, IDisposable
 {
     #region Typedefs

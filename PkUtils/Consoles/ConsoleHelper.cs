@@ -8,7 +8,6 @@ using PK.PkUtils.Extensions;
 namespace PK.PkUtils.Consoles;
 
 /// <summary> Static class containing console-related utilities. </summary>
-[CLSCompliant(true)]
 public static class ConsoleHelper
 {
     #region Typedefs

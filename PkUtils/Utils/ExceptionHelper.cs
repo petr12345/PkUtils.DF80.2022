@@ -20,7 +20,6 @@ namespace PK.PkUtils.Utils;
 /// The CORRECT Way to Code a Custom Exception Class.
 /// </seealso>
 [Serializable]
-[CLSCompliant(true)]
 public class RethrownException : Exception
 {
     #region Fields
@@ -216,7 +215,6 @@ public class RethrownException : Exception
 ///       throw;
 /// </code>
 /// </summary>
-[CLSCompliant(true)]
 public static class ExceptionHelper
 {
     #region Methods

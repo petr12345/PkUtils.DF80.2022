@@ -37,14 +37,13 @@ namespace PK.PkUtils.Threading;
 ///    }
 ///  }
 /// </code> </remarks>
-[CLSCompliant(true)]
 public class RWLockWrapper
 {
     #region Typedefs
     /// <summary>
     /// The base class for MyReadLockHelper and MyWriterLockHelper
     /// </summary>
-    /* [CLSCompliant(true)]  not needed for private class */
+    /*   not needed for private class */
     private abstract class BaseLockHelper : IDisposableEx
     {
         #region Fields
@@ -127,7 +126,7 @@ public class RWLockWrapper
     ///   but instead increments the lock count on the writer lock."
     /// That's why there is a _bHasWriterLock field assigned.
     /// </summary>
-    /* [CLSCompliant(true)]  not needed for private class */
+    /*   not needed for private class */
     private sealed class MyReadLockHelper : BaseLockHelper
     {
         #region Fields
@@ -181,7 +180,7 @@ public class RWLockWrapper
     /// <summary>
     /// The helper class, whose instance will be returned from AcquireWriterLock
     /// </summary>
-    /* [CLSCompliant(true)]  not needed for private class */
+    /*   not needed for private class */
     private sealed class MyWriterLockHelper : BaseLockHelper
     {
         #region Fields

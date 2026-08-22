@@ -20,7 +20,6 @@ namespace PK.PkUtils.Interfaces;
 /// ]]>
 /// </code>
 /// </remarks>
-[CLSCompliant(true)]
 public interface IComplexErrorResult<out TError>
 {
     /// <summary> Gets a value indicating whether there was success or failure. </summary>

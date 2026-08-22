@@ -30,7 +30,6 @@ namespace PK.SubstEditLib.Subst;
 /// "Logical" coordinates do not include the interior length of fields.
 /// </summary>
 [Serializable]
-[CLSCompliant(true)]
 public class LogInfo<TFIELDID> :
     IXmlSerializable, IDeepCloneable<LogInfo<TFIELDID>>, IEquatable<LogInfo<TFIELDID>>
 {
@@ -357,7 +356,6 @@ public class LogInfo<TFIELDID> :
 /// the text, as well as for manipulating the logical field list and string.
 /// </summary>
 [Serializable]
-[CLSCompliant(true)]
 public class SubstLogData<TFIELDID> : IXmlSerializable, IEquatable<SubstLogData<TFIELDID>>
 {
     #region Fields

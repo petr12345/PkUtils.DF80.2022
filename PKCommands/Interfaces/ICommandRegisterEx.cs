@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace PK.Commands.Interfaces;
+﻿namespace PK.Commands.Interfaces;
 
 /// <summary>
 /// Defines a specialized command register for commands implementing <see cref="ICommandEx{TErrorCode}"/>.
@@ -12,7 +10,6 @@ namespace PK.Commands.Interfaces;
 /// <typeparam name="TErrorCode">
 /// The type representing extended error information for command execution.
 /// </typeparam>
-[CLSCompliant(true)]
 public interface ICommandRegisterEx<TCommand, TErrorCode> : ICommandRegister<TCommand, TErrorCode>
     where TCommand : class, ICommandEx<TErrorCode>
 {

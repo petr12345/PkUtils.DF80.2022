@@ -10,7 +10,6 @@ namespace PK.PkUtils.Interfaces;
 #region IPeekAbleEnumerator interface
 
 /// <summary> Non-generic peek-able enumerator interface, extending non-generic IEnumerator. </summary>
-[CLSCompliant(true)]
 public interface IPeekAbleEnumerator : IEnumerator
 {
     /// <summary> Gets a value indicating whether we can peek. 
@@ -54,7 +53,6 @@ public interface IPeekAbleEnumerator : IEnumerator
 /// <see href="https://msdn.microsoft.com/en-us/library/dd799517(v=vs.110).aspx">
 /// Covariance and Contravariance in Generics</see>
 /// </typeparam>
-[CLSCompliant(true)]
 public interface IPeekAbleEnumerator<out T> : IEnumerator<T>, IPeekAbleEnumerator
 {
     /// <summary> Peeks the next value, if there is any. 
@@ -69,7 +67,6 @@ public interface IPeekAbleEnumerator<out T> : IEnumerator<T>, IPeekAbleEnumerato
 #region IPeekAbleEnumerable interface
 
 /// <summary> Non-generic peek-able enumerable interface, extending non-generic IEnumerable. </summary>
-[CLSCompliant(true)]
 public interface IPeekAbleEnumerable : IEnumerable
 {
     /// <summary> Returns a peek-able enumerator that could iterate through a non-generic sequence. </summary>
@@ -103,7 +100,6 @@ public interface IPeekAbleEnumerable : IEnumerable
 /// <see href="https://msdn.microsoft.com/en-us/library/dd799517(v=vs.110).aspx">
 /// Covariance and Contravariance in Generics</see>
 /// </typeparam>
-[CLSCompliant(true)]
 public interface IPeekAbleEnumerable<out T> : IPeekAbleEnumerable, IEnumerable<T>
 {
     /// <summary> Returns a peek-able enumerator that could iterate through a generic sequence. </summary>

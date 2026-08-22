@@ -10,7 +10,6 @@ namespace PK.Commands.Interfaces;
 /// Defines a command interface with execution, validation, and help functionality.
 /// </summary>
 /// <typeparam name="TErrorCode">Type of error details.</typeparam>
-[CLSCompliant(true)]
 public interface ICommand<out TErrorCode>
 {
     /// <summary>

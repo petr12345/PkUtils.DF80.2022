@@ -21,7 +21,6 @@ namespace PK.PkUtils.Interfaces;
 /// </remarks>
 ///
 /// <typeparam name="T"> The type of the data that is held by or attached to this Repository. </typeparam>
-[CLSCompliant(true)]
 public interface IRepository<T> : IDisposable
 {
     /// <summary> Gets a value indicating whether this object has any data of type  T (either attached  or owned).</summary>

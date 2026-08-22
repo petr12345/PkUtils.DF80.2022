@@ -11,7 +11,6 @@ namespace PK.PkUtils.Dump;
 /// <summary>
 /// The class encapsulating TextWriterTraceListener and its DumperTextWriter.
 /// </summary>
-[CLSCompliant(true)]
 public class DumperTextWriterAndTraceListener : IDisposableEx
 {
     #region Fields

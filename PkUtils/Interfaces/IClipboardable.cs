@@ -1,14 +1,11 @@
 ﻿// Ignore Spelling: Utils, Clipboardable
 //
-using System;
-
 namespace PK.PkUtils.Interfaces;
 
 /// <summary>
 /// Interface IClipboardable defines functionality that should be supported by any object
 /// that communicates with clipboard.
 /// </summary>
-[CLSCompliant(true)]
 public interface IClipboardable
 {
     /// <summary>

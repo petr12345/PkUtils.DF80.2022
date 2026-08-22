@@ -8,7 +8,6 @@ namespace PK.SubstEditLib.Subst;
 /// Maintains a map of field IDs to their substitution descriptors.
 /// </summary>
 /// <typeparam name="TFieldId">The type of the field identifier.</typeparam>
-[CLSCompliant(true)]
 public class SubstitutionMapping<TFieldId>
 {
     /// <summary>

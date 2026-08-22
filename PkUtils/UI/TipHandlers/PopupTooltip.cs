@@ -17,7 +17,6 @@ namespace PK.PkUtils.UI.TipHandlers;
 /// Implements the tooltip window ( the interface IPopupText ) for tip handlers
 /// like <see cref="ListBoxTipHandler"/> and <see cref="ComboBoxTipHandler"/>.
 /// </summary>
-[CLSCompliant(true)]
 public class PopupTooltip : Control, IPopupText
 {
     #region Typedefs

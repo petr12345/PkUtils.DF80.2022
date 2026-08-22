@@ -20,7 +20,6 @@ using PK.TestSerialPortListener.Properties;
 namespace PK.TestSerialPortListener
 {
     /// <summary> The main application Form. </summary>
-    [CLSCompliant(false)]
     public partial class MainForm : Form
     {
         #region Fields
