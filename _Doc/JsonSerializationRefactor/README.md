@@ -1,6 +1,8 @@
 # PkNetUtils JSON serialization refactor
 
-This complete source tree is based on `PkNetUtils.DF80(1).zip`. The JSON implementation and XML documentation in the supplied `E3D_CCA(8).ZIP`, especially CCA.Windows application storage and native-memory Segment, were the reference. Original project names, target frameworks, signing keys and solution structure are retained.
+The purpose of this refactoring is to remove the dependency on obsolete BinaryFormatter-based object serialization and replace it with explicit JSON contracts. The changes cover persistent application settings, shared-memory object transfer, deep cloning, affected sample applications, and serialized WinForms resources. Stable type discriminators and versioned payloads make supported data types and protocol compatibility explicit, while preserving the existing application-facing APIs where practical.
+
+The refactoring also updates XML documentation and regression tests, removes unsafe formatter settings and CLS-compliance declarations, and retains the original project structure and target frameworks. It deliberately leaves unrelated source files and the native shared-memory mapping and synchronization implementation unchanged.
 
 ## Changes
 
@@ -20,7 +22,7 @@ This complete source tree is based on `PkNetUtils.DF80(1).zip`. The JSON impleme
 - Old `.dtt` files are untouched and are not automatically loaded or migrated. No BinaryFormatter fallback or legacy formatter implementation is included. Form layout stored only in an old binary file will start with defaults until saved in JSON.
 - Old shared-memory participants and the new JSON participants are not wire-compatible; upgrade both processes together. Shared-memory payload types need registration in each process.
 - Old `.csb` / `.lsb` tagging files are not loaded by the new JSON option. Existing XML and plain-text options remain available.
-- CloneHelperBinary.ToByteArray now produces UTF-8 JSON, not legacy formatter bytes. Callers outside this archive that relied on private fields, ISerializable callbacks, arbitrary nested runtime types, or formatter byte identity need explicit JSON contracts/converters or dedicated copy methods.
+- CloneHelperBinary.ToByteArray now produces UTF-8 JSON, not legacy formatter bytes. External callers that relied on private fields, ISerializable callbacks, arbitrary nested runtime types, or formatter byte identity need explicit JSON contracts/converters or dedicated copy methods.
 - Serializable attributes, obsolete exception-serialization members, XML/DataContract serializers, BinaryReader/BinaryWriter and raw struct/byte transport are not equivalent to invoking BinaryFormatter. Such unrelated compatibility declarations and transport code were preserved when no change was necessary.
 
 ## Validation
@@ -45,4 +47,19 @@ Start the shared-memory server sample and then its client sample to validate the
 
 ## Preservation
 
-All 1140 original files are present. 78 original files were modified; UN78 original files match the uploaded archive byte for byte. 8 source files were added, plus these notes and ChangedFiles.csv. The manifest lists changed/new source and project paths with SHA-256 hashes. New build bin/obj output is excluded from the deliverable. Existing unrelated documentation/assets are retained unchanged and may therefore still discuss their original implementations.
+All 1140 original files are present. 78 original files were modified; 1062 original files match the uploaded archive byte for byte. 8 source files were added, plus these notes and ChangedFiles.csv. The manifest lists changed/new source and project paths with SHA-256 hashes. New build bin/obj output is excluded from the deliverable. Existing unrelated documentation/assets are retained unchanged and may therefore still discuss their original implementations.
+
+
+## Architecture documentation
+
+Open [JsonSerializationRefactor_Architecture.html](JsonSerializationRefactor_Architecture.html) for an offline architecture guide with embedded UML diagrams, JSON payload examples, registration rules, and compatibility notes. The guide also documents image/clipboard and resource adapters.
+
+| Diagram | PNG | Editable SVG |
+|---|---|---|
+| Application storage | [PNG](ApplicationStorage_UML.png) | [SVG](ApplicationStorage_UML.svg) |
+| Shared JSON registry and converters | [PNG](JsonSerialization_UML.png) | [SVG](JsonSerialization_UML.svg) |
+| Shared-memory Segment | [PNG](NativeMemorySegment_UML.png) | [SVG](NativeMemorySegment_UML.svg) |
+| Cloning and compatibility APIs | [PNG](Cloning_UML.png) | [SVG](Cloning_UML.svg) |
+| Tagging schema contracts | [PNG](TaggingSchema_UML.png) | [SVG](TaggingSchema_UML.svg) |
+
+The diagrams describe the implemented architecture, not a future proposal. Selected members are shown with their actual visibility. Solid hollow-triangle arrows denote inheritance; dashed hollow-triangle arrows denote interface realization; solid open arrows denote navigable references; dashed open arrows denote use dependencies. Shared registries are references, not exclusive-lifetime compositions.
