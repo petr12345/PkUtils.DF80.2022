@@ -41,8 +41,8 @@ public partial class MainForm : Form
 
     private const string TabIndexFileName = "last_active_tab.index";
     // open file dialog filters
-    private const string _strOpenFileFilterComponents = "XML files|*.xml|Components Schema Binary files (*.csb)|*.csb|Plain text (*.txt)|*.txt";
-    private const string _strOpenFileFilterLines = "XML files|*.xml|Lines Schema Binary files (*.lsb)|*.lsb|Plain text (*.txt)|*.txt";
+    private const string _strOpenFileFilterComponents = "XML files|*.xml|Components Schema JSON files (*.json)|*.json|Plain text (*.txt)|*.txt";
+    private const string _strOpenFileFilterLines = "XML files|*.xml|Lines Schema JSON files (*.json)|*.json|Plain text (*.txt)|*.txt";
     #endregion // Fields
 
     #region Constructor(s)

@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using PK.PkUtils.NativeMemory;
 
 internal class App
@@ -14,6 +14,7 @@ internal class App
     /// <param name="args"></param>
     public static void Main(string[] args)
     {
+        Segment.RegisterType<PersonData>("PersonData-v1");
         PersonData p = new(37, "Rich");
         Segment s = new("PersonDataSegment", p, true);
 

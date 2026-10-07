@@ -27,6 +27,7 @@ public class MakeCloneableBinaryTest
         private readonly int _legs;
         public int Legs => _legs;
 
+        [System.Text.Json.Serialization.JsonConstructor]
         public Animal(int legs)
         {
             _legs = (legs >= 0) ? legs : throw new ArgumentOutOfRangeException(
@@ -42,6 +43,7 @@ public class MakeCloneableBinaryTest
         private readonly string _name;
         public string Name => _name;
 
+        [System.Text.Json.Serialization.JsonConstructor]
         public Baboon(string name) : base(4)
         { _name = name; }
 

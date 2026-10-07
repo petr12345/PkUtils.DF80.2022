@@ -11,8 +11,7 @@ namespace PK.PkUtils.Cloning.ByContract;
 /// <summary>
 /// The helper class that you will use if you want to create a deep copy of an object.
 /// It works a similar way as the class CloneHelperBinary, but it should be used for cloning classes
-/// which do not support binary serialization ( hence the class CloneHelperBinary could not be used),
-/// but which DO support Data Contract Serialization.
+/// with explicit Data Contract Serialization contracts. CloneHelperBinary now delegates to JSON.
 /// </summary>
 /// 
 /// <example>

@@ -1,4 +1,4 @@
-// Ignore Spelling: Unselect
+﻿// Ignore Spelling: Unselect
 //
 using PK.PkUtils.UI.Controls;
 
@@ -70,7 +70,7 @@ partial class TestForm
         treeNode2.Text = "Node0";
         _treeView.Nodes.AddRange(new TreeNode[] { treeNode2 });
         _treeView.SelectedImageIndex = 0;
-        _treeView.SelectedNodes = (IReadOnlyCollection<TreeNode>)resources.GetObject("_treeView.SelectedNodes");
+        _treeView.SelectedNodes = [];
         _treeView.Size = new Size(374, 248);
         _treeView.TabIndex = 0;
         _treeView.SelectionChanged += OnMultiSelectTreeView_SelectionChanged;
@@ -78,14 +78,13 @@ partial class TestForm
         // _treeImageList
         // 
         _treeImageList.ColorDepth = ColorDepth.Depth32Bit;
-        _treeImageList.ImageStream = (ImageListStreamer)resources.GetObject("_treeImageList.ImageStream");
         _treeImageList.TransparentColor = Color.Transparent;
-        _treeImageList.Images.SetKeyName(0, "IL_0_icoBook.ico");
-        _treeImageList.Images.SetKeyName(1, "IL_1_selBook.ico");
-        _treeImageList.Images.SetKeyName(2, "IL_2_icoLibrary.ico");
-        _treeImageList.Images.SetKeyName(3, "IL_3_selLibrary.ico");
-        _treeImageList.Images.SetKeyName(4, "IL_4_icoNote.ico");
-        _treeImageList.Images.SetKeyName(5, "selLibrary.ico");
+        _treeImageList.Images.Add("IL_0_icoBook.ico", PK.PkUtils.UI.Utils.ImageResourceLoader.LoadPng(resources, "_treeImageList.Png0"));
+        _treeImageList.Images.Add("IL_1_selBook.ico", PK.PkUtils.UI.Utils.ImageResourceLoader.LoadPng(resources, "_treeImageList.Png1"));
+        _treeImageList.Images.Add("IL_2_icoLibrary.ico", PK.PkUtils.UI.Utils.ImageResourceLoader.LoadPng(resources, "_treeImageList.Png2"));
+        _treeImageList.Images.Add("IL_3_selLibrary.ico", PK.PkUtils.UI.Utils.ImageResourceLoader.LoadPng(resources, "_treeImageList.Png3"));
+        _treeImageList.Images.Add("IL_4_icoNote.ico", PK.PkUtils.UI.Utils.ImageResourceLoader.LoadPng(resources, "_treeImageList.Png4"));
+        _treeImageList.Images.Add("selLibrary.ico", PK.PkUtils.UI.Utils.ImageResourceLoader.LoadPng(resources, "_treeImageList.Png5"));
         // 
         // _btnSelectNodes
         // 

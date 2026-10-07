@@ -1,7 +1,6 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <OutputType>Library</OutputType>
-    <EnableUnsafeBinaryFormatterSerialization>true</EnableUnsafeBinaryFormatterSerialization>			
     <RootNamespace>PK.Commands</RootNamespace>
     <AssemblyName>PK.Commands</AssemblyName>
     <AssemblyOriginatorKeyFile>..\KeyGen\Pk.PkUtils.KeyPair.snk</AssemblyOriginatorKeyFile>

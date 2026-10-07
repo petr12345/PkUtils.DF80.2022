@@ -3,6 +3,7 @@
 // Ignore Spelling: Utils
 //
 using System;
+using System.Text.Json.Serialization;
 
 
 namespace PK.PkUtils.DataStructures;
@@ -30,6 +31,7 @@ public class BSID : CaseInsensitiveId<BSID>
     /// <exception cref="ArgumentException"> Thrown when a supplied <paramref name="id"/> is empty. </exception>
     ///
     /// <param name="id"> The identifier. Can't be null or empty</param>
+    [JsonConstructor]
     public BSID(string id)
         : base(id)
     { }

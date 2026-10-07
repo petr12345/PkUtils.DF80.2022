@@ -2,7 +2,6 @@
   <PropertyGroup>
     <TargetFramework>net10.0-windows7.0</TargetFramework>
     <OutputType>WinExe</OutputType>
-    <EnableUnsafeBinaryFormatterSerialization>true</EnableUnsafeBinaryFormatterSerialization>		
     <RootNamespace>PK.TestComparers</RootNamespace>
     <AssemblyName>PK.TestComparers</AssemblyName>
     <IsWebBootstrapper>false</IsWebBootstrapper>

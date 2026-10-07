@@ -7,8 +7,7 @@ namespace PK.TestCloning
 {
     #region Classes_tested_by_non_generic_copying
 
-    [Serializable]
-    internal class Animal
+        internal class Animal
     {
         public string Name { get; set; }
 
@@ -22,8 +21,7 @@ namespace PK.TestCloning
         }
     }
 
-    [Serializable]
-    internal class Cat : Animal
+        internal class Cat : Animal
     {
         public Dog Dog { get; set; }
 
@@ -35,8 +33,7 @@ namespace PK.TestCloning
         { }
     }
 
-    [Serializable]
-    internal class Dog : Animal
+        internal class Dog : Animal
     {
         public Cat Cat { get; set; }
 
@@ -51,8 +48,7 @@ namespace PK.TestCloning
 
     #region Classes_tested_by_generic_interface_support
 
-    [Serializable]
-    internal class CatEx : MakeCloneableBinary<CatEx>, IDeepCloneable<CatEx>
+        internal class CatEx : MakeCloneableBinary<CatEx>, IDeepCloneable<CatEx>
     {
         public string Name { get; set; }
         public DogEx DogEx { get; set; }
@@ -67,8 +63,7 @@ namespace PK.TestCloning
         }
     }
 
-    [Serializable]
-    internal class DogEx
+        internal class DogEx
     {
         public string Name { get; set; }
         public CatEx CatEx { get; set; }
@@ -85,7 +80,7 @@ namespace PK.TestCloning
     #endregion // Classes_tested_by_generic_interface_support
 
     /// <summary>
-    /// Static class performing tests by deep copying the whole graph
+    /// Exercises source-compatible cloning methods now implemented through JSON.
     /// </summary>
     public static class TestCloningBinary
     {

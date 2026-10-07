@@ -23,6 +23,12 @@ namespace PK.PkUtils.UnitTests.NativeMemoryTests;
 [TestClass()]
 public class SharedMemoryTest
 {
+    /// <summary>Registers the JSON contract before shared-memory tests execute.</summary>
+    static SharedMemoryTest()
+    {
+        Segment.RegisterType<PersonData>("PersonData-v1");
+    }
+
     #region Typedefs
 
     /// <summary> Thread reading the person data from shared memory. </summary>
@@ -141,6 +147,7 @@ public class SharedMemoryTest
     {
         string mappingName = Guid.NewGuid().ToString();
         PersonData p1 = new(37, "Tronald Dump");
+        p1.DummyArray[123] = -789;
         PersonData p2;
 
         using (Segment s1 = new(mappingName, p1, true))

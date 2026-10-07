@@ -1,13 +1,13 @@
 ﻿using System;
 using System.Globalization;
 using System.IO;
-using System.Runtime.Serialization.Formatters.Binary;
+using System.Text.Json;
 using System.Text;
 using System.Windows.Forms;
 using PK.PkUtils.XmlSerialization;
 using PK.SubstEditLib.Subst;
 
-#pragma warning disable SYSLIB0011 // BinaryFormatter serialization is obsolete and should not be used.
+
 
 namespace PK.TestTgSchema.TextBoxCtrls
 {
@@ -53,11 +53,10 @@ namespace PK.TestTgSchema.TextBoxCtrls
             {
                 switch (fmt)
                 {
-                    case FileFormatType.fmtBinary:
+                    case FileFormatType.fmtJson:
                         using (Stream stream = new FileStream(strOpenFile, FileMode.Open, FileAccess.Read, FileShare.Read))
                         {
-                            BinaryFormatter formatter = new();
-                            logData = formatter.Deserialize(stream) as SubstLogData<TFIELDID>;
+                            logData = TaggingSchemaJson<TFIELDID>.Read(stream);
                         }
                         TheHook.Assign(logData);
                         bOk = true;
@@ -82,6 +81,14 @@ namespace PK.TestTgSchema.TextBoxCtrls
                         }
                         break;
                 }
+            }
+            catch (JsonException ex)
+            {
+                ShowException(ex, "Invalid tagging-schema JSON");
+            }
+            catch (NotSupportedException ex)
+            {
+                ShowException(ex, "Unsupported tagging-schema JSON contract");
             }
             catch (IOException ex)
             {
@@ -119,18 +126,17 @@ namespace PK.TestTgSchema.TextBoxCtrls
             {
                 switch (fmt)
                 {
-                    case FileFormatType.fmtBinary:
+                    case FileFormatType.fmtJson:
                         TheHook.PhysData.ExportLogAll(logData = new SubstLogData<TFIELDID>());
-                        using (FileStream fs = new(strSaveFile, FileMode.OpenOrCreate, FileAccess.Write))
+                        using (FileStream fs = new(strSaveFile, FileMode.Create, FileAccess.Write))
                         {
-                            BinaryFormatter formatter = new();
-                            formatter.Serialize(fs, logData);
+                            TaggingSchemaJson<TFIELDID>.Write(fs, logData);
                             bOk = true;
                         }
                         break;
 
                     case FileFormatType.fmtPlainText:
-                        using (FileStream fs = new(strSaveFile, FileMode.OpenOrCreate, FileAccess.Write))
+                        using (FileStream fs = new(strSaveFile, FileMode.Create, FileAccess.Write))
                         {
                             using StreamWriter sw = new(fs, Encoding.Unicode);
                             sw.Write(TheHook.GetPlainText());
@@ -147,6 +153,14 @@ namespace PK.TestTgSchema.TextBoxCtrls
                         bOk = serializer.WriteXmlFile(strSaveFile, encoding, logData);
                         break;
                 }
+            }
+            catch (JsonException ex)
+            {
+                ShowException(ex, "Invalid tagging-schema JSON");
+            }
+            catch (NotSupportedException ex)
+            {
+                ShowException(ex, "Unsupported tagging-schema JSON contract");
             }
             catch (IOException ex)
             {
@@ -257,16 +271,15 @@ namespace PK.TestTgSchema.TextBoxCtrls
     }
 
     /// <summary>
-    /// File format enum; the order of valid values ( fmtBinary through fmtXml ) matches to 
+    /// File format enum; the order of valid values ( fmtXml through fmtPlainText ) matches to 
     /// the order of items in FileDialog FilterIndex.
     /// </summary>
     public enum FileFormatType
     {
         fmtNone = 0,
         fmtXml,
-        fmtBinary,
+        fmtJson,
         fmtPlainText,
     }
 
 }
-#pragma warning restore SYSLIB0011

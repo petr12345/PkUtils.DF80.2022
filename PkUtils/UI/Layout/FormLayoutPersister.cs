@@ -303,7 +303,7 @@ public class FormLayoutPersister
     /// calls  <see cref="ApplicationStorage{T}.LoadData()"/> <br/>
     /// If this argument is true, the involved constructor of ApplicationStorage{object}
     /// calls  <see cref="ApplicationStorage{T}.SafeLoadData()"/> <br/>
-    /// The method SafeLoadData does NOT throw SerializationException, but sets the
+    /// The method SafeLoadData reports JSON deserialization failures through the
     /// property <see cref="ApplicationStorage{T}.LastSafeLoadResult"/>.
     /// </param>
     public void StoreLastWidth(bool bSafeLoad)
@@ -320,7 +320,7 @@ public class FormLayoutPersister
     /// calls  <see cref="ApplicationStorage{T}.LoadData()"/> <br/>
     /// If this argument is true, the involved constructor of ApplicationStorage{object}
     /// calls  <see cref="ApplicationStorage{T}.SafeLoadData()"/> <br/>
-    /// The method SafeLoadData does NOT throw SerializationException, but sets the
+    /// The method SafeLoadData reports JSON deserialization failures through the
     /// property <see cref="ApplicationStorage{T}.LastSafeLoadResult"/>.
     /// </param>
     public void StoreLastHeight(bool bSafeLoad)
@@ -337,7 +337,7 @@ public class FormLayoutPersister
     /// calls  <see cref="ApplicationStorage{T}.LoadData()"/> <br/>
     /// If this argument is true, the involved constructor of ApplicationStorage{object}
     /// calls  <see cref="ApplicationStorage{T}.SafeLoadData()"/> <br/>
-    /// The method SafeLoadData does NOT throw SerializationException, but sets the
+    /// The method SafeLoadData reports JSON deserialization failures through the
     /// property <see cref="ApplicationStorage{T}.LastSafeLoadResult"/>.
     /// </param>
     public void StoreLastSize(bool bSafeLoad)
@@ -354,7 +354,7 @@ public class FormLayoutPersister
     /// calls  <see cref="ApplicationStorage{T}.LoadData()"/> <br/>
     /// If this argument is true, the involved constructor of ApplicationStorage{object}
     /// calls  <see cref="ApplicationStorage{T}.SafeLoadData()"/> <br/>
-    /// The method SafeLoadData does NOT throw SerializationException, but sets the
+    /// The method SafeLoadData reports JSON deserialization failures through the
     /// property <see cref="ApplicationStorage{T}.LastSafeLoadResult"/>.
     /// </param>
     public void StoreLastLocation(bool bSafeStore)
@@ -370,7 +370,7 @@ public class FormLayoutPersister
     /// calls  <see cref="ApplicationStorage{T}.LoadData()"/> <br/>
     /// If this argument is true, the involved constructor of ApplicationStorage{object}
     /// calls  <see cref="ApplicationStorage{T}.SafeLoadData()"/> <br/>
-    /// The method SafeLoadData does NOT throw SerializationException, but sets the
+    /// The method SafeLoadData reports JSON deserialization failures through the
     /// property <see cref="ApplicationStorage{T}.LastSafeLoadResult"/>.
     /// </param>
     public void StoreLastLocationAndSize(bool bSafeStore)
@@ -388,7 +388,7 @@ public class FormLayoutPersister
     /// calls  <see cref="ApplicationStorage{T}.LoadData()"/> <br/>
     /// If this argument is true, the involved constructor of ApplicationStorage{object}
     /// calls  <see cref="ApplicationStorage{T}.SafeLoadData()"/> <br/>
-    /// The method SafeLoadData does NOT throw SerializationException, but sets the
+    /// The method SafeLoadData reports JSON deserialization failures through the
     /// property <see cref="ApplicationStorage{T}.LastSafeLoadResult"/>.
     /// </param>
     public void Store(int actions, bool bSafeStore)
@@ -419,7 +419,7 @@ public class FormLayoutPersister
     /// calls  <see cref="ApplicationStorage{T}.LoadData()"/> <br/>
     /// If this argument is true, the involved constructor of ApplicationStorage{object}
     /// calls  <see cref="ApplicationStorage{T}.SafeLoadData()"/> <br/>
-    /// The method SafeLoadData does NOT throw SerializationException, but sets the
+    /// The method SafeLoadData reports JSON deserialization failures through the
     /// property <see cref="ApplicationStorage{T}.LastSafeLoadResult"/>.
     /// </param>
     public void StoreAll(bool bSafeStore)
@@ -438,7 +438,7 @@ public class FormLayoutPersister
     /// calls  <see cref="ApplicationStorage{T}.LoadData()"/> <br/>
     /// If this argument is true, the involved constructor of ApplicationStorage{object}
     /// calls  <see cref="ApplicationStorage{T}.SafeLoadData()"/> <br/>
-    /// The method SafeLoadData does NOT throw SerializationException, but sets the
+    /// The method SafeLoadData reports JSON deserialization failures through the
     /// property <see cref="ApplicationStorage{T}.LastSafeLoadResult"/>.
     /// </param>
     public void StorePreviouslyInitialized(bool bSafeStore)
@@ -658,7 +658,7 @@ public class FormLayoutPersister
     /// calls  <see cref="ApplicationStorage{T}.LoadData()"/> <br/>
     /// If this argument is true, the involved constructor of ApplicationStorage{object}
     /// calls  <see cref="ApplicationStorage{T}.SafeLoadData()"/> <br/>
-    /// The method SafeLoadData does NOT throw SerializationException, but sets the
+    /// The method SafeLoadData reports JSON deserialization failures through the
     /// property <see cref="ApplicationStorage{T}.LastSafeLoadResult"/>.
     /// </param>
     private void StoreLastWidth(string strStorageItemName, bool bSafeLoad)
@@ -679,7 +679,7 @@ public class FormLayoutPersister
     /// calls  <see cref="ApplicationStorage{T}.LoadData()"/> <br/>
     /// If this argument is true, the involved constructor of ApplicationStorage{object}
     /// calls  <see cref="ApplicationStorage{T}.SafeLoadData()"/> <br/>
-    /// The method SafeLoadData does NOT throw SerializationException, but sets the
+    /// The method SafeLoadData reports JSON deserialization failures through the
     /// property <see cref="ApplicationStorage{T}.LastSafeLoadResult"/>.
     /// </param>
     private void StoreLastHeight(string strStorageItemName, bool bSafeLoad)
@@ -700,7 +700,7 @@ public class FormLayoutPersister
     /// calls  <see cref="ApplicationStorage{T}.LoadData()"/> <br/>
     /// If this argument is true, the involved constructor of ApplicationStorage{object}
     /// calls  <see cref="ApplicationStorage{T}.SafeLoadData()"/> <br/>
-    /// The method SafeLoadData does NOT throw SerializationException, but sets the
+    /// The method SafeLoadData reports JSON deserialization failures through the
     /// property <see cref="ApplicationStorage{T}.LastSafeLoadResult"/>.
     /// </param>
     private void StoreLastSize(string strStorageItemName, bool bSafeLoad)
@@ -721,7 +721,7 @@ public class FormLayoutPersister
     /// calls  <see cref="ApplicationStorage{T}.LoadData()"/> <br/>
     /// If this argument is true, the involved constructor of ApplicationStorage{object}
     /// calls  <see cref="ApplicationStorage{T}.SafeLoadData()"/> <br/>
-    /// The method SafeLoadData does NOT throw SerializationException, but sets the
+    /// The method SafeLoadData reports JSON deserialization failures through the
     /// property <see cref="ApplicationStorage{T}.LastSafeLoadResult"/>.
     /// </param>
     private void StoreLastLocation(string strStorageItemName, bool bSafeStore)

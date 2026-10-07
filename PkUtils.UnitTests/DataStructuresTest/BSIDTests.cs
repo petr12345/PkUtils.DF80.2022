@@ -130,7 +130,7 @@ public class BSIDTests
     public void BSID_Serialization()
     {
         BSID id_1st = new(_sLower);
-        BSID id_2nd = CloneHelperBinary.DeepClone(id_1st);  // involves binary serialization
+        BSID id_2nd = CloneHelperBinary.DeepClone(id_1st);  // involves a JSON round trip
 
         Assert.IsTrue(id_1st.Equals(id_2nd));
     }

@@ -8,7 +8,7 @@ using PK.PkUtils.Interfaces;
 namespace PK.PkUtils.Cloning.Binary;
 
 /// <summary>
-/// Applying this generic helper class will implement the IDeepCloneable-generic 
+/// This source-compatible helper uses JSON, rather than binary serialization, to implement the IDeepCloneable-generic 
 /// interface for you, like in following example:
 /// <code>
 /// <![CDATA[
@@ -31,6 +31,7 @@ namespace PK.PkUtils.Cloning.Binary;
 /// </summary>
 /// <typeparam name="T">The type of object that is being cloned.</typeparam>
 /// <remarks>
+/// Derived classes must expose JSON-compatible state. Private fields and formatter callbacks are not copied.
 /// Note that in C# (unlike in C++) one cannot specify the base class the generic could derive from;
 /// such code produces a compilation error "Cannot derive from 'R' because it is a type parameter".
 /// But at least you could inherit from generic base class, with self as type parameter.

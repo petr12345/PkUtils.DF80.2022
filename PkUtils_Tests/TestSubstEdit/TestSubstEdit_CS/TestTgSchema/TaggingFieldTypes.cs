@@ -2,7 +2,8 @@
 //
 
 using System;
-using System.Runtime.Serialization;
+using System.Text.Json;
+using System.Text.Json.Serialization;
 using PK.PkUtils.XmlSerialization;
 
 namespace PK.TestTgSchema;
@@ -133,17 +134,15 @@ public class Field_ProjName : FieldLine
 #endregion // Lines_Fields_classes
 
 /// <summary>
-/// Represents the binary identifier for a field type, utilized during runtime and serialization.
+/// Represents a field type identifier during runtime and serialization.
 /// For XML serialization, it is derived from the NodeSerializer of the specified type.
 /// </summary>
 /// <remarks>
-/// Custom binary serialization implementation is required via ISerializable,
-/// due to the non-serializable nature of Type starting from NET 6.0 and higher.
+/// JSON uses a stable, explicitly permitted field discriminator; it never resolves CLR names from JSON.
 /// </remarks>
-[Serializable]
-public class FieldTypeId : NodeSerializer<Type>, IEquatable<FieldTypeId>, ISerializable
+[JsonConverter(typeof(FieldTypeIdJsonConverter))]
+public class FieldTypeId : NodeSerializer<Type>, IEquatable<FieldTypeId>
 {
-    private const string _typeName = "TypeName";
 
     #region Constructors
 
@@ -152,9 +151,6 @@ public class FieldTypeId : NodeSerializer<Type>, IEquatable<FieldTypeId>, ISeria
     public FieldTypeId(Type t) : base(t)
     { }
 
-    protected FieldTypeId(SerializationInfo info, StreamingContext context)
-        : base(Type.GetType(info.GetString(_typeName)))
-    { }
     #endregion // Constructors
 
     #region Methods
@@ -184,11 +180,53 @@ public class FieldTypeId : NodeSerializer<Type>, IEquatable<FieldTypeId>, ISeria
     }
     #endregion // IEquatable<FieldTypeId> Members
 
-    #region IEquatable<FieldTypeId> Members
+}
 
-    public void GetObjectData(SerializationInfo info, StreamingContext context)
+/// <summary>Maps field identifiers to the sample's fixed set of allowed field types.</summary>
+public sealed class FieldTypeIdJsonConverter : JsonConverter<FieldTypeId>
+{
+    private static readonly System.Collections.Generic.Dictionary<string, Type> _types = new(StringComparer.Ordinal)
     {
-        info.AddValue(_typeName, this.Node.ToString());
+        ["project-title"] = typeof(Field_PRJ_Title),
+        ["document-author"] = typeof(Field_DOC_Author),
+        ["document-title"] = typeof(Field_DOC_Title),
+        ["copyright"] = typeof(Field_DOC_Copyright),
+        ["year"] = typeof(Field_Year),
+        ["month"] = typeof(Field_Month),
+        ["day-of-week"] = typeof(Field_DayOfWeek),
+        ["dog"] = typeof(Field_Dog),
+        ["resistance"] = typeof(Field_Resistance),
+        ["diameter"] = typeof(Field_Diameter),
+        ["project-name"] = typeof(Field_ProjName),
+    };
+
+    /// <inheritdoc />
+    public override FieldTypeId Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
+    {
+        string discriminator = reader.GetString();
+        if (discriminator == null || !_types.TryGetValue(discriminator, out Type type))
+        {
+            throw new JsonException("Unsupported field type discriminator.");
+        }
+        return new FieldTypeId(type);
     }
-    #endregion // IEquatable<FieldTypeId> Members
+
+    /// <inheritdoc />
+    public override void Write(Utf8JsonWriter writer, FieldTypeId value, JsonSerializerOptions options)
+    {
+        string discriminator = null;
+        foreach (System.Collections.Generic.KeyValuePair<string, Type> pair in _types)
+        {
+            if (pair.Value == value.Node)
+            {
+                discriminator = pair.Key;
+                break;
+            }
+        }
+        if (discriminator == null)
+        {
+            throw new NotSupportedException("The field type is not registered for tagging-schema JSON.");
+        }
+        writer.WriteStringValue(discriminator);
+    }
 }

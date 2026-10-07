@@ -2,7 +2,6 @@
   <PropertyGroup>
     <TargetFramework>net8.0-windows</TargetFramework>	
     <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
-    <EnableUnsafeBinaryFormatterSerialization>true</EnableUnsafeBinaryFormatterSerialization>	
     <ProjectType>Local</ProjectType>
     <AssemblyKeyContainerName>
     </AssemblyKeyContainerName>

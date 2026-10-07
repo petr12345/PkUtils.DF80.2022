@@ -7,7 +7,7 @@ namespace PK.PkUtils.NUnitTests.ComparersTest;
 /// <summary>
 /// Unit tests for <see cref="CompositeComparer{T}"/>.
 /// </summary>
-[TestFixture, CLSCompliant(false)]
+[TestFixture]
 public class CompositeComparerTest
 {
     private IComparer<string> _firstComparer = default!;

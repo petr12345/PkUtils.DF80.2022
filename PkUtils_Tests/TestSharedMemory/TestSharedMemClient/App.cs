@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using PK.PkUtils.NativeMemory;
 
 internal class App
@@ -17,6 +17,7 @@ internal class App
     /// <param name="args"></param>
     private static void Main(string[] args)
     {
+        Segment.RegisterType<PersonData>("PersonData-v1");
         Segment s = new("PersonDataSegment", true);
         Console.WriteLine("The client has successfully attached to shared memory segment.");
         Console.WriteLine("Reading the PersonData object stored in the segment...");

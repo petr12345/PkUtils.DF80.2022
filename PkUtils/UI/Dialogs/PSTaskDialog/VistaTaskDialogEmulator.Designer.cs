@@ -1,4 +1,4 @@
-// Ignore Spelling: Utils
+﻿// Ignore Spelling: Utils
 // 
 
 namespace PK.PkUtils.UI.Dialogs.PSTaskDialog;
@@ -143,15 +143,16 @@ partial class VistaTaskDialogEmulator
         // 
         // imageList1
         // 
-        this.imageList1.ImageStream = ((System.Windows.Forms.ImageListStreamer)(resources.GetObject("imageList1.ImageStream")));
+        this.imageList1.ImageSize = new System.Drawing.Size(19, 19);
+        this.imageList1.ColorDepth = System.Windows.Forms.ColorDepth.Depth32Bit;
         this.imageList1.TransparentColor = System.Drawing.Color.Fuchsia;
-        this.imageList1.Images.SetKeyName(0, "arrow_up_bw.bmp");
-        this.imageList1.Images.SetKeyName(1, "arrow_up_color.bmp");
-        this.imageList1.Images.SetKeyName(2, "arrow_up_color_pressed.bmp");
-        this.imageList1.Images.SetKeyName(3, "arrow_down_bw.bmp");
-        this.imageList1.Images.SetKeyName(4, "arrow_down_color.bmp");
-        this.imageList1.Images.SetKeyName(5, "arrow_down_color_pressed.bmp");
-        this.imageList1.Images.SetKeyName(6, "green_arrow.bmp");
+        this.imageList1.Images.Add("arrow_up_bw.bmp", PK.PkUtils.UI.Utils.ImageResourceLoader.LoadPng(resources, "imageList1.Png0"));
+        this.imageList1.Images.Add("arrow_up_color.bmp", PK.PkUtils.UI.Utils.ImageResourceLoader.LoadPng(resources, "imageList1.Png1"));
+        this.imageList1.Images.Add("arrow_up_color_pressed.bmp", PK.PkUtils.UI.Utils.ImageResourceLoader.LoadPng(resources, "imageList1.Png2"));
+        this.imageList1.Images.Add("arrow_down_bw.bmp", PK.PkUtils.UI.Utils.ImageResourceLoader.LoadPng(resources, "imageList1.Png3"));
+        this.imageList1.Images.Add("arrow_down_color.bmp", PK.PkUtils.UI.Utils.ImageResourceLoader.LoadPng(resources, "imageList1.Png4"));
+        this.imageList1.Images.Add("arrow_down_color_pressed.bmp", PK.PkUtils.UI.Utils.ImageResourceLoader.LoadPng(resources, "imageList1.Png5"));
+        this.imageList1.Images.Add("green_arrow.bmp", PK.PkUtils.UI.Utils.ImageResourceLoader.LoadPng(resources, "imageList1.Png6"));
         // 
         // panel2
         // 

@@ -1,7 +1,6 @@
-using System;
+﻿using System;
 
-/// <summary> Serializable simple person data class, to tests serialization within shared memory.. </summary>
-[Serializable]
+/// <summary> JSON-compatible simple person data class, to tests serialization within shared memory.. </summary>
 public class PersonData
 {
     #region Fields
@@ -10,7 +9,7 @@ public class PersonData
     private readonly string _name;
 
     // Dummy data, just for the purpose to make the object fairly large
-    private readonly int[] _dummyArray = new int[2000];
+    private int[] _dummyArray = new int[2000];
 
     #endregion // Fields
 
@@ -40,9 +39,11 @@ public class PersonData
         get { return _name; }
     }
 
+    [System.Text.Json.Serialization.JsonInclude]
     public int[] Arr
     {
         get { return _dummyArray; }
+        private set { _dummyArray = value ?? throw new ArgumentNullException(nameof(value)); }
     }
     #endregion // Properties
 

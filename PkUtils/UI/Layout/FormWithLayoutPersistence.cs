@@ -2,7 +2,7 @@
 //
 
 using System;
-using System.Runtime.Serialization;
+using System.Text.Json;
 using System.Windows.Forms;
 using PK.PkUtils.Extensions;
 using PK.PkUtils.Interfaces;
@@ -95,7 +95,7 @@ public partial class FormWithLayoutPersistence : Form
             _frmLayoutPersister?.StoreLastLocationAndSize(LastLayoutLoadHasFailed);
             _lastLayoutLoadHasFailed = false;
         }
-        catch (SerializationException)
+        catch (Exception ex) when (ex is JsonException or NotSupportedException)
         {
             ResetLayoutPersister();
             _lastLayoutLoadHasFailed = true;
@@ -131,7 +131,7 @@ public partial class FormWithLayoutPersistence : Form
                 initResult = ResetLayoutPersister().Initialize(actions);
                 _lastLayoutLoadHasFailed = initResult.NullSafe(x => x.Failed());
             }
-            catch (SerializationException)
+            catch (Exception ex) when (ex is JsonException or NotSupportedException)
             {
                 ResetLayoutPersister();
                 _lastLayoutLoadHasFailed = true;

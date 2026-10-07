@@ -12,7 +12,6 @@ using System.Linq;
 using System.Reflection;
 using System.Text;
 using System.Xml.Serialization;
-using PK.PkUtils.Cloning.Binary;
 using PK.PkUtils.Interfaces;
 using PK.PkUtils.Utils;
 using PK.PkUtils.XmlSerialization;
@@ -332,9 +331,7 @@ public class LogInfo<TFIELDID> :
             result = true;
         else
         {
-            byte[] arrThis = CloneHelperBinary.ToByteArray(this);
-            byte[] arrThat = CloneHelperBinary.ToByteArray(other);
-            result = MemUtils.memcmp(arrThis, arrThat);
+            result = EqualityComparer<TFIELDID>.Default.Equals(What, other.What) && Pos == other.Pos;
         }
 
         return result;
