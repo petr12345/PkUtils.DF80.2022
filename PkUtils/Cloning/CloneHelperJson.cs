@@ -4,7 +4,7 @@ using System;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 
-namespace PK.PkUtils.Cloning.Json;
+namespace PK.PkUtils.Cloning;
 
 /// <summary>Creates deep copies using explicit JSON contracts.</summary>
 /// <remarks>

@@ -177,7 +177,7 @@ public class ConcurrentLockerTests
     }
 
     [Test]
-    public void LockAsync_WithOnlyIdArgument_SequentialCallShouldWork()
+    public async Task LockAsync_WithOnlyIdArgument_SequentialCallShouldWork()
     {
         using (Assert.EnterMultipleScope())
         {
@@ -185,7 +185,7 @@ public class ConcurrentLockerTests
             IUsageCounter counter = new UsageCounter();
             using IConcurrentLocker<int> locker = new ConcurrentLocker<int>();
             // ACT
-            Assert.DoesNotThrowAsync((Func<Task>)(async () =>
+            await Assert.DoesNotThrowAsync((Func<Task>)(async () =>
             {
                 await RunLockWithInfiniteTimeoutAndFiniteSleep(locker, _constLockId, counter);
                 await RunLockWithInfiniteTimeoutAndFiniteSleep(locker, _constLockId, counter);
@@ -205,7 +205,7 @@ public class ConcurrentLockerTests
     [Test]
     [TestCase(-2)]
     [TestCase(-22)]
-    public void LockAsync_FiniteTimeout_InvalidValueThrowsException(int msTimeout)
+    public async Task LockAsync_FiniteTimeout_InvalidValueThrowsException(int msTimeout)
     {
         using (Assert.EnterMultipleScope())
         {
@@ -215,7 +215,7 @@ public class ConcurrentLockerTests
 
             using IConcurrentLocker<int> locker = new ConcurrentLocker<int>();
             // ACT + ASSERT
-            Assert.ThrowsAsync<ArgumentOutOfRangeException>(
+            await Assert.ThrowsAsync<ArgumentOutOfRangeException>(
                 (Func<Task>)(() =>
                     RunLockWithFiniteTimeoutAndFiniteSleep(
                         locker,
@@ -233,7 +233,7 @@ public class ConcurrentLockerTests
     [TestCase(64)]
     [TestCase(256)]
     [Description("Makes sure the first thread who acquired the lock keeps it long enough to prevent the other thread acquiring that")]
-    public void LockAsync_FiniteTimeout_SeveralParallelLocks_ShouldThrowException(int msTimeout)
+    public async Task LockAsync_FiniteTimeout_SeveralParallelLocks_ShouldThrowException(int msTimeout)
     {
         using (Assert.EnterMultipleScope())
         {
@@ -243,7 +243,7 @@ public class ConcurrentLockerTests
             using IConcurrentLocker<int> locker = new ConcurrentLocker<int>();
 
             // ACT + ASSERT
-            Assert.ThrowsAsync<ConcurrencyConflictException>(
+            await Assert.ThrowsAsync<ConcurrencyConflictException>(
                 (Func<Task>)(() =>
                     Task.WhenAll(
                         RunLockWithFiniteTimeoutAndFiniteSleep(
@@ -262,7 +262,7 @@ public class ConcurrentLockerTests
     [TestCase(1, 12)]
     [TestCase(12, 1)]
     [TestCase(12, 12)]
-    public void LockAsync_FiniteTimeoutZero_SequentialLocks_ShouldWork(int sleepMs, int locks)
+    public async Task LockAsync_FiniteTimeoutZero_SequentialLocks_ShouldWork(int sleepMs, int locks)
     {
         using (Assert.EnterMultipleScope())
         {
@@ -272,7 +272,7 @@ public class ConcurrentLockerTests
             using IConcurrentLocker<int> locker = new ConcurrentLocker<int>();
 
             // ACT
-            Assert.DoesNotThrowAsync((Func<Task>)(async () =>
+            await Assert.DoesNotThrowAsync((Func<Task>)(async () =>
             {
                 for (int ii = 0; ii < locks; ii++)
                 {
@@ -297,7 +297,7 @@ public class ConcurrentLockerTests
     [TestCase(0, 1)]
     [TestCase(10, 2)]
     [TestCase(64, 3)]
-    public void LockAsync_ConcurrentLockWithToken_TimeOutInfinite_ShouldWork(int sleepMs, int numTasks)
+    public async Task LockAsync_ConcurrentLockWithToken_TimeOutInfinite_ShouldWork(int sleepMs, int numTasks)
     {
         using (Assert.EnterMultipleScope())
         {
@@ -312,7 +312,7 @@ public class ConcurrentLockerTests
             Task[] tasks = [.. range.Select(x => RunLockWithFiniteTimeoutAndTokenAndSleep(
                 locker, _constLockId, waitTimeout, sleepMs, token))];
 
-            Assert.DoesNotThrowAsync((Func<Task>)(() => Task.WhenAll(tasks)));
+            await Assert.DoesNotThrowAsync((Func<Task>)(() => Task.WhenAll(tasks)));
             Assert.That(locker.CurrentSize, Is.Zero);
         }
     }
@@ -323,7 +323,7 @@ public class ConcurrentLockerTests
     [TestCase(64)]
     [TestCase(300)]
     [Description("Makes sure the first thread who acquired the lock keeps it long enough to prevent the other thread acquiring that")]
-    public void LockAsync_ConcurrentLockWithToken_TimeOutFinite_ShouldThrowException(int msTimeout)
+    public async Task LockAsync_ConcurrentLockWithToken_TimeOutFinite_ShouldThrowException(int msTimeout)
     {
         using (Assert.EnterMultipleScope())
         {
@@ -333,7 +333,7 @@ public class ConcurrentLockerTests
             using IConcurrentLocker<int> locker = new ConcurrentLocker<int>();
 
             // ACT + ASSERT
-            Assert.ThrowsAsync<ConcurrencyConflictException>(
+            await Assert.ThrowsAsync<ConcurrencyConflictException>(
                 (Func<Task>)(() =>
                     Task.WhenAll(
                         RunLockWithFiniteTimeoutAndTokenAndSleep(
@@ -351,7 +351,7 @@ public class ConcurrentLockerTests
     [TestCase(64)]
     [TestCase(128)]
     [Description("Makes sure the first thread who acquired the lock keeps it long enough to prevent the other thread acquiring that")]
-    public void LockAsync_ConcurrentLockWithToken_TokenTimeOutFinite_ShouldThrowException(int msTokenTimeout)
+    public async Task LockAsync_ConcurrentLockWithToken_TokenTimeOutFinite_ShouldThrowException(int msTokenTimeout)
     {
         using (Assert.EnterMultipleScope())
         {
@@ -361,7 +361,7 @@ public class ConcurrentLockerTests
             using IConcurrentLocker<int> locker = new ConcurrentLocker<int>();
 
             // ACT + ASSERT
-            Assert.ThrowsAsync<ConcurrencyConflictException>(
+            await Assert.ThrowsAsync<ConcurrencyConflictException>(
                 (Func<Task>)(() =>
                     Task.WhenAll(
                         RunLockWithFiniteTimeoutAndTokenAndSleep(

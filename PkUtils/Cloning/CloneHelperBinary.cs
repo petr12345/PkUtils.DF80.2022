@@ -1,7 +1,7 @@
 ﻿// Ignore Spelling: Utils
 //
 #pragma warning disable IDE0130 // Namespace does not match folder structure
-using PK.PkUtils.Cloning.Json;
+using PK.PkUtils.Cloning;
 
 namespace PK.PkUtils.Cloning.Binary;
 

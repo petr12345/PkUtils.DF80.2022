@@ -1,13 +1,17 @@
-﻿using System.Drawing;
+﻿// Ignore Spelling: Json
+//
+using System.Drawing;
 using System.IO.IsolatedStorage;
 using System.Text;
 using System.Text.Json;
-using PK.PkUtils.Cloning.Json;
+using PK.PkUtils.Cloning;
 using PK.PkUtils.IO;
 using PK.PkUtils.NativeMemory;
 using PK.PkUtils.Serialization;
 
 namespace PK.PkUtils.NUnitTests.IOTests;
+
+#pragma warning disable IDE0290     // Use primary constructor
 
 /// <summary>Regression tests for JSON contracts, type registration and protocol rejection.</summary>
 [TestFixture]
@@ -213,3 +217,4 @@ public sealed class JsonMigrationTests
         Assert.Throws<SharedMemoryException>((Action)(() => new Segment("json-tests-" + Guid.NewGuid().ToString("N"), new Node())));
     }
 }
+#pragma warning restore IDE0290     // Use primary constructor

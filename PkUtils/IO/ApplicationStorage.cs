@@ -196,7 +196,7 @@ public class ApplicationStorage<T> : Dictionary<string, T>
         // Validate the complete JSON contract before opening and truncating the existing file.
         byte[] payload = JsonSerializer.SerializeToUtf8Bytes((Dictionary<string, T>)this, SerializerOptions);
         using IsolatedStorageFile isoStore = GetStorageFile();
-        using Stream stream = new IsolatedStorageFileStream(SettingsFileName, FileMode.Create, isoStore);
+        using IsolatedStorageFileStream stream = new(SettingsFileName, FileMode.Create, isoStore);
         stream.Write(payload);
     }
 

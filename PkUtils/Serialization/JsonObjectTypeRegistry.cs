@@ -19,7 +19,7 @@ public class JsonObjectTypeRegistry
     #region Fields
 
     private readonly Dictionary<string, Type> _typesByDiscriminator = new(StringComparer.Ordinal);
-    private readonly Dictionary<Type, string> _discriminatorsByType = new();
+    private readonly Dictionary<Type, string> _discriminatorsByType = [];
     private readonly object _syncRoot = new();
 
     #endregion // Fields
