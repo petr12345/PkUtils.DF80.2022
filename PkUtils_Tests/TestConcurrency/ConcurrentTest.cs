@@ -115,15 +115,13 @@ namespace PK.TestConcurrency
 
                 case TestMode.ReaderWriterLock_Wrapper:
                     {
-                        var wrapper = new PK.PkUtils.Threading.RWLockWrapper();
+                        var wrapper = new RWLockWrapper();
                         ts = new ThreadStart(delegate
                         {
-                            for (int j = 0; j < LOOP_COUNT; j++)
+                            for (int jj = 0; jj < LOOP_COUNT; jj++)
                             {
-                                using (IDisposable disp = wrapper.AcquireWriterLock())
-                                {
-                                    counter++;
-                                }
+                                using IDisposable disp = wrapper.AcquireWriterLock();
+                                counter++;
                             }
                         });
                     }

@@ -2,7 +2,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.4.33205.214
 MinimumVisualStudioVersion = 16.0.0
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TestTaskDialog.DF80.2022", "TestTaskDialog.DF80.2022.csproj", "{FF5202E7-D0A5-499B-ABB9-9B29C814CB2E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TestTaskDialog.DF80.2022", "TestTaskDialog.DF80.2022.csproj", "{E2CDD41B-26AA-45D9-932B-EE7E024B6444}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PkUtils.DF80.2022", "..\..\PkUtils\PkUtils.DF80.2022.csproj", "{BB12F836-6A28-4718-A353-94B4566CC556}"
 EndProject
@@ -12,10 +12,10 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{FF5202E7-D0A5-499B-ABB9-9B29C814CB2E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{FF5202E7-D0A5-499B-ABB9-9B29C814CB2E}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{FF5202E7-D0A5-499B-ABB9-9B29C814CB2E}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{FF5202E7-D0A5-499B-ABB9-9B29C814CB2E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E2CDD41B-26AA-45D9-932B-EE7E024B6444}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E2CDD41B-26AA-45D9-932B-EE7E024B6444}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E2CDD41B-26AA-45D9-932B-EE7E024B6444}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E2CDD41B-26AA-45D9-932B-EE7E024B6444}.Release|Any CPU.Build.0 = Release|Any CPU
 		{BB12F836-6A28-4718-A353-94B4566CC556}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{BB12F836-6A28-4718-A353-94B4566CC556}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{BB12F836-6A28-4718-A353-94B4566CC556}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -25,6 +25,6 @@ Global
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
-		SolutionGuid = {E366976F-7070-4799-8853-1E3C2EC4D28A}
+		SolutionGuid = {92428217-838F-49B9-9267-523801B1243B}
 	EndGlobalSection
 EndGlobal

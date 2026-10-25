@@ -81,6 +81,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TestMultiSelectOwnerDraw.DF
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TestWeakRef.DF80.2022", "TestWeakRef\TestWeakRef.DF80.2022.csproj", "{07E32AB4-B545-B31B-5015-54C2A571DF90}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TestVistaTaskDialog.DF80.2022", "TestVistaTaskDialog\TestVistaTaskDialog.DF80.2022.csproj", "{7C28AADA-0EAF-B04A-332F-1281B415CD3D}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -227,6 +229,10 @@ Global
 		{07E32AB4-B545-B31B-5015-54C2A571DF90}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{07E32AB4-B545-B31B-5015-54C2A571DF90}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{07E32AB4-B545-B31B-5015-54C2A571DF90}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7C28AADA-0EAF-B04A-332F-1281B415CD3D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7C28AADA-0EAF-B04A-332F-1281B415CD3D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7C28AADA-0EAF-B04A-332F-1281B415CD3D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7C28AADA-0EAF-B04A-332F-1281B415CD3D}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

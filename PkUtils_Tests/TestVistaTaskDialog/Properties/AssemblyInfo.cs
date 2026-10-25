@@ -6,10 +6,10 @@ using System.Runtime.Versioning;
 // General Information about an assembly is controlled through the following 
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("PK.TestTaskDialog")]
+[assembly: AssemblyTitle("PK.TestVistaTaskDialog")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyProduct("PK.TestTaskDialog")]
+[assembly: AssemblyProduct("PK.TestVistaTaskDialog")]
 [assembly: AssemblyCopyright("Copyright © PK 2015")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]

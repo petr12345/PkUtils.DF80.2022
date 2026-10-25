@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace PK.TestTaskDialog.Properties {
+namespace PK.TestVistaTaskDialog.Properties {
     
     
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]

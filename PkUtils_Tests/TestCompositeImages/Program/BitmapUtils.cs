@@ -53,8 +53,7 @@ namespace TestCompositeImages.Program
                 foreach (string fileName in Directory.GetFiles(path, bitmapType))
                 {
                     // Throw OperationCanceledException if cancellation is requested.
-                    if (null != cancellationTokenSource)
-                        cancellationTokenSource.Token.ThrowIfCancellationRequested();
+                    cancellationTokenSource?.Token.ThrowIfCancellationRequested();
 
                     try
                     {

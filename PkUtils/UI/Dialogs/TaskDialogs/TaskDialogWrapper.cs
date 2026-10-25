@@ -345,6 +345,89 @@ public static class TaskDialogWrapper
         ShowDialogWithButtons(owner, caption ?? "Information", heading, text, tdIcon, buttons, defaultButton: DialogResult.OK);
     }
     #endregion // Information_methods
+
+    #region AutoClose_methods
+
+    /// <summary>
+    /// Displays a notification dialog with a single OK button.
+    /// The dialog closes when the user clicks OK or automatically when the specified timeout expires.
+    /// </summary>
+    /// <param name="owner">The window that owns the dialog.</param>
+    /// <param name="icon">The icon displayed in the dialog.</param>
+    /// <param name="heading">The dialog heading.</param>
+    /// <param name="seconds">The timeout in seconds before the dialog closes automatically.</param>
+    /// <param name="caption">The dialog window caption.</param>
+    /// <exception cref="ArgumentOutOfRangeException">
+    /// Thrown when <paramref name="seconds"/> is less than or equal to zero.
+    /// </exception>
+    public static void ShowAutoCloseNotification(
+        IWin32Window owner,
+        Icon icon,
+        string heading,
+        int seconds,
+        string caption = "Notification")
+    {
+        TaskDialogButton okButton = new("OK");
+
+        TaskDialogPage page = new()
+        {
+            Caption = caption,
+            Heading = heading,
+            Icon = icon is null ? null : new TaskDialogIcon(icon),
+            Buttons = [okButton],
+            SizeToContent = true
+        };
+
+        ShowDialogWithTimeout(owner, page, okButton, seconds);
+    }
+
+    /// <summary>
+    /// Displays a confirmation dialog with Continue and Stop buttons.
+    /// The user can explicitly choose whether to continue or stop.
+    /// If the specified timeout expires without user interaction,
+    /// the Continue button is automatically selected.
+    /// </summary>
+    /// 
+    /// <remarks>
+    /// The dialog provides Continue and Stop buttons. If the user selects
+    /// Continue or the timeout expires, the method returns true.
+    /// Selecting Stop or dismissing the dialog returns false.
+    /// </remarks>
+    /// <param name="owner">The window that owns the dialog.</param>
+    /// <param name="heading">The dialog heading.</param>
+    /// <param name="seconds">The timeout in seconds before Continue is selected automatically.</param>
+    /// <param name="additionalText">Optional additional text displayed below the heading.</param>
+    /// <returns>
+    /// True if Continue was selected explicitly or automatically;
+    /// otherwise, false.
+    /// </returns>
+    /// <exception cref="ArgumentOutOfRangeException">
+    /// Thrown when <paramref name="seconds"/> is less than or equal to zero.
+    /// </exception>
+    public static bool ShowAutoCloseConfirmation(
+        IWin32Window owner,
+        string heading,
+        int seconds,
+        string additionalText = "")
+    {
+        TaskDialogButton continueButton = new("Continue");
+        TaskDialogButton stopButton = new("Stop");
+
+        TaskDialogPage page = new()
+        {
+            Caption = "Auto-close",
+            Heading = heading,
+            Text = additionalText,
+            Buttons = [continueButton, stopButton],
+            DefaultButton = continueButton,
+            SizeToContent = true
+        };
+
+        TaskDialogButton result = ShowDialogWithTimeout(owner, page, continueButton, seconds);
+
+        return result == continueButton;
+    }
+    #endregion // AutoClose_methods
     #endregion // Public Methods
 
     #region Internal Methods
@@ -503,6 +586,62 @@ public static class TaskDialogWrapper
         }
 
         return TaskDialog.ShowDialog(owner, page);
+    }
+
+    /// <summary>
+    /// Displays a task dialog and automatically activates the specified button
+    /// when the timeout expires.
+    /// </summary>
+    /// <param name="owner">The window that owns the dialog.</param>
+    /// <param name="page">The task dialog page to display.</param>
+    /// <param name="timeoutButton">The button to activate when the timeout expires.</param>
+    /// <param name="seconds">The timeout in seconds.</param>
+    /// <returns>The button used to close the dialog.</returns>
+    /// <exception cref="ArgumentOutOfRangeException">
+    /// Thrown when <paramref name="seconds"/> is less than or equal to zero.
+    /// </exception>
+    private static TaskDialogButton ShowDialogWithTimeout(
+        IWin32Window owner,
+        TaskDialogPage page,
+        TaskDialogButton timeoutButton,
+        int seconds)
+    {
+        ArgumentOutOfRangeException.ThrowIfLessThan(seconds, 1);
+
+        // Use Stopwatch to measure actual elapsed time, since Windows Forms
+        // Timer ticks may be delayed when the UI thread is busy.
+        System.Diagnostics.Stopwatch stopwatch = new();
+        TimeSpan timeout = TimeSpan.FromSeconds(seconds);
+
+        using System.Windows.Forms.Timer timer = new()
+        {
+            Interval = 100
+        };
+
+        timer.Tick += OnTimerTick;
+        stopwatch.Start();
+        timer.Start();
+
+        try
+        {
+            return TaskDialog.ShowDialog(owner, page);
+        }
+        finally
+        {
+            timer.Stop();
+            stopwatch.Stop();
+        }
+
+        // Local function to handle timer ticks
+        void OnTimerTick(object sender, EventArgs args)
+        {
+            if (stopwatch.Elapsed >= timeout)
+            {
+                timer.Stop();
+                if (timeoutButton.BoundPage is not null)
+                    timeoutButton.PerformClick();
+            }
+        }
     }
     #endregion // Private Methods
 }

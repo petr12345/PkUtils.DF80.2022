@@ -1,6 +1,6 @@
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 18
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TestTaskDialog.DF10.2026", "TestTaskDialog.DF10.2026.csproj", "{FF5202E7-D0A5-499B-ABB9-9B29C814CB2E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TestTaskDialog.DF10.2026", "TestTaskDialog.DF10.2026.csproj", "{B590B461-3172-490E-9692-5F818E5A19DB}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PkUtils.DF10.2026", "..\..\PkUtils\PkUtils.DF10.2026.csproj", "{BB12F836-6A28-4718-A353-94B4566CC556}"
 EndProject
@@ -10,10 +10,10 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{FF5202E7-D0A5-499B-ABB9-9B29C814CB2E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{FF5202E7-D0A5-499B-ABB9-9B29C814CB2E}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{FF5202E7-D0A5-499B-ABB9-9B29C814CB2E}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{FF5202E7-D0A5-499B-ABB9-9B29C814CB2E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B590B461-3172-490E-9692-5F818E5A19DB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B590B461-3172-490E-9692-5F818E5A19DB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B590B461-3172-490E-9692-5F818E5A19DB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B590B461-3172-490E-9692-5F818E5A19DB}.Release|Any CPU.Build.0 = Release|Any CPU
 		{BB12F836-6A28-4718-A353-94B4566CC556}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{BB12F836-6A28-4718-A353-94B4566CC556}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{BB12F836-6A28-4718-A353-94B4566CC556}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -23,6 +23,6 @@ Global
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
-		SolutionGuid = {E366976F-7070-4799-8853-1E3C2EC4D28A}
+		SolutionGuid = {130CC218-7A3B-4A26-9494-29BA41830FFC}
 	EndGlobalSection
 EndGlobal
