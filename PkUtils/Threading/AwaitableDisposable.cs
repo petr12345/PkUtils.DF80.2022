@@ -1,4 +1,4 @@
-﻿// Ignore Spelling: Awaiter, Utils
+﻿// Ignore Spelling: Awaiter, awaitable, tasklike, Utils
 // 
 using System;
 using System.Runtime.CompilerServices;

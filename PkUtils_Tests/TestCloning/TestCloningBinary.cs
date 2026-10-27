@@ -7,7 +7,7 @@ namespace PK.TestCloning
 {
     #region Classes_tested_by_non_generic_copying
 
-        internal class Animal
+    internal class Animal
     {
         public string Name { get; set; }
 
@@ -21,7 +21,7 @@ namespace PK.TestCloning
         }
     }
 
-        internal class Cat : Animal
+    internal class Cat : Animal
     {
         public Dog Dog { get; set; }
 
@@ -33,7 +33,7 @@ namespace PK.TestCloning
         { }
     }
 
-        internal class Dog : Animal
+    internal class Dog : Animal
     {
         public Cat Cat { get; set; }
 
@@ -48,7 +48,7 @@ namespace PK.TestCloning
 
     #region Classes_tested_by_generic_interface_support
 
-        internal class CatEx : MakeCloneableBinary<CatEx>, IDeepCloneable<CatEx>
+    internal class CatEx : MakeCloneableBinary<CatEx>, IDeepCloneable<CatEx>
     {
         public string Name { get; set; }
         public DogEx DogEx { get; set; }
@@ -63,7 +63,7 @@ namespace PK.TestCloning
         }
     }
 
-        internal class DogEx
+    internal class DogEx
     {
         public string Name { get; set; }
         public CatEx CatEx { get; set; }

@@ -1,4 +1,4 @@
-﻿// Ignore Spelling: Utils, checkbox, fallback
+﻿// Ignore Spelling: checkbox, fallback, Typedefs, Utils
 //
 using System;
 using System.Collections.Generic;
@@ -11,9 +11,24 @@ namespace PK.PkUtils.UI.Dialogs.TaskDialogs;
 #pragma warning disable IDE0028  //  Collection initialization can be simplified
 #pragma warning disable IDE0059  // Avoid unnecessary value assignments
 
+
 /// <summary> Implements several utilities as example of usage of <see cref="TaskDialog"/> </summary>
 public static class TaskDialogWrapper
 {
+    #region Typedefs
+
+    /// <summary>Specifies where the automatic close countdown is displayed.</summary>
+    public enum AutoCloseCountdownPlacement
+    {
+        /// <summary>Do not display a countdown.</summary>
+        None = 0,
+        /// <summary>Replace the dialog heading with the formatted countdown text.</summary>
+        Heading,
+        /// <summary>Append the formatted countdown text to the dialog body text.</summary>
+        Text
+    }
+    #endregion // Typedefs
+
     #region Fields
     private static TaskDialogIcon _questionIcon;
     #endregion // Fields
@@ -62,7 +77,7 @@ public static class TaskDialogWrapper
     /// <param name="caption"> text for dialog caption. </param>
     /// <param name="heading"> text for dialog heading. </param>
     /// <param name="text"> The text. </param>
-    /// <param name="icon"> Icon to display. </param>
+    /// <param name="icon"> (Optional) Icon to display. If null, TaskDialogIcon.QuestionIcon will be used. </param>
     /// <param name="defaultButton"> (Optional) Button to focus. </param>
     /// <returns>   true for yes button, false for no button. </returns>
     public static bool Question(
@@ -70,13 +85,13 @@ public static class TaskDialogWrapper
         string caption,
         string heading,
         string text,
-        Icon icon,
+        Icon icon = null,
         DialogResult defaultButton = DialogResult.Yes)
     {
         TaskDialogButtonCollection buttons = (defaultButton == DialogResult.Yes)
             ? CreateButtons(("Yes", DialogResult.Yes), ("No", DialogResult.No))
             : CreateButtons(("No", DialogResult.No), ("Yes", DialogResult.Yes));
-        TaskDialogIcon tdIcon = new(icon);
+        TaskDialogIcon tdIcon = (icon is null) ? QuestionIcon : new TaskDialogIcon(icon);
         TaskDialogButton buttonResult = ShowDialogWithButtons(owner, caption, heading, text, tdIcon, buttons, defaultButton);
         bool result = buttonResult.Tag is DialogResult dr && dr == DialogResult.Yes;
 
@@ -357,6 +372,10 @@ public static class TaskDialogWrapper
     /// <param name="heading">The dialog heading.</param>
     /// <param name="seconds">The timeout in seconds before the dialog closes automatically.</param>
     /// <param name="caption">The dialog window caption.</param>
+    /// <param name="remainingTimeText">Optional callback that formats the countdown from the remaining whole seconds.
+    /// Called initially and whenever the remaining seconds change, unless the placement is None.</param>
+    /// <param name="countdownPlacement">Where to display the countdown. Text appends it to the body;
+    /// Heading replaces the heading; None disables countdown display.</param>
     /// <exception cref="ArgumentOutOfRangeException">
     /// Thrown when <paramref name="seconds"/> is less than or equal to zero.
     /// </exception>
@@ -365,7 +384,9 @@ public static class TaskDialogWrapper
         Icon icon,
         string heading,
         int seconds,
-        string caption = "Notification")
+        string caption = "Notification",
+        Func<int, string> remainingTimeText = null,
+        AutoCloseCountdownPlacement countdownPlacement = AutoCloseCountdownPlacement.Text)
     {
         TaskDialogButton okButton = new("OK");
 
@@ -378,7 +399,7 @@ public static class TaskDialogWrapper
             SizeToContent = true
         };
 
-        ShowDialogWithTimeout(owner, page, okButton, seconds);
+        ShowDialogWithTimeout(owner, page, okButton, seconds, remainingTimeText, countdownPlacement);
     }
 
     /// <summary>
@@ -397,6 +418,10 @@ public static class TaskDialogWrapper
     /// <param name="heading">The dialog heading.</param>
     /// <param name="seconds">The timeout in seconds before Continue is selected automatically.</param>
     /// <param name="additionalText">Optional additional text displayed below the heading.</param>
+    /// <param name="remainingTimeText">Optional callback that formats the countdown from the remaining whole seconds.
+    /// Called initially and whenever the remaining seconds change, unless the placement is None.</param>
+    /// <param name="countdownPlacement">Where to display the countdown. Text appends it to the body;
+    /// Heading replaces the heading; None disables countdown display.</param>
     /// <returns>
     /// True if Continue was selected explicitly or automatically;
     /// otherwise, false.
@@ -408,7 +433,9 @@ public static class TaskDialogWrapper
         IWin32Window owner,
         string heading,
         int seconds,
-        string additionalText = "")
+        string additionalText = "",
+        Func<int, string> remainingTimeText = null,
+        AutoCloseCountdownPlacement countdownPlacement = AutoCloseCountdownPlacement.Text)
     {
         TaskDialogButton continueButton = new("Continue");
         TaskDialogButton stopButton = new("Stop");
@@ -423,7 +450,7 @@ public static class TaskDialogWrapper
             SizeToContent = true
         };
 
-        TaskDialogButton result = ShowDialogWithTimeout(owner, page, continueButton, seconds);
+        TaskDialogButton result = ShowDialogWithTimeout(owner, page, continueButton, seconds, remainingTimeText, countdownPlacement);
 
         return result == continueButton;
     }
@@ -596,6 +623,9 @@ public static class TaskDialogWrapper
     /// <param name="page">The task dialog page to display.</param>
     /// <param name="timeoutButton">The button to activate when the timeout expires.</param>
     /// <param name="seconds">The timeout in seconds.</param>
+    /// <param name="remainingTimeText">Optional callback to format the countdown from the remaining whole seconds.
+    /// Called initially and when the second count changes, unless the placement is None.</param>
+    /// <param name="countdownPlacement">Where to display the countdown, or None to disable it.</param>
     /// <returns>The button used to close the dialog.</returns>
     /// <exception cref="ArgumentOutOfRangeException">
     /// Thrown when <paramref name="seconds"/> is less than or equal to zero.
@@ -604,9 +634,17 @@ public static class TaskDialogWrapper
         IWin32Window owner,
         TaskDialogPage page,
         TaskDialogButton timeoutButton,
-        int seconds)
+        int seconds,
+        Func<int, string> remainingTimeText = null,
+        AutoCloseCountdownPlacement countdownPlacement = AutoCloseCountdownPlacement.Text)
     {
         ArgumentOutOfRangeException.ThrowIfLessThan(seconds, 1);
+
+        string originalText = page.Text;
+        bool showCountdown = remainingTimeText is not null && countdownPlacement != AutoCloseCountdownPlacement.None;
+        int lastRemainingSeconds = seconds;
+        if (showCountdown)
+            UpdateRemainingTime(seconds);
 
         // Use Stopwatch to measure actual elapsed time, since Windows Forms
         // Timer ticks may be delayed when the UI thread is busy.
@@ -635,11 +673,39 @@ public static class TaskDialogWrapper
         // Local function to handle timer ticks
         void OnTimerTick(object sender, EventArgs args)
         {
-            if (stopwatch.Elapsed >= timeout)
+            TimeSpan elapsed = stopwatch.Elapsed;
+            if (elapsed >= timeout)
             {
                 timer.Stop();
                 if (timeoutButton.BoundPage is not null)
                     timeoutButton.PerformClick();
+                return;
+            }
+
+            if (showCountdown)
+            {
+                int remainingSeconds = (int)Math.Ceiling((timeout - elapsed).TotalSeconds);
+                if (remainingSeconds != lastRemainingSeconds)
+                {
+                    lastRemainingSeconds = remainingSeconds;
+                    UpdateRemainingTime(remainingSeconds);
+                }
+            }
+        }
+
+        void UpdateRemainingTime(int remainingSeconds)
+        {
+            string countdownText = remainingTimeText(remainingSeconds);
+            switch (countdownPlacement)
+            {
+                case AutoCloseCountdownPlacement.Heading:
+                    page.Heading = countdownText;
+                    break;
+                case AutoCloseCountdownPlacement.Text:
+                    page.Text = string.IsNullOrEmpty(originalText)
+                        ? countdownText
+                        : $"{originalText}{Environment.NewLine}{Environment.NewLine}{countdownText}";
+                    break;
             }
         }
     }
