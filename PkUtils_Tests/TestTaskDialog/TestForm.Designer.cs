@@ -10,6 +10,7 @@ partial class TestForm
     private Button btnQuestion = null!;
     private Button btnAutoCloseNotification = null!;
     private Button btnAutoCloseConfirmation = null!;
+    private Button btnQuestionYesNoCancel = null!;
     private Label lblResult = null!;
 
     private void InitializeComponent()
@@ -18,6 +19,7 @@ partial class TestForm
         btnQuestion = new Button();
         btnAutoCloseNotification = new Button();
         btnAutoCloseConfirmation = new Button();
+        btnQuestionYesNoCancel = new Button();
         lblResult = new Label();
         SuspendLayout();
         // Standard TaskDialog examples
@@ -38,7 +40,12 @@ partial class TestForm
         btnAutoCloseConfirmation.Size = new Size(240, 36);
         btnAutoCloseConfirmation.Text = "Auto-close confirmation (10 s)";
         btnAutoCloseConfirmation.Click += OnAutoCloseConfirmationClick;
-        lblResult.Location = new Point(24, 139);
+        // Yes / No / Cancel result test (including system Close button and Esc)
+        btnQuestionYesNoCancel.Location = new Point(24, 128);
+        btnQuestionYesNoCancel.Size = new Size(496, 36);
+        btnQuestionYesNoCancel.Text = "QuestionYesNoCancel — test returned DialogResult";
+        btnQuestionYesNoCancel.Click += OnQuestionYesNoCancelClick;
+        lblResult.Location = new Point(24, 183);
         lblResult.Size = new Size(496, 65);
         lblResult.Text = "Choose a demonstration above.";
         lblResult.AutoSize = false;
@@ -47,11 +54,12 @@ partial class TestForm
         // Form
         AutoScaleDimensions = new SizeF(7F, 15F);
         AutoScaleMode = AutoScaleMode.Font;
-        ClientSize = new Size(544, 225);
+        ClientSize = new Size(544, 269);
         Controls.Add(btnInformation);
         Controls.Add(btnQuestion);
         Controls.Add(btnAutoCloseNotification);
         Controls.Add(btnAutoCloseConfirmation);
+        Controls.Add(btnQuestionYesNoCancel);
         Controls.Add(lblResult);
         FormBorderStyle = FormBorderStyle.FixedDialog;
         MaximizeBox = false;

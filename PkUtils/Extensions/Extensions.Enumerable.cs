@@ -68,7 +68,7 @@ public static class EnumerableExtensions
     /// <summary> An extension method that query if 'source' contains null element. </summary>
     /// <param name="source">   A collection being checked. may be null ( in such case, return value is false). </param>
     /// <typeparam name="T"> The type of the elements of source. </typeparam>
-    /// <returns>  True if there is any null element, false if not. </returns>
+    /// <returns> True if there is any null element, false if not. </returns>
     public static bool ContainsNull<T>(this IEnumerable<T> source) where T : class
     {
         return (source != null) && (source.Any(x => x == null));
@@ -112,7 +112,7 @@ public static class EnumerableExtensions
     /// <param name="source"> A collection being checked. It may be null or empty. </param>
     /// <param name="item"> The single item being compared with first element. </param>
     /// <typeparam name="T"> The type of the elements of source. </typeparam>
-    /// <returns>  True if source starts with given item, false if not. </returns>
+    /// <returns> True if source starts with given item, false if not. </returns>
     public static bool StartsWith<T>(this IEnumerable<T> source, T item)
     {
         bool result;
@@ -139,10 +139,30 @@ public static class EnumerableExtensions
     {
         bool result;
 
-        if (source.IsNullOrEmpty())
+        if (source is null)
+        {
             result = false;
+        }
         else
-            result = source.Last().Equals(item);
+        {
+            using IEnumerator<T> enumerator = source.GetEnumerator();
+
+            if (!enumerator.MoveNext())
+            {
+                result = false;
+            }
+            else
+            {
+                T last = enumerator.Current;
+
+                while (enumerator.MoveNext())
+                {
+                    last = enumerator.Current;
+                }
+
+                result = EqualityComparer<T>.Default.Equals(last, item);
+            }
+        }
 
         return result;
     }
@@ -171,7 +191,7 @@ public static class EnumerableExtensions
         return sequence1.SequenceEqual(sequence2, comparer ?? EqualityComparer<T>.Default);
     }
 
-    /// <summary> Computes the has code of <paramref name="source"/>, involving each element of the source. </summary>
+    /// <summary> Computes the hash code of <paramref name="source"/>, involving each element of the source. </summary>
     /// <typeparam name="T"> Generic type parameter, expressing the type of elements in source. </typeparam>
     /// 
     /// <param name="source"> The source for which the hash is computed. May be null. </param>
@@ -227,7 +247,7 @@ public static class EnumerableExtensions
     /// <param name="source">   A collection where matching element is searched. Can't be null. </param>
     /// <param name="predicate">  The predicate used. Can't be null. </param>
     ///
-    /// <returns>   Found index of matching element, or -1 if that value is not found. </returns>
+    /// <returns> Found index of matching element, or -1 if that value is not found. </returns>
     public static int IndexOf<T>(this IEnumerable<T> source, Func<T, bool> predicate)
     {
         ArgumentNullException.ThrowIfNull(source);
@@ -314,8 +334,7 @@ public static class EnumerableExtensions
     {
         ArgumentNullException.ThrowIfNull(source);
 
-        int position = 0;
-        return (from value in source select (position++, value));
+        return source.Select((value, index) => (index, value));
     }
 
     /// <summary> This method 'converts' a single <paramref name="item"/> to an enumerable collection,
@@ -380,31 +399,52 @@ public static class EnumerableExtensions
         return result;
     }
 
-    /// <summary> Returns the sub-collection of the <paramref name="source"/>,
-    /// skipping the beginning of source and returning the <paramref name="size"/> elements. </summary>
-    /// <exception cref="ArgumentNullException"> Thrown when <paramref name="source"/>is null. </exception>
-    /// <exception cref="ArgumentOutOfRangeException"> Thrown when one or more arguments are outside the
-    ///  required range. </exception>
-    /// <typeparam name="T"> Generic type parameter. The type of items in the collection.</typeparam>
-    /// <param name="source"> A collection being processed. Cannot be null. </param>
-    /// <param name="startIndex" type="int"> The start index. </param>
-    /// <param name="size" type="int"> The size of the result. </param>
-    /// 
-    /// <returns> Resulting source that can be iterated. </returns>
+    /// <summary>
+    /// Returns a slice of the specified sequence, starting at <paramref name="startIndex"/>
+    /// and containing <paramref name="size"/> elements.
+    /// </summary>
+    /// <exception cref="ArgumentNullException">
+    /// Thrown when <paramref name="source"/> is null.
+    /// </exception>
+    /// <exception cref="ArgumentOutOfRangeException">
+    /// Thrown when <paramref name="startIndex"/> or <paramref name="size"/> is negative,
+    /// or, during enumeration, when the requested slice extends beyond the source sequence.
+    /// </exception>
+    /// <remarks>
+    /// The source sequence is enumerated only as far as necessary to produce the requested slice.
+    /// Validation that the requested slice exists is therefore deferred until the result is enumerated.
+    /// </remarks>
+    /// <typeparam name="T">The type of elements in the sequence.</typeparam>
+    /// <param name="source">The source sequence. Cannot be null.</param>
+    /// <param name="startIndex">The zero-based index at which the slice starts.</param>
+    /// <param name="size">The number of elements to return.</param>
+    /// <returns>An enumerable containing the requested slice of the source sequence.</returns>
     public static IEnumerable<T> Slice<T>(this IEnumerable<T> source, int startIndex, int size)
     {
         ArgumentNullException.ThrowIfNull(source);
+        ArgumentOutOfRangeException.ThrowIfNegative(startIndex);
+        ArgumentOutOfRangeException.ThrowIfNegative(size);
 
-        int num = source.Count<T>();
-        if ((startIndex < 0) || (num < startIndex))
+        return Iterator();
+
+        IEnumerable<T> Iterator()
         {
-            throw new ArgumentOutOfRangeException(nameof(startIndex));
+            using IEnumerator<T> enumerator = source.GetEnumerator();
+
+            for (int ii = 0; ii < startIndex; ii++)
+            {
+                if (!enumerator.MoveNext())
+                    throw new ArgumentOutOfRangeException(nameof(startIndex));
+            }
+
+            for (int ii = 0; ii < size; ii++)
+            {
+                if (!enumerator.MoveNext())
+                    throw new ArgumentOutOfRangeException(nameof(size));
+
+                yield return enumerator.Current;
+            }
         }
-        if ((size < 0) || ((startIndex + size) > num))
-        {
-            throw new ArgumentOutOfRangeException(nameof(size));
-        }
-        return source.Skip<T>(startIndex).Take<T>(size);
     }
 
     /// <summary>
@@ -437,7 +477,7 @@ public static class EnumerableExtensions
         ArgumentNullException.ThrowIfNull(separator);
         ArgumentNullException.ThrowIfNull(conversion);
 
-        return string.Join(separator, source.Select<T, string>(conversion));
+        return string.Join(separator, source.Select<T, string>(conversion).ToArray<string>());
     }
 
     /// <summary>
@@ -551,22 +591,22 @@ public static class EnumerableExtensions
         return source.GroupBy(x => x, y => y, comparer).Where(g => g.Count() > 1).Select(y => y.Key);
     }
 
-    /// <summary> Throws <see cref="ArgumentException"/> in case the <paramref name="source"/> contains duplicities. </summary>
-    ///
+    /// <summary> Checks that the specified sequence does not contain duplicate elements. </summary>
+    /// <typeparam name="T">The type of elements in the sequence.</typeparam>
+    /// <param name="source">The sequence to check. Cannot be null.</param>
+    /// <param name="argName">
+    /// Optional name of the source argument in the calling code, used in the exception message.
+    /// </param>
+    /// <param name="comparer">
+    /// Optional comparer used to compare elements. If null, <see cref="EqualityComparer{T}.Default"/> is used.
+    /// </param>
+    /// <param name="listLimit">
+    /// Maximum number of duplicate elements to include in the exception message. Must be positive.
+    /// </param>
+    /// <returns> The original <paramref name="source"/> sequence if it does not contain duplicate elements. </returns>
+    /// <exception cref="ArgumentNullException"> Thrown when <paramref name="source"/> is null. </exception>
     /// <exception cref="ArgumentOutOfRangeException"> Thrown when <paramref name="listLimit"/> is not positive. </exception>
-    /// <exception cref="ArgumentException"> Thrown when <paramref name="source"/> contains duplicities. </exception>
-    /// 
-    /// <typeparam name="T"> Generic type parameter. The type of items in the collection.</typeparam>
-    ///
-    /// <param name="source">   The source to act on. It may be null. </param>
-    /// <param name="argName">  (Optional) The name the source argument has in calling code. </param>
-    /// <param name="comparer"> (Optional) A comparer used for comparison of items in <paramref name="source"/>
-    /// This argument could be null, in that case EqualityComparer{T}.Default will be used. </param>
-    /// <param name="listLimit">  (Optional) The maximal length of list of duplicated items 
-    ///                               in the thrown exception text. Must be positive.</param>
-    /// <returns>
-    /// An enumerator that allows foreach to be used to process check not duplicated in this collection.
-    /// </returns>
+    /// <exception cref="ArgumentException"> Thrown when <paramref name="source"/> contains duplicate elements. </exception>
     public static IEnumerable<T> CheckNotDuplicated<T>(
         this IEnumerable<T> source,
         string argName = null,

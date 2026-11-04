@@ -9,7 +9,6 @@ using System.Windows.Forms;
 namespace PK.PkUtils.UI.Dialogs.TaskDialogs;
 
 #pragma warning disable IDE0028  //  Collection initialization can be simplified
-#pragma warning disable IDE0059  // Avoid unnecessary value assignments
 
 
 /// <summary> Implements several utilities as example of usage of <see cref="TaskDialog"/> </summary>
@@ -137,13 +136,13 @@ public static class TaskDialogWrapper
         return result;
     }
 
-    /// <summary> Invoke Task Dialog to ask a question. </summary>
-    /// <param name="owner"> control or form. </param>
-    /// <param name="caption"> text for dialog caption. </param>
-    /// <param name="heading"> text for dialog heading. </param>
-    /// <param name="text"> The text. </param>
-    /// <param name="defaultButton"> (Optional) Button to focus. </param>
-    /// <returns> A DialogResult.Yes or DialogResult.No or DialogResult.Cancel. </returns>
+    /// <summary>
+    /// Asks a Yes/No/Cancel question.
+    /// </summary>
+    /// <returns>
+    /// Yes or No when explicitly selected; Cancel when selected
+    /// or when the dialog is dismissed using X, Esc, or Alt+F4.
+    /// </returns>
     public static DialogResult QuestionYesNoCancel(
         IWin32Window owner,
         string caption,
@@ -151,11 +150,43 @@ public static class TaskDialogWrapper
         string text,
         DialogResult defaultButton = DialogResult.Yes)
     {
-        TaskDialogButtonCollection buttons = CreateButtons(MessageBoxButtons.YesNoCancel);
-        TaskDialogButton buttonResult = ShowDialogWithButtons(owner, caption, heading, text, QuestionIcon, buttons, defaultButton, allowCancel: true);
-        DialogResult result = buttonResult.Tag is DialogResult dr ? dr : defaultButton;
+        TaskDialogButton yesButton = TaskDialogButton.Yes;
+        TaskDialogButton noButton = TaskDialogButton.No;
+        TaskDialogButton cancelButton = TaskDialogButton.Cancel;
 
-        return result;
+        TaskDialogButton selectedDefault = defaultButton switch
+        {
+            DialogResult.Yes => yesButton,
+            DialogResult.No => noButton,
+            DialogResult.Cancel => cancelButton,
+            _ => throw new ArgumentOutOfRangeException(
+                nameof(defaultButton), defaultButton,
+                "The default button must be Yes, No, or Cancel.")
+        };
+
+        TaskDialogPage page = new()
+        {
+            Caption = caption,
+            SizeToContent = true,
+            Heading = heading,
+            Text = text,
+            Icon = QuestionIcon,
+            Buttons = [yesButton, noButton, cancelButton],
+            DefaultButton = selectedDefault,
+            AllowCancel = true
+        };
+
+        TaskDialogButton buttonResult = TaskDialog.ShowDialog(owner, page);
+
+        // Only explicit Yes and No selections produce these results.
+        // Cancel, X, Esc, Alt+F4, and unexpected results return Cancel.
+        if (ReferenceEquals(buttonResult, yesButton))
+            return DialogResult.Yes;
+
+        if (ReferenceEquals(buttonResult, noButton))
+            return DialogResult.No;
+
+        return DialogResult.Cancel;
     }
 
     /// <summary> Invoke TaskDialog to ask a question with Abort, Retry, and Ignore options. </summary>
@@ -260,20 +291,35 @@ public static class TaskDialogWrapper
 
         return (result, applyIgnoreToAll);
     }
+
     /// <summary>
-    /// Shows a task dialog with custom TaskDialogCommandLinkButton buttons, optional Cancel button 
-    /// and optional "Don't show this choice again" checkbox, and optionally displays more details information.
+    /// Shows a task dialog with custom command-link buttons, an optional Cancel button,
+    /// an optional "Don't show this choice again" checkbox, and optional expandable details.
     /// </summary>
-    /// <param name="owner">Owner window.</param>
-    /// <param name="caption">Caption text for the dialog.</param>
-    /// <param name="heading">Heading text.</param>
-    /// <param name="text">Main text of the dialog.</param>
-    /// <param name="commands">An array of tuples where Item1 is button text and Item2 is an arbitrary tag value.</param>
-    /// <param name="doNotShowAgainCheckboxText"> The text for checkbox "Don't show this choice again". If null, no chcckbox will be created.</param>
-    /// <param name="moreDetails">Optional string to display as expandable "More Details" information. If null or empty, not shown.</param>
-    /// <param name="defaultButtonIndex">Index of the default button in the commands array. -1 for no default.</param>
-    /// <param name="icon">Optional TaskDialogIcon to use.</param>
-    /// <returns>Tuple with selected command's tag (or null if Cancel was pressed) and checkbox state (false if checkbox not shown).</returns>
+    /// <param name="owner">The window that owns the dialog.</param>
+    /// <param name="caption">The window caption.</param>
+    /// <param name="heading">The dialog heading.</param>
+    /// <param name="text">The main dialog text.</param>
+    /// <param name="commands">
+    /// The command-link buttons to display, including their text, description, and associated tag.
+    /// </param>
+    /// <param name="doNotShowAgainCheckboxText">
+    /// The text of the "Don't show this choice again" checkbox, or null to hide the checkbox.
+    /// </param>
+    /// <param name="moreDetails">
+    /// Optional text to display in an expandable details section, or null to omit the section.
+    /// </param>
+    /// <param name="defaultButtonIndex">
+    /// The index of the default command button, or -1 if no default button is specified.
+    /// </param>
+    /// <param name="icon">Optional dialog icon. If null, <see cref="QuestionIcon"/> is used.</param>
+    /// <param name="showCancelButton">
+    /// Whether to display a Cancel button and allow the dialog to be canceled using the system Close (X) button or Esc.
+    /// </param>
+    /// <returns>
+    /// The selected command's tag and the state of the "Don't show this choice again" checkbox.
+    /// The selected tag is null if the dialog is canceled.
+    /// </returns>
     public static (object SelectedTag, bool DoNotShowAgain) ShowCustomCommandDialog(
         IWin32Window owner,
         string caption,
@@ -283,7 +329,8 @@ public static class TaskDialogWrapper
         string doNotShowAgainCheckboxText = "Don't show this choice again",
         string moreDetails = null,
         int defaultButtonIndex = -1,
-        TaskDialogIcon icon = null)
+        TaskDialogIcon icon = null,
+        bool showCancelButton = false)
     {
         if (commands == null || commands.Length == 0)
             throw new ArgumentException("At least one command button must be specified.", nameof(commands));
@@ -301,12 +348,17 @@ public static class TaskDialogWrapper
                 defaultButton = btn;
         }
 
+        if (showCancelButton)
+        {
+            TaskDialogButton cancelButton = new("Cancel");
+            buttons.Add(cancelButton);
+        }
+
         if (doNotShowAgainCheckboxText is not null)
         {
             checkbox = new TaskDialogVerificationCheckBox(doNotShowAgainCheckboxText);
         }
 
-        DialogResult defaultResult = defaultButton?.Tag as DialogResult? ?? DialogResult.None;
         TaskDialogIcon finalIcon = icon ?? QuestionIcon;
         TaskDialogPage page = new()
         {
@@ -317,7 +369,8 @@ public static class TaskDialogWrapper
             Icon = finalIcon,
             Buttons = buttons,
             DefaultButton = defaultButton,
-            Verification = checkbox
+            Verification = checkbox,
+            AllowCancel = showCancelButton
         };
 
         if (!string.IsNullOrEmpty(moreDetails))
@@ -711,5 +764,5 @@ public static class TaskDialogWrapper
     }
     #endregion // Private Methods
 }
-#pragma warning restore IDE0059
+
 #pragma warning restore IDE0028

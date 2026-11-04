@@ -29,6 +29,25 @@ public partial class TestForm : Form
             "Do you want to continue?", "Demonstrates the standard question dialog.", SystemIcons.Question);
         lblResult.Text = $"Question result: {accepted}";
     }
+    /// <summary>
+    /// Tests the existing QuestionYesNoCancel implementation without modifying the wrapper.
+    /// In particular, closing the dialog using X or Esc should return Cancel.
+    /// </summary>
+    private void OnQuestionYesNoCancelClick(object? sender, EventArgs e)
+    {
+        DialogResult result = TaskDialogWrapper.QuestionYesNoCancel(
+            this,
+            "QuestionYesNoCancel test",
+            "Which result will be returned?",
+            "Choose Yes, No, or Cancel; alternatively, close this dialog with X or Esc. " +
+            "Both X and Esc should return DialogResult.Cancel.",
+            defaultButton: DialogResult.Yes);
+
+        lblResult.Text = $"QuestionYesNoCancel returned: {result} ({(int)result})";
+        System.Diagnostics.Debug.WriteLine(
+            $"QuestionYesNoCancel returned: {result} ({(int)result})");
+    }
+
     private void OnAutoCloseNotificationClick(object? sender, EventArgs e)
     {
         string GetRemainingTimeText(int seconds)
