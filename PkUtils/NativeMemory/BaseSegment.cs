@@ -1,4 +1,4 @@
-﻿// Ignore Spelling: Mutex, Utils
+﻿// Ignore Spelling: Mutex, Utils, Typedefs
 // 
 
 using System;
@@ -220,8 +220,14 @@ public class BaseSegment : IDisposable
             throw new ArgumentOutOfRangeException(nameof(nBufferEffectiveSize),
                 Invariant($"Value of {nameof(nBufferEffectiveSize)} must be positive, but {nBufferEffectiveSize} is not."));
         }
-        // Determine buffer complete size and mutex name.  See also the comment regarding _nBufferSize 
-        nBufferComplete = nBufferEffectiveSize + 2 * Marshal.SizeOf<long>();
+        // Reject sizes that cannot fit the two-header-long mapping without overflowing the Win32 size argument.
+        if (nBufferEffectiveSize > int.MaxValue - 2 * sizeof(long))
+        {
+            throw new ArgumentOutOfRangeException(
+                nameof(nBufferEffectiveSize),
+                "The requested shared-memory size is too large.");
+        }
+        nBufferComplete = checked(nBufferEffectiveSize + 2 * sizeof(long));
 
         _isSynchronized = synchronized;
 
@@ -643,9 +649,9 @@ public class BaseSegment : IDisposable
         byte* dest = (byte*)NativeDataAsVoidPtr;
 
         dest += Marshal.SizeOf<long>(); // skip first long in the buffer that keeps the size of the buffer itself
-        *(long*)dest = dataLen; // store the size of following data
+        *(long*)dest = dataLen;               // store the size of following data
         dest += Marshal.SizeOf<long>(); // increment pointer again
-        Marshal.Copy(data, 0, (IntPtr)dest, (int)dataLen); // now store the data
+        Marshal.Copy(data, 0, (IntPtr)dest, (int)dataLen);  // now store the data
     }
 
     /// <summary>
@@ -661,13 +667,17 @@ public class BaseSegment : IDisposable
         byte* source = (byte*)NativeDataAsVoidPtr;
 
         source += Marshal.SizeOf<long>(); // skip first long in the buffer that keeps the size of the buffer itself
-        dataLen = *(long*)source; // get the stored data Length
+        dataLen = *(long*)source;               // get the stored data Length
         source += Marshal.SizeOf<long>(); // set the source data pointer to start of serialized object graph
 
-        // Create a byte array to hold the serialized data
-        byte[] data = new byte[dataLen];
-        // Copy the shared memory data to byte array
-        Marshal.Copy((IntPtr)source, data, 0, (int)dataLen);
+        // Reject corrupt or concurrently modified payload lengths before allocation or pointer-based copying.
+        if (dataLen < 0 || dataLen > BufferEffectiveSize || dataLen > int.MaxValue)
+            throw new SharedMemoryException($"Invalid shared-memory payload length {dataLen}; capacity is {BufferEffectiveSize} bytes.");
+
+        // Use the validated integer length for both the allocation and unmanaged copy.
+        int length = checked((int)dataLen);
+        byte[] data = new byte[length];
+        Marshal.Copy((IntPtr)source, data, 0, length);
 
         return data;
     }
@@ -767,7 +777,11 @@ public class BaseSegment : IDisposable
         long* source = (long*)NativeDataAsVoidPtr;
         long nResult = *source;
 
-        return (int)nResult;
+        // Reject invalid shared-memory headers rather than truncating a 64-bit mapping size to int.
+        if (nResult < 2 * sizeof(long) || nResult > int.MaxValue)
+            throw new SharedMemoryException($"Invalid shared-memory mapping size header: {nResult}.");
+
+        return checked((int)nResult);
     }
 
     /// <summary>

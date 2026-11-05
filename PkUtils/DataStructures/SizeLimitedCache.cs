@@ -11,6 +11,7 @@ using PK.PkUtils.Extensions;
 using PK.PkUtils.Interfaces;
 using static System.FormattableString;
 
+#pragma warning disable IDE0028 // Simplify collection initialization
 #pragma warning disable IDE0305 // Collection initialization can be simplified
 
 namespace PK.PkUtils.DataStructures;
@@ -125,7 +126,7 @@ public class SizeLimitedCache<TKey, TValue> : ISizeLimitedCache<TKey, TValue>
     /// <param name="argValue"> The argument value to be checked. </param>
     /// <param name="argName">  Name of the argument. </param>
     ///
-    /// <returns>  An original value of <paramref name="argValue"/>. </returns>
+    /// <returns> An original value of <paramref name="argValue"/>. </returns>
     protected static int CheckMaxSizePositive(int argValue, string argName)
     {
         if (argValue <= 0) throw new ArgumentOutOfRangeException(argName, argValue, "The maximum size must be positive");
@@ -151,6 +152,8 @@ public class SizeLimitedCache<TKey, TValue> : ISizeLimitedCache<TKey, TValue>
 
             try
             {
+                // Reject size changes that reached the cache after disposal began.
+                ThrowIfDisposedInsideLock();
                 int oldLimit = this.MaxSize;
                 int nowCached = CurrentSizeWithoutLock;
 
@@ -190,12 +193,37 @@ public class SizeLimitedCache<TKey, TValue> : ISizeLimitedCache<TKey, TValue>
         // 
         if (Interlocked.CompareExchange(ref _disposableState, StateDisposed, StateUndisposed) == StateUndisposed)
         {
-            // If disposing equals true, dispose managed resources first.
+            // Remove entries directly under the write lock: the public Clear() method is not suitable after the disposed transition.
             if (disposing)
             {
-                // to dispose cached values
-                Clear();
-                _readerWriterLock.Dispose();
+                List<TValue> valuesToDispose = null;
+                _readerWriterLock.EnterWriteLock();
+                try
+                {
+                    if (DisposesEvictedValues)
+                        valuesToDispose = _dictionary.Values.Select(entry => entry.CachedValue).ToList();
+                    _dictionary.Clear();
+                }
+                finally
+                {
+                    _readerWriterLock.ExitWriteLock();
+                }
+
+                // Finish disposing all cache-owned values even when an individual Dispose() throws.
+                Exception firstError = null;
+                if (valuesToDispose is not null)
+                {
+                    foreach (TValue value in valuesToDispose)
+                    {
+                        try { DisposeEvictedValue(value); }
+                        catch (Exception ex) { firstError ??= ex; }
+                    }
+                }
+
+                // Keep the managed lock alive to avoid racing with threads already waiting to enter it during disposal.
+                // Calls made after disposal must reject access before reading cache state.
+                if (firstError is not null)
+                    throw new InvalidOperationException("One or more cached values could not be disposed.", firstError);
             }
             // Now release unmanaged resources. Actually nothing to do here.
         }
@@ -262,6 +290,12 @@ public class SizeLimitedCache<TKey, TValue> : ISizeLimitedCache<TKey, TValue>
     }
     #endregion // Methods
 
+    // Prevent operations queued on the lock from accessing a cache after disposal has begun.
+    private void ThrowIfDisposedInsideLock()
+    {
+        ObjectDisposedException.ThrowIf(IsDisposed, this);
+    }
+
     #region ISizeLimitedCache<TKey, TValue> Members
     #region IDisposableEx Members
 
@@ -289,6 +323,8 @@ public class SizeLimitedCache<TKey, TValue> : ISizeLimitedCache<TKey, TValue>
             _readerWriterLock.EnterReadLock();
             try
             {
+                // Reject operations that were already waiting when the cache entered its disposed state.
+                ThrowIfDisposedInsideLock();
                 return _dictionary.Count;
             }
             finally
@@ -315,6 +351,8 @@ public class SizeLimitedCache<TKey, TValue> : ISizeLimitedCache<TKey, TValue>
             _readerWriterLock.EnterReadLock();
             try
             {
+                // Reject operations that were already waiting when the cache entered its disposed state.
+                ThrowIfDisposedInsideLock();
                 return _dictionary[key].MarkAccess().CachedValue; // indexer may throw KeyNotFoundException
             }
             finally
@@ -337,6 +375,8 @@ public class SizeLimitedCache<TKey, TValue> : ISizeLimitedCache<TKey, TValue>
         _readerWriterLock.EnterReadLock();
         try
         {
+            // Reject operations that were already waiting when the cache entered its disposed state.
+            ThrowIfDisposedInsideLock();
             if (_dictionary.TryGetValue(key, out CachedEntry entry))
             {
                 value = entry.MarkAccess().CachedValue;
@@ -363,6 +403,8 @@ public class SizeLimitedCache<TKey, TValue> : ISizeLimitedCache<TKey, TValue>
 
         try
         {
+            // Reject writes that were waiting when disposal began.
+            ThrowIfDisposedInsideLock();
             if (_dictionary.TryGetValue(key, out CachedEntry entry))
             {
                 if ((entry.CachedValue != null) && entry.CachedValue.Equals(value))
@@ -401,6 +443,8 @@ public class SizeLimitedCache<TKey, TValue> : ISizeLimitedCache<TKey, TValue>
         _readerWriterLock.EnterWriteLock();
         try
         {
+            // Reject operations that were already waiting when the cache entered its disposed state.
+            ThrowIfDisposedInsideLock();
             if (this.DisposesEvictedValues)
             {
                 if (_dictionary.TryGetValue(key, out CachedEntry entry))
@@ -422,6 +466,8 @@ public class SizeLimitedCache<TKey, TValue> : ISizeLimitedCache<TKey, TValue>
         _readerWriterLock.EnterWriteLock();
         try
         {
+            // Reject operations that were already waiting when the cache entered its disposed state.
+            ThrowIfDisposedInsideLock();
             if (this.DisposesEvictedValues)
             {
                 foreach (CachedEntry entry in _dictionary.Values)
@@ -439,3 +485,4 @@ public class SizeLimitedCache<TKey, TValue> : ISizeLimitedCache<TKey, TValue>
     #endregion // ISizeLimitedCache<TKey, TValue> Members
 }
 #pragma warning restore IDE0305
+#pragma warning restore IDE0028

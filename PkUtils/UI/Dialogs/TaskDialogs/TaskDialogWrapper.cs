@@ -1,5 +1,6 @@
-﻿// Ignore Spelling: checkbox, fallback, Typedefs, Utils
+﻿// Ignore Spelling: checkbox, Esc, fallback, Typedefs, Utils
 //
+
 using System;
 using System.Collections.Generic;
 using System.Drawing;
@@ -8,8 +9,7 @@ using System.Windows.Forms;
 
 namespace PK.PkUtils.UI.Dialogs.TaskDialogs;
 
-#pragma warning disable IDE0028  //  Collection initialization can be simplified
-
+#pragma warning disable IDE0028  // Collection initialization can be simplified
 
 /// <summary> Implements several utilities as example of usage of <see cref="TaskDialog"/> </summary>
 public static class TaskDialogWrapper
@@ -61,12 +61,15 @@ public static class TaskDialogWrapper
         string noText,
         DialogResult defaultButton = DialogResult.Yes)
     {
+        // Reject invalid defaults rather than silently treating every non-Yes value as No.
+        ValidateDefaultButton(defaultButton, DialogResult.Yes, DialogResult.No);
         TaskDialogButtonCollection buttons = (defaultButton == DialogResult.Yes)
             ? CreateButtons((yesText, DialogResult.Yes), (noText, DialogResult.No))
             : CreateButtons((noText, DialogResult.No), (yesText, DialogResult.Yes));
 
         TaskDialogButton buttonResult = ShowDialogWithButtons(owner, caption, heading, null, QuestionIcon, buttons, defaultButton);
-        bool result = buttonResult.Tag is DialogResult dr && dr == DialogResult.Yes;
+        // Require an actual Yes/No choice; an unexpected result must not be mistaken for No.
+        bool result = RequireDialogResult(buttonResult, DialogResult.Yes, DialogResult.No) == DialogResult.Yes;
 
         return result;
     }
@@ -87,12 +90,15 @@ public static class TaskDialogWrapper
         Icon icon = null,
         DialogResult defaultButton = DialogResult.Yes)
     {
+        // Reject invalid default values rather than implicitly choosing the No button.
+        ValidateDefaultButton(defaultButton, DialogResult.Yes, DialogResult.No);
         TaskDialogButtonCollection buttons = (defaultButton == DialogResult.Yes)
             ? CreateButtons(("Yes", DialogResult.Yes), ("No", DialogResult.No))
             : CreateButtons(("No", DialogResult.No), ("Yes", DialogResult.Yes));
         TaskDialogIcon tdIcon = (icon is null) ? QuestionIcon : new TaskDialogIcon(icon);
         TaskDialogButton buttonResult = ShowDialogWithButtons(owner, caption, heading, text, tdIcon, buttons, defaultButton);
-        bool result = buttonResult.Tag is DialogResult dr && dr == DialogResult.Yes;
+        // Fail explicitly on a missing or unexpected response instead of silently returning false.
+        bool result = RequireDialogResult(buttonResult, DialogResult.Yes, DialogResult.No) == DialogResult.Yes;
 
         return result;
     }
@@ -122,7 +128,8 @@ public static class TaskDialogWrapper
         TaskDialogButtonCollection buttons = CreateButtons(("Yes", DialogResult.Yes), ("No", DialogResult.No));
         TaskDialogIcon tdIcon = icon ?? QuestionIcon;
         TaskDialogButton buttonResult = ShowDialogWithButtons(owner, caption, heading, text, tdIcon, buttons, DialogResult.Yes);
-        bool result = buttonResult.Tag is DialogResult dr && dr == DialogResult.Yes;
+        // Do not execute the No action unless the user actually selected No.
+        bool result = RequireDialogResult(buttonResult, DialogResult.Yes, DialogResult.No) == DialogResult.Yes;
 
         if (result)
         {
@@ -136,13 +143,13 @@ public static class TaskDialogWrapper
         return result;
     }
 
-    /// <summary>
-    /// Asks a Yes/No/Cancel question.
-    /// </summary>
-    /// <returns>
-    /// Yes or No when explicitly selected; Cancel when selected
-    /// or when the dialog is dismissed using X, Esc, or Alt+F4.
-    /// </returns>
+    /// <summary> Invoke Task Dialog to ask a question. </summary>
+    /// <param name="owner"> control or form. </param>
+    /// <param name="caption"> text for dialog caption. </param>
+    /// <param name="heading"> text for dialog heading. </param>
+    /// <param name="text"> The text. </param>
+    /// <param name="defaultButton"> (Optional) Button to focus. </param>
+    /// <returns> A DialogResult.Yes or DialogResult.No or DialogResult.Cancel. </returns>
     public static DialogResult QuestionYesNoCancel(
         IWin32Window owner,
         string caption,
@@ -150,43 +157,40 @@ public static class TaskDialogWrapper
         string text,
         DialogResult defaultButton = DialogResult.Yes)
     {
-        TaskDialogButton yesButton = TaskDialogButton.Yes;
-        TaskDialogButton noButton = TaskDialogButton.No;
-        TaskDialogButton cancelButton = TaskDialogButton.Cancel;
+        // Preserve the original public signature while sharing implementation with the expandable-details overload.
+        return QuestionYesNoCancel(owner, caption, heading, text, moreDetails: null, defaultButton: defaultButton);
+    }
 
-        TaskDialogButton selectedDefault = defaultButton switch
-        {
-            DialogResult.Yes => yesButton,
-            DialogResult.No => noButton,
-            DialogResult.Cancel => cancelButton,
-            _ => throw new ArgumentOutOfRangeException(
-                nameof(defaultButton), defaultButton,
-                "The default button must be Yes, No, or Cancel.")
-        };
+    /// <summary>Asks Yes/No/Cancel with optional expandable details.</summary>
+    /// <param name="owner">The owning window.</param>
+    /// <param name="caption">The window caption.</param>
+    /// <param name="heading">The dialog heading.</param>
+    /// <param name="text">The main dialog message.</param>
+    /// <param name="moreDetails">Text shown in a collapsed, expandable section; null or blank hides it.</param>
+    /// <param name="defaultButton">The default button (Yes, No, or Cancel).</param>
+    /// <returns>Yes, No, or Cancel; Esc and window Close are treated as Cancel.</returns>
+    public static DialogResult QuestionYesNoCancel(
+        IWin32Window owner,
+        string caption,
+        string heading,
+        string text,
+        string moreDetails,
+        DialogResult defaultButton = DialogResult.Yes)
+    {
+        // Ensure the default is one of the displayed buttons rather than silently leaving it unselected.
+        ValidateDefaultButton(defaultButton, DialogResult.Yes, DialogResult.No, DialogResult.Cancel);
+        TaskDialogButtonCollection buttons = CreateButtons(MessageBoxButtons.YesNoCancel);
+        // Reuse the central expander implementation instead of duplicating TaskDialogPage setup.
+        TaskDialogButton buttonResult = ShowDialogWithButtons(
+            owner, caption, heading, text, QuestionIcon, buttons, defaultButton,
+            moreDetails: moreDetails, allowCancel: true);
 
-        TaskDialogPage page = new()
-        {
-            Caption = caption,
-            SizeToContent = true,
-            Heading = heading,
-            Text = text,
-            Icon = QuestionIcon,
-            Buttons = [yesButton, noButton, cancelButton],
-            DefaultButton = selectedDefault,
-            AllowCancel = true
-        };
-
-        TaskDialogButton buttonResult = TaskDialog.ShowDialog(owner, page);
-
-        // Only explicit Yes and No selections produce these results.
-        // Cancel, X, Esc, Alt+F4, and unexpected results return Cancel.
-        if (ReferenceEquals(buttonResult, yesButton))
-            return DialogResult.Yes;
-
-        if (ReferenceEquals(buttonResult, noButton))
-            return DialogResult.No;
-
-        return DialogResult.Cancel;
+        // Treat Esc, Close, or a null result as Cancel, but reject unexpected non-cancel results.
+        // Closing the dialog with the system Close (X) button or Esc is equivalent to selecting Cancel.
+        DialogResult result = buttonResult?.Tag is DialogResult dr
+            ? dr
+            : DialogResult.Cancel;
+        return result;
     }
 
     /// <summary> Invoke TaskDialog to ask a question with Abort, Retry, and Ignore options. </summary>
@@ -207,7 +211,8 @@ public static class TaskDialogWrapper
     {
         TaskDialogButtonCollection buttons = CreateButtons(MessageBoxButtons.AbortRetryIgnore);
         TaskDialogButton buttonResult = ShowDialogWithButtons(owner, caption, heading, text, icon ?? QuestionIcon, buttons, defaultButton);
-        DialogResult result = buttonResult.Tag is DialogResult dr ? dr : defaultButton;
+        // Never interpret an unexpected or missing result as Retry (or another requested default).
+        DialogResult result = RequireDialogResult(buttonResult, DialogResult.Abort, DialogResult.Retry, DialogResult.Ignore);
 
         return result;
     }
@@ -241,7 +246,8 @@ public static class TaskDialogWrapper
         TaskDialogButton buttonResult = ShowDialogWithButtons(
             owner, caption, heading, text, icon ?? QuestionIcon, buttons, defaultButton, moreDetails);
         bool isIgnoreAll = ReferenceEquals(buttonResult, ignoreAllButton);
-        DialogResult result = buttonResult.Tag is DialogResult dr ? dr : defaultButton;
+        // Require an explicit Abort/Retry/Ignore selection, including the tagged Ignore All button.
+        DialogResult result = RequireDialogResult(buttonResult, DialogResult.Abort, DialogResult.Retry, DialogResult.Ignore);
 
         return (result, isIgnoreAll);
     }
@@ -286,8 +292,10 @@ public static class TaskDialogWrapper
             defaultButton,
             allowCancel: false,
             verification: verificationCheckBox);
+        // The checkbox has meaning only together with an explicitly selected dialog button.
         bool applyIgnoreToAll = verificationCheckBox.Checked;
-        DialogResult result = buttonResult.Tag is DialogResult dr ? dr : defaultButton;
+        // Do not silently select Retry when the dialog returns no valid response.
+        DialogResult result = RequireDialogResult(buttonResult, DialogResult.Abort, DialogResult.Retry, DialogResult.Ignore);
 
         return (result, applyIgnoreToAll);
     }
@@ -335,7 +343,20 @@ public static class TaskDialogWrapper
         if (commands == null || commands.Length == 0)
             throw new ArgumentException("At least one command button must be specified.", nameof(commands));
 
-        TaskDialogButtonCollection buttons = new();
+        // Catch invalid default indices immediately instead of silently selecting no default.
+        if (defaultButtonIndex < -1 || defaultButtonIndex >= commands.Length)
+            throw new ArgumentOutOfRangeException(nameof(defaultButtonIndex));
+
+        // Reserve null tags for cancellation so a real command can never look like Cancel.
+        for (int index = 0; index < commands.Length; index++)
+        {
+            if (commands[index].Tag is null)
+                throw new ArgumentException($"Command at index {index} has a null tag.", nameof(commands));
+            if (string.IsNullOrWhiteSpace(commands[index].Text))
+                throw new ArgumentException($"Command at index {index} has no button text.", nameof(commands));
+        }
+
+        TaskDialogButtonCollection buttons = [];
         TaskDialogButton defaultButton = null;
         TaskDialogVerificationCheckBox checkbox = null;
 
@@ -384,9 +405,22 @@ public static class TaskDialogWrapper
         }
 
         TaskDialogButton result = TaskDialog.ShowDialog(owner, page);
+        // Cancellation must not preserve the verification-checkbox state as an actionable preference.
+        // Only an explicitly allowed cancellation returns null; otherwise missing results are errors.
+        if (result is null)
+        {
+            if (showCancelButton)
+                return (null, false);
+            throw new InvalidOperationException("The TaskDialog returned no command despite cancellation being disabled.");
+        }
+        if (showCancelButton && result.Tag is null && buttons.Contains(result))
+            return (null, false);
+        // Reject unrecognized results rather than returning an ambiguous null command tag.
+        if (!buttons.Contains(result) || result.Tag is null)
+            throw new InvalidOperationException("The TaskDialog returned an unexpected command button.");
         bool checkboxChecked = checkbox?.Checked ?? false;
 
-        return (result?.Tag, checkboxChecked);
+        return (result.Tag, checkboxChecked);
     }
     #endregion // CustomCommand
 
@@ -459,7 +493,7 @@ public static class TaskDialogWrapper
     /// Displays a confirmation dialog with Continue and Stop buttons.
     /// The user can explicitly choose whether to continue or stop.
     /// If the specified timeout expires without user interaction,
-    /// the Continue button is automatically selected.
+    /// the Continue button is automatically selected when the UI thread processes the timer tick.
     /// </summary>
     /// 
     /// <remarks>
@@ -597,6 +631,9 @@ public static class TaskDialogWrapper
                 AddButton("Retry", DialogResult.Retry);
                 AddButton("Ignore", DialogResult.Ignore);
                 break;
+            // Unsupported button configurations must not produce an empty, unusable dialog.
+            default:
+                throw new ArgumentOutOfRangeException(nameof(buttons), buttons, "Unsupported button configuration.");
         }
 
         // Validate or fallback
@@ -622,6 +659,21 @@ public static class TaskDialogWrapper
 
     #region Private Methods
 
+    // Validate explicit defaults consistently across all public dialog methods.
+    private static void ValidateDefaultButton(DialogResult requested, params DialogResult[] allowed)
+    {
+        if (!allowed.Contains(requested))
+            throw new ArgumentOutOfRangeException(nameof(requested), requested, "The default button must be one of the displayed buttons.");
+    }
+
+    // Reject unexpected or missing button results instead of silently invoking a potentially unsafe action.
+    private static DialogResult RequireDialogResult(TaskDialogButton button, params DialogResult[] allowed)
+    {
+        if (button?.Tag is DialogResult result && allowed.Contains(result))
+            return result;
+        throw new InvalidOperationException("The TaskDialog was dismissed without a valid button selection.");
+    }
+
     private static TaskDialogButton FindButton(
         IEnumerable<TaskDialogButton> buttons,
         DialogResult buttonTag)
@@ -641,6 +693,9 @@ public static class TaskDialogWrapper
         bool allowCancel = false,
         TaskDialogVerificationCheckBox verification = null)
     {
+        // Fail on invalid defaults rather than creating an unselected DefaultButton.
+        if (FindButton(buttons, defaultButton) is null)
+            throw new ArgumentOutOfRangeException(nameof(defaultButton), defaultButton, "The default button is not in this dialog.");
         TaskDialogPage page = new()
         {
             Caption = caption,
@@ -679,6 +734,7 @@ public static class TaskDialogWrapper
     /// <param name="remainingTimeText">Optional callback to format the countdown from the remaining whole seconds.
     /// Called initially and when the second count changes, unless the placement is None.</param>
     /// <param name="countdownPlacement">Where to display the countdown, or None to disable it.</param>
+    /// <remarks>The timeout depends on the UI message loop; if countdown formatting fails, only the countdown is disabled.</remarks>
     /// <returns>The button used to close the dialog.</returns>
     /// <exception cref="ArgumentOutOfRangeException">
     /// Thrown when <paramref name="seconds"/> is less than or equal to zero.
@@ -692,12 +748,19 @@ public static class TaskDialogWrapper
         AutoCloseCountdownPlacement countdownPlacement = AutoCloseCountdownPlacement.Text)
     {
         ArgumentOutOfRangeException.ThrowIfLessThan(seconds, 1);
+        // Validate enum values so unsupported placements cannot silently hide the countdown.
+        if (countdownPlacement is not (AutoCloseCountdownPlacement.None or AutoCloseCountdownPlacement.Heading or AutoCloseCountdownPlacement.Text))
+            throw new ArgumentOutOfRangeException(nameof(countdownPlacement));
+        // Ensure the button selected by timeout actually belongs to this dialog.
+        if (timeoutButton is null || !page.Buttons.Contains(timeoutButton))
+            throw new ArgumentException("The timeout button must belong to the dialog page.", nameof(timeoutButton));
 
         string originalText = page.Text;
         bool showCountdown = remainingTimeText is not null && countdownPlacement != AutoCloseCountdownPlacement.None;
         int lastRemainingSeconds = seconds;
+        // Countdown formatting is user-supplied: suppress its failure without disabling the timeout itself.
         if (showCountdown)
-            UpdateRemainingTime(seconds);
+            TryUpdateRemainingTime(seconds);
 
         // Use Stopwatch to measure actual elapsed time, since Windows Forms
         // Timer ticks may be delayed when the UI thread is busy.
@@ -741,14 +804,25 @@ public static class TaskDialogWrapper
                 if (remainingSeconds != lastRemainingSeconds)
                 {
                     lastRemainingSeconds = remainingSeconds;
-                    UpdateRemainingTime(remainingSeconds);
+                    // An exception in the formatting callback must not escape a WinForms timer event.
+                    TryUpdateRemainingTime(remainingSeconds);
                 }
             }
         }
 
-        void UpdateRemainingTime(int remainingSeconds)
+        // Disable only the optional countdown if the formatter fails; the automatic-close timer continues.
+        void TryUpdateRemainingTime(int remainingSeconds)
         {
-            string countdownText = remainingTimeText(remainingSeconds);
+            string countdownText;
+            try
+            {
+                countdownText = remainingTimeText(remainingSeconds);
+            }
+            catch (Exception)
+            {
+                showCountdown = false;
+                return;
+            }
             switch (countdownPlacement)
             {
                 case AutoCloseCountdownPlacement.Heading:
@@ -764,5 +838,4 @@ public static class TaskDialogWrapper
     }
     #endregion // Private Methods
 }
-
 #pragma warning restore IDE0028
