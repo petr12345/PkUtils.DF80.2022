@@ -1,0 +1,359 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>TestTaskDialog — Project Guide and Measured-Space Formatter</title>
+<style>
+:root{color-scheme:light;--ink:#1d2939;--muted:#526274;--line:#d9e1e9;--soft:#f3f6fa;--accent:#165d91;--code:#102333}
+*{box-sizing:border-box}
+body{font:15px/1.65 "Segoe UI",Arial,sans-serif;color:var(--ink);background:#fff;margin:0}
+main{max-width:1000px;margin:auto;padding:42px 34px 80px}
+h1{font-size:32px;line-height:1.2;margin:0 0 8px}
+h2{font-size:23px;margin:38px 0 12px;padding-top:6px;border-bottom:1px solid var(--line);padding-bottom:7px}
+h3{font-size:18px;margin:25px 0 8px}
+h4{font-size:15px;margin:16px 0 5px}
+p,li{max-width:90ch} li{margin-bottom:7px}
+small,.muted{color:var(--muted)}
+.kicker{color:var(--accent);text-transform:uppercase;font-size:12px;letter-spacing:.09em;font-weight:700}
+.subtitle{font-size:18px;color:var(--muted);max-width:850px}
+.meta{border-top:1px solid var(--line);border-bottom:1px solid var(--line);display:flex;gap:28px;flex-wrap:wrap;padding:10px 0;margin:26px 0}
+nav{background:var(--soft);border:1px solid var(--line);border-radius:8px;padding:18px 23px}
+nav a{color:var(--accent);text-decoration:none}
+nav ol{columns:2;column-gap:35px;margin:5px 0}
+table{border-collapse:collapse;width:100%;font-size:14px;margin:14px 0 20px}
+th,td{text-align:left;vertical-align:top;border-bottom:1px solid var(--line);padding:9px 10px}
+th{background:var(--soft)}
+code,pre{font-family:Consolas,"Cascadia Code",monospace}
+code{font-size:.93em;color:#174c74}
+pre{overflow:auto;background:#14283b;color:#f3f7ff;padding:15px 18px;border-radius:8px;font-size:13px;line-height:1.5}
+pre code{color:inherit}
+.note{border-left:4px solid #5388b1;background:#f0f5fa;padding:12px 17px;margin:19px 0}
+.warning{border-left-color:#b77919;background:#fff8e8}
+.diagram{font-family:Consolas,monospace;white-space:pre;overflow-x:auto;background:var(--soft);padding:17px;border:1px solid var(--line);border-radius:8px}
+.tag{font-size:12px;background:#e8eef5;border-radius:4px;padding:2px 6px;white-space:nowrap}
+footer{color:var(--muted);border-top:1px solid var(--line);margin-top:42px;padding-top:18px;font-size:13px}
+@media(max-width:700px){main{padding:22px 16px}nav ol{columns:1}table{font-size:12px}th,td{padding:7px 5px}}
+@media print{main{max-width:none;padding:0}nav{break-inside:avoid}pre{white-space:pre-wrap}h2,h3{break-after:avoid}}
+</style>
+</head>
+<body><main>
+<div class="kicker">Developer documentation · C# / Windows Desktop</div>
+<h1>TestTaskDialog</h1>
+<p class="subtitle">Purpose, architecture, class-by-class reference, and detailed explanation of measured-space formatting and intelligent truncation in Windows TaskDialog expanded information.</p>
+<div class="meta"><span><strong>Document:</strong> README.html</span><span><strong>Scope:</strong> PkUtils_Tests / TestTaskDialog</span><span><strong>Prepared:</strong> 7 November 2026</span></div>
+
+
+<nav><strong>Contents</strong><ol>
+<li><a href="#purpose">Project purpose</a></li>
+<li><a href="#architecture">How it works</a></li>
+<li><a href="#inventory">Class and source inventory</a></li>
+<li><a href="#testui">Running the test</a></li>
+<li><a href="#formatter">MeasuredSpaceTableFormatter — in depth</a></li>
+<li><a href="#truncation">Truncation enum and Smart rules</a></li>
+<li><a href="#experiment">MeasuredSpacesExperiment — in depth</a></li>
+<li><a href="#limitations">Limitations and diagnostics</a></li>
+<li><a href="#production">Production adoption plan</a></li>
+<li><a href="#wpf">WPF integration alternatives</a></li>
+<li><a href="#verification">Verification checklist</a></li>
+</ol></nav>
+
+<section id="purpose">
+<h2>1. Project purpose</h2>
+<p><code>TestTaskDialog</code> is a Windows Forms test harness for the shared <code>PK.PkUtils.UI.Dialogs.TaskDialogs.TaskDialogWrapper</code> library. The inspected <code>TestForm</code> exercises ordinary information/question dialogs, a Yes/No/Cancel question, and automatic-close notification and confirmation dialogs. It additionally hosts an experimental feature: displaying three aligned columns of <em>Setting / Ribbon / Project</em> values in the native TaskDialog expander.</p>
+<p>The new experiment addresses a practical UI problem: native Windows TaskDialog expanded information is plain text rendered with a proportional font. Padding with a fixed number of characters does not reliably align columns; attempting to replace its font through native control manipulation was not successful in earlier experiments. The current approach instead measures text widths and inserts ordinary spaces until subsequent columns approximately align in pixel coordinates.</p>
+<p><strong>Non-goals:</strong> replacing the TaskDialog implementation; introducing custom Win32 hooks; changing the production <code>TaskDialogWrapper</code> API; or claiming pixel-perfect table layout in the native DirectUI renderer.</p>
+</section>
+
+<section id="architecture">
+<h2>2. Runtime architecture and data flow</h2>
+<div class="diagram">TestForm (WinForms UI and event handlers)
+  │ owns dataset/spacing/width/truncation controls
+  ▼
+MeasuredSpacesExperiment (test coordinator)
+  │ GetMeasuredRows(dataset)
+  │ _owner.CreateGraphics() + SystemFonts.MessageBoxFont
+  ▼
+MeasuredSpaceTableFormatter.Format(...)
+  │ measures text and selects truncation (if needed)
+  │ produces FormatResult { Text, Diagnostics, FullValues }
+  ▼
+MeasuredSpacesExperiment
+  ├─ preview → txtMeasuredOutput
+  ├─ diagnostics → txtMeasuredDiagnostics
+  ├─ clipboard → formatted + full original data + diagnostics
+  └─ ShowDialog() → TaskDialogWrapper.QuestionYesNoCancel(...)
+                         │ moreDetails = FormatResult.Text
+                         ▼
+                    native Windows TaskDialog expander</div>
+<p>The <code>TestForm</code> is deliberately thin. All experiment-specific input selection, formatting orchestration and diagnostics are located in an ordinary class named <code>MeasuredSpacesExperiment</code>. The formatter is a separate static algorithmic utility, independent of the test controls. This avoids the earlier confusing <code>TestForm.MeasuredSpaces.cs</code> partial-Form file.</p>
+<p>The test uses the existing <code>QuestionYesNoCancel</code> overload and passes generated text via <code>moreDetails</code>. It does not modify the implementation of <code>TaskDialogWrapper</code>.</p>
+</section>
+
+<section id="inventory">
+<h2>3. Class and source inventory</h2>
+<table><thead><tr><th>Class / file</th><th>Role</th><th>Details and boundaries</th></tr></thead><tbody>
+<tr><td><code>TestForm</code><br><span class="tag">TestForm.cs</span></td><td>Main WinForms test form</td><td>Calls <code>InitializeComponent()</code>, constructs <code>MeasuredSpacesExperiment</code>, forwards control events, and hosts pre-existing TaskDialog demonstrations.</td></tr>
+<tr><td><code>TestForm</code> UI part<br><span class="tag">TestForm.Designer.cs</span></td><td>Designer-managed controls</td><td>Defines the dataset/truncation selectors, gap and maximum-width numeric controls, preview and diagnostics text boxes, buttons and result label. It is not the appropriate place for formatting rules.</td></tr>
+<tr><td><code>MeasuredSpacesExperiment</code><br><span class="tag">MeasuredSpacesExperiment.cs</span></td><td>Experiment controller</td><td>Builds datasets, obtains drawing context/font, calls formatter, displays preview and TaskDialog, logs the result, exports full values to clipboard.</td></tr>
+<tr><td><code>MeasuredSpaceTableFormatter</code><br><span class="tag">MeasuredSpaceTableFormatter.cs</span></td><td>Formatting algorithm</td><td>Measures text using <code>TextRenderer</code>, computes column targets, conditionally truncates overflowing values, pads with measured ordinary spaces, produces diagnostics.</td></tr>
+<tr><td><code>MeasuredTextTruncationMode</code><br><span class="tag">same formatter file</span></td><td>Behavior policy enum</td><td>Defines <code>None</code>, <code>TruncateEnd</code> and <code>Smart</code>.</td></tr>
+<tr><td><code>MeasuredSpaceTableFormatter.FormatResult</code><br><span class="tag">nested class</span></td><td>Immutable result data</td><td>Holds <code>Text</code>, <code>Diagnostics</code>, and <code>FullValues</code>.</td></tr>
+<tr><td><code>TaskDialogWrapper</code><br><span class="tag">referenced library class</span></td><td>Production dialog abstraction</td><td>Supplies <code>Information</code>, <code>Question</code>, <code>QuestionYesNoCancel</code>, <code>ShowAutoCloseNotification</code>, and <code>ShowAutoCloseConfirmation</code> to the test. It is a dependency, not a new class defined in the test project.</td></tr>
+</tbody></table>
+
+</section>
+
+<section id="testui">
+<h2>4. How to use the test application</h2>
+<ol>
+<li>Build the appropriate <code>TestTaskDialog</code> configuration in Visual Studio and launch the form on Windows.</li>
+<li>Select a dataset: ordinary ACM values, very different proportional character widths, long paths/Unicode, or long values sharing a prefix.</li>
+<li>Adjust the gap between columns (pixels), approximate maximum table width (pixels), and truncation policy.</li>
+<li>Inspect the generated preview and the diagnostic text. Note that a preview control's font can differ from the native TaskDialog's font.</li>
+<li>Open the TaskDialog and expand its details to evaluate <em>actual</em> column alignment and unwanted wrapping.</li>
+<li>Use the clipboard action to capture formatted text, original untruncated values, and diagnostics for bug reports or comparisons.</li>
+</ol>
+<p>The existing non-experiment controls continue to demonstrate the information and question APIs, Yes/No/Cancel result mapping, and two automatic-close behaviors. The measured-space experiment does not replace those tests.</p>
+</section>
+
+<section id="formatter">
+<h2>5. MeasuredSpaceTableFormatter — detailed design</h2>
+<h3>5.1 Input and output contract</h3>
+<pre><code>FormatResult Format(
+    Graphics graphics,
+    Font font,
+    IReadOnlyList&lt;(string Setting, string Ribbon, string Project)&gt; rows,
+    string settingHeader,
+    string ribbonHeader,
+    string projectHeader,
+    int columnGapPixels = 20,
+    int maxTableWidthPixels = 420,
+    MeasuredTextTruncationMode truncationMode = MeasuredTextTruncationMode.Smart)</code></pre>
+<p><code>graphics</code> supplies measurement/DPI context; <code>font</code> is an approximation of the native TaskDialog font; <code>rows</code> are the comparison values; the three headers become the first row. <code>columnGapPixels</code> is the desired gap between columns; <code>maxTableWidthPixels</code> is an estimated usable <em>text area</em>, not the outer dialog's width.</p>
+<p>The implementation validates non-null graphics/font/rows, rejects negative gaps, and requires a positive table-width limit. Null individual strings are normalized to empty strings.</p>
+<p>The result separates three concerns: <code>Text</code> is what the TaskDialog displays, <code>Diagnostics</code> explains the formatter's decisions, and <code>FullValues</code> retains every original comparison value even when display text was shortened.</p>
+
+<h3>5.2 Phase A — measure the original, unmodified table</h3>
+<p>For each column, determine the maximum measured width across the header and all rows:</p>
+<pre><code>settingWidth = max(measured width of each Setting cell)
+ribbonWidth  = max(measured width of each Ribbon cell)
+projectWidth = max(measured width of each Project cell)
+
+originalWidth = settingWidth + ribbonWidth + projectWidth
+                + 2 * columnGapPixels</code></pre>
+<p>Measurements call <code>TextRenderer.MeasureText</code> with <code>NoPadding | NoPrefix | SingleLine</code>. The algorithm measures the actual strings, not just character counts.</p>
+<p><strong>Critical invariant:</strong> if <code>originalWidth &lt;= maxTableWidthPixels</code>, formatting does not truncate any cell — even when the selected policy is Smart or TruncateEnd. It still constructs the aligned text and diagnostic report.</p>
+
+<h3>5.3 Phase B — detect overflow and allocate budgets</h3>
+<p>Only when the original table exceeds the configured width and truncation is enabled does the formatter attempt to shorten it. It preserves setting labels and column headers when feasible, and allocates the remaining space to Ribbon and Project values.</p>
+<pre><code>safetyPixels = 12
+available = maxTableWidthPixels - settingWidth
+            - 2 * columnGapPixels - safetyPixels
+
+minRibbon  = measured width of "Ribbon" header
+minProject = measured width of "Project" header</code></pre>
+<p>If <code>available &lt; minRibbon + minProject</code>, the algorithm reports that the configured width is too small to preserve labels and headers. It does not promise to fit a table under impossible constraints.</p>
+<p>Otherwise, it starts with the minimum header widths and allocates remaining pixels, one unit at a time, until the source columns reach their original widths or the budget is exhausted. The intention is to keep relatively short columns intact and distribute reductions where necessary.</p>
+<p>Importantly, <strong>only Ribbon and Project value cells (not headers or setting-name cells)</strong> are passed to the truncation routine.</p>
+
+<h3>5.4 Phase C — truncate a value without breaking Unicode elements</h3>
+<p><code>TruncateToWidth</code> first returns the original value if it fits. If not, it inserts the ellipsis character <code>…</code> and uses binary search to find the maximum number of text elements that fit the allocated pixel width. It preserves either a prefix (<code>text…</code>) or a suffix (<code>…text</code>) according to the mode.</p>
+<p><code>Elements</code> uses <code>StringInfo.GetTextElementEnumerator</code>, avoiding arbitrary UTF-16 character splitting. This better handles surrogate pairs and combining characters than a naïve substring; it is still worth testing complex grapheme clusters against the application's target runtime.</p>
+<p>Because the output is recomputed against the actual font measurement, the number of retained characters can differ between strings of equal character length.</p>
+
+<h3>5.5 Phase D — build the visually aligned text</h3>
+<p>After truncation, the formatter recalculates the final maximum width of every column. It computes the desired start position of Ribbon and Project:</p>
+<pre><code>targetRibbon  = finalSettingWidth + columnGapPixels
+targetProject = targetRibbon + finalRibbonWidth + columnGapPixels</code></pre>
+<p>For every output line, <code>PadToTarget</code> appends ordinary spaces and measures the <em>entire growing prefix</em>. It keeps the candidate closest to the target pixel width, instead of assuming that one character always equals a fixed width. Up to 1,024 padding attempts are allowed for a target.</p>
+<p>The formatter then appends the Ribbon and Project values. This is the core trick: all rows use shared pixel targets even though a proportional font renders characters at different widths.</p>
+<p>The generated text is a plain multi-line string, not an actual table widget. The TaskDialog expander receives it as its expanded information.</p>
+
+<h3>5.6 Phase E — diagnostics</h3>
+<p>The formatter records the selected mode, gap, budget, measured original width and fit state; any computed Ribbon/Project column budgets; individual truncation decisions (including original and shortened values); target column positions; approximate per-row alignment errors; and the longest measured line compared with the requested limit.</p>
+<p>If the measured output still exceeds the limit, it emits a warning. The diagnostic explicitly distinguishes estimates made by <code>TextRenderer</code> from the real text positions used by Windows TaskDialog's DirectUI renderer.</p>
+
+<h3>5.7 Private helper methods</h3>
+<table><thead><tr><th>Method</th><th>Purpose</th></tr></thead><tbody>
+<tr><td><code>Width</code></td><td>Measure one text string in the supplied drawing context and font.</td></tr>
+<tr><td><code>HasMeaningfulCommonPrefix</code></td><td>Compare paired Ribbon and Project strings to decide whether suffixes carry the most useful differences.</td></tr>
+<tr><td><code>Elements</code></td><td>Enumerate Unicode text elements for safe text clipping.</td></tr>
+<tr><td><code>TruncateToWidth</code></td><td>Binary-search the longest measured prefix/suffix that fits alongside an ellipsis.</td></tr>
+<tr><td><code>PadToTarget</code></td><td>Append measured ordinary spaces until the next column starts as close as possible to its target pixel position.</td></tr>
+</tbody></table>
+</section>
+
+<section id="truncation">
+<h2>6. MeasuredTextTruncationMode explained</h2>
+<table><thead><tr><th>Enum value</th><th>When the table fits</th><th>When the table overflows</th><th>Typical use</th></tr></thead><tbody>
+<tr><td><code>None</code></td><td>All values unchanged</td><td>No shortening; Windows may wrap lines and destroy column alignment</td><td>Debugging or preserving full text at the expense of layout</td></tr>
+<tr><td><code>TruncateEnd</code></td><td>All values unchanged</td><td>Shorten overflowing cells as <code>Beginning…</code></td><td>Values with distinctive beginnings</td></tr>
+<tr><td><code>Smart</code></td><td>All values unchanged</td><td>Compare Ribbon and Project values within each row: when a substantial common prefix exists, use <code>…Ending</code>; otherwise use <code>Beginning…</code></td><td>Paths, generated names, and similar values whose informative difference is at the end</td></tr>
+</tbody></table>
+<h3>The exact Smart decision in the source</h3>
+<p><code>HasMeaningfulCommonPrefix(a,b)</code> performs an ordinal, case-insensitive comparison of Unicode text elements. It counts how many leading elements are equal. A common prefix is considered meaningful when <strong>both</strong> conditions hold:</p>
+<pre><code>commonPrefixElements &gt;= 8
+commonPrefixElements * 3 &gt;= min(leftElementCount, rightElementCount)</code></pre>
+<p>That is, at least eight leading text elements must match, and the shared prefix must cover at least one-third of the shorter value. This heuristic works for the demonstrated long similar paths but is <em>not</em> a semantic path-comparison algorithm; it does not parse directories or treat filename extensions specially.</p>
+<h3>Examples</h3>
+<table><thead><tr><th>Input pair</th><th>Smart choice if truncation is needed</th></tr></thead><tbody>
+<tr><td><code>C:\aaaaaaaa…aaaa12</code><br><code>C:\aaaaaaaa…aaaa34</code></td><td>Preserve suffixes, yielding values analogous to <code>…aaaa12</code> and <code>…aaaa34</code>; exact retained length depends on width.</td></tr>
+<tr><td><code>D:\Projects\Automation\Generated\Results</code><br><code>C:\Tmp\Output</code></td><td>Preserve beginnings if the shared-prefix threshold is not satisfied.</td></tr>
+</tbody></table>
+<p>The choice to preserve endings is made for the <em>pair of corresponding values</em>, then applied to each cell that needs truncation. A value already within its budget is not shortened merely because the other value is long.</p>
+</section>
+
+<section id="experiment">
+<h2>7. MeasuredSpacesExperiment — detailed design</h2>
+<p>This <code>internal sealed</code> class is an ordinary C# helper, <strong>not</strong> a <code>Form</code> and not a partial class. Its separation from <code>TestForm</code> is deliberate: double-clicking it in Visual Studio opens source code rather than launching a Form designer.</p>
+<h3>7.1 Fields and constructor</h3>
+<p>The <code>Fields_GUI</code> region holds references to the owning <code>Form</code>, a result <code>Label</code>, dataset and truncation <code>ComboBox</code> controls, gap and maximum-width <code>NumericUpDown</code> controls, and preview/diagnostic <code>TextBox</code> controls. The <code>Fields_PresentedData</code> region holds the generated text, diagnostic string and original values for later export.</p>
+<p>Its constructor receives the controls from <code>TestForm</code> and retains those references. The constructor does not allocate a second WinForms form or set up a new message loop.</p>
+<h3>7.2 RebuildPreview()</h3>
+<ol>
+<li>Reads the selected dataset index and maps it to comparison rows via <code>GetMeasuredRows</code>.</li>
+<li>Creates a temporary <code>Graphics</code> object using <code>_owner.CreateGraphics()</code>; it is disposed with <code>using</code>.</li>
+<li>Passes <code>SystemFonts.MessageBoxFont</code>, the selected gap and width, and the enum based on the truncation-selector index to <code>MeasuredSpaceTableFormatter.Format</code>.</li>
+<li>Saves <code>Text</code>, <code>Diagnostics</code> and <code>FullValues</code> from the returned result.</li>
+<li>Adds font name/point size and horizontal/vertical DPI to the displayed diagnostics, and updates the text boxes.</li>
+<li>On exception, clears the generated text and displays the exception details instead of opening a stale dialog.</li>
+</ol>
+<p>The system message-box font is chosen as an approximation to the native TaskDialog DirectUI font. The font family, text metrics and DPI should be reviewed on the target system; an approximate match is not a pixel-perfect contract.</p>
+<h3>7.3 ShowDialog()</h3>
+<p>Calls <code>RebuildPreview()</code> first. If generated text is empty it stops. Otherwise it calls <code>TaskDialogWrapper.QuestionYesNoCancel</code> with <code>moreDetails: _measuredGeneratedText</code> and default button <code>Yes</code>. It writes the resulting <code>DialogResult</code> into the result label and appends it to diagnostics.</p>
+<p>Despite the comparison headings, this is a test, not a production settings resolver: it demonstrates rendering and button return behavior, not modification of ACM Project or Ribbon data.</p>
+<h3>7.4 CopyTextAndDiagnostics()</h3>
+<p>Rebuilds the preview and puts a combined payload on the Windows clipboard: formatted text; full original, untruncated values; and diagnostics. This is important when displayed values have ellipses, because the clipboard still retains the information necessary to understand exactly what was compared.</p>
+<h3>7.5 GetMeasuredRows(int dataset)</h3>
+<p>Provides four built-in sample datasets:</p>
+<table><thead><tr><th>Dataset index</th><th>Purpose</th></tr></thead><tbody>
+<tr><td>0 / default</td><td>Four ordinary ACM settings: project name, output folder, create-at-least-a-script, safe cancel.</td></tr>
+<tr><td>1</td><td>Variable-width characters such as <code>III</code>, <code>WWW</code>, <code>iiiii</code>, <code>MMMMMMMM</code>; stresses proportional-font measurement.</td></tr>
+<tr><td>2</td><td>Long values and Unicode, including a Czech project name and directory; stresses overflow, Unicode and width assumptions.</td></tr>
+<tr><td>3</td><td>Long path pair with shared prefix but distinct endings, plus unrelated long names; stresses the Smart truncation heuristic.</td></tr>
+</tbody></table>
+<p>Cases are local test data, not values loaded from an actual ACM Project.</p>
+</section>
+
+<section id="limitations">
+<h2>8. Known limitations and engineering cautions</h2>
+<ul>
+<li><strong>DirectUI versus TextRenderer:</strong> the measured font is an approximation. Native TaskDialog may have different font metrics or whitespace behavior.</li>
+<li><strong>Unknown native expander width:</strong> <code>maxTableWidthPixels</code> is user-configured and should be calibrated empirically. At different DPI, theme, locale or text size, the same budget can behave differently.</li>
+<li><strong>Whole-space granularity:</strong> padding cannot achieve fractional-space positioning; diagnostics report residual misalignment.</li>
+<li><strong>Wrapping is still possible:</strong> a row can exceed the estimated limit, especially if headers/labels cannot fit, or if native rendering differs from measured widths.</li>
+<li><strong>Loss of display detail:</strong> truncated dialog text is not the full source data; preserve complete values elsewhere for troubleshooting and accessibility.</li>
+<li><strong>Path semantics:</strong> Smart compares characters, not path components. Case-insensitive prefix matching does not imply the paths are logically equivalent.</li>
+<li><strong>Threading:</strong> <code>Graphics</code>, WinForms controls and modal dialogs must be used on the appropriate UI thread.</li>
+<li><strong>Localization:</strong> longer translated headers/settings may consume much of the width budget. Right-to-left text and other complex scripts need separate validation.</li>
+</ul>
+</section>
+
+<section id="production">
+<h2>9. Plan for adopting the feature in another (possibly production) project</h2>
+<h3>Recommended structure</h3>
+<div class="diagram">Application / ViewModel
+    └─ creates semantic differences (Setting, Left, Right)
+          └─ ComparisonTextFormatter (shared formatting service)
+                ├─ truncation policy and Unicode text-element logic
+                ├─ text-width measurement abstraction
+                └─ result { Text, Diagnostics, FullValues }
+                      └─ dialog adapter (WinForms TaskDialog / WPF host / other)
+</div>
+<ol>
+<li><strong>Define a generic comparison model.</strong> Replace Ribbon/Project names in the formatter input with neutral <code>Left</code>/<code>Right</code> labels. Keep domain-specific settings generation in the application.</li>
+<li><strong>Separate measurement from policy.</strong> Extract a small measurement interface or delegate (such as <code>MeasureWidth(string)</code>), so budget allocation, truncation and padding can be tested without WinForms.</li>
+<li><strong>Preserve existing semantics.</strong> Keep None, TruncateEnd and Smart; make mode, gap, text-area limit and headers explicit parameters. Return full original values independently of display text.</li>
+<li><strong>Keep native dialog invocation outside the formatter.</strong> Use <code>TaskDialogWrapper</code> or a small adapter to pass the formatted string into expanded information. Do not duplicate dialog result handling inside the formatting utility.</li>
+<li><strong>Define fit expectations.</strong> Calibrate maximum usable width from representative target machines. Add tests for impossible budgets and situations where label and header widths dominate.</li>
+<li><strong>Add automated tests.</strong> Assert no truncation if the complete table fits; ellipsis only when needed; suffix retention with meaningful common prefix; original-values preservation; Unicode-safe clipping; deterministic width budgets with a fake measurer; and useful diagnostics.</li>
+<li><strong>Run UI verification.</strong> Confirm output on Windows at 100%, 125%, 150% DPI, on different fonts/themes, and for long localized paths. Track whether any line wraps in the real TaskDialog.</li>
+<li><strong>Move into production only after visual verification.</strong> Keep this test harness as a regression/demo project.</li>
+</ol>
+<h3>Illustrative generic API</h3>
+<pre><code>public enum TextTruncationMode { None, TruncateEnd, Smart }
+
+public sealed record ComparisonRow(
+    string Setting, string LeftValue, string RightValue);
+
+public sealed record FormattedComparison(
+    string Text, string Diagnostics, string FullValues);
+
+// Sketch of a refactored, rendering-independent service:
+FormattedComparison Format(
+    IReadOnlyList&lt;ComparisonRow&gt; rows,
+    string leftHeader,
+    string rightHeader,
+    Func&lt;string, double&gt; measureWidth,
+    double maxWidth,
+    double columnGap,
+    TextTruncationMode mode);</code></pre>
+<p>This API is a suggested future design rather than an existing implementation.</p>
+</section>
+
+<section id="wpf">
+<h2>10. Using the idea from WPF</h2>
+<p>A WPF application can adopt the same comparison strategy. There are two distinct objectives: (A) continue showing the <em>native Windows TaskDialog</em> with measured-space text, or (B) display a <em>WPF-native comparison interface</em>. These should not be confused.</p>
+<h3>Option A — WPF application calling native TaskDialog</h3>
+<p>Prefer this when preserving the Windows TaskDialog appearance is a requirement. Keep the TaskDialog adapter separate from WPF-specific code. If using the WinForms <code>TaskDialogWrapper</code>, the WPF project must reference the necessary Windows Forms assemblies. Supply the WPF owner window handle through <code>WindowInteropHelper</code> and, where required by the wrapper, a lightweight <code>IWin32Window</code> adapter. Do not assume a WPF <code>Window</code> can be passed as a WinForms <code>IWin32Window</code> directly.</p>
+<p>For closest consistency with the test, the adapter can continue measuring using Windows Forms <code>TextRenderer</code>, with a temporary GDI <code>Graphics</code> context and an appropriate system font. This avoids having WPF-only text measurements drift from the native TaskDialog's font approximation, but it adds a Windows Forms dependency and still does not guarantee perfect DirectUI matching.</p>
+<pre><code>// Conceptual integration:
+// 1. Build ComparisonRow values in WPF view model.
+// 2. Format them using the shared measured-space formatter.
+// 3. Obtain HWND with new WindowInteropHelper(wpfWindow).Handle.
+// 4. Adapt HWND to IWin32Window if using TaskDialogWrapper.
+// 5. Call QuestionYesNoCancel(..., moreDetails: result.Text).</code></pre>
+<p>Only the application/dialog-adapter layer needs to understand WPF window ownership. The truncation and alignment policy should remain reusable.</p>
+<h3>Option B — WPF-native comparison</h3>
+<p>If exact columns are more important than preserving the native TaskDialog, use a WPF <code>Grid</code>, <code>DataGrid</code> or equivalent with three real columns. WPF already provides text trimming, wrapping, tooltips and column sizing. In that case, measured-space padding is usually unnecessary, although the <em>Smart truncation</em> policy can still help decide which portion of a long paired value to show.</p>
+<h3>WPF text measurement</h3>
+<p>WPF offers <code>FormattedText</code>, constructed with a <code>Typeface</code>, size, culture, flow direction and <code>pixelsPerDip</code>. <code>WidthIncludingTrailingWhitespace</code> is especially relevant when measuring padded strings because <code>Width</code> excludes trailing whitespace. WPF measures in device-independent pixels (DIPs); if a shared formatter uses physical-pixel budgets, convert units consistently with the rendering scale. A WPF <code>FormattedText</code> measurement is not automatically identical to WinForms <code>TextRenderer</code> or TaskDialog DirectUI rendering.</p>
+<pre><code>// Example of WPF-side text measurement (schematic):
+double MeasureWpfText(string value, Typeface typeface,
+                      double fontSizeDip, double pixelsPerDip)
+{
+    var ft = new System.Windows.Media.FormattedText(
+        value,
+        System.Globalization.CultureInfo.CurrentUICulture,
+        System.Windows.FlowDirection.LeftToRight,
+        typeface,
+        fontSizeDip,
+        System.Windows.Media.Brushes.Black,
+        pixelsPerDip);
+    return ft.WidthIncludingTrailingWhitespace; // DIPs
+}</code></pre>
+<h3>WPF porting decision</h3>
+<table><thead><tr><th>Requirement</th><th>Recommended route</th></tr></thead><tbody>
+<tr><td>Identical native TaskDialog experience</td><td>Option A: keep TaskDialogWrapper + calibrated measured-space formatting</td></tr>
+<tr><td>Exact columns, variable width, accessible full values</td><td>Option B: WPF Grid/DataGrid, reuse truncation policy only where appropriate</td></tr>
+<tr><td>No dependency on WinForms formatting classes</td><td>Extract width-measurement abstraction; use WPF FormattedText for a WPF-native display and test carefully if feeding native TaskDialog</td></tr>
+</tbody></table>
+</section>
+
+<section id="verification">
+<h2>11. Verification and acceptance checklist</h2>
+<ul>
+<li>Original ACM sample: three columns appear aligned and text is not truncated when the table fits.</li>
+<li>Variable-width character sample: same measured target positions despite <code>i</code>/<code>W</code>/<code>M</code> width differences.</li>
+<li>Long Unicode sample: no unexpected wrapping under selected maximum width; clip only where required.</li>
+<li>Shared long prefix: Smart mode retains distinguishing suffixes such as <code>…12</code> versus <code>…34</code>.</li>
+<li>Unrelated long values: Smart mode keeps beginnings and appends ellipsis.</li>
+<li>None mode: long strings remain untouched, with a warning if they might wrap.</li>
+<li>Full source values can be copied even if the dialog shows truncated strings.</li>
+<li>Repeat with another width, with the gap adjusted, and on 125%/150% display scaling.</li>
+<li>Check Yes, No, Cancel results and all pre-existing TaskDialog demonstration buttons.</li>
+<li>Verify the actual project builds in both relevant target framework configurations; the documentation itself does not establish successful compilation.</li>
+</ul>
+<h3>Suggested next development tasks</h3>
+<p>First establish an explicit maximum-width policy and test it under Windows DPI variations. Next extract generic row data and a text-measurement abstraction. Then create a small reusable library API, leaving actual modal dialog display with the caller or a dialog adapter. Finally exercise the integration from a WinForms and, if needed, WPF sample before using it for production ACM settings comparisons.</p>
+</section>
+
+<footer>
+<p>WPF integration guidance describes a proposed future design, rather than functionality already implemented in this test project.</p>
+<p><strong>Relevant Microsoft documentation:</strong>
+<a href="https://learn.microsoft.com/en-us/dotnet/api/system.windows.media.formattedtext">WPF FormattedText</a> ·
+<a href="https://learn.microsoft.com/en-us/dotnet/desktop/wpf/advanced/wpf-and-windows-forms-interoperation">WPF/WinForms interoperation</a>.
+</p>
+</footer>
+</main></body></html>
