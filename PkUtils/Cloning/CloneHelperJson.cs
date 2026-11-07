@@ -1,4 +1,4 @@
-﻿// Ignore Spelling: Utils, Json
+﻿// Ignore Spelling: Utils, Json, serializer
 //
 using System;
 using System.Text.Json;

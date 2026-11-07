@@ -101,7 +101,7 @@ public class Repository<T> : IRepository<T>, IEquatable<Repository<T>>
     public static bool operator ==(Repository<T> first, Repository<T> second)
     {
         if (ReferenceEquals(first, second)) return true;
-        if ((first is null) || (second is null)) return false;
+        if (first is null || second is null) return false;
 
         return first.Equals(second);
     }
@@ -125,10 +125,10 @@ public class Repository<T> : IRepository<T>, IEquatable<Repository<T>>
     ///
     /// <param name="obj">  The object to compare with the current object. </param>
     ///
-    /// <returns> true if the specified object  is equal to the current object; otherwise, false. </returns>
+    /// <returns> true if the specified object is equal to the current object; otherwise, false. </returns>
     public override bool Equals(object obj)
     {
-        bool result = (obj is Repository<T> other) && this.Equals(other);
+        bool result = obj is Repository<T> other && Equals(other);
 
         return result;
     }
@@ -139,10 +139,10 @@ public class Repository<T> : IRepository<T>, IEquatable<Repository<T>>
     {
         int nResult;
 
-        if (this.HasData)
-            nResult = this.IsAttached.GetHashCode() ^ this.Data.GetHashCode();
+        if (HasData)
+            nResult = IsAttached.GetHashCode() ^ Data.GetHashCode();
         else
-            nResult = base.GetHashCode();
+            nResult = 0;
 
         return nResult;
     }
@@ -152,10 +152,10 @@ public class Repository<T> : IRepository<T>, IEquatable<Repository<T>>
     public override string ToString()
     {
         string strRes;
-        string dataInfo = this.DataToString();
+        string dataInfo = DataToString();
         string strType = typeof(T).ToString();
 
-        if (this.IsAttached || !HasNullData())
+        if (IsAttached || !HasNullData())
         {
             dataInfo = string.Format(CultureInfo.InvariantCulture, "'{0}', IsAttached:{1}", dataInfo, IsAttached);
         }
@@ -196,12 +196,12 @@ public class Repository<T> : IRepository<T>, IEquatable<Repository<T>>
     /// <returns> True if null data, false otherwise. </returns>
     protected bool HasNullData()
     {
-        return (Data == null);
+        return Data == null;
     }
 
     /// <summary> Converts currently owned or attached data (if any) to string. </summary>
     /// 
-    /// <returns>  A string representation of <see cref="Data"/>. </returns>
+    /// <returns> A string representation of <see cref="Data"/>. </returns>
     protected string DataToString()
     {
         return Data.AsString();
@@ -212,7 +212,7 @@ public class Repository<T> : IRepository<T>, IEquatable<Repository<T>>
     /// </summary>
     protected virtual void DisposeData()
     {
-        if (this.IsAttached)
+        if (IsAttached)
         {
             throw new InvalidOperationException("The data are just attached, but not owned");
         }
@@ -252,16 +252,16 @@ public class Repository<T> : IRepository<T>, IEquatable<Repository<T>>
 
         bool result = false;
 
-        if (this.IsAttached == other.IsAttached)
+        if (IsAttached == other.IsAttached)
         {
             if (typeof(T).IsValueType)
-                result = this.Data.Equals(other.Data);
-            else if (ReferenceEquals(this.Data, other.Data))
+                result = Data.Equals(other.Data);
+            else if (ReferenceEquals(Data, other.Data))
                 result = true;
-            else if (this.Data == null)
+            else if (Data == null)
                 result = false;
             else
-                result = this.Data.Equals(other.Data);
+                result = Data.Equals(other.Data);
         }
 
         return result;
@@ -282,7 +282,7 @@ public class Repository<T> : IRepository<T>, IEquatable<Repository<T>>
         else if (ReferenceEquals(this, other))
             result = true;
         else
-            result = this.MemberWiseEquals(other);
+            result = MemberWiseEquals(other);
 
         return result;
     }
@@ -326,25 +326,20 @@ public class Repository<T> : IRepository<T>, IEquatable<Repository<T>>
     }
 
     /// <summary> Keep the data ( that means became an owner of it ). </summary>
-    /// <exception cref="ArgumentNullException">  Thrown when T is a reference type, and <paramref name="data"/> is null.
-    /// </exception>
-    /// 
     /// <param name="data"> The data that will be owned by this repository object. </param>
+    /// <exception cref="ArgumentNullException">  Thrown when <paramref name="data"/> is null. </exception>
     public void Keep(T data)
     {
-        if (typeof(T).IsClass)
-        {
-            ArgumentNullException.ThrowIfNull(data, nameof(data));
-        }
+        ArgumentNullException.ThrowIfNull(data, nameof(data));
 
-        if (this.HasData)
+        if (HasData)
         {
             Debug.Fail("This instance already contains other data");
             throw new InvalidOperationException("This instance already contains other data");
         }
 
-        this._data = data;
-        this._isAttached = false;
+        _data = data;
+        _isAttached = false;
     }
 
     /// <summary>
@@ -352,10 +347,8 @@ public class Repository<T> : IRepository<T>, IEquatable<Repository<T>>
     /// Throws InvalidOperationException if there are already any data owned or attached.
     /// </summary>
     /// 
-    /// <exception cref="ArgumentNullException">  Thrown when T is a reference type, and <paramref name="data"/> is null.
-    /// </exception>
-    /// <exception cref="InvalidOperationException"> Thrown if there are already any data owned or attached.
-    /// </exception>
+    /// <exception cref="ArgumentNullException">  Thrown when <paramref name="data"/> is null. </exception>
+    /// <exception cref="InvalidOperationException"> Thrown if there are already any data owned or attached. </exception>
     /// 
     /// <remarks> If the data are just attached, the methods <see cref="Forfeit"/> and <see cref="Dispose()"/>(
     /// which just calls Forfeit ) will call <see cref="Detach"/>.  <br/>
@@ -365,19 +358,16 @@ public class Repository<T> : IRepository<T>, IEquatable<Repository<T>>
     /// <seealso cref="Keep"/>
     public void Attach(T data)
     {
-        if (typeof(T).IsClass)
-        {
-            ArgumentNullException.ThrowIfNull(data, nameof(data));
-        }
+        ArgumentNullException.ThrowIfNull(data, nameof(data));
 
-        if (this.HasData)
+        if (HasData)
         {
             Debug.Fail("This instance already contains other data");
             throw new InvalidOperationException("This instance already contains other data");
         }
 
-        this._data = data;
-        this._isAttached = true;
+        _data = data;
+        _isAttached = true;
     }
 
     /// <summary>
@@ -390,11 +380,11 @@ public class Repository<T> : IRepository<T>, IEquatable<Repository<T>>
     {
         T result = default;
 
-        if (this.IsAttached)
+        if (IsAttached)
         {
-            result = this._data;
-            this._data = default;
-            this._isAttached = false;
+            result = _data;
+            _data = default;
+            _isAttached = false;
         }
         return result;
     }

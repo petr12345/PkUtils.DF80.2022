@@ -399,6 +399,9 @@ public class SizeLimitedCache<TKey, TValue> : ISizeLimitedCache<TKey, TValue>
     {
         ArgumentNullException.ThrowIfNull(key);
 
+        TValue valueToDispose = default;
+        bool shouldDispose = false;
+
         _readerWriterLock.EnterWriteLock();
 
         try
@@ -415,7 +418,8 @@ public class SizeLimitedCache<TKey, TValue> : ISizeLimitedCache<TKey, TValue>
                 {
                     if (this.DisposesEvictedValues)
                     {
-                        this.DisposeEvictedValue(entry.CachedValue);
+                        valueToDispose = entry.CachedValue;
+                        shouldDispose = true;
                     }
                     _dictionary[key] = new CachedEntry(value);
                 }
@@ -432,6 +436,12 @@ public class SizeLimitedCache<TKey, TValue> : ISizeLimitedCache<TKey, TValue>
         finally
         {
             _readerWriterLock.ExitWriteLock();
+        }
+
+        // Dispose detached value only after releasing the cache lock.
+        if (shouldDispose)
+        {
+            DisposeEvictedValue(valueToDispose);
         }
     }
 

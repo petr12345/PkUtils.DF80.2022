@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading;
 using PK.PkUtils.Interfaces;
 
 namespace PK.PkUtils.DataStructures;
@@ -15,7 +16,7 @@ public class DisposableAction : IDisposableEx
     #region Fields
 
     private readonly Action _action;
-    private bool _disposed;
+    private int _disposed;
     #endregion // Fields
 
     #region Constructor(s)
@@ -37,12 +38,14 @@ public class DisposableAction : IDisposableEx
     /// disposing equals false, the method has been called by the runtime from inside the finalizer and you
     /// should not reference other objects. Only unmanaged resources can be disposed.
     /// </summary>
+    /// <remarks> The action is attempted at most once. If it throws, disposal is not retried. </remarks>
     /// <param name="disposing"> If true, is called by IDisposable.Dispose. Otherwise it is called by finalizer. </param>
     protected virtual void Dispose(bool disposing)
     {
-        if (disposing && !IsDisposed)
+        // DA-01 / DA-02: Claim disposal atomically before invoking user code.
+        // The action is attempted at most once, including when it throws.
+        if (disposing && Interlocked.Exchange(ref _disposed, 1) == 0)
         {
-            _disposed = true;
             _action();
         }
     }
@@ -51,7 +54,7 @@ public class DisposableAction : IDisposableEx
     #region IDisposableEx members
 
     /// <inheritdoc/>
-    public bool IsDisposed { get => _disposed; }
+    public bool IsDisposed { get => Volatile.Read(ref _disposed) != 0; }
 
     /// <inheritdoc/>
     public void Dispose()

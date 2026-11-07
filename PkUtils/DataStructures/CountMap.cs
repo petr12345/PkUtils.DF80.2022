@@ -153,9 +153,10 @@ public class CountMap : Singleton<CountMap>, IDisposable
         int suma = 0;
 
         SlimLock.EnterReadLock();
-        TestTypeIsCountable(t);
         try
         {
+            // Keep validation inside try: the helper requires this lock and may throw.
+            TestTypeIsCountable(t);
             foreach (KeyValuePair<Type, TypeCountInfo> pair in DictCounts)
             {
                 if (pair.Key.IsSubclassOf(t))
@@ -386,7 +387,6 @@ public class CountMap : Singleton<CountMap>, IDisposable
     ///   does not support the interface <see cref="PK.PkUtils.Interfaces.ICountable"/> </exception>
     ///
     /// <param name="t">  The type for which the information is required. </param>
-    [Conditional("DEBUG")]
     private void TestTypeIsCountable(Type t)
     {
         ArgumentNullException.ThrowIfNull(t);
@@ -432,7 +432,7 @@ public class CountMap : Singleton<CountMap>, IDisposable
         GC.SuppressFinalize(this);
     }
     #endregion // IDisposable Members
-};
+}
 
 /// <summary>
 /// An auxiliary class providing extension methods for counting instances of given type. Delegates its

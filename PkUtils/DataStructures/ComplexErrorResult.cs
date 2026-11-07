@@ -33,7 +33,7 @@ public class ComplexErrorResult<TError> : IComplexErrorResult<TError>
     public ComplexErrorResult(string errorMessage, TError errorDetails = default)
         : this(
               success: false,
-              errorMessage: errorMessage ?? throw new ArgumentNullException(nameof(errorMessage)),
+              errorMessage: ValidateFailureMessage(errorMessage),
               errorDetails: errorDetails)
     { }
 
@@ -46,6 +46,8 @@ public class ComplexErrorResult<TError> : IComplexErrorResult<TError>
     public ComplexErrorResult(Exception exceptionCaught)
     {
         ArgumentNullException.ThrowIfNull(exceptionCaught);
+        // CER-02: Make the existing failure-state default explicit.
+        _success = false;
 
         if (typeof(TError).IsAssignableFrom(exceptionCaught.GetType()))
         {
@@ -154,7 +156,7 @@ public class ComplexErrorResult<TError> : IComplexErrorResult<TError>
     /// <exception cref="ArgumentNullException"> Thrown when required argument <paramref name="exceptionCaught"/>
     /// is null. </exception>
     /// 
-    /// <returns>A failed <see cref="IComplexErrorResult{T, TError}"/> instance.</returns>
+    /// <returns>A failed <see cref="IComplexErrorResult{TError}"/> instance.</returns>
     public static IComplexErrorResult<TError> CreateFailed(Exception exceptionCaught)
     {
         ComplexErrorResult<TError> result = new(exceptionCaught);
@@ -185,6 +187,13 @@ public class ComplexErrorResult<TError> : IComplexErrorResult<TError>
             string errorMessage = $"The provided result instance ('{nameof(rhs)}') is expected to represent a failed state, but it indicates success.";
             throw new ArgumentException(errorMessage, nameof(rhs));
         }
+    }
+
+    // Reject empty error messages through the shared failure method.
+    private static string ValidateFailureMessage(string errorMessage)
+    {
+        ArgumentException.ThrowIfNullOrEmpty(errorMessage);
+        return errorMessage;
     }
     #endregion // Static_factory_methods
 

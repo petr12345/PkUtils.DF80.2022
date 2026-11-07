@@ -1,4 +1,4 @@
-﻿// Ignore Spelling: Utils, Serializer
+﻿// Ignore Spelling: Utils, Deserialize, Serializer
 //
 using System;
 using System.IO;

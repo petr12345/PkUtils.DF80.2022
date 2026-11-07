@@ -3,14 +3,12 @@
 using System;
 using System.Reflection;
 
-#pragma warning disable IDE0301 // Simplify collection initialization
-
 namespace PK.PkUtils.DataStructures;
 
-/// <summary>
-/// Singleton generic pattern support. 
-/// </summary>
-/// 
+#pragma warning disable IDE0270 // Use coalesce expression
+#pragma warning disable IDE0301 // Simplify collection initialization
+
+/// <summary> Singleton generic pattern support. </summary>
 /// <typeparam name="T">The class that you want to make singleton.</typeparam>
 /// 
 /// <remarks>
@@ -143,7 +141,6 @@ public class Singleton<T> where T : class
     /// <remarks>Throws InvalidOperationException if the contains any public T constructor</remarks>
     private static T CreateInstance()
     {
-#if DEBUG
         // Ensure there are no public constructors...
         Type t = typeof(T);
         ConstructorInfo[] ctors = t.GetConstructors();
@@ -152,18 +149,19 @@ public class Singleton<T> where T : class
             throw new InvalidOperationException(
               $"{t.Name} has at least one accessible constructor, making it impossible to enforce singleton behaviour");
         }
-#endif
-        // On DESKTOP, following commented-out code works just fine
-        /* return (T)Activator.CreateInstance(t, true); */
-        // But for case of NETCF, one has to go through more elaborate process, 
-        // since Activator.CreateInstance has no such method overload.
-        // 
 
         ConstructorInfo nonPublicConstructorInfo = typeof(T).GetConstructor(
-          BindingFlags.NonPublic | BindingFlags.Instance, null, Array.Empty<Type>(), null);
+            BindingFlags.NonPublic | BindingFlags.Instance, null, Array.Empty<Type>(), null);
+        // SG-01: Fail with a descriptive exception rather than dereferencing a missing constructor.
+        if (nonPublicConstructorInfo is null)
+        {
+            throw new MissingMethodException(typeof(T).FullName, ".ctor() [non-public parameterless]");
+        }
+
         return (T)nonPublicConstructorInfo.Invoke(Array.Empty<object>());
     }
     #endregion // Methods
 }
 
 #pragma warning restore IDE0301 // Simplify collection initialization
+#pragma warning restore IDE0270 // Use coalesce expression

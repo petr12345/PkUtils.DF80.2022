@@ -57,15 +57,16 @@ public class UsageMonitor : IDisposableEx
     { }
 
     /// <summary>
-    /// The constructor which increments the given counter, if it is not acquired already by someone else. If the
-    /// counter is used already, the usage count does NOT increment.
+    /// UM-05: With firstTimeUseOnly true, acquires only if this is the first user.
+    /// With firstTimeUseOnly false, always adds one reference to the counter.
     /// </summary>
     ///
     /// <exception cref="System.ArgumentNullException"> Thrown when the input argument
     /// <paramref name="counter"/> is null. </exception>
     ///
     /// <param name="counter"> The object implementing <see cref="IUsageCounter"/> that is going to be locked. </param>
-    /// <param name="firstTimeUseOnly"> True to add reference for first time use only. </param>
+    /// <param name="firstTimeUseOnly"> If true, acquire only when the count was zero;
+    /// otherwise add a reference even when already in use. </param>
     public UsageMonitor(IUsageCounter counter, bool firstTimeUseOnly)
     {
         ArgumentNullException.ThrowIfNull(counter);
@@ -117,8 +118,12 @@ public class UsageMonitor : IDisposableEx
     /// <returns>   True if it succeeds, false if it fails. </returns>
     protected bool AcquireUse(IUsageCounter aCounter, bool firstTimeOnly)
     {
-        Debug.Assert(null == _counter);
-        Debug.Assert(null != aCounter);
+        // UM-03: Enforce ownership and argument preconditions in Release as well as Debug.
+        ArgumentNullException.ThrowIfNull(aCounter);
+        if (IsDisposed)
+            throw new ObjectDisposedException(GetType().FullName);
+        if (_counter is not null)
+            throw new InvalidOperationException("This monitor has already acquired a counter.");
 
         if (firstTimeOnly)
         {
