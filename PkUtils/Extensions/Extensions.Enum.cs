@@ -133,15 +133,19 @@ public static class EnumExtensions
         return result.CheckIsValidEnum();
     }
 
-    /// <summary> Parses <paramref name="value"/> as an enum of type <typeparamref name="T"/>. If value can't be parsed, returns default(T). </summary>
+    /// <summary> Parses <paramref name="value"/> as an enum of type <typeparamref name="T"/>. 
+    /// If value can't be parsed, returns default(T). </summary>
     public static T ToEnum<T>(
-        string value, T fallBackValue = default, bool ignoreCase = false) where T : struct, Enum
+        string value,
+        T fallBackValue = default,
+        bool ignoreCase = false) where T : struct, Enum
     {
         T? result = ToNullableEnum<T>(value, ignoreCase);
         return result ?? fallBackValue;
     }
 
-    /// <summary> Parses <paramref name="value"/> as an enum of type <typeparamref name="T"/>. If value can't be parsed, returns null. </summary>
+    /// <summary> Parses <paramref name="value"/> as an enum of type <typeparamref name="T"/>. 
+    /// If value can't be parsed, returns null. </summary>
     public static Nullable<T> ToNullableEnum<T>(string value, bool ignoreCase = false) where T : struct, Enum
     {
         if (Enum.TryParse(value, ignoreCase, out T result))
@@ -160,9 +164,9 @@ public static class EnumExtensions
         }
         return null;
     }
-
     #endregion // Conversions
     #endregion // Public Methods
+
     #region Private Methods
 
     private static bool IsSingleBit(ulong value)
@@ -170,29 +174,19 @@ public static class EnumExtensions
         return value != 0 && (value & (value - 1)) == 0;
     }
 
-    // Convert an enum via IConvertible; direct casts from a boxed enum to its underlying primitive throw InvalidCastException.
-    // Signed values are masked to their declared underlying width so the highest-bit flag remains a single bit.
+    // Convert boxed enums numerically to avoid InvalidCastException, masking signed values to preserve their underlying flag width.
     private static ulong ToUInt64Bits<T>(T value) where T : Enum
     {
         Type underlyingType = Enum.GetUnderlyingType(typeof(T));
-        switch (Type.GetTypeCode(underlyingType))
+        return Type.GetTypeCode(underlyingType) switch
         {
-            case TypeCode.SByte:
-                return unchecked((ulong)Convert.ToInt64(value)) & 0xFFUL;
-            case TypeCode.Int16:
-                return unchecked((ulong)Convert.ToInt64(value)) & 0xFFFFUL;
-            case TypeCode.Int32:
-                return unchecked((ulong)Convert.ToInt64(value)) & 0xFFFFFFFFUL;
-            case TypeCode.Int64:
-                return unchecked((ulong)Convert.ToInt64(value));
-            case TypeCode.Byte:
-            case TypeCode.UInt16:
-            case TypeCode.UInt32:
-            case TypeCode.UInt64:
-                return Convert.ToUInt64(value);
-            default:
-                throw new InvalidOperationException($"Unsupported enum underlying type '{underlyingType}'.");
-        }
+            TypeCode.SByte => unchecked((ulong)Convert.ToInt64(value)) & 0xFFUL,
+            TypeCode.Int16 => unchecked((ulong)Convert.ToInt64(value)) & 0xFFFFUL,
+            TypeCode.Int32 => unchecked((ulong)Convert.ToInt64(value)) & 0xFFFFFFFFUL,
+            TypeCode.Int64 => unchecked((ulong)Convert.ToInt64(value)),
+            TypeCode.Byte or TypeCode.UInt16 or TypeCode.UInt32 or TypeCode.UInt64 => Convert.ToUInt64(value),
+            _ => throw new InvalidOperationException($"Unsupported enum underlying type '{underlyingType}'."),
+        };
     }
 
     private static void CheckIsFlagsEnumType<T>(string argName) where T : Enum

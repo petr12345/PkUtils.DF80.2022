@@ -121,8 +121,7 @@ public class UsageMonitor : IDisposableEx
     {
         // UM-03: Enforce ownership and argument preconditions in Release as well as Debug.
         ArgumentNullException.ThrowIfNull(aCounter);
-        if (IsDisposed)
-            throw new ObjectDisposedException(GetType().FullName);
+        ObjectDisposedException.ThrowIf(IsDisposed, GetType().FullName);
         if (_counter is not null)
             throw new InvalidOperationException("This monitor has already acquired a counter.");
 
