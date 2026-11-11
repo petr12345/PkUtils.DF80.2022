@@ -1,4 +1,4 @@
-﻿// Ignore Spelling: CCA, Utils
+﻿// Ignore Spelling: CCA, serializer, Utils
 //
 using System;
 using System.Collections.Generic;

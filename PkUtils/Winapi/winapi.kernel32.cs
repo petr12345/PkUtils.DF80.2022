@@ -1,4 +1,4 @@
-// Ignore Spelling: Utils, Api, Winapi, Ctrl, Unmap, memset, ull, bufsize, FNAME, LCID, DAC, MEMORYSTATUS, MEMORYSTATUSEX, OSVERSIONINFOEX, LOCKFILE, EXCED, INTPTR, programmatically
+// Ignore Spelling: Api, Attrs, bufsize, Ctrl, DAC, EXCED, EXE, FNAME, INTPTR, LCID, LOCKFILE, MEMORYSTATUS, MEMORYSTATUSEX, memset, Mutex, OSVERSIONINFOEX, parameterless, programmatically, Substring, ull, Unmap, Utils, Winapi
 // 
 using System;
 using System.Collections.Generic;
@@ -23,6 +23,7 @@ namespace PK.PkUtils.WinApi;
 /// <summary>
 /// Helper class containing Kernel32 API functions
 /// </summary>
+/// <summary> Helper class containing Kernel32 API functions. </summary>
 public static class Kernel32
 {
     #region Constants
@@ -104,11 +105,17 @@ public static class Kernel32
     /// <summary> Cannot create a file when that file already exists. </summary>
     public const int ERROR_ALREADY_EXISTS = 0xB7;
 
+    /// <summary> The operating system cannot run the specified program. </summary>
+    public const int ERROR_BAD_EXE_FORMAT = 0xC1;
+
     /// <summary> The filename or extension is too long. </summary>
     public const int ERROR_FILENAME_EXCED_RANGE = 0xCE;
 
     /// <summary> The directory name is invalid. </summary>
     public const int ERROR_DIRECTORY = 0x10B;
+
+    /// <summary> The requested operation requires elevation. </summary>
+    public const int ERROR_ELEVATION_REQUIRED = 0x2E4;
 
     /// <summary> Indicates that the operation was canceled. </summary>
     public const int ERROR_OPERATION_ABORTED = 0x3e3;
@@ -1291,7 +1298,7 @@ public static class Kernel32
     /// inherited by child processes.
     /// </summary>
     ///
-    /// <returns>   The current thread. </returns>
+    /// <returns> The current thread. </returns>
     [DllImport("kernel32", SetLastError = true)]
     public static extern IntPtr GetCurrentThread();
 
@@ -1317,7 +1324,7 @@ public static class Kernel32
     /// <param name="dwExitCode">   The exit code for the thread. 
     ///                             Use the GetExitCodeThread function to retrieve a thread's exit value. </param>
     ///
-    /// <returns>   True if it succeeds, false if it fails. </returns>
+    /// <returns> True if it succeeds, false if it fails. </returns>
     [DllImport("kernel32", SetLastError = true)]
     public static extern bool TerminateThread(
         IntPtr hThread,
@@ -1339,7 +1346,7 @@ public static class Kernel32
     /// <param name="hProcess"> A handle to the process to be terminated. </param>
     /// <param name="uExitCode"> The exit code for the process and all threads. </param>
     ///
-    /// <returns>   True if it succeeds, false if it fails. </returns>
+    /// <returns> True if it succeeds, false if it fails. </returns>
     ///
     /// <seealso href="https://docs.microsoft.com/en-us/windows/win32/api/processthreadsapi/nf-processthreadsapi-terminateprocess">
     /// MSDN about TerminateProcess function.
@@ -1373,7 +1380,7 @@ public static class Kernel32
 
     /// <summary> Continues a file search from a previous call to the FindFirstFile, FindFirstFileEx, 
     /// or FindFirstFileTransacted functions. </summary>
-    /// <param name="hFindFile"> The search handle returned by a previous call to the FindFirstFile 
+    /// <param name="hwndFindFile"> The search handle returned by a previous call to the FindFirstFile 
     ///                            or FindFirstFileEx function. </param>
     /// <param name="lpFindFileData"> A <see cref="WIN32_FIND_DATA"/> structure that receives information 
     ///                               about the found file or subdirectory. </param>
@@ -1388,7 +1395,7 @@ public static class Kernel32
     [DllImport("kernel32", CharSet = CharSet.Auto, SetLastError = true)]
     [return: MarshalAs(UnmanagedType.Bool)]
     public static extern bool FindNextFile(
-        SafeFindHandle hFindFile,
+        SafeFindHandle hwndFindFile,
         [In, Out, MarshalAs(UnmanagedType.LPStruct)] WIN32_FIND_DATA lpFindFileData);
 
     /// <summary> Closes a file search handle opened by the FindFirstFile, FindFirstFileEx, FindFirstFileNameW, 
@@ -1419,7 +1426,7 @@ public static class Kernel32
     ///  or both. </param>
     /// <param name="dwShareMode"> The requested sharing mode of the file or device, which can be read,
     ///  write, both, delete, all of these, or none. </param>
-    /// <param name="securityAttributes"> A pointer to a SECURITY_ATTRIBUTES structure that contains two
+    /// <param name="securityAttrs"> A pointer to a SECURITY_ATTRIBUTES structure that contains two
     ///  separate but related data members: an optional security descriptor, and a Boolean value that
     ///  determines whether the returned handle can be inherited by child processes. This parameter can be
     ///  null. </param>
@@ -1444,7 +1451,7 @@ public static class Kernel32
       [MarshalAs(UnmanagedType.LPWStr)] string lpFileName,
       EFileAccess dwDesiredAccess,
       FileShare dwShareMode,
-      IntPtr securityAttributes,
+      IntPtr securityAttrs,
       FileMode dwCreationDisposition,
       uint dwFlagsAndAttributes,
       IntPtr hTemplateFile);
@@ -1779,7 +1786,7 @@ public static class Kernel32
     public static extern IntPtr GetCurrentProcess();
 
     /// <summary> Retrieves the process identifier of the calling process. </summary>
-    /// <returns>   The current process identifier. </returns>
+    /// <returns> The current process identifier. </returns>
     [DllImport("kernel32", SetLastError = true)]
     private static extern uint GetCurrentProcessId();
 
@@ -2520,7 +2527,7 @@ public static class Kernel32
     /// <param name="add">     If this parameter is true, the handler is added; if it is false, the handler is
     /// removed. </param>
     ///
-    /// <returns>   True if it succeeds, false if it fails. </returns>
+    /// <returns> True if it succeeds, false if it fails. </returns>
     [DllImport("kernel32", SetLastError = true)]
     [return: MarshalAs(UnmanagedType.Bool)]
     public static extern bool SetConsoleCtrlHandler(
@@ -2638,7 +2645,7 @@ public static class Kernel32
                 strTmp = sb.ToString();
                 if (0 < (nDex = strTmp.LastIndexOf(Path.DirectorySeparatorChar)))
                 {
-                    result = strTmp.Substring(0, nDex);
+                    result = strTmp[0..nDex];  // used to be: result = strTmp.Substring(0, nDex);
                 }
             }
         }

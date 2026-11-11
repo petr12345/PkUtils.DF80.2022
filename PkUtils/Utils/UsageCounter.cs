@@ -1,5 +1,6 @@
 // Ignore Spelling: Utils
 //
+using System;
 using System.Diagnostics;
 using System.Threading;
 using PK.PkUtils.Interfaces;
@@ -21,6 +22,8 @@ public class UsageCounter : IUsageCounter
     #region Fields
     /// <summary> Current amount of locks. </summary>
     private volatile int _references;
+    // UC-01 / UC-02: Serialize reference transitions and lifecycle callbacks.
+    private readonly object _referenceTransitionSync = new();
     #endregion // Fields
 
     #region Constructor(s)
@@ -90,28 +93,50 @@ public class UsageCounter : IUsageCounter
     /// <returns> The amount of total references acquired. </returns>
     public virtual int AddReference()
     {
-        int nResult;
-
-        AssertValid();
-        if (1 == (nResult = Interlocked.Increment(ref _references)))
+        // UC-02: No other transition may observe the first reference until
+        // OnFirstAddReference succeeds. If it throws, restore the original count.
+        lock (_referenceTransitionSync)
         {
-            OnFirstAddReference();
+            AssertValid();
+            int count = _references;
+            if (count == int.MaxValue)
+                throw new InvalidOperationException("Usage counter overflow.");
+
+            int newCount = Interlocked.Increment(ref _references);
+            if (newCount == 1)
+            {
+                try
+                {
+                    OnFirstAddReference();
+                }
+                catch
+                {
+                    Interlocked.Decrement(ref _references);
+                    throw;
+                }
+            }
+            return newCount;
         }
-        return nResult;
     }
 
     /// <summary> Unlock that please. </summary>
-    /// <returns>   The amount of remaining references. </returns>
+    /// <returns> The amount of remaining references. </returns>
     public virtual int Release()
     {
-        int nResult;
-
-        if (0 == (nResult = Interlocked.Decrement(ref _references)))
+        // UC-01: Validate before decrementing, including in Release builds.
+        // Using the same lock as AddReference prevents concurrent transition races.
+        lock (_referenceTransitionSync)
         {
-            OnLastRelease();
+            if (_references == 0)
+                throw new InvalidOperationException("Usage counter cannot be released below zero.");
+
+            int newCount = Interlocked.Decrement(ref _references);
+            if (newCount == 0)
+                OnLastRelease();
+
+            AssertValid();
+            return newCount;
         }
-        AssertValid();
-        return nResult;
     }
     #endregion // IUsageCounter Members
 }

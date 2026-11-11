@@ -1,6 +1,7 @@
 // Ignore Spelling: Utils
 
 using System;
+using System.Threading;
 using System.Diagnostics;
 using PK.PkUtils.Interfaces;
 
@@ -38,7 +39,7 @@ public class UsageMonitor : IDisposableEx
     #region Fields
     /// <summary> The wrapped usage counter. </summary>
     protected IUsageCounter _counter;
-    private bool _disposed;
+    private volatile bool _disposed;
     #endregion // Fields
 
     #region Constructor(s)
@@ -165,15 +166,20 @@ public class UsageMonitor : IDisposableEx
     /// </summary>
     private void ReleaseCounter()
     {
-        if (IsCounterAcquired)
+        // UM-01: Exactly one concurrent disposer takes ownership of the counter.
+        IUsageCounter counter = Interlocked.Exchange(ref _counter, null);
+        try
         {
-            if (_counter.IsUsed)
-            {
-                _counter.Release();
-            }
-            _counter = null;
+            // UM-02: The monitor releases its own acquired reference, regardless
+            // of the counter's global IsUsed state (which is not an ownership test).
+            if (counter is not null)
+                counter.Release();
         }
-        _disposed = true;
+        finally
+        {
+            // UM-04: A throwing Release/callback cannot make us release twice.
+            _disposed = true;
+        }
     }
     #endregion // Methods
 
