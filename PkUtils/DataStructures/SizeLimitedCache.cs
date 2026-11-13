@@ -27,7 +27,8 @@ public class SizeLimitedCache<TKey, TValue> : ISizeLimitedCache<TKey, TValue>
     /// <summary> An entry that is used as value in internal dictionary. </summary>
     protected sealed class CachedEntry
     {
-        private DateTime _utcAccessStamp;
+        // Cache readers can update the same entry concurrently; access ticks must be atomic.
+        private long _utcAccessTicks;
         private readonly TValue _cachedValue;
 
         /// <summary> The only constructor. </summary>
@@ -38,15 +39,22 @@ public class SizeLimitedCache<TKey, TValue> : ISizeLimitedCache<TKey, TValue>
             MarkAccess();
         }
 
-        /// <summary> Gets the URC Date/Time of last access stamp. </summary>
-        public DateTime UtcAccessStamp { get => _utcAccessStamp; }
+        /// <summary> Gets the UTC Date/Time of last access stamp. </summary>
+        public DateTime UtcAccessStamp
+        {
+            get => new DateTime(Interlocked.Read(ref _utcAccessTicks), DateTimeKind.Utc);
+        }
 
         /// <summary> Gets the cached value. </summary>
         public TValue CachedValue { get => _cachedValue; }
 
-        /// <summary> Mark the time of lass access. </summary>
+        /// <summary> Mark the time of last access. </summary>
         /// <returns> This CachedEntry. </returns>
-        public CachedEntry MarkAccess() { _utcAccessStamp = DateTime.UtcNow; return this; }
+        public CachedEntry MarkAccess()
+        {
+            Interlocked.Exchange(ref _utcAccessTicks, DateTime.UtcNow.Ticks);
+            return this;
+        }
     }
     #endregion // Typedefs
 
@@ -255,10 +263,27 @@ public class SizeLimitedCache<TKey, TValue> : ISizeLimitedCache<TKey, TValue>
                     .Select(pair => new { Key = pair.Key, Value = pair.Value.CachedValue }).ToList();
 #pragma warning restore IDE0037 // Use inferred member name
                 // Now, could involve 'Take' to avoid creating another list
+                Exception firstError = null;
                 foreach (var pair in orderedPairs.Take(countToBeRemoved))
                 {
-                    DisposeEvictedValue(pair.Value);
-                    _dictionary.Remove(pair.Key);
+                    try
+                    {
+                        DisposeEvictedValue(pair.Value);
+                    }
+                    catch (Exception ex)
+                    {
+                        firstError ??= ex;
+                    }
+                    finally
+                    {
+                        _dictionary.Remove(pair.Key);
+                    }
+                }
+
+                if (firstError is not null)
+                {
+                    throw new InvalidOperationException(
+                        "One or more evicted values could not be disposed.", firstError);
                 }
             }
             else
@@ -450,46 +475,85 @@ public class SizeLimitedCache<TKey, TValue> : ISizeLimitedCache<TKey, TValue>
     {
         ArgumentNullException.ThrowIfNull(key);
 
+        TValue valueToDispose = default;
+        bool shouldDispose = false;
+        bool removed;
+
         _readerWriterLock.EnterWriteLock();
         try
         {
             // Reject operations that were already waiting when the cache entered its disposed state.
             ThrowIfDisposedInsideLock();
-            if (this.DisposesEvictedValues)
+
+            if (!_dictionary.TryGetValue(key, out CachedEntry entry))
+                return false;
+
+            removed = _dictionary.Remove(key);
+            if (removed && this.DisposesEvictedValues)
             {
-                if (_dictionary.TryGetValue(key, out CachedEntry entry))
-                    DisposeEvictedValue(entry.CachedValue);
-                else
-                    return false;
+                valueToDispose = entry.CachedValue;
+                shouldDispose = true;
             }
-            return _dictionary.Remove(key);
         }
         finally
         {
             _readerWriterLock.ExitWriteLock();
         }
+
+        // Dispose the detached value outside the cache lock.
+        if (shouldDispose)
+        {
+            DisposeEvictedValue(valueToDispose);
+        }
+
+        return removed;
     }
 
     /// <inheritdoc/>
     public void Clear()
     {
+        List<TValue> valuesToDispose = null;
+
         _readerWriterLock.EnterWriteLock();
         try
         {
             // Reject operations that were already waiting when the cache entered its disposed state.
             ThrowIfDisposedInsideLock();
+
             if (this.DisposesEvictedValues)
             {
-                foreach (CachedEntry entry in _dictionary.Values)
-                {
-                    DisposeEvictedValue(entry.CachedValue);
-                }
+                valuesToDispose = _dictionary.Values
+                    .Select(entry => entry.CachedValue).ToList();
             }
+
             _dictionary.Clear();
         }
         finally
         {
             _readerWriterLock.ExitWriteLock();
+        }
+
+        // Dispose detached values outside the lock, continuing after individual failures.
+        Exception firstError = null;
+        if (valuesToDispose is not null)
+        {
+            foreach (TValue value in valuesToDispose)
+            {
+                try
+                {
+                    DisposeEvictedValue(value);
+                }
+                catch (Exception ex)
+                {
+                    firstError ??= ex;
+                }
+            }
+        }
+
+        if (firstError is not null)
+        {
+            throw new InvalidOperationException(
+                "One or more cached values could not be disposed.", firstError);
         }
     }
     #endregion // ISizeLimitedCache<TKey, TValue> Members
