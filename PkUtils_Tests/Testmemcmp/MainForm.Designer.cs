@@ -230,6 +230,7 @@
 
     #endregion
 
+    #region Fields
     private System.Windows.Forms.TextBox _txtBxDump;
     private System.Windows.Forms.GroupBox _groupBxServerLog;
     private System.Windows.Forms.Button _btnExit;
@@ -242,6 +243,7 @@
     private System.Windows.Forms.Label label1;
     private System.Windows.Forms.Label label2;
     private System.Windows.Forms.NumericUpDown _numericArrayLenght;
+    #endregion // Fields
 
   }
 }

@@ -93,11 +93,13 @@
 
     #endregion
 
+    #region Fields
     private System.Windows.Forms.BindingSource _serialSettingsBindingSource;
     private System.Windows.Forms.Button _btnStart;
     private System.Windows.Forms.TextBox _tbData;
     private System.Windows.Forms.Button _btnStop;
     private PK.PkUtils.SerialPortUILib.SerialPortSettingsCtrl _serialSettingsCtrl;
+    #endregion // Fields
   }
 }
 

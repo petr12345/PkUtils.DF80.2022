@@ -84,9 +84,11 @@
 
         #endregion
 
+        #region Fields
         private System.Windows.Forms.Button _btnClose;
         private System.Windows.Forms.Button _btnTest;
         private System.Windows.Forms.Label _label;
+        #endregion // Fields
     }
 }
 

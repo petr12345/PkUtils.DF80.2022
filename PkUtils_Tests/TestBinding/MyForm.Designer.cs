@@ -208,6 +208,7 @@
 
     #endregion
 
+    #region Fields
     private System.Windows.Forms.Button _buttonOk;
     private System.Windows.Forms.Button _buttonCance;
     private System.Windows.Forms.TextBox _textBx1st;
@@ -222,6 +223,7 @@
     private System.Windows.Forms.Button _btnCleanLogHistory;
     private System.Windows.Forms.GroupBox _groupBxServerLog;
     private System.Windows.Forms.TextBox _txtBxDump;
+    #endregion // Fields
   }
 }
 

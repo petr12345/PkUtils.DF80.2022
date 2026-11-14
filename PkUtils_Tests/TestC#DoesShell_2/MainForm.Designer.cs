@@ -4,25 +4,6 @@ namespace WinTester2
 	public partial class MainForm
 	{
 		#region Windows Form Designer generated code
-		private System.Windows.Forms.GroupBox grpLaunchApp;
-private System.Windows.Forms.Button btnExploreFolder;
-private System.Windows.Forms.Button btnFindInFolder;
-private System.Windows.Forms.Button btnEditBmp;
-private System.Windows.Forms.Button btnShowBmp;
-private System.Windows.Forms.Button btnOpenExe;
-private System.Windows.Forms.GroupBox grpFileOp;
-private System.Windows.Forms.Button btnCopy;
-private System.Windows.Forms.Button btnMove;
-private System.Windows.Forms.Button btnDelete;
-private System.Windows.Forms.Button btnClearList;
-private System.Windows.Forms.Button btnAddFile;
-private System.Windows.Forms.GroupBox grpRecentDocs;
-private System.Windows.Forms.GroupBox grpPrinter;
-private System.Windows.Forms.Button btnOpenPrinter;
-private System.Windows.Forms.Button btnShowProperties;
-private System.Windows.Forms.Button btnTestPage;
-private System.ComponentModel.Container components = null;
-
 		private void InitializeComponent()
 		{
       this.grpLaunchApp = new System.Windows.Forms.GroupBox();
@@ -247,5 +228,26 @@ private System.ComponentModel.Container components = null;
 			}
 			base.Dispose( disposing );
 		}
+
+		#region Fields
+		private System.Windows.Forms.GroupBox grpLaunchApp;
+		private System.Windows.Forms.Button btnExploreFolder;
+		private System.Windows.Forms.Button btnFindInFolder;
+		private System.Windows.Forms.Button btnEditBmp;
+		private System.Windows.Forms.Button btnShowBmp;
+		private System.Windows.Forms.Button btnOpenExe;
+		private System.Windows.Forms.GroupBox grpFileOp;
+		private System.Windows.Forms.Button btnCopy;
+		private System.Windows.Forms.Button btnMove;
+		private System.Windows.Forms.Button btnDelete;
+		private System.Windows.Forms.Button btnClearList;
+		private System.Windows.Forms.Button btnAddFile;
+		private System.Windows.Forms.GroupBox grpRecentDocs;
+		private System.Windows.Forms.GroupBox grpPrinter;
+		private System.Windows.Forms.Button btnOpenPrinter;
+		private System.Windows.Forms.Button btnShowProperties;
+		private System.Windows.Forms.Button btnTestPage;
+		private System.ComponentModel.Container components = null;
+		#endregion // Fields
 	}
 }

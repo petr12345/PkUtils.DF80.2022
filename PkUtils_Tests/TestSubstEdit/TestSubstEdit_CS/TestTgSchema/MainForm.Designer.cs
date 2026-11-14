@@ -500,6 +500,7 @@ partial class MainForm
     }
     #endregion
 
+    #region Fields
     private System.Windows.Forms.SplitContainer _splitContainer1;
     private System.Windows.Forms.PictureBox pictureBox1;
     private System.Windows.Forms.TabControl _tabControl;
@@ -535,5 +536,6 @@ partial class MainForm
     private System.Windows.Forms.Button _btnYear;
     private System.Windows.Forms.Button _btnInsertLine;
     private System.Windows.Forms.ContextMenuStrip _ctxMenuInsertLine;
+    #endregion // Fields
 }
 

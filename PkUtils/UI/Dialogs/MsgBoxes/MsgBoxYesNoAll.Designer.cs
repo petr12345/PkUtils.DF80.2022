@@ -163,6 +163,7 @@ namespace PK.PkUtils.UI.General
 
     #endregion
 
+    #region Fields
     private System.Windows.Forms.PictureBox _pbxIcon;
     private System.Windows.Forms.Button _btnYes;
     private System.Windows.Forms.Button _btnYesToAll;
@@ -171,5 +172,6 @@ namespace PK.PkUtils.UI.General
     private System.Windows.Forms.Button _btnCancel;
     private System.Windows.Forms.Label _lblContent;
     private System.Windows.Forms.Label _lblMainInstruction;
+    #endregion // Fields
   }
 }

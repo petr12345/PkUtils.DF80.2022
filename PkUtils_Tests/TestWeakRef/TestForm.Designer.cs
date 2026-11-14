@@ -382,6 +382,7 @@ namespace PK.TestWeakRef
 
     #endregion
 
+    #region Fields
     private System.Windows.Forms.TextBox _textBxOut;
     private System.Windows.Forms.Button _btnExit;
     private System.Windows.Forms.Button _btnStart;
@@ -408,6 +409,7 @@ namespace PK.TestWeakRef
     private System.Windows.Forms.Button _btnRaiseStaticEvent;
     private System.Windows.Forms.CheckBox _checkBxGenerateHandlersForStatictarget;
     private System.Windows.Forms.ToolTip _toolTipCtrl;
+    #endregion // Fields
   }
 }
 

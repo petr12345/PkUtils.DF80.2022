@@ -78,7 +78,7 @@ partial class TestForm
         treeNode1.Text = "Node0";
         _treeView.Nodes.AddRange(new TreeNode[] { treeNode1 });
         _treeView.SelectedImageIndex = 0;
-        _treeView.SelectedNodes = [];
+        _treeView.SelectedNodes = new TreeNode[0];
         _treeView.Size = new Size(374, 236);
         _treeView.TabIndex = 0;
         _treeView.SelectionChanged += OnMultiSelectTreeView_SelectionChanged;
@@ -323,6 +323,7 @@ partial class TestForm
     }
     #endregion
 
+    #region Fields
     private MultiSelectTreeView _treeView;
     private SplitContainer _splitContainer;
     private TextBox _dumpTextBox;
@@ -348,5 +349,6 @@ partial class TestForm
 
     private ContextMenuStrip _contextMenuMultipleNodesChoices;
     private ToolStripMenuItem _menuItemUnselectAllNodes;
+    #endregion // Fields
 }
 

@@ -217,6 +217,7 @@
 
     #endregion
 
+    #region Fields
     private System.Windows.Forms.TextBox _txtBxDump;
     private System.Windows.Forms.GroupBox _groupBxServerLog;
     private System.Windows.Forms.Button _btnExit;
@@ -230,6 +231,7 @@
     private System.Windows.Forms.RadioButton _radioButtonNone;
     private System.Windows.Forms.RadioButton _radioButtonReaderWriterLockSli_Basic;
     private System.Windows.Forms.RadioButton _radioReaderWriterLockSli_Wrapper;
+    #endregion // Fields
 
   }
 }

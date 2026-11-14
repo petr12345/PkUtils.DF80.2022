@@ -112,11 +112,13 @@ namespace PK.TestMsgBoxYesNoAll
 
     #endregion
 
+    #region Fields
     private System.Windows.Forms.Label _lblInfo;
     private System.Windows.Forms.Button _btnTest;
     private System.Windows.Forms.Button _btnClose;
     private System.Windows.Forms.CheckBox _checkBxTestLayoutPanel;
 	private System.Windows.Forms.CheckBox _checkBxTestCustomBtnsTexts;
+    #endregion // Fields
   }
 }
 

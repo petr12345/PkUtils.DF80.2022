@@ -75,35 +75,74 @@ function PathCombine([string]$root, [string]$subdir)
 #---------------------------------------------------------------------------------------
 #  FUNCTION LISTINGS
 #---------------------------------------------------------------------------------------
-#  Removes ending backslash from the given path ( input argument ), 
-#  if the path ends with backslash and if the path is not disk root specification.
+#  Adds ending backslash to the given path ( input argument ),
+#  if the path does not already end with a directory separator.
+#  Drive specifications ending with a colon are left unchanged.
+#  Resulting string is returned as a function result.
+#  Examples: string "C:\Dokumenty\Abc" will be changed to "C:\Dokumenty\Abc\"
+#            string "C:\Dokumenty\Abc\" will not be changed
+#            string "C:\" will not be changed
+#            string "C:" will not be changed
+#  Arguments: The input path
+#---------------------------------------------------------------------------------------
+function PathAddSeparator([string]$strPath)
+{
+    [string]$result = $strPath;
+
+    if ($null -ne $strPath)
+    {
+        [int]$nLength = $strPath.Length;
+        if ($nLength -gt 0)
+        {
+            [char]$chLast = $strPath[$nLength - 1];
+            if (($chLast -ne [System.IO.Path]::DirectorySeparatorChar) -and
+                ($chLast -ne [System.IO.Path]::AltDirectorySeparatorChar) -and
+                ($chLast -ne [System.IO.Path]::VolumeSeparatorChar))
+            {
+                $result = $strPath + [System.IO.Path]::DirectorySeparatorChar;
+            }
+        }
+    }
+
+    return $result;
+}
+
+#---------------------------------------------------------------------------------------
+#  FUNCTION LISTINGS
+#---------------------------------------------------------------------------------------
+#  Removes ending backslash from the given path ( input argument ),
+#  if the path ends with a directory separator and is not a root path.
 #  Resulting string is returned as a function result.
 #  Examples: string "C:\Dokumenty\Abc\" will be changed to "C:\Dokumenty\Abc"
-#            string "C:\Dokumenty" will not be changed 
-#            string "C:\" will not be changed 
-#            string "\" will not be changed 
+#            string "C:\Dokumenty\Abc" will not be changed
+#            string "C:\" will not be changed
+#            string "\" will not be changed
+#            string "\\server\share\" will not be changed
 #  Arguments: The input path
 #---------------------------------------------------------------------------------------
 function PathRemoveSeparator([string]$strPath)
 {
     [string]$result = $strPath;
-    
-     if ($strPath -ne $null)
-     {
-        [int]$nLength = $strPath.Length 
-        if ($nLength -gt 0)     
+
+    if (-not [string]::IsNullOrEmpty($strPath))
+    {
+        [string]$root = [System.IO.Path]::GetPathRoot($strPath);
+        [int]$nLength = $strPath.Length;
+
+        # Preserve the trailing separator of a root path.
+        if ($nLength -gt $root.Length)
         {
-           [char]$chLast = $strPath[$nLength - 1]
-           if (($chLast -ne [System.IO.Path]::DirectorySeparatorChar) -and
-               ($chLast -ne [System.IO.Path]::AltDirectorySeparatorChar) -and
-               ($chLast -ne [System.IO.Path]::VolumeSeparatorChar))
-               {
-                    $result = $strPath + [System.IO.Path]::DirectorySeparatorChar;
-               }
+            [char]$chLast = $strPath[$nLength - 1];
+
+            if (($chLast -eq [System.IO.Path]::DirectorySeparatorChar) -or
+                ($chLast -eq [System.IO.Path]::AltDirectorySeparatorChar))
+            {
+                $result = $strPath.Substring(0, $nLength - 1);
+            }
         }
-     }
-     
-    return $result
+    }
+
+    return $result;
 }
 
 #---------------------------------------------------------------------------------------

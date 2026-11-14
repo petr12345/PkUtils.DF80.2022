@@ -224,6 +224,7 @@
 
     #endregion
 
+    #region Fields
     private System.Windows.Forms.Button _btnClose;
     private System.Windows.Forms.Button _btnTestFileLock;
     private System.Windows.Forms.Label _label;
@@ -239,6 +240,7 @@
     private System.Windows.Forms.TextBox _textBxDirectoryName;
     private System.Windows.Forms.Button _btnTestCreateFileInFolder;
         private System.Windows.Forms.Button _btnWhoLockedTheFile;
+    #endregion // Fields
     }
 }
 

@@ -656,6 +656,7 @@ public class FormStack : List<IStackedForm>, IDisposable, ISuspendable, ICompact
     /// <param name="nFormsToPop"> An amount of Forms that should be removed the top of Form stack. </param>
     public void Pop(int nFormsToPop)
     {
+        bool stopAll = false;
         lock (Locker)
         {
             int nStackDepth;
@@ -675,8 +676,8 @@ public class FormStack : List<IStackedForm>, IDisposable, ISuspendable, ICompact
                   nameof(nFormsToPop));
             }
             else if (nFormsToPop == nStackDepth)
-            {   // handling the case popping of all Forms
-                Stop();
+            {   // Stop disposes the cached forms; call it after leaving Locker.
+                stopAll = true;
             }
             else
             {
@@ -711,6 +712,11 @@ public class FormStack : List<IStackedForm>, IDisposable, ISuspendable, ICompact
                     Debug.Fail("Could not find the top Form");
                 }
             }
+        }
+
+        if (stopAll)
+        {
+            Stop();
         }
     }
 
@@ -889,10 +895,11 @@ public class FormStack : List<IStackedForm>, IDisposable, ISuspendable, ICompact
     ///   match. </param>
     public void RemoveUnusedForms(Predicate<IStackedForm> match)
     {
+        List<IDisposable> formsToDispose = new();
+
         lock (Locker)
         {
-            // Prepare the list of 'candidates' for removal ( present in FormList but not in the stack )
-            // Must use .ToList() to avoid delayed execution and completely populate the list before further calls of FormList.Remove(sf);
+            // Materialize candidates before removing them from FormList.
             List<IStackedForm> listToRemove = NotDisplayedForms.ToList();
 
             if (null != match)
@@ -901,7 +908,6 @@ public class FormStack : List<IStackedForm>, IDisposable, ISuspendable, ICompact
                 /* or listToRemove = listToRemove.Where(sf => match(sf)).ToList(); */
             }
 
-            // now actually remove no longer used Forms
             foreach (IStackedForm sf in listToRemove)
             {
                 if (!sf.IsModalState)
@@ -909,7 +915,7 @@ public class FormStack : List<IStackedForm>, IDisposable, ISuspendable, ICompact
                     FormList.Remove(sf);
                     if (sf is IDisposable iDisp)
                     {
-                        iDisp.Dispose();
+                        formsToDispose.Add(iDisp);
                     }
                 }
                 else
@@ -919,6 +925,9 @@ public class FormStack : List<IStackedForm>, IDisposable, ISuspendable, ICompact
                 }
             }
         }
+
+        // Form.Dispose may run event handlers. It must not execute under Locker.
+        DisposeDetachedForms(formsToDispose);
     }
 
     /// <summary>
@@ -929,14 +938,17 @@ public class FormStack : List<IStackedForm>, IDisposable, ISuspendable, ICompact
     /// <seealso cref="FriendlyCompact"/>
     public void AggressiveCompact(Predicate<IStackedForm> match)
     {
+        // RemoveUnusedForms must finish disposing outside the cache lock.
+        RemoveUnusedForms(match);
+        List<ICompactable> remaining;
         lock (Locker)
         {
-            RemoveUnusedForms(match);
-            // if there is anything left, compact that
-            foreach (ICompactable iComp in FormList.OfType<ICompactable>())
-            {
-                iComp.Compact();
-            }
+            remaining = FormList.OfType<ICompactable>().ToList();
+        }
+        // Compact may call user code, which must not run under Locker.
+        foreach (ICompactable iComp in remaining)
+        {
+            iComp.Compact();
         }
     }
 
@@ -949,12 +961,14 @@ public class FormStack : List<IStackedForm>, IDisposable, ISuspendable, ICompact
     /// <seealso cref="AggressiveCompact"/>
     public void FriendlyCompact()
     {
+        List<ICompactable> formsToCompact;
         lock (Locker)
         {
-            foreach (ICompactable iComp in FormList.OfType<ICompactable>())
-            {
-                iComp.Compact();
-            }
+            formsToCompact = FormList.OfType<ICompactable>().ToList();
+        }
+        foreach (ICompactable iComp in formsToCompact)
+        {
+            iComp.Compact();
         }
     }
 
@@ -1098,6 +1112,8 @@ public class FormStack : List<IStackedForm>, IDisposable, ISuspendable, ICompact
         ArgumentNullException.ThrowIfNull(id);
 
         DialogResult result = DialogResult.None;
+        IStackedForm uncachedModalForm = null;
+        bool notifyModalActivation = false;
 
         // only allow one Push at a time to maintain cache and stack integrity
         lock (Locker)
@@ -1134,9 +1150,9 @@ public class FormStack : List<IStackedForm>, IDisposable, ISuspendable, ICompact
                 if (!iNewTop.PermitsCaching)
                 {
                     Debug.Assert(!iNewTop.IsModalState);
-                    RemoveUnusedForms(item => object.ReferenceEquals(item, iNewTop));
+                    uncachedModalForm = iNewTop;
                 }
-                RaiseEventFormAction(new EventFormActivatedEventArgs(this.TopStackedForm));
+                notifyModalActivation = true;
             }
             else
             {
@@ -1161,6 +1177,16 @@ public class FormStack : List<IStackedForm>, IDisposable, ISuspendable, ICompact
 
                 this.RaiseEventFormAction(new EventFormActivatedEventArgs(iNewTop));
             }
+        }
+
+        // Release Locker before disposing a modal form that cannot be cached.
+        if (uncachedModalForm != null)
+        {
+            RemoveUnusedForms(item => ReferenceEquals(item, uncachedModalForm));
+        }
+        if (notifyModalActivation)
+        {
+            RaiseEventFormAction(new EventFormActivatedEventArgs(this.TopStackedForm));
         }
         return result;
     }
@@ -1219,17 +1245,39 @@ public class FormStack : List<IStackedForm>, IDisposable, ISuspendable, ICompact
     /// <summary> Remove all cached Forms and cleans the Form stack. </summary>
     protected void RemoveContents()
     {
+        List<IDisposable> formsToDispose;
         lock (Locker)
         {
-            // nicely destroy each Form
-            foreach (IDisposable iDisp in FormList.OfType<IDisposable>())
-            {
-                iDisp.Dispose();
-            }
-
+            // Detach all forms and clear the stack before calling user-controlled Dispose code.
+            formsToDispose = FormList.OfType<IDisposable>().ToList();
             // clear the list to kill the message pump in Run()
             FormList.Clear();
             TypeStack.Clear();
+        }
+
+        DisposeDetachedForms(formsToDispose);
+    }
+
+    /// <summary>Disposes detached forms outside Locker and attempts all disposals on failure.</summary>
+    /// <param name="formsToDispose">The forms removed from the stack under Locker.</param>
+    private static void DisposeDetachedForms(IEnumerable<IDisposable> formsToDispose)
+    {
+        Exception firstError = null;
+        foreach (IDisposable disposable in formsToDispose)
+        {
+            try
+            {
+                disposable.Dispose();
+            }
+            catch (Exception ex)
+            {
+                firstError ??= ex;
+            }
+        }
+
+        if (firstError != null)
+        {
+            System.Runtime.ExceptionServices.ExceptionDispatchInfo.Capture(firstError).Throw();
         }
     }
     #endregion // Non-virtual Utility Methods

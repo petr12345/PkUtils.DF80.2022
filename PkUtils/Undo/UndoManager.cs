@@ -324,15 +324,22 @@ public class UndoManager : UndoableCompoundEdit
         {
             Debug.Assert(this.Status == MgrStatus.Listening);
             _status = MgrStatus.Undoing;
-            if (IsOpenMultiMode)
+            try
             {
-                this.UndoTo(EditToBeUndone());
+                if (IsOpenMultiMode)
+                {
+                    this.UndoTo(EditToBeUndone());
+                }
+                else
+                {
+                    base.Undo();
+                }
             }
-            else
+            finally
             {
-                base.Undo();
+                // Restore the listening state even if an edit throws.
+                _status = MgrStatus.Listening;
             }
-            _status = MgrStatus.Listening;
         }
     }
 
@@ -346,15 +353,22 @@ public class UndoManager : UndoableCompoundEdit
         {
             Debug.Assert(this.Status == MgrStatus.Listening);
             _status = MgrStatus.Redoing;
-            if (IsOpenMultiMode)
+            try
             {
-                this.RedoTo(EditToBeRedone());
+                if (IsOpenMultiMode)
+                {
+                    this.RedoTo(EditToBeRedone());
+                }
+                else
+                {
+                    base.Redo();
+                }
             }
-            else
+            finally
             {
-                base.Redo();
+                // Restore the listening state even if an edit throws.
+                _status = MgrStatus.Listening;
             }
-            _status = MgrStatus.Listening;
         }
     }
 

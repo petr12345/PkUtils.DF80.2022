@@ -132,6 +132,7 @@
 
     #endregion
 
+    #region Fields
     private System.Windows.Forms.Button _btnTestClassA;
     private System.Windows.Forms.Button _btnTestClassB;
     private System.Windows.Forms.Button _btnTestClassC;
@@ -139,6 +140,7 @@
     private System.Windows.Forms.Label labelA;
     private System.Windows.Forms.Label labelB;
     private System.Windows.Forms.Label labelC;
+    #endregion // Fields
   }
 }
 

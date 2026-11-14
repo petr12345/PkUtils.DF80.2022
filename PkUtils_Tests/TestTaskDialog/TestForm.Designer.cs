@@ -6,21 +6,6 @@ namespace PK.TestTaskDialog;
 partial class TestForm
 {
     #region Windows Form Designer generated code
-    private Button btnInformation = null!;
-    private Button btnQuestion = null!;
-    private Button btnAutoCloseNotification = null!;
-    private Button btnAutoCloseConfirmation = null!;
-    private Button btnQuestionYesNoCancel = null!;
-    private Label lblResult = null!;
-    private GroupBox grpMeasured = null!;
-    private ComboBox cboMeasuredDataset = null!;
-    private NumericUpDown nudMeasuredGap = null!;
-    private NumericUpDown nudMeasuredMaxWidth = null!;
-    private ComboBox cboMeasuredTruncation = null!;
-    private Button btnShowMeasured = null!;
-    private Button btnCopyMeasured = null!;
-    private TextBox txtMeasuredOutput = null!;
-    private TextBox txtMeasuredDiagnostics = null!;
 
     private void InitializeComponent()
     {
@@ -173,4 +158,22 @@ partial class TestForm
         ResumeLayout(false);
     }
     #endregion // Windows Form Designer generated code
+
+    #region Fields
+    private Button btnInformation = null!;
+    private Button btnQuestion = null!;
+    private Button btnAutoCloseNotification = null!;
+    private Button btnAutoCloseConfirmation = null!;
+    private Button btnQuestionYesNoCancel = null!;
+    private Label lblResult = null!;
+    private GroupBox grpMeasured = null!;
+    private ComboBox cboMeasuredDataset = null!;
+    private NumericUpDown nudMeasuredGap = null!;
+    private NumericUpDown nudMeasuredMaxWidth = null!;
+    private ComboBox cboMeasuredTruncation = null!;
+    private Button btnShowMeasured = null!;
+    private Button btnCopyMeasured = null!;
+    private TextBox txtMeasuredOutput = null!;
+    private TextBox txtMeasuredDiagnostics = null!;
+    #endregion // Fields
 }

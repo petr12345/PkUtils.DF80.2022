@@ -282,22 +282,30 @@ public class MsgBoxObserver : SystemEventObserver<MsgBoxObserver.EventMsgBoxActi
     /// <param name="hwnd"> A window handle of related MessageBox. </param>
     protected void RaiseEventMsgBoxAction(EventMsgBoxActionEventArgs.MsgBoxAction action, IntPtr hwnd)
     {
+        MsgBoxInfo info;
         lock (Locker)
         {
-            if (DictOfMsgBoxes.TryGetValue(hwnd, out MsgBoxInfo info))
-            {
-                RaiseObservedEvent(new EventMsgBoxActionEventArgs(action, info));
-            }
-            else
+            if (!DictOfMsgBoxes.TryGetValue(hwnd, out info))
             {
                 string errorMessage = string.Format(CultureInfo.InvariantCulture, "Invalid handle = 0x{0:x8}", hwnd);
                 throw new ArgumentException(errorMessage, nameof(hwnd));
             }
         }
+
+        // Never invoke subscriber code while holding the dictionary lock.
+        RaiseMessageBoxAction(action, info);
     }
     #endregion // Protected Methods
 
     #region Private Methods
+
+    /// <summary>Raises a notification using information captured while holding the dictionary lock.</summary>
+    /// <param name="action">The observed message box action.</param>
+    /// <param name="info">The message box information captured under the lock.</param>
+    private void RaiseMessageBoxAction(EventMsgBoxActionEventArgs.MsgBoxAction action, MsgBoxInfo info)
+    {
+        RaiseObservedEvent(new EventMsgBoxActionEventArgs(action, info));
+    }
 
     /// <summary> Implementation helper determining if the window has text, and is not Button. </summary>
     /// <param name="hWnd"> A given window handle. </param>
@@ -356,12 +364,17 @@ public class MsgBoxObserver : SystemEventObserver<MsgBoxObserver.EventMsgBoxActi
                         string strClassName = User32.GetClassName(hWnd);
                         if (0 == string.CompareOrdinal(strClassName, Win32.MessageBoxClass))
                         {
+                            MsgBoxInfo info = null;
                             lock (Locker)
                             {
                                 if (AddNewMessageBox(hWnd))
                                 {
-                                    RaiseEventMsgBoxAction(EventMsgBoxActionEventArgs.MsgBoxAction.Creating, hWnd);
+                                    DictOfMsgBoxes.TryGetValue(hWnd, out info);
                                 }
+                            }
+                            if (info != null)
+                            {
+                                RaiseMessageBoxAction(EventMsgBoxActionEventArgs.MsgBoxAction.Creating, info);
                             }
                         }
                     }
@@ -379,34 +392,62 @@ public class MsgBoxObserver : SystemEventObserver<MsgBoxObserver.EventMsgBoxActi
                             {   
                             }
                             */
+                            MsgBoxInfo info = null;
                             lock (Locker)
                             {
                                 if (UpdateMessageBoxText(hWnd))
                                 {
-                                    RaiseEventMsgBoxAction(EventMsgBoxActionEventArgs.MsgBoxAction.Activating, hWnd);
+                                    DictOfMsgBoxes.TryGetValue(hWnd, out info);
                                 }
+                            }
+                            if (info != null)
+                            {
+                                RaiseMessageBoxAction(EventMsgBoxActionEventArgs.MsgBoxAction.Activating, info);
                             }
                         }
                     }
                     break;
 
                 case (int)Win32.WM.WM_WINDOWPOSCHANGED:
-                    lock (Locker)
                     {
-                        if (DictOfMsgBoxes.ContainsKey(hWnd))
+                        MsgBoxInfo info;
+                        lock (Locker)
                         {
-                            RaiseEventMsgBoxAction(EventMsgBoxActionEventArgs.MsgBoxAction.PositionChanged, hWnd);
+                            DictOfMsgBoxes.TryGetValue(hWnd, out info);
+                        }
+                        if (info != null)
+                        {
+                            RaiseMessageBoxAction(EventMsgBoxActionEventArgs.MsgBoxAction.PositionChanged, info);
                         }
                     }
                     break;
 
                 case (int)Win32.WM.WM_DESTROY:
-                    lock (Locker)
                     {
-                        if (DictOfMsgBoxes.ContainsKey(hWnd))
+                        MsgBoxInfo info;
+                        lock (Locker)
                         {
-                            RaiseEventMsgBoxAction(EventMsgBoxActionEventArgs.MsgBoxAction.Destroying, hWnd);
-                            RemoveMessageBox(hWnd);
+                            DictOfMsgBoxes.TryGetValue(hWnd, out info);
+                        }
+                        if (info != null)
+                        {
+                            // Preserve the original event-before-removal order without holding Locker.
+                            try
+                            {
+                                RaiseMessageBoxAction(EventMsgBoxActionEventArgs.MsgBoxAction.Destroying, info);
+                            }
+                            finally
+                            {
+                                lock (Locker)
+                                {
+                                    // An event handler might have removed or replaced this entry.
+                                    if (DictOfMsgBoxes.TryGetValue(hWnd, out MsgBoxInfo current) &&
+                                        ReferenceEquals(current, info))
+                                    {
+                                        RemoveMessageBox(hWnd);
+                                    }
+                                }
+                            }
                         }
                     }
                     break;

@@ -64,6 +64,8 @@ partial class BaseDataCtrl<D> : UserControl where D : class
 
     #endregion
 
+    #region Fields
     /// <summary> The label type text. </summary>
     protected System.Windows.Forms.Label _lblTypeText;
+    #endregion // Fields
 }

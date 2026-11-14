@@ -300,6 +300,7 @@ partial class VistaTaskDialogEmulator
 
     #endregion
 
+    #region Fields
     private System.Windows.Forms.PictureBox imgMain;
     private System.Windows.Forms.Label lbContent;
     private System.Windows.Forms.Panel pnlButtons;
@@ -321,4 +322,5 @@ partial class VistaTaskDialogEmulator
     private System.Windows.Forms.Button bt1;
     private System.Windows.Forms.Button bt2;
     private System.Windows.Forms.Button bt3;
+    #endregion // Fields
 }

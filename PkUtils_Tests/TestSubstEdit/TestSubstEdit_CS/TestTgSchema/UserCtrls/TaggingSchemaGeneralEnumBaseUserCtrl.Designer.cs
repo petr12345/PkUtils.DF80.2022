@@ -57,6 +57,8 @@ namespace PK.TestTgSchema.UserCtrls
 
         #endregion
 
+        #region Fields
         protected TaggingSchemaTextBoxEnumBasedCtrl _SchemaTextBxCtrl;
+        #endregion // Fields
     }
 }

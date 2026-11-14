@@ -4,12 +4,6 @@ namespace WinTester
     public partial class Form1
     {
         #region Windows Form Designer generated code
-        private System.Windows.Forms.Button _btnGetWindowsFolder;
-private System.Windows.Forms.Button _btnGetSystemFolder;
-private System.Windows.Forms.Button _btnGetSHBindToParent;
-private System.Windows.Forms.Button _btnBrowseForFolder;
-private System.Windows.Forms.Button _btnCustomBrowseForFolder;
-private System.Windows.Forms.Label label1;
 private System.ComponentModel.Container components = null;
 
         private void InitializeComponent()
@@ -118,6 +112,15 @@ private System.ComponentModel.Container components = null;
             base.Dispose( disposing );
         }
 
+        #region Fields
+        private System.Windows.Forms.Button _btnGetWindowsFolder;
+        private System.Windows.Forms.Button _btnGetSystemFolder;
+        private System.Windows.Forms.Button _btnGetSHBindToParent;
+        private System.Windows.Forms.Button _btnBrowseForFolder;
+        private System.Windows.Forms.Button _btnCustomBrowseForFolder;
+        private System.Windows.Forms.Label label1;
+
         private System.Windows.Forms.Button _btnClose;
+        #endregion // Fields
     }
 }

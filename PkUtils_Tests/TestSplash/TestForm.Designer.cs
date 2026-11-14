@@ -50,7 +50,9 @@
 
     #endregion
 
+    #region Fields
     private System.Windows.Forms.Label _labelInfo;
     private System.Windows.Forms.Timer _timerClose;
+    #endregion // Fields
   }
 }

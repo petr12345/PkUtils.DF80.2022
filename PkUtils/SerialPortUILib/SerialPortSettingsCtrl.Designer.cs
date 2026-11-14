@@ -206,6 +206,7 @@ namespace PK.PkUtils.SerialPortUILib
 
     #endregion
 
+    #region Fields
     private System.Windows.Forms.BindingSource _serialSettingsBindingSource;
     private System.Windows.Forms.ComboBox _baudRateComboBox;
     private System.Windows.Forms.ComboBox _dataBitsComboBox;
@@ -214,6 +215,7 @@ namespace PK.PkUtils.SerialPortUILib
     private System.Windows.Forms.ComboBox _stopBitsComboBox;
     private System.Windows.Forms.GroupBox _groupBox;
     private System.Windows.Forms.ErrorProvider _ErrorProvider;
+    #endregion // Fields
   }
 }
 

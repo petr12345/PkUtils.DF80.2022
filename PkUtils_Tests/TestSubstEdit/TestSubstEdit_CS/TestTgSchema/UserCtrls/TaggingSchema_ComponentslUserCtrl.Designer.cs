@@ -59,7 +59,9 @@
 
         #endregion
 
+        #region Fields
         private System.Windows.Forms.Label _labelComponents;
+        #endregion // Fields
 
     }
 }

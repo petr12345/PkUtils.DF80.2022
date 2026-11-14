@@ -112,32 +112,30 @@ public class SplashFactory : ISplashFactory
               millisecondsTimeout,
               "The value of millisecondsTimeout is negative, but it is not equal to Timeout.Infinite, which is the only negative value allowed.");
         }
-        // Make sure it's only launched once.
-        if (null == SplashWindow)
+        // Protect creation, but do not hold SyncRoot while waiting for the splash thread.
+        // _splashThread also prevents a second creation while the first thread is starting.
+        lock (SyncRoot)
         {
-            lock (SyncRoot)
+            if (null == SplashWindow && (_splashThread == null || !_splashThread.IsAlive))
             {
-                if (null == SplashWindow)
-                {
-                    var dtStarted = DateTime.Now;
-                    var iniData = new SplashForm.SplashInitData(priority, backgroundImage, isImageOwner);
-                    _splashThread = new SplashForm.SplashScreenThread(iniData, this);
-                    _splashThread.Start();
-                    result = true;
+                SplashForm.SplashInitData iniData = new(priority, backgroundImage, isImageOwner);
+                _splashThread = new SplashForm.SplashScreenThread(iniData, this);
+                _splashThread.Start();
+                result = true;
+            }
+        }
 
-                    if (0 != millisecondsTimeout)
-                    {
-                        while (!IsSplashVisible)
-                        {
-                            // DoEvents is not necessary, just Sleep is sufficient
-                            /* Application.DoEvents(); */
-                            Thread.Sleep(32);
-                            if ((millisecondsTimeout != Timeout.Infinite) && (millisecondsTimeout <= DateTime.Now.Subtract(dtStarted).TotalMilliseconds))
-                            {
-                                break;
-                            }
-                        }
-                    }
+        if (result && (0 != millisecondsTimeout))
+        {
+            DateTime dtStarted = DateTime.Now;
+            while (!IsSplashVisible)
+            {
+                // IsSplashVisible acquires SyncRoot only for the duration of its query.
+                Thread.Sleep(32);
+                if ((millisecondsTimeout != Timeout.Infinite) &&
+                    (millisecondsTimeout <= DateTime.Now.Subtract(dtStarted).TotalMilliseconds))
+                {
+                    break;
                 }
             }
         }

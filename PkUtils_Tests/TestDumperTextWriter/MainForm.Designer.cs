@@ -107,11 +107,13 @@ partial class MainForm
 
     #endregion
 
+    #region Fields
     private System.Windows.Forms.TextBox _txtBxDump;
     private System.Windows.Forms.GroupBox _groupBxServerLog;
     private System.Windows.Forms.Button _btnExit;
     private System.Windows.Forms.Button _btnStartStopListening;
     private System.Windows.Forms.Button _btnCleanLogHistory;
     private System.Windows.Forms.Timer _timer;
+    #endregion // Fields
 }
 

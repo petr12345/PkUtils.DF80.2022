@@ -2,15 +2,6 @@ namespace TestMultiSelectTreeView;
 
 partial class AboutBox
 {
-    private System.ComponentModel.IContainer components = null;
-    private System.Windows.Forms.Label _labelAssemblyTitle;
-    private System.Windows.Forms.Label _labelVersion;
-    private System.Windows.Forms.Label _labelCopyright;
-    private System.Windows.Forms.TextBox _textBoxDescription;
-    private System.Windows.Forms.Button _buttonOK;
-    private System.Windows.Forms.Button _buttonMore;
-    private System.Windows.Forms.LinkLabel _linkLabelWebsite;
-
     /// <summary>
     /// Disposes of the resources (other than memory) used by the <see cref="T:System.Windows.Forms.Form" />.
     /// </summary>
@@ -124,4 +115,16 @@ partial class AboutBox
         ResumeLayout(false);
         PerformLayout();
     }
+
+    #region Fields
+    private System.ComponentModel.IContainer components = null;
+    private System.Windows.Forms.Label _labelAssemblyTitle;
+    private System.Windows.Forms.Label _labelVersion;
+    private System.Windows.Forms.Label _labelCopyright;
+    private System.Windows.Forms.TextBox _textBoxDescription;
+    private System.Windows.Forms.Button _buttonOK;
+    private System.Windows.Forms.Button _buttonMore;
+    private System.Windows.Forms.LinkLabel _linkLabelWebsite;
+    #endregion // Fields
+
 }

@@ -2,20 +2,6 @@
 
 public partial class MainForm
 {
-    private System.Windows.Forms.ListBox _listBox1;
-    private System.Windows.Forms.ListBox _listBox2;
-    private System.Windows.Forms.Button _buttonFont;
-    private System.Windows.Forms.TabControl _tabControl;
-    private System.Windows.Forms.TabPage _tabListBox;
-    private System.Windows.Forms.ComboBox _comboSimple;
-    private System.Windows.Forms.Label _label_CBS_SIMPLE;
-    private System.Windows.Forms.ComboBox _comboDropDown;
-    private System.Windows.Forms.Label _label_CBS_DROPDOWN;
-    private System.Windows.Forms.Label _label_CBS_DROPDOWNLIST;
-    private System.Windows.Forms.ComboBox _comboDropDownList;
-    private System.Windows.Forms.PictureBox _pictureApe;
-    private System.Windows.Forms.Button _buttonCbTooltipFontA;
-    private System.Windows.Forms.TabPage _tabComboBox;
 
     /// <summary>
     /// Required designer variable.
@@ -277,10 +263,27 @@ public partial class MainForm
     }
     #endregion
 
+    #region Fields
+    private System.Windows.Forms.ListBox _listBox1;
+    private System.Windows.Forms.ListBox _listBox2;
+    private System.Windows.Forms.Button _buttonFont;
+    private System.Windows.Forms.TabControl _tabControl;
+    private System.Windows.Forms.TabPage _tabListBox;
+    private System.Windows.Forms.ComboBox _comboSimple;
+    private System.Windows.Forms.Label _label_CBS_SIMPLE;
+    private System.Windows.Forms.ComboBox _comboDropDown;
+    private System.Windows.Forms.Label _label_CBS_DROPDOWN;
+    private System.Windows.Forms.Label _label_CBS_DROPDOWNLIST;
+    private System.Windows.Forms.ComboBox _comboDropDownList;
+    private System.Windows.Forms.PictureBox _pictureApe;
+    private System.Windows.Forms.Button _buttonCbTooltipFontA;
+    private System.Windows.Forms.TabPage _tabComboBox;
+
     private System.Windows.Forms.CheckBox _checkBxUseVisualStyles;
     private System.Windows.Forms.Button _btnRestart;
     private System.Windows.Forms.Button _btnClose;
     private System.Windows.Forms.Button _btnResetListBxTooltipFont;
     private System.Windows.Forms.Button _btnResetComboBxTooltipFont;
     private System.Windows.Forms.Label _labelLbx2nd;
+    #endregion // Fields
 }

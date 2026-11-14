@@ -96,11 +96,13 @@ namespace PK.TestPropertyGridCustomCollectionEditor
 
         #endregion
 
+        #region Fields
         private System.Windows.Forms.Button btnAssign;
         private System.Windows.Forms.PropertyGrid _propertyGrid;
         private System.Windows.Forms.TextBox _textBoxMessages;
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.Button _btnClose;
+        #endregion // Fields
     }
 }
 

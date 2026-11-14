@@ -63,6 +63,8 @@
 
         #endregion
 
+        #region Fields
         private System.Windows.Forms.Label _labelLines;
+        #endregion // Fields
     }
 }

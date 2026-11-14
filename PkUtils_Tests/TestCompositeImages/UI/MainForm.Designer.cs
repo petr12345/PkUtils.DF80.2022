@@ -274,6 +274,7 @@
 
         #endregion
 
+        #region Fields
         private System.Windows.Forms.Panel _pnlBottom;
         private System.Windows.Forms.SplitContainer _splitContainer;
         private System.Windows.Forms.Label _labelImagePreview;
@@ -291,6 +292,7 @@
         private System.Windows.Forms.Label _labelImagesFolder;
         private System.Windows.Forms.TextBox _textBxImagesFolder;
         private System.Windows.Forms.Button _btnTestImagesProcessing;
+        #endregion // Fields
     }
 }
 

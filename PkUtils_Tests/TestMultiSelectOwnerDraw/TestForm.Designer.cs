@@ -70,7 +70,7 @@ partial class TestForm
         treeNode2.Text = "Node0";
         _treeView.Nodes.AddRange(new TreeNode[] { treeNode2 });
         _treeView.SelectedImageIndex = 0;
-        _treeView.SelectedNodes = [];
+        _treeView.SelectedNodes = new TreeNode[0];
         _treeView.Size = new Size(374, 248);
         _treeView.TabIndex = 0;
         _treeView.SelectionChanged += OnMultiSelectTreeView_SelectionChanged;
@@ -278,6 +278,7 @@ partial class TestForm
     }
     #endregion
 
+    #region Fields
     private MultiSelectOwnerDrawTreeView _treeView;
     private SplitContainer _splitContainer;
     private TextBox _dumpTextBox;
@@ -294,5 +295,6 @@ partial class TestForm
     private Button _btnClearSelection;
     private Button _btnExit;
     private CheckBox _checkBxIndicateProjectedSelection;
+    #endregion // Fields
 }
 

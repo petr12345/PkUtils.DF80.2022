@@ -101,10 +101,12 @@
 
     #endregion
 
+    #region Fields
     private System.Windows.Forms.Button _btnExit;
     private System.Windows.Forms.Button _btnTestWrong;
     private System.Windows.Forms.Button _btnTestGood;
     private System.Windows.Forms.TextBox _textBxOut;
+    #endregion // Fields
   }
 }
 

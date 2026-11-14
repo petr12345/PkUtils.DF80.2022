@@ -5,12 +5,6 @@ namespace WinTester3
   public partial class frmMain
   {
     #region Windows Form Designer generated code
-    private System.Windows.Forms.GroupBox grpEdge;
-    private System.Windows.Forms.RadioButton rdoFloat;
-    private System.Windows.Forms.RadioButton rdoRight;
-    private System.Windows.Forms.RadioButton rdoLeft;
-    private System.Windows.Forms.RadioButton rdoBottom;
-    private System.Windows.Forms.RadioButton rdoTop;
     private System.ComponentModel.Container components = null;
 
     private void InitializeComponent()
@@ -136,6 +130,15 @@ namespace WinTester3
       base.Dispose(disposing);
     }
 
+    #region Fields
+    private System.Windows.Forms.GroupBox grpEdge;
+    private System.Windows.Forms.RadioButton rdoFloat;
+    private System.Windows.Forms.RadioButton rdoRight;
+    private System.Windows.Forms.RadioButton rdoLeft;
+    private System.Windows.Forms.RadioButton rdoBottom;
+    private System.Windows.Forms.RadioButton rdoTop;
+
     private CheckBox _checkBxOnTop;
+    #endregion // Fields
   }
 }

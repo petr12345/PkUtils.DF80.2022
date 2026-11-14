@@ -237,6 +237,7 @@ namespace PK.TestVistaTaskDialog
 
         #endregion
 
+        #region Fields
         private System.Windows.Forms.Button buttonFullExample;
         private System.Windows.Forms.Button buttonMessageBoxExample;
         private System.Windows.Forms.Button buttonSimpleMessageBoxExample;
@@ -252,6 +253,7 @@ namespace PK.TestVistaTaskDialog
         private System.Windows.Forms.Button btExclamation;
         private System.Windows.Forms.Button btBeep;
         private System.Windows.Forms.Label label2;
+        #endregion // Fields
 
     }
 }

@@ -114,6 +114,7 @@ private bool _bShouldClose;
     private int _nActualTicks;
     private List<double> _alPreviousCompletionFraction;
     private readonly List<double> _alActualTimes = [];
+    // Synchronizes shared splash state, including the actual-times collection.
     private readonly object _sync = new();
 
     // private const string REG_KEY_INITIALIZATION = "Initialization";
@@ -241,11 +242,9 @@ private bool _bShouldClose;
                 ReadIncrements();
             }
             double dblMilliseconds = ElapsedMilliSeconds();
-            lock (_alActualTimes)
-            {
-                _alActualTimes.Add(dblMilliseconds);
-                _dblLastCompletionFraction = _dblCompletionFraction;
-            }
+            // SyncObject already protects the list and related state.
+            _alActualTimes.Add(dblMilliseconds);
+            _dblLastCompletionFraction = _dblCompletionFraction;
             if (_alPreviousCompletionFraction != null && _iIndex < _alPreviousCompletionFraction.Count)
                 _dblCompletionFraction = _alPreviousCompletionFraction[_iIndex++];
             else
@@ -330,20 +329,17 @@ private bool _bShouldClose;
             StringBuilder sbPercent = new();
             double dblElapsedMilliseconds = ElapsedMilliSeconds();
 
-            lock (_alActualTimes)
+            if (result = (0 < (nCount = _alActualTimes.Count)))
             {
-                if (result = (0 < (nCount = _alActualTimes.Count)))
+                for (int ii = 0; ;)
                 {
-                    for (int ii = 0; ;)
-                    {
-                        double dPercent = ((double)_alActualTimes[ii] / dblElapsedMilliseconds);
-                        string strAddPercent = dPercent.ToString("0.####", NumberFormatInfo.InvariantInfo);
-                        sbPercent.Append(strAddPercent);
-                        if (++ii < nCount)
-                            sbPercent.Append(' ');
-                        else
-                            break;
-                    }
+                    double dPercent = ((double)_alActualTimes[ii] / dblElapsedMilliseconds);
+                    string strAddPercent = dPercent.ToString("0.####", NumberFormatInfo.InvariantInfo);
+                    sbPercent.Append(strAddPercent);
+                    if (++ii < nCount)
+                        sbPercent.Append(' ');
+                    else
+                        break;
                 }
             }
 

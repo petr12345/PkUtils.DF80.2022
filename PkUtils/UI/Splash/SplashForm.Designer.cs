@@ -87,6 +87,7 @@ partial class SplashForm
     }
     #endregion
 
+    #region Fields
     /// <summary>
     /// Required designer variable.
     /// </summary>
@@ -95,4 +96,5 @@ partial class SplashForm
     private PK.PkUtils.UI.Controls.SmoothProgressBar _smoothProgressBar;
     private System.Windows.Forms.Label _lblTimeRemaining;
     private System.Windows.Forms.Label _lblStatus;
+    #endregion // Fields
 }
