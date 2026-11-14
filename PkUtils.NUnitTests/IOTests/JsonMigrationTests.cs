@@ -83,19 +83,45 @@ public sealed class JsonMigrationTests
         Assert.That(exception!.InnerException, Is.TypeOf<JsonException>());
     }
 
-    /// <summary>Verifies cycles and repeated references survive cloning.</summary>
     [Test]
     public void Clone_PreservesCyclesAndSharedReferences()
     {
+        // Arrange
         Node child = new() { Name = "Liška podšitá" };
         Node source = new() { Name = "root", Next = child, Other = child };
         child.Next = source;
+
+        // Act
         Node copy = CloneHelperJson.DeepClone(source);
-        Assert.That(copy, Is.Not.SameAs(source));
-        Assert.That(copy.Next, Is.Not.SameAs(child));
-        Assert.That(copy.Next, Is.SameAs(copy.Other));
-        Assert.That(copy.Next!.Next, Is.SameAs(copy));
-        Assert.That(copy.Next.Name, Is.EqualTo(child.Name));
+
+        // Assert - prerequisites
+        using (Assert.EnterMultipleScope())
+        {
+            Assert.That(copy, Is.Not.Null);
+            Assert.That(copy.Next, Is.Not.Null);
+            Assert.That(copy.Other, Is.Not.Null);
+        }
+
+        Node copiedChild = copy.Next!;
+        Node copiedOther = copy.Other!;
+
+        using (Assert.EnterMultipleScope())
+        {
+            // Values
+            Assert.That(copy.Name, Is.EqualTo(source.Name));
+            Assert.That(copiedChild.Name, Is.EqualTo(child.Name));
+            Assert.That(copiedOther.Name, Is.EqualTo(child.Name));
+
+            // Deep cloning
+            Assert.That(copy, Is.Not.SameAs(source));
+            Assert.That(copiedChild, Is.Not.SameAs(child));
+
+            // Shared references
+            Assert.That(copiedOther, Is.SameAs(copiedChild));
+
+            // Cyclic references
+            Assert.That(copiedChild.Next, Is.SameAs(copy));
+        }
     }
 
     /// <summary>Verifies object-valued geometry, null and custom types survive persistence.</summary>
@@ -115,12 +141,16 @@ public sealed class JsonMigrationTests
             source["custom"] = new CustomValue { Text = "Liška podšitá" };
             source.Save();
             ObjectStore copy = new(suffix);
-            Assert.That(copy.FileName, Does.EndWith(".json"));
-            Assert.That(copy["int"], Is.TypeOf<int>().And.EqualTo(42));
-            Assert.That(copy["point"], Is.TypeOf<Point>().And.EqualTo(source["point"]));
-            Assert.That(copy["size"], Is.TypeOf<Size>().And.EqualTo(source["size"]));
-            Assert.That(copy["rectangle"], Is.TypeOf<Rectangle>().And.EqualTo(source["rectangle"]));
-            Assert.That(copy["null"], Is.Null);
+
+            using (Assert.EnterMultipleScope())
+            {
+                Assert.That(copy.FileName, Does.EndWith(".json"));
+                Assert.That(copy["int"], Is.TypeOf<int>().And.EqualTo(42));
+                Assert.That(copy["point"], Is.TypeOf<Point>().And.EqualTo(source["point"]));
+                Assert.That(copy["size"], Is.TypeOf<Size>().And.EqualTo(source["size"]));
+                Assert.That(copy["rectangle"], Is.TypeOf<Rectangle>().And.EqualTo(source["rectangle"]));
+                Assert.That(copy["null"], Is.Null);
+            }
             Assert.That(((CustomValue)copy["custom"]).Text, Is.EqualTo("Liška podšitá"));
         }
         finally { source.DeleteFile(); }
@@ -151,9 +181,13 @@ public sealed class JsonMigrationTests
             source.Save();
             source["unsupported"] = new Node();
             Assert.Throws<NotSupportedException>((Action)(() => source.Save()));
+
             ObjectStore copy = new(suffix);
-            Assert.That(copy["value"], Is.EqualTo(42));
-            Assert.That(copy.ContainsKey("unsupported"), Is.False);
+            using (Assert.EnterMultipleScope())
+            {
+                Assert.That(copy["value"], Is.EqualTo(42));
+                Assert.That(copy.ContainsKey("unsupported"), Is.False);
+            }
         }
         finally { source.DeleteFile(); }
     }
@@ -169,9 +203,12 @@ public sealed class JsonMigrationTests
         {
             source.WriteRaw(json);
             ObjectStore copy = new(suffix);
-            Assert.That(copy.LastSafeLoadResult.Success, Is.False);
-            Assert.That(copy.LastLoadFoundAnyStorage, Is.True);
-            Assert.That(copy, Is.Empty);
+            using (Assert.EnterMultipleScope())
+            {
+                Assert.That(copy.LastSafeLoadResult.Success, Is.False);
+                Assert.That(copy.LastLoadFoundAnyStorage, Is.True);
+                Assert.That(copy, Is.Empty);
+            }
         }
         finally { source.DeleteFile(); }
     }

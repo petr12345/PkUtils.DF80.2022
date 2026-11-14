@@ -9,8 +9,6 @@ using System.Windows.Forms;
 
 namespace PK.PkUtils.UI.Dialogs.TaskDialogs;
 
-#pragma warning disable IDE0028  // Collection initialization can be simplified
-
 /// <summary> Implements several utilities as example of usage of <see cref="TaskDialog"/> </summary>
 public static class TaskDialogWrapper
 {
@@ -838,4 +836,3 @@ public static class TaskDialogWrapper
     }
     #endregion // Private Methods
 }
-#pragma warning restore IDE0028

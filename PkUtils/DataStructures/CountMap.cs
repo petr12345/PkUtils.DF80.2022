@@ -7,7 +7,6 @@ using System.Globalization;
 using System.Linq;
 using System.Threading;
 using PK.PkUtils.Extensions;
-using PK.PkUtils.Utils;
 
 namespace PK.PkUtils.DataStructures;
 
@@ -15,8 +14,22 @@ namespace PK.PkUtils.DataStructures;
 /// Auxiliary class, working as a map (dictionary), mapping the type and its 
 /// <see cref="CountMap.TypeCountInfo"/> structure. </summary>
 ///
-/// <remarks> For consistency, all public methods are thread-safe. </remarks>
-public class CountMap : Singleton<CountMap>, IDisposable
+/// <remarks>
+/// <para>For consistency, all public methods are thread-safe.</para>
+/// <para>
+/// This singleton intentionally lives for the entire application lifetime. Countable objects
+/// register with its counters when created and decrement them when disposed or finalized;
+/// disposing or recreating the map while any of those objects remain alive would invalidate
+/// their counts and synchronization. Therefore CountMap does not implement IDisposable and
+/// its ReaderWriterLockSlim is not disposed during normal operation. The runtime reclaims
+/// these managed resources when the process ends.
+/// </para>
+/// <para>
+/// The inherited Singleton&lt;CountMap&gt;.DisposeInstance() returns false and leaves the
+/// instance unchanged because CountMap does not implement IDisposable.
+/// </para>
+/// </remarks>
+public class CountMap : Singleton<CountMap>
 {
     #region Typedefs
 
@@ -61,7 +74,7 @@ public class CountMap : Singleton<CountMap>, IDisposable
     private readonly Dictionary<Type, TypeCountInfo> _Dict = [];
 
     /// <summary> A slim lock, used for locking/unlocking the dictionary. </summary>
-    private ReaderWriterLockSlim _slimLock = new(LockRecursionPolicy.SupportsRecursion);
+    private readonly ReaderWriterLockSlim _slimLock = new(LockRecursionPolicy.SupportsRecursion);
     #endregion // Fields
 
     #region Constructor(s)
@@ -355,22 +368,6 @@ public class CountMap : Singleton<CountMap>, IDisposable
         return result;
     }
 
-    /// <summary>
-    /// Dispose(bool disposing) executes in two distinct scenarios. If disposing equals true, the
-    /// method has been called directly or indirectly by a user's code. Managed and unmanaged resources
-    /// can be disposed. If disposing equals false, the method has been called by the runtime from
-    /// inside the finalizer and you should not reference other objects. Only unmanaged resources can
-    /// be disposed. </summary>
-    ///
-    /// <param name="disposing"> If true, is called by IDisposable.Dispose. Otherwise it is called by
-    ///   finalizer. </param>
-    protected virtual void Dispose(bool disposing)
-    {
-        if (disposing)
-        {
-            Disposer.SafeDispose(ref _slimLock);
-        }
-    }
     #endregion // Protected Methods
 
     #region Private Methods
@@ -421,17 +418,6 @@ public class CountMap : Singleton<CountMap>, IDisposable
     #endregion // Private Methods
     #endregion // Methods
 
-    #region IDisposable Members
-
-    /// <summary>
-    /// Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged
-    /// resources. </summary>
-    public void Dispose()
-    {
-        Dispose(true);
-        GC.SuppressFinalize(this);
-    }
-    #endregion // IDisposable Members
 }
 
 /// <summary>

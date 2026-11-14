@@ -30,7 +30,7 @@ namespace PK.PkUtils.DataStructures;
 /// <example>
 /// <code>
 /// <![CDATA[
-/// public class CountMap : Singleton<CountMap>, IDisposable
+/// public class CountMap : Singleton<CountMap>
 /// ]]>
 /// </code>
 /// </example>

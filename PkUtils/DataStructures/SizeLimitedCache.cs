@@ -1,6 +1,4 @@
-﻿// Ignore Spelling: Utc
-
-// Ignore Spelling: Utils
+﻿// Ignore Spelling: Typedefs, Utc, Utils
 //
 using System;
 using System.Collections.Generic;
@@ -11,6 +9,7 @@ using PK.PkUtils.Extensions;
 using PK.PkUtils.Interfaces;
 using static System.FormattableString;
 
+#pragma warning disable IDE0079 // Remove unnecessary suppression 
 #pragma warning disable IDE0028 // Simplify collection initialization
 #pragma warning disable IDE0305 // Collection initialization can be simplified
 
@@ -42,7 +41,7 @@ public class SizeLimitedCache<TKey, TValue> : ISizeLimitedCache<TKey, TValue>
         /// <summary> Gets the UTC Date/Time of last access stamp. </summary>
         public DateTime UtcAccessStamp
         {
-            get => new DateTime(Interlocked.Read(ref _utcAccessTicks), DateTimeKind.Utc);
+            get => new(Interlocked.Read(ref _utcAccessTicks), DateTimeKind.Utc);
         }
 
         /// <summary> Gets the cached value. </summary>
@@ -156,6 +155,7 @@ public class SizeLimitedCache<TKey, TValue> : ISizeLimitedCache<TKey, TValue>
         int newLimit = CheckMaxSizePositive(maxSize, nameof(maxSize));
         if (MaxSize != newLimit)
         {
+            List<TValue> evictedValues = null;
             _readerWriterLock.EnterWriteLock();
 
             try
@@ -174,7 +174,7 @@ public class SizeLimitedCache<TKey, TValue> : ISizeLimitedCache<TKey, TValue>
                     }
                     else if (nowCached > newLimit)
                     {
-                        ShrinkToMaxSize();
+                        evictedValues = ShrinkToMaxSize();
                     }
                 }
             }
@@ -182,6 +182,9 @@ public class SizeLimitedCache<TKey, TValue> : ISizeLimitedCache<TKey, TValue>
             {
                 _readerWriterLock.ExitWriteLock();
             }
+
+            // Evicted values must be disposed only after releasing the cache lock.
+            DisposeDetachedEvictedValues(evictedValues);
         }
     }
 
@@ -237,70 +240,96 @@ public class SizeLimitedCache<TKey, TValue> : ISizeLimitedCache<TKey, TValue>
         }
     }
 
-    /// <summary> Shrinks currently cached size to maximum size. 
-    /// Has no effect if currently cached size does not exceed maximum size.
+    /// <summary>
+    /// Removes the least recently accessed cache entries until the cached size does not exceed the maximum size.
+    /// Has no effect if the current size is already within the limit.
     /// </summary>
-    /// <exception cref="InvalidOperationException"> Thrown when _readerWriterLock does not hold read lock. </exception>
-    ///
-    /// <returns> True if there was any change, false if not. </returns>
-    protected virtual bool ShrinkToMaxSize()
+    /// <remarks>
+    /// The caller must hold the write lock. This method only detaches entries from the cache; it never
+    /// disposes their values. The caller must dispose the returned values after releasing the write lock.
+    /// When <see cref="DisposesEvictedValues"/> is false, removed values are not returned for disposal.
+    /// </remarks>
+    /// <exception cref="InvalidOperationException"> Thrown when the caller does not hold the write lock. </exception>
+    /// <returns>
+    /// The values requiring disposal after the write lock is released; an empty list if no values should
+    /// be disposed.
+    /// </returns>
+    protected virtual List<TValue> ShrinkToMaxSize()
     {
         this.CheckNotDisposed();
         CheckWriteLockIsHeld(nameof(ShrinkToMaxSize));
 
+        List<TValue> evictedValues = [];
         int countToBeRemoved = this.CurrentSizeWithoutLock - this.MaxSize;
-        bool result;
 
-        if (result = (countToBeRemoved > 0))
+        if (countToBeRemoved > 0)
         {
             if (this.DisposesEvictedValues)
             {
-                // From performance perspective, it's better to materialize evicted items to list immediately,
-                // to prevent iterating over the same collection several times during eviction.
-                //
-                var orderedPairs = _dictionary.OrderBy(pair => pair.Value.UtcAccessStamp)
-#pragma warning disable IDE0037 // Use inferred member name
-                    .Select(pair => new { Key = pair.Key, Value = pair.Value.CachedValue }).ToList();
-#pragma warning restore IDE0037 // Use inferred member name
-                // Now, could involve 'Take' to avoid creating another list
-                Exception firstError = null;
-                foreach (var pair in orderedPairs.Take(countToBeRemoved))
-                {
-                    try
-                    {
-                        DisposeEvictedValue(pair.Value);
-                    }
-                    catch (Exception ex)
-                    {
-                        firstError ??= ex;
-                    }
-                    finally
-                    {
-                        _dictionary.Remove(pair.Key);
-                    }
-                }
+                // Materialize candidates before removing entries from the dictionary.
+                // Values with the earliest UtcAccessStamp will be removed.
+                List<(TKey Key, TValue Value)> orderedPairs = _dictionary
+                    .OrderBy(pair => pair.Value.UtcAccessStamp)
+                    .Take(countToBeRemoved)
+                    .Select(pair => (pair.Key, Value: pair.Value.CachedValue))
+                    .ToList();
 
-                if (firstError is not null)
+                foreach ((TKey Key, TValue Value) in orderedPairs)
                 {
-                    throw new InvalidOperationException(
-                        "One or more evicted values could not be disposed.", firstError);
+                    _dictionary.Remove(Key);
+                    evictedValues.Add(Value);
                 }
             }
             else
             {
-                // One could be faster here, not considering evicted values.
-                // Also, 'for' loops on List are faster than 'foreach' loops on List
-                List<TKey> orderedKeys = _dictionary.OrderBy(pair => pair.Value.UtcAccessStamp)
-                    .Select(pair => pair.Key).ToList();
-                for (int ii = 0; ii < countToBeRemoved; ii++)
+                // Avoid collecting values when the cache does not own them.
+                List<TKey> orderedKeys = _dictionary
+                    .OrderBy(pair => pair.Value.UtcAccessStamp)
+                    .Take(countToBeRemoved)
+                    .Select(pair => pair.Key)
+                    .ToList();
+
+                foreach (TKey key in orderedKeys)
                 {
-                    _dictionary.Remove(orderedKeys[ii]);
+                    _dictionary.Remove(key);
                 }
             }
+
             Debug.Assert(this.CurrentSizeWithoutLock <= this.MaxSize);
         }
 
-        return result;
+        return evictedValues;
+    }
+
+    /// <summary>
+    /// Disposes values detached by <see cref="ShrinkToMaxSize"/> after the caller has released the write lock.
+    /// Continues disposing the remaining values if an individual disposal fails.
+    /// </summary>
+    /// <param name="evictedValues"> Values to dispose, or null if no eviction occurred. </param>
+    /// <exception cref="InvalidOperationException"> Thrown if one or more values could not be disposed. </exception>
+    private void DisposeDetachedEvictedValues(List<TValue> evictedValues)
+    {
+        if (evictedValues is null)
+            return;
+
+        Exception firstError = null;
+        foreach (TValue value in evictedValues)
+        {
+            try
+            {
+                DisposeEvictedValue(value);
+            }
+            catch (Exception ex)
+            {
+                firstError ??= ex;
+            }
+        }
+
+        if (firstError is not null)
+        {
+            throw new InvalidOperationException(
+                "One or more evicted values could not be disposed.", firstError);
+        }
     }
 
     /// <summary> Check that write lock is held. </summary>
@@ -426,6 +455,7 @@ public class SizeLimitedCache<TKey, TValue> : ISizeLimitedCache<TKey, TValue>
 
         TValue valueToDispose = default;
         bool shouldDispose = false;
+        List<TValue> evictedValues = null;
 
         _readerWriterLock.EnterWriteLock();
 
@@ -454,7 +484,7 @@ public class SizeLimitedCache<TKey, TValue> : ISizeLimitedCache<TKey, TValue>
                 _dictionary.Add(key, new CachedEntry(value));
                 if (CurrentSizeWithoutLock > MaxSize)
                 {
-                    ShrinkToMaxSize();
+                    evictedValues = ShrinkToMaxSize();
                 }
             }
         }
@@ -463,11 +493,12 @@ public class SizeLimitedCache<TKey, TValue> : ISizeLimitedCache<TKey, TValue>
             _readerWriterLock.ExitWriteLock();
         }
 
-        // Dispose detached value only after releasing the cache lock.
+        // Dispose detached values only after releasing the cache lock.
         if (shouldDispose)
         {
             DisposeEvictedValue(valueToDispose);
         }
+        DisposeDetachedEvictedValues(evictedValues);
     }
 
     /// <inheritdoc/>
@@ -552,11 +583,12 @@ public class SizeLimitedCache<TKey, TValue> : ISizeLimitedCache<TKey, TValue>
 
         if (firstError is not null)
         {
-            throw new InvalidOperationException(
-                "One or more cached values could not be disposed.", firstError);
+            string message = Invariant($"One or more cached values could not be disposed, {firstError.GetType().Name} has occurred.");
+            throw new InvalidOperationException(message, firstError);
         }
     }
     #endregion // ISizeLimitedCache<TKey, TValue> Members
 }
 #pragma warning restore IDE0305
 #pragma warning restore IDE0028
+#pragma warning restore IDE0079

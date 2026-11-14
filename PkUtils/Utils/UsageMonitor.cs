@@ -2,7 +2,6 @@
 
 using System;
 using System.Threading;
-using System.Diagnostics;
 using PK.PkUtils.Interfaces;
 
 namespace PK.PkUtils.Utils;
@@ -171,8 +170,7 @@ public class UsageMonitor : IDisposableEx
         {
             // UM-02: The monitor releases its own acquired reference, regardless
             // of the counter's global IsUsed state (which is not an ownership test).
-            if (counter is not null)
-                counter.Release();
+            counter?.Release();
         }
         finally
         {

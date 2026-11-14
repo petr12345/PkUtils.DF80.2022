@@ -3,6 +3,10 @@
 
 // Ignore Spelling: Utils
 //
+#if !USE_COUNTABLE_GENERICS_APPROACH
+using System.Threading;
+#endif
+
 namespace PK.PkUtils.DataStructures;
 
 #if USE_COUNTABLE_GENERICS_APPROACH
@@ -82,12 +86,24 @@ public CountableSimple()
 ///   }
 /// }
 /// </code>
+/// The diagnostic CountMap remains available for the application lifetime. The finalizer
+/// catches exceptions from Dispose(false), including derived overrides, because unhandled
+/// finalizer exceptions could terminate the process. This is best-effort counting and
+/// does not protect against delays caused by waiting for the CountMap lock.
 /// </remarks>
 /// <seealso href="http://www.devx.com/dotnet/Article/33167/1954">
 /// When and How to Use Dispose and Finalize in C#</seealso>
 ~CountableSimple()
 {
-  Dispose(false);
+  try
+  {
+    Dispose(false);
+  }
+  catch (System.Exception)
+  {
+    // Finalizer failures must not escape: an unhandled exception could terminate the process.
+    // The instance count may be incorrect if finalization fails.
+  }
 }
 #endregion // Finalizer
 
@@ -142,7 +158,11 @@ protected virtual void Dispose(bool disposing)
   // Use double-checked locking 
   if (!this.IsDisposed)
   {
-    CountMap.Instance.SlimLock.EnterWriteLock();
+    // Use the same CountMap instance and lock throughout disposal.
+    CountMap countMap = CountMap.Instance;
+    ReaderWriterLockSlim slimLock = countMap.SlimLock;
+
+    slimLock.EnterWriteLock();
     try
     {
       if (!this.IsDisposed)
@@ -159,12 +179,12 @@ protected virtual void Dispose(bool disposing)
         // Note IT IS THREAD-SAFE.
 
         _disposed = true;
-        CountMap.Instance.DecrementCount(this.GetType());
+        countMap.DecrementCount(this.GetType());
       }
     }
     finally
     {
-      CountMap.Instance.SlimLock.ExitWriteLock();
+      slimLock.ExitWriteLock();
     }
   }
 }

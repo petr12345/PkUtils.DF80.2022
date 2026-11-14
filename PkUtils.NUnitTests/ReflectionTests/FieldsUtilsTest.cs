@@ -296,7 +296,8 @@ public class FieldsUtilsTest
         if (invalidFieldName is null)
         {
             Assert.Throws<ArgumentNullException>(
-                (Action)(() => type.SetStaticFieldValue(invalidFieldName!, value, flattenHierarchy)));        }
+                (Action)(() => type.SetStaticFieldValue(invalidFieldName!, value, flattenHierarchy)));
+        }
         else
         {
             Assert.Throws<ArgumentException>((Action)(() => type.SetStaticFieldValue(invalidFieldName, value, flattenHierarchy)));

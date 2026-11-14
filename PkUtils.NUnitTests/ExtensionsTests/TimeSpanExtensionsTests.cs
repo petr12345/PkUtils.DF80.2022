@@ -6,7 +6,7 @@ namespace PK.PkUtils.NUnitTests.ExtensionsTests;
 [TestFixture]
 public class TimeSpanExtensionsTests
 {
-    public static IEnumerable<TestCaseData> ToReadableString_TestCases()
+    private static IEnumerable<TestCaseData> ToReadableString_TestCases()
     {
         // --- zero ---
         yield return new TestCaseData(TimeSpan.Zero, false, "0 seconds")

@@ -7,6 +7,7 @@ using System.Configuration;
 using System.IO.Ports;
 using System.Linq;
 
+#pragma warning disable IDE0079 // Remove unnecessary suppression 
 #pragma warning disable IDE0305 // Collection initialization can be simplified
 
 namespace PK.PkUtils.SerialPortLib;
@@ -216,3 +217,4 @@ public class SerialPortSettingsEx : SerialPortSettings, IEquatable<SerialPortSet
     #endregion // IEquatable<SerialPortSettingsEx> Members
 }
 #pragma warning restore IDE0305
+#pragma warning restore IDE0079
