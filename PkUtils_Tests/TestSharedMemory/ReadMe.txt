@@ -1,17 +1,18 @@
-TestSharedMemory folder contains code testing the usage of the class Segment,
-which wraps Win32 shared memory.
+TestSharedMemory demonstrates exchanging a serializable data object between
+processes through a Windows shared-memory segment using PK.PkUtils.NativeMemory.Segment.
 
-The folder contains three projects in three directories:
+The folder contains three projects:
 
-TestSharedMemXferObj - an assembly containing definition of the auxiliary class PersonData,
-                       which is serialized to the shared segment.
+  TestSharedMemXferObj
+    A shared assembly containing the PersonData type exchanged by the processes.
 
-TestSharedMemServer - an executable that creates a shared memory segment named "PersonDataSegment",
-                    ( delegating to the other constructor with argument SharedMemoryCreationFlag.Create)
-                     and then serializes an object of type PersonData into created segment.
+  TestSharedMemServer
+    A console application that creates the shared-memory segment named
+    "PersonDataSegment" and serializes a PersonData instance into it.
 
-TestSharedMemClient - an executable creating a shared memory segment object, 
-                     by delegating to the other constructor with argument SharedMemoryCreationFlag.Attach,
-                     thus actually attaching to shared memory segment named "PersonDataSegment" created by the server.
-                     Upon success, it de-serializes an object of type PersonData stored previously
-                     by the server application, and writes some of its values to console.
+  TestSharedMemClient
+    A console application that attaches to the existing segment named
+    "PersonDataSegment", deserializes PersonData, and prints selected values.
+
+Run the server before the client so that the named segment exists when the
+client attempts to attach. The sample is Windows-specific.

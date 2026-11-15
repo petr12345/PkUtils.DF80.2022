@@ -1,13 +1,10 @@
-﻿The project TestXmlSerializer is a console application demonstrating
-the usage of the class XMLSerializerAdapter.
-The XMLSerializerAdapter internally encapsulates the class System.Xml.Serialization.XmlSerializer.
+﻿TestXMLSerializer is a console application demonstrating
+XMLSerializerAdapter, a wrapper around System.Xml.Serialization.XmlSerializer.
 
-Usage:
-If you run the application with no argument or the other argument than -d,
-the code will serialize some stuff to files "payment.xml" and "employee.xml".
+Without the -d switch, it serializes sample PaymentMethod and Employee objects
+into payment.xml and employee.xml in the current working directory.
+With -d, it deserializes those existing files instead; run serialization first.
 
-If you run the application with the argument -d, 
-the code will deserialize the previously serialized files "payment.xml" and "employee.xml".
-
-Remarks:
-For more details see the code of XMLSerializerAdapter and its base class BaseSerializerAdapter.
+The source also contains an OLD_MSDN_MAGAZINE_CODE compile-time option for
+comparing the adapter with the earlier MSDN example. See
+XmlSerializerSamples.cs, XMLSerializerAdapter, and BaseSerializerAdapter.

@@ -1,10 +1,12 @@
-﻿The project Testmemcmp compares various approaches for byte array comparison,
-concentrating on the runtime speed.
+﻿Testmemcmp compares two byte-array comparison approaches and measures
+their execution times:
 
-Currently there are just two approaches:
-a/ public static bool MemUtils.memcmp(byte[] arr1, byte[] arr2) 
-b/ Enumerable.SequenceEqual
+  a) MemUtils.memcmp(byte[] arr1, byte[] arr2)
+  b) Enumerable.SequenceEqual
 
-Notice the significant difference of the speed.
-In the Release build and for long arrays ( > 10000 bytes) memcmp seems about 60-times faster.
-  
+The original experiment observed substantial speed differences for long arrays
+in Release builds, but performance depends on the runtime, hardware, input
+size, and test conditions. Rerun the sample before drawing conclusions about
+current .NET performance.
+
+See ComparisonTest.cs and MainForm.cs.

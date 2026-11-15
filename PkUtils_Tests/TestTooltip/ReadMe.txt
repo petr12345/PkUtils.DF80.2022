@@ -1,12 +1,10 @@
-﻿The project TestTooltip demonstrates the functionality of the class TipHandler,
-and the specialized derived classes ListBoxTipHandler, ComboBoxTipHandler, WindowTitleTipHandler.
-The TipHandler itself is derived from and uses the functionality of MessageHookOnHwnd.
+﻿TestTooltip demonstrates TipHandler and its derived types:
+ListBoxTipHandler, ComboBoxTipHandler, and WindowTitleTipHandler.
+TipHandler inherits from WindowMessageHook and supplies message-hook-based
+tooltip behavior for Windows Forms controls.
 
-For more details see the code of ListBoxTipHandler, ComboBoxTipHandler 
-and the base class TipHandler.
+For details, see the derived handlers and TipHandler.cs in PkUtils/UI/TipHandlers.
 
-Remark: 
-In previous version of ComboBoxTipHandler, the tooltips for combo boxes did not work quite well 
-if EnableVisualStyles() was called in the program initialization.
-To test this behaviors, the UI now has a CheckBox "Use visual styles",
-and you can restart the application to see the program that applies changed settings.
+The sample also includes a "Use visual styles" checkbox. It allows testing
+tooltips with and without visual styles after restarting the application,
+which was useful when diagnosing earlier ComboBoxTipHandler behavior.

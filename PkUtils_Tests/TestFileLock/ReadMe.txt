@@ -1,4 +1,4 @@
-﻿The project TestFileLock demonstrates file and folder locking from C#.
+﻿The project TestFileLock demonstrates Windows file and directory handle-based locking from C#.
 For native-code-related reference, see:
 
 i/ LockFile function
@@ -36,7 +36,7 @@ int main()
  }
  else
  {
-  wprintf(L"Suceess HANDLE = 0x%x \n",hFile);
+  wprintf(L"Success HANDLE = 0x%x \n",hFile);
   ::CloseHandle(hFile);
  }
 }

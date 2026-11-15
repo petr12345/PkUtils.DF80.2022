@@ -1,9 +1,8 @@
-﻿The project TestMsgBoxObserver demonstrates a usage of a class MsgBoxObserver 
-from the namespace PK.PkUtils.UI.Utils.
+﻿TestMsgBoxObserver demonstrates MsgBoxObserver from PK.PkUtils.UI.Utils.
 
-Th class utilizes its base class WindowsSystemHook, 
-"watches" the system for any system MessageBox creation, activation and consequent
-destroying of it. 
-Raison d'être: unfortunately, there is no such functionality in WinForms.
+Using Windows system-hook support, the observer detects the creation,
+activation, and destruction of MessageBox windows and reports the observed
+actions. This supplements functionality not directly exposed by the standard
+Windows Forms MessageBox API.
 
-For more details, see the code of MainForm.cs and class MsgBoxObserver itself.
+For details, see MainForm.cs and PkUtils/UI/Utils/MsgBoxObserver.cs.

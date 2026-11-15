@@ -1,6 +1,7 @@
-﻿The project TestDumperTextWriter demonstrates subscribing to System.Diagnostics.Trace
-and "delivering" messages from Trace to the text box control.
-This is done with usage of classes DumperCtrlTextBoxWrapper and DumperTextWriterAndTraceListener.
+﻿TestDumperTextWriter demonstrates redirecting System.Diagnostics.Trace output
+to a text box in a Windows Forms application using DumperCtrlTextBoxWrapper
+and DumperTextWriterAndTraceListener.
 
-For global overview see the UML class diagram at $\PkNetUtils\_Doc\Dumpers.jpg
-For more details see the code of MainForm.cs
+For a class diagram, see ../../_Doc/Dumpers/Dumpers.jpg.
+For implementation details, see MainForm.cs and the corresponding classes
+in PkUtils/Dump.

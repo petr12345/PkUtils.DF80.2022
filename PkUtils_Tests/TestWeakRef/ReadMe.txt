@@ -1,7 +1,7 @@
-﻿The project TestWeakRef tests WeakReference Event Handlers implementation.
+﻿TestWeakRef demonstrates weak-reference event handlers and their effects on the lifetime of event subscribers.
 
 Internally, this is done by generating lots of 'TargetShortLiving' per timer tick;
-with these object subscribing to several events:
+with these objects subscribing to several events:
 i/ event EventHandler evResize
   This event is declared in the TestForm and raised every time the form is resized.
 ii/ event EventHandler<EventArgs> evSingleClick
@@ -12,16 +12,17 @@ iv/ SourceStatic.evStaticEvent
   This event is declared in the static class SourceStatic and raised every time 
   the user manually pushes a specific button in the TestForm.
   
-Currently, the UI supports following four scenarios:
+The UI supports the following four scenarios:
 
 a/ "None" subscription of created objects.  
     All new objects have no relation to listed events.
-    Any time you invoke GC.Collect from UI by "Enforce GC.Collect" button,
-    all these objects are collected.
+    Using the "Enforce GC.Collect" button makes unreachable objects eligible
+    for collection; exact collection timing is controlled by the GC.
     
 b/ "Strong references" subscription of created objects.
     In that case all new objects are in the Invocation List of listed events.
-    Therefore, invoking GC.Collect just itself does not collect these objects.
+    These event subscriptions keep the objects reachable, so a GC.Collect
+    call alone cannot reclaim them.
 	Further details:
     - If you destroy invocation list of the related event (by "Destroy InvocationLists" button).
       all 'TargetShortLiving' become unreachable and next GC.Collect will collect them.
@@ -32,7 +33,8 @@ c/ "Weak simple references" subscription of created objects.
     of delegates (EventHandlers), each of them has strong references to 
     related WeakEventHandler, which in turn just indirectly (via WeakReference) points 
     to TargetShortLiving.
-    Hence, GC.Collect anytime can collect all instances of TargetShortLiving.
+    Thus, once otherwise unreachable, TargetShortLiving instances can be
+    collected without first removing the corresponding event delegates.
     However, this approach is far from ideal, since the invocation list
     of event still contains all instances of EventHandler that refer to
     WeakEventHandler, and these instances are never cleared by GC.Collect.
@@ -40,16 +42,16 @@ c/ "Weak simple references" subscription of created objects.
     - If you destroy invocation list of the related event (by "Destroy InvocationLists" button).
       all 'TargetShortLiving' become unreachable and next GC.Collect will collect them.
 	- The button "Clear DeregisterAble Handlers" calls WeakEventHandler.InvocationListPurify,
-	  which remove from the invocation list all delegates whose target is WeakEventHandler,
+	  which removes from the invocation list all delegates whose target is WeakEventHandler,
       and that target returns IsDeregisterAbleNow (which means that target has been collected).
 	  Hence, the invocation lists and related WeakEventHandlers could be cleared in several steps:
 	  i/ first call of GC.Collect collects just TargetShortLiving objects 
 	    (but their WeakEventHandlers remain still reachable).
 	  ii/ subsequent call of "Clear DeregisterAble Handlers" will remove from invocation list 
-	   the related delegates, and their target WeakEventHandler will became unreachable
+	   the related delegates, and their target WeakEventHandler will become unreachable
 	  iii/ subsequent call of GC.Collect can collect WeakEventHandlers that were cleared that way.
     
-d/ "Weak self-deregisterAble references" subscription of of created objects.
+d/ "Weak self-deregistering references" subscription of created objects.
     This case is similar to c/, however, now all created WeakEventHandlers
     are self-deregisterAble.
     When handling the event in WeakEventHandler with self-deregistering capability, 
@@ -57,7 +59,7 @@ d/ "Weak self-deregisterAble references" subscription of of created objects.
     and will attempt to self-deregister the WeakEventHandler,
     which includes removing the 'regular' delegate object from the invocation list of the event.
     See more details in WeakEventHandler source code.
-    Further details: otherwise this is similar with the case c/
+    Further details: otherwise, this is similar to case c/
 
 
 ---- Reference:  ------------------------------------------------

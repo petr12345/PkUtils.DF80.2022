@@ -1,5 +1,9 @@
-﻿The project TestExceptionHelper demonstrates the usage of the class ExceptionHelper.
-This helps to handle properly the exception TargetInvocationException,
-with proper rethrowing the InnerException, at the same time preserving the call stack.
+﻿TestExceptionHelper demonstrates how TargetInvocationException wraps an exception
+thrown by a method invoked through reflection. The sample compares directly
+throwing the inner exception with using ExceptionHelper.PrepareRethrow().
 
-For more details see the code of MainForm.cs, and the code of ExceptionHelper itself.
+PrepareRethrow() retains the original stack-trace information in an auxiliary
+RethrownException attached to the new exception. This is different from simply
+rethrowing the caught inner exception, which can lose its original call stack.
+
+For details, see MainForm.cs, ExceptionHelper.cs, and RethrownException.

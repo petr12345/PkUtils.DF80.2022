@@ -1,25 +1,26 @@
-The TestSubstEdit project illustrates the implementation of "atomic" (indivisible) field editing 
-within the edit control. 
-This is achieved by subclassing the control and nearly completely replacing its original functionality. 
-The project consists of two subdirectories:
+TestSubstEdit explores editing text containing embedded fields that must be
+treated as indivisible units rather than ordinary sequences of characters.
+It uses specialized edit controls and includes both C++ and C# versions.
 
-1. TestSubstEdit_cpp:
-   This is a C++ solution featuring a reusable static library, SubstLib, and a testing project named TestSubst.
+1. TestSubstEdit_cpp
+   A native C++ implementation containing a reusable static library,
+   SubstLib, and a sample application, TestSubst.
 
-   Key Features:
-   i/ Template-based solution; any serializable class can function as a fieldId.
-   ii/ Serialization to binary and plain text formats.
-   iii/ Clipboard support for plain text, where special XML characters that are not part of field itself 
-        are converted to XML entity representations such as "&" or "<".
+   Features:
+   - A template-based approach supporting serializable field identifiers.
+   - Binary and plain-text serialization.
+   - Clipboard support, including escaping XML-sensitive characters in text.
 
-2. TestSubstEdit_CS:
-   This is a C# solution comprising a reusable library (assembly) SubstEditLib, and a testing project named TestTgSchema.
+2. TestSubstEdit_CS
+   A managed C# implementation containing the reusable SubstEditLib
+   assembly and the TestTgSchema sample application.
 
-   Key Features:
-   i/ Generic-based solution; any binary-serializable and XML-serializable class can serve as a fieldId.
-   ii/ Serialization to binary, plain text, and XML. The latter is achieved by implementing IXmlSerializable in generic classes:
-     - public class LogInfo<TFIELDID>
-     - public class SubstLogData<TFIELDID>
-   iii/ Clipboard support, with special XML characters that are not part of field itself being converted 
-      to XML entity representations like "&" or "<".
-  iv/ Multiple undo/redo functionality.
+   Features:
+   - Generic field identifiers with binary and XML serialization support.
+   - Binary, plain-text, and XML serialization, including IXmlSerializable
+     implementations in LogInfo<TFIELDID> and SubstLogData<TFIELDID>.
+   - Clipboard support with XML entity escaping, including &amp; for & and
+     &lt; for <, when serializing text outside a field.
+   - Multiple undo/redo operations.
+
+See the source code in each subdirectory for the implementation details.

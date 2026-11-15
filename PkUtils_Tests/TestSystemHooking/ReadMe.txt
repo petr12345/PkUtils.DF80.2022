@@ -1,17 +1,13 @@
-﻿The project TestSystemHooking tests creating a system-wide hooks in a managed application,
-with the help of class PK.PkUtils.SystemEx.WindowsSystemHookBase.
+﻿TestSystemHooking demonstrates installing and observing Windows system hooks
+from a managed Windows Forms application using
+PK.PkUtils.SystemEx.WindowsSystemHookBase.
 
-The hooks that the application attempts to create are following types:
-Win32.HookType.WH_MOUSE, 
-Win32.HookType.WH_KEYBOARD
-Win32.HookType.WH_KEYBOARD_LL
-Win32.HookType.WH_CALLWNDPROCRET
+The tested Win32 hook types include WH_MOUSE, WH_KEYBOARD, WH_KEYBOARD_LL,
+and WH_CALLWNDPROCRET. When installation succeeds, the hook callback logs
+observed events in the application's text box.
 
-If the hook installation succeeded, the hook method writes ( logs ) a text
-to the textbox in a main form.
+WH_KEYBOARD_LL is a low-level keyboard hook; see WindowsSystemHookKbLL for
+implementation details. Global and thread-specific hook installation have
+different Win32 requirements, so results depend on the operating environment.
 
-Note the difference of WH_KEYBOARD_LL hook, which MUST be installed as a global hook
-( see the code of WindowsSystemHookKbLL for details ).
-
-For more details, see the code of MainForm.cs creating the hooks, 
-and the class WindowsSystemHookBase itself.
+For details, see MainForm.cs and WindowsSystemHookBase.cs.
